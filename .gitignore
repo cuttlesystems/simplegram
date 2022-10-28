@@ -128,5 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# С„Р°Р№Р»С‹ РЅР°СЃС‚СЂРѕР№РєРё СЃСЂРµРґС‹ PyCharm
+# файлы настройки среды PyCharm
 .idea/
