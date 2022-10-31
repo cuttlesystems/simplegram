@@ -1,23 +1,21 @@
 import rest_framework.request
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework import viewsets
 
-from .serializers import UserSerializer, MessageSerializer, VariantSerializer
-from bots.models import User, Message, Variant
-
-@api_view(['GET', 'POST'])
-def first_endpoint(request: rest_framework.request.Request):
-    if request.method == 'GET':
-        return Response({'message': 'Get запрос', 'data': request.data}, status=status.HTTP_200_OK)
-    if request.method == 'POST':
-        return Response({'message': 'Post запрос', 'data': request.data}, status=status.HTTP_200_OK)
+from .serializers import User, UserSerializer, BotSerializer, \
+    MessageSerializer, VariantSerializer
+from bots.models import Bot, Message, Variant
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class BotViewSet(viewsets.ModelViewSet):
+    queryset = Bot.objects.all()
+    serializer_class = BotSerializer
 
 
 class MessageViewSet(viewsets.ModelViewSet):
