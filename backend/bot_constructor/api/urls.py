@@ -11,7 +11,5 @@ router.register(r'variants', VariantViewSet, basename='variants')
 
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('first_endpoint/', first_endpoint, name='first_endpoint'),
-    path('message/id/<str:value>/', get_message, name='get_message')
+    path('', include(router.urls))
 ]
