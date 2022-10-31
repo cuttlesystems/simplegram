@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 
-from .serializers import User, UserSerializer
+from .serializers import User, UserSerializer, MessageSerializer, VariantSerializer
+from bots.models import Message, Variant
 
 @api_view(['GET', 'POST'])
 def first_endpoint(request: rest_framework.request.Request):
@@ -17,6 +18,17 @@ def first_endpoint(request: rest_framework.request.Request):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+
+
+class VariantViewSet(viewsets.ModelViewSet):
+    queryset = Variant.objects.all()
+    serializer_class = VariantSerializer
+
 
 @api_view(['GET'])
 def get_message(request: rest_framework.request.Request, value: str):

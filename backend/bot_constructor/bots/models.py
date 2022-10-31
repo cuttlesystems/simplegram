@@ -1,3 +1,5 @@
+from email.policy import default
+from importlib.metadata import requires
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
@@ -26,12 +28,20 @@ class Bot(models.Model):
 class Message(models.Model):
     text = models.CharField(max_length=200)
     photo = models.ImageField(
-        upload_to='messages/',
+        upload_to='messages_images/',
         null=True,
         blank=True
     )
-    # video = 
-    # file = 
+    video = models.FileField(
+        upload_to='messages_videos/',
+        null=True,
+        blank=True
+    )
+    file = models.FileField(
+        upload_to='messages_files/',
+        null=True,
+        blank=True
+    )
     bot = models.ForeignKey(
         Bot,
         on_delete=models.CASCADE,
@@ -50,6 +60,9 @@ class Message(models.Model):
         ]
     )
 
+    def __str__(self):
+        return self.text
+
 
 class Variant(models.Model):
     text = models.CharField(max_length=200)
@@ -62,5 +75,9 @@ class Variant(models.Model):
         Message,
         on_delete=models.SET_NULL,
         related_name='next_variants',
-        null=True
+        null=True,
+        blank=True
     )
+
+    def __str__(self):
+        return self.text
