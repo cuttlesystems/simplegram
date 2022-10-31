@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from bots.models import Message, Variant
+from bots.models import Bot, Message, Variant
 
 
 User = get_user_model()
@@ -11,6 +11,18 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'username', 'email')
+
+
+class BotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bot
+        fields = (
+            'id',
+            'name',
+            'token',
+            'description',
+            'owner',
+        )
 
 
 class MessageSerializer(serializers.ModelSerializer):
