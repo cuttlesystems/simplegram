@@ -13,9 +13,22 @@ git@github.com:cuttlesystems/tg_bot_constructor.git
 cd backend/tg_bot_constructor/bot_constructor
 ```
 
+- В корне проекта создать виртуальное окружение, активировать его и установить зависимости:
+
+```
+python3 -m venv venv
+. venv/bin/activate
+cd backend/
+pip install -r requirements.txt
+```
+
+- Установить локально бд Postgres:
+- создать бд с именем **bot_constructor**
+
 - Из дериктории с manage.py выполнить миграции и создать суперюзера:
 
 ```
+cd bot_constructor/
 python3 manage.py migrate
 python3 manage.py createsuperuser
 ```
@@ -30,4 +43,3 @@ python3 manage.py runserver
 - http://127.0.0.1:8000/admin/ - админ зона
 - http://127.0.0.1:8000/api/message/id/123-890/ - получить информацию по заданному 
 сообщению
-

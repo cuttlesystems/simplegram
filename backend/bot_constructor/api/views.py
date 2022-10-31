@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 
-from .serializers import User, UserSerializer, MessageSerializer, VariantSerializer
-from bots.models import Message, Variant
+from .serializers import UserSerializer, MessageSerializer, VariantSerializer
+from bots.models import User, Message, Variant
 
 @api_view(['GET', 'POST'])
 def first_endpoint(request: rest_framework.request.Request):
