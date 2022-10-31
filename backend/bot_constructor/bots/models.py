@@ -24,7 +24,7 @@ class Bot(models.Model):
 
 
 class Message(models.Model):
-    text = models.CharField(max_lenth=200)
+    text = models.CharField(max_length=200)
     photo = models.ImageField(
         upload_to='messages/',
         null=True,
@@ -40,19 +40,19 @@ class Message(models.Model):
     coordinate_x = models.SmallIntegerField(
         'Координата по оси x',
         validators=[
-            MinValueValidator(1),
+            MinValueValidator(0),
         ]
     )
     coordinate_y = models.SmallIntegerField(
         'Координата по оси y',
         validators=[
-            MinValueValidator(1),
+            MinValueValidator(0),
         ]
     )
 
 
 class Variant(models.Model):
-    text = models.CharField(max_lenth=200)
+    text = models.CharField(max_length=200)
     current_message = models.ForeignKey(
         Message,
         on_delete=models.CASCADE,
@@ -61,5 +61,6 @@ class Variant(models.Model):
     next_message = models.ForeignKey(
         Message,
         on_delete=models.SET_NULL,
-        related_name='next_variants'
+        related_name='next_variants',
+        null=True
     )
