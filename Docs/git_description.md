@@ -24,3 +24,4 @@
    возможность просмотра репозитория
 
 
+[Уроки](https://www.youtube.com/playlist?list=PLRs8EELOYKc44Y_fKFvADdPXbrYZDQqr0) по работе с *системой контроля версий - GIT* (YouTube Playlist)
