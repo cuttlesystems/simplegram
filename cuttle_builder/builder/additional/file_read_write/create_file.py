@@ -1,10 +1,21 @@
 from builder.additional.file_read_write.write_file import write_file, write_into_init
 
-def create_file_handler(name, code):
-    write_file(f'bot/handlers/get_{name}.py', code)
-    write_into_init(f'bot/handlers/__init__.py', f'from .get_{name} import dp\n')
+
+def create_file(file_path, code, init_path, import_path):
+    write_file(file_path, code)
+    write_file(init_path, import_path)
+
+def create_file_handler(bot_name, name, code):
+    create_file(f'{bot_name}/handlers/get_{name}.py', code, f'{bot_name}/handlers/__init__.py', f'from .get_{name} import dp\n')
+
+def create_file_keyboard(bot_name, keyboard_name, keyboard):
+    create_file(f'{bot_name}/keyboards/{keyboard_name}.py', keyboard, f'{bot_name}/keyboards/__init__.py', f'\nfrom .{keyboard_name} import {keyboard_name}')
 
 
-def create_file_keyboard(keyboard_name, keyboard):
-    write_file(f'bot/keyboards/{keyboard_name}.py', keyboard)
-    write_into_init(f'bot/keyboards/__init__.py', f'\nfrom .{keyboard_name} import {keyboard_name}')
+def create_file_state(bot_name, code):
+    create_file(f'{bot_name}/state/states.py', code, 'bot/state/__init__.py', 'from .states import State')
+    
+
+# write_file('bot/state/states.py', state_generator([str(uuid.uuid1()).replace('-', ''),str(uuid.uuid1()).replace('-', ''),str(uuid.uuid1()).replace('-', ''),str(uuid.uuid1()).replace('-', ''),str(uuid.uuid1()).replace('-', '')]))
+# write_into_init('bot/state/__init__.py', 'from .states import State')
+

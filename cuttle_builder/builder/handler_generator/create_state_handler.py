@@ -1,3 +1,5 @@
+# method to create handler, based on state and text
+
 from builder.handler_generator.create_handler import create_handler
 
 def create_state_handler(imports, curr_state, curr_state_text, next_state, send_method, text, kb = ''):
