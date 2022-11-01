@@ -73,23 +73,44 @@ def create_variant(message_id: int, text: str) -> int:
     return json.loads(response.text)['id']
 
 
-def set_bot_start_message(bot_id: int, start_message_id: int):
+def connect_variant(variant_id: int, message_id: int) -> None:
+    response = requests.patch(
+        SUITE_ADDR + 'api/variants/{0}/'.format(variant_id),
+        {
+            'next_message': message_id
+        }
+    )
+    if response.status_code != requests.status_codes.codes.ok:
+        raise Exception(
+            'Ошибка при связывании варианта с последующим сообщением: {0}'.format(response.text))
+
+
+def set_bot_start_message(bot_id: int, start_message_id: int) -> None:
+    """
+    Установить сообщение с которого начнется работа с ботом
+    :param bot_id: идентификатор бота
+    :param start_message_id: идентификатор сообщения, которое будет установлено
+    в качестве стартового
+    """
     response = requests.patch(
         SUITE_ADDR + 'api/bots/{0}/'.format(bot_id),
         {
             'start_message': start_message_id
         }
     )
-    print(response.status_code)
-    print(response.text)
+    if response.status_code != requests.status_codes.codes.ok:
+        raise Exception('Ошибка при установке стартового сообщения бота: {0}'.format(
+            response.text))
 
 
 if __name__ == '__main__':
     bot_id = create_bot(USER_ID)
-    other_message_id = create_message(bot_id, 'Другое сообщение', 100, 130)
-    main_message_id = create_message(bot_id, 'Стартовое сообщение', 10, 10)
-    create_variant(main_message_id, 'Вариант 1')
-    create_variant(main_message_id, 'Вариант 2')
-    create_variant(main_message_id, 'Вариант 3')
-    set_bot_start_message(bot_id, main_message_id)
 
+    main_message_id = create_message(bot_id, 'Что вас интересует?', 10, 10)
+    set_bot_start_message(bot_id, main_message_id)
+    mobile_variant_id = create_variant(main_message_id, 'Телефоны')
+    computer_variant_id = create_variant(main_message_id, 'Компьютеры')
+    appliances_variant_id = create_variant(main_message_id, 'Бытовая техника')
+
+    mobile_message_id = create_message(bot_id, 'Какие телефоны предпочитаете?', 100, 130)
+    connect_variant(mobile_variant_id, mobile_message_id)
