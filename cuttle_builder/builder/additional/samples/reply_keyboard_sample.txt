@@ -1,0 +1,9 @@
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+
+{0}_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+        {1}
+        ]
+    ], resize_keyboard=True, one_time_keyboard=True
+)
