@@ -114,3 +114,16 @@ if __name__ == '__main__':
 
     mobile_message_id = create_message(bot_id, 'Какие телефоны предпочитаете?', 100, 130)
     connect_variant(mobile_variant_id, mobile_message_id)
+
+    computer_message_id = create_message(bot_id, 'Какие компьютеры предпочитаете?', 200, 150)
+    connect_variant(computer_variant_id, computer_message_id)
+
+    android_variant_id = create_variant(mobile_message_id, 'Android')
+    iphone_variant_id = create_variant(mobile_message_id, 'IPhone')
+    mobile_cancel_variant_id = create_variant(mobile_message_id, 'Вернуться в начало')
+
+    android_select_message_id = create_message(
+        bot_id, 'Выберите телефон который хотите приобрести', 200, 250)
+    connect_variant(android_variant_id, android_select_message_id)
+    samsung_galaxy_s22 = create_variant(android_select_message_id, 'Samsung Galaxy S22')
+    samsung_galaxy_a53 = create_variant(android_select_message_id, 'Samsung Galaxy A53')
