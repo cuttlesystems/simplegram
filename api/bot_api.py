@@ -1,5 +1,17 @@
 import json
+from dataclasses import dataclass
+from typing import List, Optional
+
 import requests
+
+
+@dataclass
+class BotDescription:
+    id: Optional[int] = None
+    bot_name: Optional[str] = None
+    bot_token: Optional[str] = None
+    bot_description: Optional[str] = None
+    start_message_id: Optional[int] = None
 
 
 class BotApi:
@@ -27,6 +39,25 @@ class BotApi:
         if response.status_code != requests.status_codes.codes.created:
             raise Exception('Ошибка при создании бота: {0}'.format(response.text))
         return json.loads(response.text)['id']
+
+    def get_bots(self) -> List[BotDescription]:
+        """
+        Получить список ботов пользователя
+        :return: список ботов
+        """
+        response = requests.get(self._suite_url + 'api/bots/')
+        if response.status_code != requests.status_codes.codes.ok:
+            raise Exception('Ошибка при получении списка ботов')
+        bots_dict_list: List[dict] = json.loads(response.text)
+        bots_list: List[BotDescription] = []
+        for bot_dict in bots_dict_list:
+            bot_description = BotDescription()
+            bot_description.id = bot_dict['id']
+            bot_description.bot_name = bot_dict['name']
+            bot_description.bot_token = bot_dict['token']
+            bot_description.bot_description = bot_dict['description']
+            bot_description.start_message_id = bot_dict['start_message']
+        return bots_list
 
     def create_message(self, bot_id: int, text: str, x: int, y: int) -> int:
         """
