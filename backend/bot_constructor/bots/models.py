@@ -28,7 +28,7 @@ class Bot(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return self.name
+        return f'Bot: {self.name}, Owner: {self.owner.username}'
 
 
 class Message(models.Model):
@@ -67,7 +67,7 @@ class Message(models.Model):
     )
 
     def __str__(self):
-        return self.text
+        return f'Message: {self.text} of {self.bot}'
 
 
 class Variant(models.Model):
@@ -86,4 +86,4 @@ class Variant(models.Model):
     )
 
     def __str__(self):
-        return self.text
+        return f'Variant: {self.text} to {self.current_message}'
