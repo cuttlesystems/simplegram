@@ -1,14 +1,23 @@
+
 from builder import state_generator, create_reply_keyboard, create_state_handler, create_keyboard_array, find_previous_messages, create_file_handler, create_file_keyboard, create_file_state
 from distutils.dir_util import copy_tree
-
-
+import shutil
 
 def get_dir_name(bot_id):
     return '../bot_{0}'.format(bot_id)
 
+def delete_dir(dir_name):
+    try:
+        shutil.rmtree(dir_name)
+    except FileNotFoundError as e:
+        pass 
+    except Exception as e:
+        print(e)
+    
 def get_template(bot_id):
     dir_name = get_dir_name(bot_id)
-    print(copy_tree('bot', dir_name))
+    delete_dir(dir_name)
+    copy_tree('bot', dir_name)
     return dir_name
 
 messages = [
