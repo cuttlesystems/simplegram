@@ -17,6 +17,12 @@ class Bot(models.Model):
         on_delete=models.CASCADE,
         related_name='bots'
     )
+    start_message = models.ForeignKey(
+        'Message',
+        on_delete=models.SET_NULL,
+        related_name='first_message_bot',
+        null=True
+    )
 
     class Meta:
         ordering = ['id']
