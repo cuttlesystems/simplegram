@@ -7,6 +7,12 @@ from django.core.validators import MinValueValidator
 
 User = get_user_model()
 
+# Вот он класс Bot, он эквивалентен таблице Bot в БД.
+# В нем определены поля: name, token, description и т.д.
+# В полях определены типы данных, и прочие параметры.
+# В классе Meta определена сортировка по умолчанию, по id.
+# В методе __str__ определено строковое представление объекта Bot.
+# Идем обратно в сериалайзер.
 
 class Bot(models.Model):
     name = models.CharField(max_length=200)
