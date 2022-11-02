@@ -105,7 +105,7 @@ class BotApi:
             raise Exception('Ошибка при создании сообщения: {0}'.format(response.text))
         return json.loads(response.text)['id']
 
-    def create_variant(self, bot_id: int, message_id: int, text: str) -> int:
+    def create_variant(self, message_id: int, text: str) -> int:
         """
         Создание варианта
         :param message_id: идентификатор сообщения для которого создается вариант
@@ -113,9 +113,11 @@ class BotApi:
         :return: идентификатор созданного варианта
         """
         response = requests.post(
-            self._suite_url + f'api/bots/{bot_id}/messages/{message_id}/variants/',
+            self._suite_url + f'api/messages/{message_id}/variants/',
             {
                 'text': text,
+
+                # todo: похоже, тут избыточное дублирование
                 'current_message': message_id
             },
             headers=self._get_headers()
@@ -124,11 +126,10 @@ class BotApi:
             raise Exception('Ошибка при создании варианта: {0}'.format(response.text))
         return json.loads(response.text)['id']
 
-    def connect_variant(self, bot_id: int, owner_message_id: int, variant_id: int, message_id: int) -> None:
+    def connect_variant(self, variant_id: int, message_id: int) -> None:
         response = requests.patch(
-            self._suite_url + f'api/bots/{bot_id}/messages/{owner_message_id}/variants/{variant_id}/',
+            self._suite_url + f'api/variant/{variant_id}/',
             {
-                # 'id': variant_id,
                 'next_message': message_id
             },
             headers=self._get_headers()
