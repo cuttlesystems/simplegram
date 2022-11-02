@@ -18,6 +18,25 @@ class BotApi:
     def __init__(self, suite_url: str, user_id: int):
         self._suite_url: str = suite_url
         self._user_id: int = user_id
+        self._auth_token: Optional[str] = None
+
+    def authentication(self, username: str, password: str) -> None:
+        response = requests.post(
+            self._suite_url + 'api/auth/token/login/',
+            {
+                'username': username,
+                'password': password
+            }
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise Exception('Ошибка аутентификации пользователя {0}'.format(response.text))
+        self._auth_token = json.loads(response.text)['auth_token']
+
+    def _get_headers(self):
+        assert self._auth_token is not None
+        return {
+            'Authorization': 'Token ' + self._auth_token
+        }
 
     def create_bot(self, bot_name: str, bot_token: str, bot_description: str) -> int:
         """
@@ -34,7 +53,8 @@ class BotApi:
                 'token': bot_token,
                 'description': bot_description,
                 'owner': self._user_id
-            }
+            },
+            headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
             raise Exception('Ошибка при создании бота: {0}'.format(response.text))
@@ -45,7 +65,10 @@ class BotApi:
         Получить список ботов пользователя
         :return: список ботов
         """
-        response = requests.get(self._suite_url + 'api/bots/')
+        response = requests.get(
+            self._suite_url + 'api/bots/',
+            headers=self._get_headers()
+        )
         if response.status_code != requests.status_codes.codes.ok:
             raise Exception('Ошибка при получении списка ботов')
         bots_dict_list: List[dict] = json.loads(response.text)
@@ -69,19 +92,20 @@ class BotApi:
         :return: идентификатор созданного сообщения
         """
         response = requests.post(
-            self._suite_url + 'api/messages/',
+            self._suite_url + f'api/bots/{bot_id}/messages/',
             {
                 'bot': bot_id,
                 'text': text,
                 'coordinate_x': x,
                 'coordinate_y': y,
-            }
+            },
+            headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
             raise Exception('Ошибка при создании сообщения: {0}'.format(response.text))
         return json.loads(response.text)['id']
 
-    def create_variant(self, message_id: int, text: str) -> int:
+    def create_variant(self, bot_id: int, message_id: int, text: str) -> int:
         """
         Создание варианта
         :param message_id: идентификатор сообщения для которого создается вариант
@@ -89,22 +113,25 @@ class BotApi:
         :return: идентификатор созданного варианта
         """
         response = requests.post(
-            self._suite_url + 'api/variants/',
+            self._suite_url + f'api/bots/{bot_id}/messages/{message_id}/variants/',
             {
                 'text': text,
                 'current_message': message_id
-            }
+            },
+            headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
             raise Exception('Ошибка при создании варианта: {0}'.format(response.text))
         return json.loads(response.text)['id']
 
-    def connect_variant(self, variant_id: int, message_id: int) -> None:
+    def connect_variant(self, bot_id: int, owner_message_id: int, variant_id: int, message_id: int) -> None:
         response = requests.patch(
-            self._suite_url + 'api/variants/{0}/'.format(variant_id),
+            self._suite_url + f'api/bots/{bot_id}/messages/{owner_message_id}/variants/{variant_id}/',
             {
+                # 'id': variant_id,
                 'next_message': message_id
-            }
+            },
+            headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
             raise Exception(
@@ -121,7 +148,8 @@ class BotApi:
             self._suite_url + 'api/bots/{0}/'.format(bot_id),
             {
                 'start_message': start_message_id
-            }
+            },
+            headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
             raise Exception('Ошибка при установке стартового сообщения бота: {0}'.format(
