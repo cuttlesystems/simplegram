@@ -98,7 +98,10 @@ class BotApi:
         response = requests.post(
             self._suite_url + f'api/bots/{bot_id}/messages/',
             {
+                # todo: убрать повторное заполнение поля,
+                #  поскольку bot_id уже есть в url (когда это будет поддержано в rest api)
                 'bot': bot_id,
+
                 'text': text,
                 'coordinate_x': x,
                 'coordinate_y': y,
