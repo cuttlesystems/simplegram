@@ -20,3 +20,10 @@ class BotMessage:
     file: Optional[str] = None
     x: Optional[int] = None
     y: Optional[int] = None
+
+
+@dataclass
+class MessageVariant:
+    id: Optional[int] = None
+    text: Optional[str] = None
+    next_message_id: Optional[int] = None

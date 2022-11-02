@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import requests
 
-from api.data_objects import BotDescription, BotMessage
+from api.data_objects import BotDescription, BotMessage, MessageVariant
 
 
 class BotApi:
@@ -93,7 +93,7 @@ class BotApi:
             raise Exception('Ошибка при создании сообщения: {0}'.format(response.text))
         return self._create_bot_message_from_dict(json.loads(response.text))
 
-    def create_variant(self, message_id: int, text: str) -> int:
+    def create_variant(self, message_id: int, text: str) -> MessageVariant:
         """
         Создание варианта
         :param message_id: идентификатор сообщения для которого создается вариант
@@ -112,7 +112,7 @@ class BotApi:
         )
         if response.status_code != requests.status_codes.codes.created:
             raise Exception('Ошибка при создании варианта: {0}'.format(response.text))
-        return json.loads(response.text)['id']
+        return self._create_variant_from_dict(json.loads(response.text))
 
     def connect_variant(self, variant_id: int, message_id: int) -> None:
         response = requests.patch(
@@ -169,3 +169,10 @@ class BotApi:
         bot_message.x = message_dict['coordinate_x']
         bot_message.y = message_dict['coordinate_y']
         return bot_message
+
+    def _create_variant_from_dict(self, variant_dict: dict) -> MessageVariant:
+        variant = MessageVariant()
+        variant.id = variant_dict['id']
+        variant.text = variant_dict['text']
+        variant.next_message_id = variant_dict['next_message']
+        return variant
