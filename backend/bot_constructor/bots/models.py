@@ -67,7 +67,7 @@ class Message(models.Model):
     )
 
     def __str__(self):
-        return f'Message: {self.text} of {self.bot}'
+        return f'Message_id {self.id}: {self.text} of {self.bot}'
 
 
 class Variant(models.Model):
@@ -86,4 +86,4 @@ class Variant(models.Model):
     )
 
     def __str__(self):
-        return f'Variant: {self.text} to {self.current_message}'
+        return f'Variant_id {self.id}: {self.text} to {self.current_message}'
