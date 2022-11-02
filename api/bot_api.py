@@ -1,17 +1,9 @@
 import json
-from dataclasses import dataclass
 from typing import List, Optional
 
 import requests
 
-
-@dataclass
-class BotDescription:
-    id: Optional[int] = None
-    bot_name: Optional[str] = None
-    bot_token: Optional[str] = None
-    bot_description: Optional[str] = None
-    start_message_id: Optional[int] = None
+from api.data_objects import BotDescription, BotMessage
 
 
 class BotApi:
@@ -37,13 +29,7 @@ class BotApi:
             raise Exception('Ошибка аутентификации пользователя {0}'.format(response.text))
         self._auth_token = json.loads(response.text)['auth_token']
 
-    def _get_headers(self):
-        assert self._auth_token is not None
-        return {
-            'Authorization': 'Token ' + self._auth_token
-        }
-
-    def create_bot(self, bot_name: str, bot_token: str, bot_description: str) -> int:
+    def create_bot(self, bot_name: str, bot_token: str, bot_description: str) -> BotDescription:
         """
         Создать бота
         :param bot_name: название бота
@@ -62,7 +48,7 @@ class BotApi:
         )
         if response.status_code != requests.status_codes.codes.created:
             raise Exception('Ошибка при создании бота: {0}'.format(response.text))
-        return json.loads(response.text)['id']
+        return self._create_bot_obj_from_dict(json.loads(response.text))
 
     def get_bots(self) -> List[BotDescription]:
         """
@@ -78,15 +64,10 @@ class BotApi:
         bots_dict_list: List[dict] = json.loads(response.text)
         bots_list: List[BotDescription] = []
         for bot_dict in bots_dict_list:
-            bot_description = BotDescription()
-            bot_description.id = bot_dict['id']
-            bot_description.bot_name = bot_dict['name']
-            bot_description.bot_token = bot_dict['token']
-            bot_description.bot_description = bot_dict['description']
-            bot_description.start_message_id = bot_dict['start_message']
+            bots_list.append(self._create_bot_obj_from_dict(bot_dict))
         return bots_list
 
-    def create_message(self, bot_id: int, text: str, x: int, y: int) -> int:
+    def create_message(self, bot_id: int, text: str, x: int, y: int) -> BotMessage:
         """
         Создать сообщение
         :param bot_id: идентификатор бота, для которого создается сообщение
@@ -110,7 +91,7 @@ class BotApi:
         )
         if response.status_code != requests.status_codes.codes.created:
             raise Exception('Ошибка при создании сообщения: {0}'.format(response.text))
-        return json.loads(response.text)['id']
+        return self._create_bot_message_from_dict(json.loads(response.text))
 
     def create_variant(self, message_id: int, text: str) -> int:
         """
@@ -162,3 +143,29 @@ class BotApi:
         if response.status_code != requests.status_codes.codes.ok:
             raise Exception('Ошибка при установке стартового сообщения бота: {0}'.format(
                 response.text))
+
+    def _get_headers(self):
+        assert self._auth_token is not None
+        return {
+            'Authorization': 'Token ' + self._auth_token
+        }
+
+    def _create_bot_obj_from_dict(self, bot_dict: dict) -> BotDescription:
+        bot_description = BotDescription()
+        bot_description.id = bot_dict['id']
+        bot_description.bot_name = bot_dict['name']
+        bot_description.bot_token = bot_dict['token']
+        bot_description.bot_description = bot_dict['description']
+        bot_description.start_message_id = bot_dict['start_message']
+        return bot_description
+
+    def _create_bot_message_from_dict(self, message_dict: dict) -> BotMessage:
+        bot_message = BotMessage()
+        bot_message.id = message_dict['id']
+        bot_message.text = message_dict['text']
+        bot_message.photo = message_dict['photo']
+        bot_message.video = message_dict['video']
+        bot_message.file = message_dict['file']
+        bot_message.x = message_dict['coordinate_x']
+        bot_message.y = message_dict['coordinate_y']
+        return bot_message
