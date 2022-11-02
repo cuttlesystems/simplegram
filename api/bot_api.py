@@ -67,21 +67,22 @@ class BotApi:
             bots_list.append(self._create_bot_obj_from_dict(bot_dict))
         return bots_list
 
-    def create_message(self, bot_id: int, text: str, x: int, y: int) -> BotMessage:
+    def create_message(self, bot: BotDescription, text: str, x: int, y: int) -> BotMessage:
         """
         Создать сообщение
-        :param bot_id: идентификатор бота, для которого создается сообщение
+        :param bot: объект бота, для которого создается сообщение
         :param text: тест сообщения
         :param x: координата по x
         :param y: координата по y
         :return: идентификатор созданного сообщения
         """
+        assert isinstance(bot, BotDescription)
         response = requests.post(
-            self._suite_url + f'api/bots/{bot_id}/messages/',
+            self._suite_url + f'api/bots/{bot.id}/messages/',
             {
                 # todo: убрать повторное заполнение поля,
                 #  поскольку bot_id уже есть в url (когда это будет поддержано в rest api)
-                'bot': bot_id,
+                'bot': bot.id,
 
                 'text': text,
                 'coordinate_x': x,
@@ -93,20 +94,21 @@ class BotApi:
             raise Exception('Ошибка при создании сообщения: {0}'.format(response.text))
         return self._create_bot_message_from_dict(json.loads(response.text))
 
-    def create_variant(self, message_id: int, text: str) -> MessageVariant:
+    def create_variant(self, message: BotMessage, text: str) -> MessageVariant:
         """
         Создание варианта
-        :param message_id: идентификатор сообщения для которого создается вариант
+        :param message: объект сообщения для которого создается вариант
         :param text: текст создаваемого варианта
         :return: идентификатор созданного варианта
         """
+        assert isinstance(message, BotMessage)
         response = requests.post(
-            self._suite_url + f'api/messages/{message_id}/variants/',
+            self._suite_url + f'api/messages/{message.id}/variants/',
             {
                 'text': text,
 
                 # todo: похоже, тут избыточное дублирование
-                'current_message': message_id
+                'current_message': message.id
             },
             headers=self._get_headers()
         )
@@ -126,15 +128,16 @@ class BotApi:
             raise Exception(
                 'Ошибка при связывании варианта с последующим сообщением: {0}'.format(response.text))
 
-    def set_bot_start_message(self, bot_id: int, start_message_id: int) -> None:
+    def set_bot_start_message(self, bot: BotDescription, start_message_id: int) -> None:
         """
         Установить сообщение с которого начнется работа с ботом
-        :param bot_id: идентификатор бота
+        :param bot: объект бота
         :param start_message_id: идентификатор сообщения, которое будет установлено
         в качестве стартового
         """
+        isinstance(bot, BotDescription)
         response = requests.patch(
-            self._suite_url + 'api/bots/{0}/'.format(bot_id),
+            self._suite_url + 'api/bots/{0}/'.format(bot.id),
             {
                 'start_message': start_message_id
             },
