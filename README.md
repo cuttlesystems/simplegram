@@ -13,7 +13,7 @@ git@github.com:cuttlesystems/tg_bot_constructor.git
 cd backend/tg_bot_constructor/bot_constructor
 ```
 
-- Из дериктории с manage.py выполнить миграции и создать суперюзера:
+- Из дириктории с manage.py выполнить миграции и создать суперюзера:
 
 ```
 python3 manage.py migrate

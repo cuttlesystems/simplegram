@@ -8,12 +8,6 @@ from bots.models import Bot, Message, Variant
 User = get_user_model()
 
 
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ('id', 'first_name', 'last_name', 'username', 'email')
-
-
 class BotSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(
         read_only=True,
