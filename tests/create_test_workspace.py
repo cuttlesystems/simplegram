@@ -7,10 +7,12 @@ def gen_unique_str() -> str:
 
 
 SUITE_ADDR = 'http://127.0.0.1:8000/'
-USER_ID = 3
+USERNAME = 'test_user'
+PASSWORD = '123'
+
 
 if __name__ == '__main__':
-    bot_api = BotApi(SUITE_ADDR, USER_ID)
+    bot_api = BotApi(SUITE_ADDR)
     bot_api.authentication('test_user', '123')
     bot_id = bot_api.create_bot(
         'Имя тестовое бота {0}'.format(gen_unique_str()),

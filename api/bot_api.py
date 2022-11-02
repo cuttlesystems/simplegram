@@ -15,12 +15,17 @@ class BotDescription:
 
 
 class BotApi:
-    def __init__(self, suite_url: str, user_id: int):
+    def __init__(self, suite_url: str):
         self._suite_url: str = suite_url
-        self._user_id: int = user_id
         self._auth_token: Optional[str] = None
 
     def authentication(self, username: str, password: str) -> None:
+        """
+        Провести аутентификацию пользователя и запомнить токен авторизации для
+        дальнейшего вызова методов
+        :param username: имя пользователя
+        :param password: пароль
+        """
         response = requests.post(
             self._suite_url + 'api/auth/token/login/',
             {
@@ -51,8 +56,7 @@ class BotApi:
             {
                 'name': bot_name,
                 'token': bot_token,
-                'description': bot_description,
-                'owner': self._user_id
+                'description': bot_description
             },
             headers=self._get_headers()
         )
