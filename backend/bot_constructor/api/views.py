@@ -2,6 +2,7 @@ import rest_framework.request
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
 
 from .serializers import User, BotSerializer, \
     MessageSerializer, VariantSerializer
@@ -28,6 +29,11 @@ class MessageViewSet(viewsets.ModelViewSet):
             bot__owner=self.request.user,
             bot__id=self.kwargs.get('bot_id')
         )
+    
+    def perform_create(self, serializer):
+        bot_id = self.kwargs.get('bot_id')
+        bot = get_object_or_404(Bot, id=bot_id)
+        serializer.save(bot=bot)
 
 
 class OneMessageViewSet(RetrieveUpdateDestroyViewSet):

@@ -131,4 +131,4 @@ dmypy.json
 # файлы настройки среды PyCharm
 .idea/
 
-bot_*/
+/bot_*/
