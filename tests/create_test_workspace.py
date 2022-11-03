@@ -1,5 +1,5 @@
 import uuid
-from api.bot_api import BotApi
+from bl_api.bot_api import BotApi
 
 
 def gen_unique_str() -> str:

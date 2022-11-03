@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
+from bl_api.bot_api import BotApi
 
 from .serializers import User, BotSerializer, \
     MessageSerializer, VariantSerializer
@@ -91,14 +92,14 @@ def get_message(request: rest_framework.request.Request, value: str):
 
 @api_view(['GET'])
 def generate_bot(request: rest_framework.request.Request, bot_id: str):
-    # bot_api = BotApi('127.0.0.1')
-    # bot_api.auth_by_token(request.auth.key)
-    # bot = bot_api.get_bot_by_id(int(bot_id))
-    # result = ''
-    # messages = bot_api.get_messages(bot)
-    # for message in messages:
-    #     result += f'    {message}\n'
-    #     variants = bot_api.get_variants(message)
-    #     for variant in variants:
-    #         result += f'        {variant}\n'
+    bot_api = BotApi('http://127.0.0.1')
+    bot_api.auth_by_token(request.auth.key)
+    bot = bot_api.get_bot_by_id(int(bot_id))
+    result = ''
+    messages = bot_api.get_messages(bot)
+    for message in messages:
+        result += f'    {message}\n'
+        variants = bot_api.get_variants(message)
+        for variant in variants:
+            result += f'        {variant}\n'
     return HttpResponse('{result}')

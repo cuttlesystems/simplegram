@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import requests
 
-from api.data_objects import BotDescription, BotMessage, MessageVariant
+from bl_api.data_objects import BotDescription, BotMessage, MessageVariant
 
 
 class BotApi:
