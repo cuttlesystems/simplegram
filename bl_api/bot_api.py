@@ -87,7 +87,7 @@ class BotApi:
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise Exception('Ошибка при получении списка ботов')
+            raise Exception(f'Ошибка при получении списка ботов {response.text}')
 
         return self._create_bot_obj_from_dict(json.loads(response.text))
 
