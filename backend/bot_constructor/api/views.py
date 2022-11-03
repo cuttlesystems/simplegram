@@ -64,6 +64,11 @@ class VariantViewSet(viewsets.ModelViewSet):
             current_message__bot__owner=self.request.user,
             current_message__id=self.kwargs.get('message_id')
         )
+    
+    def perform_create(self, serializer):
+        message_id = self.kwargs.get('message_id')
+        message = get_object_or_404(Message, id=message_id)
+        serializer.save(current_message=message)
 
 
 class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
