@@ -34,6 +34,10 @@ class BotApi:
             raise Exception('Ошибка аутентификации пользователя {0}'.format(response.text))
         self._auth_token = json.loads(response.text)['auth_token']
 
+    def auth_by_token(self, token: str):
+        assert isinstance(token, str)
+        self._auth_token = token
+
     def create_bot(self, bot_name: str, bot_token: str, bot_description: str) -> BotDescription:
         """
         Создать бота
