@@ -7,6 +7,18 @@ from bots.models import Bot, Message, Variant
 
 User = get_user_model()
 
+# Вот он BotSerializer, в кратце зачем он нужен:
+#
+# В нашем примере поступает GET запрос, то есть запрос на получение каких-то данных.
+# Сериалайзер связан с таблицей из БД, а именно с таблицей Bot.
+# Таблица Bot содержит столбцы (поля), которые мы определили в файле models.py для класса Bot.
+# Переместитесь в файл models.py, посмотреть на class Bot и возвращайтесь обратно.
+# 
+# Так вот сериалайзер получит данные из таблицы, превратит их в JSON, который мы вернем в API ответе
+# Тут в классе мета в переменной fields определены поля, которые и будут в API ответе
+# Данными можно манипулировать, можно добавить свое поле не из БД, или результат каких-то вычислений.
+# Возвращайтесь во views.py
+
 
 class BotSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(
@@ -47,6 +59,7 @@ class MessageSerializer(serializers.ModelSerializer):
             'coordinate_x',
             'coordinate_y'
         )
+        read_only_fields = ('bot',)
 
 
 class VariantSerializer(serializers.ModelSerializer):

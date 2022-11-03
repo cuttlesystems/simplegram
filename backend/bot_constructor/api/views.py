@@ -2,6 +2,7 @@ import rest_framework.request
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
 
 from .serializers import User, BotSerializer, \
     MessageSerializer, VariantSerializer
@@ -19,6 +20,19 @@ class BotViewSet(viewsets.ModelViewSet):
         author = self.request.user
         serializer.save(owner=author)
 
+# Вот эта функция, точнее класс, но в данный момент это не сильно важно))
+# Тут в 14 строке ссылка на BotSerializer, он импортирован из serializers.py, идем туда.
+# 
+# Вью функция(вью класс) инициализирует сериализатор.
+# А данные для сериализатора она возьмет из коллекции Queryset.
+# Queryset определяется в методе get_queryset, которая возвращает множество
+# объектов Bot в которых Bot.owner равен пользователю, который делает запрос.
+# В итоге BotViewSet вернет данные из Queryset, прошедшие через сереализатор,
+# то есть только с теми полями, которые мы выбрали в сериализаторе и в формате JSON.
+#
+# P.S. В функции perform_create задается значение для поля Bot.owner, функция актуальна для POST запросов.
+# POST запрос создает новую запись в таблице Bot.
+# В теле POST запроса мы не будем указывать значение для поля owner явно, за нас это сделает метод perform_create.
 
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
@@ -28,6 +42,11 @@ class MessageViewSet(viewsets.ModelViewSet):
             bot__owner=self.request.user,
             bot__id=self.kwargs.get('bot_id')
         )
+    
+    def perform_create(self, serializer):
+        bot_id = self.kwargs.get('bot_id')
+        bot = get_object_or_404(Bot, id=bot_id)
+        serializer.save(bot=bot)
 
 
 class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
