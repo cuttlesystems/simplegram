@@ -9,6 +9,10 @@ from api.data_objects import BotDescription, BotMessage, MessageVariant
 
 class BotApi:
     def __init__(self, suite_url: str):
+        """
+        Создать объект для работы с данными ботов через rest_api
+        :param suite_url: адрес сайта, откуда вызываем методы API
+        """
         self._suite_url: str = suite_url
         self._auth_token: Optional[str] = None
 
@@ -68,6 +72,21 @@ class BotApi:
             bots_list.append(self._create_bot_obj_from_dict(bot_dict))
         return bots_list
 
+    def get_bot_by_id(self, id: int) -> BotDescription:
+        """
+        Получить объект бота с заданным идентификатором
+        :param id: идентификатор бота
+        :return: объект бота
+        """
+        response = requests.get(
+            self._suite_url + f'api/bots/{id}/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise Exception('Ошибка при получении списка ботов')
+
+        return self._create_bot_obj_from_dict(json.loads(response.text))
+
     def create_message(self, bot: BotDescription, text: str, x: int, y: int) -> BotMessage:
         """
         Создать сообщение
@@ -92,6 +111,11 @@ class BotApi:
         return self._create_bot_message_from_dict(json.loads(response.text))
 
     def get_messages(self, bot: BotDescription) -> List[BotMessage]:
+        """
+        Получить все сообщения заданного бота
+        :param bot: бот, у которого нужно получить сообщения
+        :return: список сообщений бота
+        """
         assert isinstance(bot, BotDescription)
         response = requests.get(
             self._suite_url + f'api/bots/{bot.id}/messages/',
@@ -126,7 +150,32 @@ class BotApi:
             raise Exception('Ошибка при создании варианта: {0}'.format(response.text))
         return self._create_variant_from_dict(json.loads(response.text))
 
+    def get_variants(self, message: BotMessage) -> List[MessageVariant]:
+        """
+        Получить варианты для заданного сообщения
+        :param message: сообщение для которого получаем варианты
+        :return: список вариантов
+        """
+        assert isinstance(message, BotMessage)
+        response = requests.get(
+            self._suite_url + f'api/messages/{message.id}/variants/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise Exception(
+                f'Ошибка при получении списка вариантов для сообщения {response.text}')
+        variants: List[MessageVariant] = []
+        variants_dict_list: List[dict] = json.loads(response.text)
+        for variant_dict in variants_dict_list:
+            variants.append(self._create_variant_from_dict(variant_dict))
+        return variants
+
     def connect_variant(self, variant: MessageVariant, message: BotMessage) -> None:
+        """
+        Связать вариант и сообщение к которому перейдем при выборе этого варианта
+        :param variant: связываемый вариант
+        :param message: сообщение к которому перейдем
+        """
         assert isinstance(variant, MessageVariant)
         assert isinstance(message, BotMessage)
         response = requests.patch(
