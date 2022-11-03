@@ -139,10 +139,7 @@ class BotApi:
         response = requests.post(
             self._suite_url + f'api/messages/{message.id}/variants/',
             {
-                'text': text,
-
-                # todo: похоже, тут избыточное дублирование
-                'current_message': message.id
+                'text': text
             },
             headers=self._get_headers()
         )
