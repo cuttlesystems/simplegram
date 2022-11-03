@@ -76,7 +76,6 @@ for message in messages_json:
         )
     )
 
-
 class BotGenerator():
     def __init__(self, bot_id: int, messages: typing.List[str], variants: typing.List[str], start_message_id: int):
         self.bot_id = bot_id
@@ -116,7 +115,7 @@ class BotGenerator():
                 code = self.create_state_handler(imp, '','', message_id, 'photo', message['text'], keyboard_name)
                 self.create_file_handler(bot_name, message_id, code)
         
-        self.create_file_state(bot_name, self.states)
+        self.create_file_state(bot_name,  self.states)
         
     
     def create_keyboard_array(self, message_id: int, variants: typing.List[dict]) -> typing.List[str]:
@@ -173,7 +172,7 @@ class BotGenerator():
         Returns:
             str: generated code for handler with state and handled text
         """
-        return create_state_handler(imports, prev_state, prev_state_text, curr_state, send_method, text, kb = '')
+        return create_state_handler(imports, prev_state, prev_state_text, curr_state, send_method, text, kb)
 
     # create keyboard file in directory
     def create_file_keyboard(self, bot_name: str, keyboard_name: str, keyboard_code: str):
