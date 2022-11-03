@@ -64,3 +64,5 @@ if __name__ == '__main__':
     bot_api.connect_variant(iphone_14_variant, buy_iphone_14_message)
 
     bot_api.connect_variant(mobile_cancel_variant, main_message)
+
+    print(f'Идентификатор созданного бота: {bot.id}')
