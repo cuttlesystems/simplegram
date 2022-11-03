@@ -1,4 +1,5 @@
 import json
+import typing
 from typing import List, Optional
 
 import requests
@@ -80,10 +81,6 @@ class BotApi:
         response = requests.post(
             self._suite_url + f'api/bots/{bot.id}/messages/',
             {
-                # todo: убрать повторное заполнение поля,
-                #  поскольку bot_id уже есть в url (когда это будет поддержано в rest api)
-                'bot': bot.id,
-
                 'text': text,
                 'coordinate_x': x,
                 'coordinate_y': y,
@@ -93,6 +90,19 @@ class BotApi:
         if response.status_code != requests.status_codes.codes.created:
             raise Exception('Ошибка при создании сообщения: {0}'.format(response.text))
         return self._create_bot_message_from_dict(json.loads(response.text))
+
+    def get_messages(self, bot: BotDescription) -> List[BotMessage]:
+        assert isinstance(bot, BotDescription)
+        response = requests.get(
+            self._suite_url + f'api/bots/{bot.id}/messages/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise Exception(f'Ошибка при получении сообщений бота {response.text}')
+        messages_list: List[BotMessage] = []
+        for message_dict in json.loads(response.text):
+            messages_list.append(self._create_bot_message_from_dict(message_dict))
+        return messages_list
 
     def create_variant(self, message: BotMessage, text: str) -> MessageVariant:
         """
@@ -116,11 +126,13 @@ class BotApi:
             raise Exception('Ошибка при создании варианта: {0}'.format(response.text))
         return self._create_variant_from_dict(json.loads(response.text))
 
-    def connect_variant(self, variant_id: int, message_id: int) -> None:
+    def connect_variant(self, variant: MessageVariant, message: BotMessage) -> None:
+        assert isinstance(variant, MessageVariant)
+        assert isinstance(message, BotMessage)
         response = requests.patch(
-            self._suite_url + f'api/variant/{variant_id}/',
+            self._suite_url + f'api/variant/{variant.id}/',
             {
-                'next_message': message_id
+                'next_message': message.id
             },
             headers=self._get_headers()
         )
@@ -128,18 +140,19 @@ class BotApi:
             raise Exception(
                 'Ошибка при связывании варианта с последующим сообщением: {0}'.format(response.text))
 
-    def set_bot_start_message(self, bot: BotDescription, start_message_id: int) -> None:
+    def set_bot_start_message(self, bot: BotDescription, start_message: BotMessage) -> None:
         """
         Установить сообщение с которого начнется работа с ботом
         :param bot: объект бота
-        :param start_message_id: идентификатор сообщения, которое будет установлено
+        :param start_message: объект сообщения, которое будет установлено в качестве стартового
         в качестве стартового
         """
-        isinstance(bot, BotDescription)
+        assert isinstance(bot, BotDescription)
+        assert isinstance(start_message, BotMessage)
         response = requests.patch(
             self._suite_url + 'api/bots/{0}/'.format(bot.id),
             {
-                'start_message': start_message_id
+                'start_message': start_message.id
             },
             headers=self._get_headers()
         )
@@ -147,7 +160,7 @@ class BotApi:
             raise Exception('Ошибка при установке стартового сообщения бота: {0}'.format(
                 response.text))
 
-    def _get_headers(self):
+    def _get_headers(self) -> typing.Dict[str, str]:
         assert self._auth_token is not None
         return {
             'Authorization': 'Token ' + self._auth_token
