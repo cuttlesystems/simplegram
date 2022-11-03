@@ -126,6 +126,21 @@ class BotApi:
             raise Exception('Ошибка при создании варианта: {0}'.format(response.text))
         return self._create_variant_from_dict(json.loads(response.text))
 
+    def get_variants(self, message: BotMessage) -> List[MessageVariant]:
+        assert isinstance(message, BotMessage)
+        response = requests.get(
+            self._suite_url + f'api/messages/{message.id}/variants/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise Exception(
+                f'Ошибка при получении списка вариантов для сообщения {response.text}')
+        variants: List[MessageVariant] = []
+        variants_dict_list: List[dict] = json.loads(response.text)
+        for variant_dict in variants_dict_list:
+            variants.append(self._create_variant_from_dict(variant_dict))
+        return variants
+
     def connect_variant(self, variant: MessageVariant, message: BotMessage) -> None:
         assert isinstance(variant, MessageVariant)
         assert isinstance(message, BotMessage)
