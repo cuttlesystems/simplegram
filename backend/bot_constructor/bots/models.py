@@ -14,6 +14,7 @@ User = get_user_model()
 # В методе __str__ определено строковое представление объекта Bot.
 # Идем обратно в сериалайзер.
 
+
 class Bot(models.Model):
     name = models.CharField(max_length=200)
     token = models.CharField(max_length=100)
