@@ -86,3 +86,14 @@ def get_message(request: rest_framework.request.Request, value: str):
             'message_id': value
         }
     )
+
+
+@api_view(['GET'])
+def generate_bot(request: rest_framework.request.Request, bot_id: str):
+    return Response(
+        {
+            'message': 'generate bot',
+            'bot_id': bot_id,
+            'data': request.data
+        }
+    )
