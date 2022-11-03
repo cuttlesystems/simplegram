@@ -1,5 +1,5 @@
 import uuid
-from api.bot_api import BotApi
+from bl_api.bot_api import BotApi
 
 
 def gen_unique_str() -> str:
@@ -13,7 +13,7 @@ PASSWORD = '123'
 
 if __name__ == '__main__':
     bot_api = BotApi(SUITE_ADDR)
-    bot_api.authentication('test_user', '123')
+    bot_api.authentication(USERNAME, PASSWORD)
 
     bot = bot_api.create_bot(
         'Имя тестовое бота {0}'.format(gen_unique_str()),

@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import requests
 
-from api.data_objects import BotDescription, BotMessage, MessageVariant
+from bl_api.data_objects import BotDescription, BotMessage, MessageVariant
 
 
 class BotApi:
@@ -33,6 +33,10 @@ class BotApi:
         if response.status_code != requests.status_codes.codes.ok:
             raise Exception('Ошибка аутентификации пользователя {0}'.format(response.text))
         self._auth_token = json.loads(response.text)['auth_token']
+
+    def auth_by_token(self, token: str):
+        assert isinstance(token, str)
+        self._auth_token = token
 
     def create_bot(self, bot_name: str, bot_token: str, bot_description: str) -> BotDescription:
         """
@@ -139,10 +143,7 @@ class BotApi:
         response = requests.post(
             self._suite_url + f'api/messages/{message.id}/variants/',
             {
-                'text': text,
-
-                # todo: похоже, тут избыточное дублирование
-                'current_message': message.id
+                'text': text
             },
             headers=self._get_headers()
         )
