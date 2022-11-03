@@ -1,2 +1,2 @@
-from .state_generator import state_generator
+from .create_state import create_state
 from .to_state import to_state
