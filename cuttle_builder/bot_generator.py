@@ -69,12 +69,6 @@ variants_json = [
 
 messages, variants = [], []
 
-for message in messages_json:
-    messages.append(
-        BotMessage(
-            bot_name = message['bot_name']
-        )
-    )
 
 class BotGenerator():
     def __init__(self, bot_id: int, messages: typing.List[str], variants: typing.List[str], start_message_id: int):
@@ -83,10 +77,10 @@ class BotGenerator():
         self.variants = variants
         self.start_message_id = start_message_id
         self.states = []
-        self.fileManager = FileManager()
+        self._file_manager = FileManager()
 
     def create_bot(self) -> None:
-        bot_name = self.fileManager.get_template(self.bot_id)
+        bot_name = self._file_manager.get_template(self.bot_id)
         print(bot_name)
 
         for message in self.messages:
