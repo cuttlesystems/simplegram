@@ -1,4 +1,4 @@
-from api.bot_api import BotApi
+from bl_api.bot_api import BotApi
 
 
 SUITE_ADDR = 'http://127.0.0.1:8000/'

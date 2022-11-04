@@ -63,6 +63,10 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class VariantSerializer(serializers.ModelSerializer):
+    current_message = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        default=None
+    )
     class Meta:
         model = Variant
         fields = (
@@ -71,13 +75,6 @@ class VariantSerializer(serializers.ModelSerializer):
             'current_message',
             'next_message'
         )
-    
-    def validate(self, data):
-        if data.get('current_message') == data.get('next_message'):
-            raise serializers.ValidationError(
-                'Циклическая связь.'
-            )
-        return data
 
     validators = [
             UniqueTogetherValidator(

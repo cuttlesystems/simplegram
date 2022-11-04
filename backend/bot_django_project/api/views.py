@@ -1,8 +1,10 @@
 import rest_framework.request
+from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
+from bl_api.bot_api import BotApi
 
 from .serializers import User, BotSerializer, \
     MessageSerializer, VariantSerializer
@@ -64,6 +66,11 @@ class VariantViewSet(viewsets.ModelViewSet):
             current_message__bot__owner=self.request.user,
             current_message__id=self.kwargs.get('message_id')
         )
+    
+    def perform_create(self, serializer):
+        message_id = self.kwargs.get('message_id')
+        message = get_object_or_404(Message, id=message_id)
+        serializer.save(current_message=message)
 
 
 class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
@@ -81,3 +88,18 @@ def get_message(request: rest_framework.request.Request, value: str):
             'message_id': value
         }
     )
+
+
+@api_view(['GET'])
+def generate_bot(request: rest_framework.request.Request, bot_id: str):
+    bot_api = BotApi('http://127.0.0.1:8000/')
+    bot_api.auth_by_token(request.auth.key)
+    bot = bot_api.get_bot_by_id(int(bot_id))
+    result = ''
+    messages = bot_api.get_messages(bot)
+    for message in messages:
+        result += f'    {message}\n'
+        variants = bot_api.get_variants(message)
+        for variant in variants:
+            result += f'        {variant}\n'
+    return HttpResponse(f'{result}')
