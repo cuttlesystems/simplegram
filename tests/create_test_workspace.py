@@ -7,8 +7,8 @@ def gen_unique_str() -> str:
 
 
 SUITE_ADDR = 'http://127.0.0.1:8000/'
-USERNAME = 'test_user'
-PASSWORD = '123'
+USERNAME = 'test'
+PASSWORD = '1'
 
 
 if __name__ == '__main__':
