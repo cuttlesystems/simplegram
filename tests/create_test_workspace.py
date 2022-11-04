@@ -7,7 +7,7 @@ def gen_unique_str() -> str:
 
 
 SUITE_ADDR = 'http://127.0.0.1:8000/'
-USERNAME = 'cuttle_user'
+USERNAME = 'test'
 PASSWORD = '1'
 
 
