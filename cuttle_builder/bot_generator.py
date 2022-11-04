@@ -70,22 +70,24 @@ variants_json = [
 messages, variants = [], []
 
 
+
+
 class BotGenerator():
     def __init__(self, bot_id: int, messages: typing.List[str], variants: typing.List[str], start_message_id: int):
-        self.bot_id = bot_id
-        self.messages = messages
-        self.variants = variants
-        self.start_message_id = start_message_id
-        self.states = []
+        self._bot_id = bot_id
+        self._messages = messages
+        self._variants = variants
+        self._start_message_id = start_message_id
+        self._states = []
         self._file_manager = FileManager()
 
     def create_bot(self) -> None:
-        bot_name = self._file_manager.get_template(self.bot_id)
+        bot_name = self._file_manager.get_template(self._bot_id)
         print(bot_name)
 
-        for message in self.messages:
+        for message in self._messages:
             message_id = message['id']
-            self.states.append(message_id)
+            self._states.append(message_id)
             buttons = self.create_keyboard_array(message_id, variants)
             keyboard_code = self.create_reply_keyboard(message_id, buttons) if buttons else ''
             keyboard_name = f'{message_id}_kb' if keyboard_code else ''
@@ -109,7 +111,7 @@ class BotGenerator():
                 code = self.create_state_handler(imp, '','', message_id, 'photo', message['text'], keyboard_name)
                 self.create_file_handler(bot_name, message_id, code)
         
-        self.create_file_state(bot_name,  self.states)
+        self.create_file_state(bot_name,  self._states)
         
     
     def create_keyboard_array(self, message_id: int, variants: typing.List[dict]) -> typing.List[str]:
