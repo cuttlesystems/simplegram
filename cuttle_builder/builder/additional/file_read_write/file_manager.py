@@ -72,7 +72,7 @@ class FileManager():
             print(e)
     
     # get template of bot and copy in upper directory with id of bot
-    def get_template(self, bot_id: int) -> str:
+    def create_bot_directory(self, bot_id: int) -> str:
         """ get template of bot and copy in upper directory with id of bot (doesn't work if call outside of cuttle_builder directory)
 
         Args:
