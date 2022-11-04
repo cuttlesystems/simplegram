@@ -240,8 +240,9 @@ class BotApi:
 
     def _get_headers(self) -> typing.Dict[str, str]:
         """
-        Получить словарь заголовков, к
-        Returns:
+        Получить словарь заголовков, которые добавляются к запросам.
+        Содержит информацию об авторизации.
+        Returns: словарь с заголовками для запроса
 
         """
         assert self._auth_token is not None
