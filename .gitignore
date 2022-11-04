@@ -132,3 +132,4 @@ dmypy.json
 .idea/
 
 /bot_*/
+/backend/bot_django_project/data_files

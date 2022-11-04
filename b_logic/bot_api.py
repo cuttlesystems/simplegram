@@ -4,14 +4,15 @@ from typing import List, Optional
 
 import requests
 
-from bl_api.data_objects import BotDescription, BotMessage, MessageVariant
+from b_logic.data_objects import BotDescription, BotMessage, MessageVariant
 
 
 class BotApi:
     def __init__(self, suite_url: str):
         """
         Создать объект для работы с данными ботов через rest_api
-        :param suite_url: адрес сайта, откуда вызываем методы API
+        Args:
+            suite_url: адрес сайта, откуда вызываем методы API
         """
         self._suite_url: str = suite_url
         self._auth_token: Optional[str] = None
@@ -20,8 +21,9 @@ class BotApi:
         """
         Провести аутентификацию пользователя и запомнить токен авторизации для
         дальнейшего вызова методов
-        :param username: имя пользователя
-        :param password: пароль
+        Args:
+            username: имя пользователя
+            password: пароль
         """
         response = requests.post(
             self._suite_url + 'api/auth/token/login/',
@@ -34,17 +36,25 @@ class BotApi:
             raise Exception('Ошибка аутентификации пользователя {0}'.format(response.text))
         self._auth_token = json.loads(response.text)['auth_token']
 
-    def auth_by_token(self, token: str):
+    def auth_by_token(self, token: str) -> None:
+        """
+        Авторизация пользователя по токену
+        Args:
+            token: токен авторизации
+        """
         assert isinstance(token, str)
         self._auth_token = token
 
     def create_bot(self, bot_name: str, bot_token: str, bot_description: str) -> BotDescription:
         """
         Создать бота
-        :param bot_name: название бота
-        :param bot_token: токен бота
-        :param bot_description: описание бота
-        :return: идентификатор созданного бота
+        Args:
+            bot_name: название бота
+            bot_token: токен бота
+            bot_description: описание бота
+
+        Returns:
+            идентификатор созданного бота
         """
         response = requests.post(
             self._suite_url + 'api/bots/',
@@ -62,7 +72,8 @@ class BotApi:
     def get_bots(self) -> List[BotDescription]:
         """
         Получить список ботов пользователя
-        :return: список ботов
+        Returns:
+            список ботов
         """
         response = requests.get(
             self._suite_url + 'api/bots/',
@@ -79,26 +90,32 @@ class BotApi:
     def get_bot_by_id(self, id: int) -> BotDescription:
         """
         Получить объект бота с заданным идентификатором
-        :param id: идентификатор бота
-        :return: объект бота
+        Args:
+            id: идентификатор бота
+
+        Returns:
+            объект бота
         """
         response = requests.get(
             self._suite_url + f'api/bots/{id}/',
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise Exception('Ошибка при получении списка ботов')
+            raise Exception(f'Ошибка при получении списка ботов {response.text}')
 
         return self._create_bot_obj_from_dict(json.loads(response.text))
 
     def create_message(self, bot: BotDescription, text: str, x: int, y: int) -> BotMessage:
         """
         Создать сообщение
-        :param bot: объект бота, для которого создается сообщение
-        :param text: тест сообщения
-        :param x: координата по x
-        :param y: координата по y
-        :return: идентификатор созданного сообщения
+        Args:
+            bot: объект бота, для которого создается сообщение
+            text: тест сообщения
+            x: координата по x
+            y: координата по y
+
+        Returns:
+            идентификатор созданного сообщения
         """
         assert isinstance(bot, BotDescription)
         response = requests.post(
@@ -117,8 +134,11 @@ class BotApi:
     def get_messages(self, bot: BotDescription) -> List[BotMessage]:
         """
         Получить все сообщения заданного бота
-        :param bot: бот, у которого нужно получить сообщения
-        :return: список сообщений бота
+        Args:
+            bot: бот, у которого нужно получить сообщения
+
+        Returns:
+            список сообщений бота
         """
         assert isinstance(bot, BotDescription)
         response = requests.get(
@@ -135,9 +155,12 @@ class BotApi:
     def create_variant(self, message: BotMessage, text: str) -> MessageVariant:
         """
         Создание варианта
-        :param message: объект сообщения для которого создается вариант
-        :param text: текст создаваемого варианта
-        :return: идентификатор созданного варианта
+        Args:
+            message: объект сообщения для которого создается вариант
+            text: текст создаваемого варианта
+
+        Returns:
+            идентификатор созданного варианта
         """
         assert isinstance(message, BotMessage)
         response = requests.post(
@@ -154,8 +177,11 @@ class BotApi:
     def get_variants(self, message: BotMessage) -> List[MessageVariant]:
         """
         Получить варианты для заданного сообщения
-        :param message: сообщение для которого получаем варианты
-        :return: список вариантов
+        Args:
+            message: сообщение для которого получаем варианты
+
+        Returns:
+            список вариантов
         """
         assert isinstance(message, BotMessage)
         response = requests.get(
@@ -173,9 +199,10 @@ class BotApi:
 
     def connect_variant(self, variant: MessageVariant, message: BotMessage) -> None:
         """
-        Связать вариант и сообщение к которому перейдем при выборе этого варианта
-        :param variant: связываемый вариант
-        :param message: сообщение к которому перейдем
+        Связать вариант и сообщение, к которому перейдем при выборе этого варианта
+        Args:
+            variant: связываемый вариант
+            message: сообщение к которому перейдем
         """
         assert isinstance(variant, MessageVariant)
         assert isinstance(message, BotMessage)
@@ -193,8 +220,9 @@ class BotApi:
     def set_bot_start_message(self, bot: BotDescription, start_message: BotMessage) -> None:
         """
         Установить сообщение с которого начнется работа с ботом
-        :param bot: объект бота
-        :param start_message: объект сообщения, которое будет установлено в качестве стартового
+        Args:
+            bot: объект бота
+            start_message: объект сообщения, которое будет установлено в качестве стартового
         в качестве стартового
         """
         assert isinstance(bot, BotDescription)
@@ -211,6 +239,12 @@ class BotApi:
                 response.text))
 
     def _get_headers(self) -> typing.Dict[str, str]:
+        """
+        Получить словарь заголовков, которые добавляются к запросам.
+        Содержит информацию об авторизации.
+        Returns:
+            словарь с заголовками для запроса
+        """
         assert self._auth_token is not None
         return {
             'Authorization': 'Token ' + self._auth_token
