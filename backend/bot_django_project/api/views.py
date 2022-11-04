@@ -6,15 +6,16 @@ from zipfile import ZipFile
 import rest_framework.request
 from django.http import HttpResponse, FileResponse
 from rest_framework.decorators import api_view
-from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
 from b_logic.bot_api import BotApi
 from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT
 
-from .serializers import BotSerializer, \
-    MessageSerializer, VariantSerializer
+from .serializers import BotSerializer, MessageSerializer, VariantSerializer
 from bots.models import Bot, Message, Variant
 from .mixins import RetrieveUpdateDestroyViewSet
+from .permissions import IsBotOwnerOrForbidden
 
 
 class BotViewSet(viewsets.ModelViewSet):
@@ -55,13 +56,22 @@ class MessageViewSet(viewsets.ModelViewSet):
         bot_id = self.kwargs.get('bot_id')
         bot = get_object_or_404(Bot, id=bot_id)
         serializer.save(bot=bot)
+    
+    def create(self, request, *args, **kwargs):
+        bot_id = self.kwargs.get('bot_id')
+        bot = get_object_or_404(Bot, id=bot_id)
+        if bot.owner != request.user:
+            return Response(
+                {"detail": "You do not have permission to perform this action."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().create(request, *args, **kwargs)
 
 
 class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
+    queryset = Message.objects.all()
     serializer_class = MessageSerializer
-
-    def get_queryset(self):
-        return Message.objects.filter(bot__owner=self.request.user)
+    permission_classes = (IsBotOwnerOrForbidden,)
 
 
 class VariantViewSet(viewsets.ModelViewSet):
@@ -77,13 +87,22 @@ class VariantViewSet(viewsets.ModelViewSet):
         message_id = self.kwargs.get('message_id')
         message = get_object_or_404(Message, id=message_id)
         serializer.save(current_message=message)
+    
+    def create(self, request, *args, **kwargs):
+        message_id = self.kwargs.get('message_id')
+        message = get_object_or_404(Message, id=message_id)
+        if message.bot.owner != request.user:
+            return Response(
+                {"detail": "You do not have permission to perform this action."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().create(request, *args, **kwargs)
 
 
 class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
+    queryset = Variant.objects.all()
     serializer_class = VariantSerializer
-
-    def get_queryset(self):
-        return Variant.objects.filter(current_message__bot__owner=self.request.user)
+    permission_classes = (IsBotOwnerOrForbidden,)
 
 
 @api_view(['GET'])
