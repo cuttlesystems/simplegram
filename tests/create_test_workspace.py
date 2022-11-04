@@ -1,5 +1,5 @@
 import uuid
-from bl_api.bot_api import BotApi
+from b_logic.bot_api import BotApi
 
 
 def gen_unique_str() -> str:
@@ -7,8 +7,8 @@ def gen_unique_str() -> str:
 
 
 SUITE_ADDR = 'http://127.0.0.1:8000/'
-USERNAME = 'test_user'
-PASSWORD = '123'
+USERNAME = 'cuttle_user'
+PASSWORD = '1'
 
 
 if __name__ == '__main__':

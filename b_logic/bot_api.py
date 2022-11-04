@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import requests
 
-from bl_api.data_objects import BotDescription, BotMessage, MessageVariant
+from b_logic.data_objects import BotDescription, BotMessage, MessageVariant
 
 
 class BotApi:
@@ -242,8 +242,8 @@ class BotApi:
         """
         Получить словарь заголовков, которые добавляются к запросам.
         Содержит информацию об авторизации.
-        Returns: словарь с заголовками для запроса
-
+        Returns:
+            словарь с заголовками для запроса
         """
         assert self._auth_token is not None
         return {

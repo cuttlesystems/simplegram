@@ -1,12 +1,17 @@
+import shutil
+import uuid
+from pathlib import Path
+from zipfile import ZipFile
+
 import rest_framework.request
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
-from bl_api.bot_api import BotApi
+from b_logic.bot_api import BotApi
+from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT
 
-from .serializers import User, BotSerializer, \
+from .serializers import BotSerializer, \
     MessageSerializer, VariantSerializer
 from bots.models import Bot, Message, Variant
 from .mixins import RetrieveUpdateDestroyViewSet
@@ -18,7 +23,7 @@ class BotViewSet(viewsets.ModelViewSet):
     def get_queryset(self): 
         return Bot.objects.filter(owner=self.request.user)
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer: BotSerializer):
         author = self.request.user
         serializer.save(owner=author)
 
@@ -36,6 +41,7 @@ class BotViewSet(viewsets.ModelViewSet):
 # POST запрос создает новую запись в таблице Bot.
 # В теле POST запроса мы не будем указывать значение для поля owner явно, за нас это сделает метод perform_create.
 
+
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
 
@@ -45,7 +51,7 @@ class MessageViewSet(viewsets.ModelViewSet):
             bot__id=self.kwargs.get('bot_id')
         )
     
-    def perform_create(self, serializer):
+    def perform_create(self, serializer: MessageSerializer):
         bot_id = self.kwargs.get('bot_id')
         bot = get_object_or_404(Bot, id=bot_id)
         serializer.save(bot=bot)
@@ -81,25 +87,27 @@ class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
 
 
 @api_view(['GET'])
-def get_message(request: rest_framework.request.Request, value: str):
-    assert isinstance(request, rest_framework.request.Request)
-    return Response(
-        {
-            'message_id': value
-        }
-    )
-
-
-@api_view(['GET'])
 def generate_bot(request: rest_framework.request.Request, bot_id: str):
     bot_api = BotApi('http://127.0.0.1:8000/')
     bot_api.auth_by_token(request.auth.key)
     bot = bot_api.get_bot_by_id(int(bot_id))
-    result = ''
+    bot_info_str = ''
     messages = bot_api.get_messages(bot)
     for message in messages:
-        result += f'    {message}\n'
+        bot_info_str += f'    {message}\n'
         variants = bot_api.get_variants(message)
         for variant in variants:
-            result += f'        {variant}\n'
-    return HttpResponse(f'{result}')
+            bot_info_str += f'        {variant}\n'
+    bots_dir = Path(DATA_FILES_ROOT) / 'generated_bots'
+    bots_dir.mkdir(parents=True, exist_ok=True)
+    botname = str(uuid.uuid4())
+    bot_dir = bots_dir / botname
+    bot_dir.mkdir()
+    bot_info_file = bot_dir / 'bot_information.txt'
+    with open(bot_info_file, 'w') as bot_info_file:
+        bot_info_file.write(bot_info_str)
+
+    bot_zip_file_name = str(bot_dir) + '.zip'
+    shutil.make_archive(str(bot_dir), 'zip', bot_dir)
+
+    return FileResponse(open(bot_zip_file_name, 'rb'))
