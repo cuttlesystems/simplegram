@@ -1,5 +1,4 @@
-
-from builder import read_file 
+from cuttle_builder.builder.additional.file_read_write.read_file import read_file
 import typing
 
 def create_reply_keyboard(kb_name: str, buttons: typing.List[str]) -> str:
