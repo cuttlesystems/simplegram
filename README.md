@@ -1,5 +1,7 @@
 # tg_bot_constructor
 
+[Вступительное слово к проекту](./Docs/draft_introductory_remarks_to_the_StartUp.md)
+
 [Документация по проекту](./Docs/Index.md)
 
 [Правила работы с git](./Docs/git_description.md)
