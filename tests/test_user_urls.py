@@ -5,16 +5,10 @@ import uuid
 import requests
 import json
 
-TESTING_SUITE = 'http://127.0.0.1:8000/'
-
-
-def get_headers(token: str) -> dict:
-    return {
-        'Authorization': f'Token {token}'
-    }
-
 
 class TestUserUrls(unittest.TestCase):
+    _TESTING_SUITE = 'http://127.0.0.1:8000/'
+
     def test_user_creation_and_deletion(self):
         """
         Тестирование создания пользователя, получения, удаления
@@ -24,7 +18,7 @@ class TestUserUrls(unittest.TestCase):
         test_name = "autotest_user_{0}".format(unique_username_suffix)
 
         # создаем пользователя
-        create_user_response = requests.post(TESTING_SUITE + 'api/users/', {
+        create_user_response = requests.post(self._TESTING_SUITE + 'api/users/', {
             "first_name": "Autotest user {0}".format(unique_username_suffix),
             "last_name": "autotest_user {0}".format(unique_username_suffix),
             "username": test_name,
@@ -35,7 +29,7 @@ class TestUserUrls(unittest.TestCase):
         created_user_id = json.loads(create_user_response.text)['id']
 
         login_response = requests.post(
-            TESTING_SUITE + 'api/auth/token/login/',
+            self._TESTING_SUITE + 'api/auth/token/login/',
             {
                 'username': test_name,
                 'password': '1'
@@ -46,19 +40,19 @@ class TestUserUrls(unittest.TestCase):
 
         # получаем созданного пользователя
         get_user_by_id_response = requests.get(
-            TESTING_SUITE + 'api/users/{id}'.format(
+            self._TESTING_SUITE + 'api/users/{id}'.format(
                 id=created_user_id),
-            headers=get_headers(token)
+            headers=self._get_headers(token)
         )
         self.assertEqual(get_user_by_id_response.status_code, 200)
 
         # для DELETE что-то автоматом content-type json не ставился
-        headers_with_content_type = get_headers(token)
+        headers_with_content_type = self._get_headers(token)
         headers_with_content_type['content-type'] = 'application/json'
 
         # удаляем созданного пользователя
         user_deletion_response = requests.delete(
-            TESTING_SUITE + 'api/users/{id}/'.format(id=created_user_id),
+            self._TESTING_SUITE + 'api/users/{id}/'.format(id=created_user_id),
             data=json.dumps({
                 'current_password': '1'
             }),
@@ -68,3 +62,8 @@ class TestUserUrls(unittest.TestCase):
         self.assertEqual(user_deletion_response.status_code, 204)
         print(user_deletion_response.text)
         print('user id {0}'.format(created_user_id))
+
+    def _get_headers(self, token: str) -> dict:
+        return {
+            'Authorization': f'Token {token}'
+        }
