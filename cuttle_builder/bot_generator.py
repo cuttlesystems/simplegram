@@ -1,3 +1,5 @@
+from b_logic.bot_api import BotApi
+from b_logic.data_objects import BotDescription
 from cuttle_builder.builder.additional.file_read_write.file_manager import FileManager
 from cuttle_builder.builder.keyboard_generator.create_reply_keyboard import create_reply_keyboard
 from cuttle_builder.builder.handler_generator.create_state_handler import create_state_handler
@@ -78,14 +80,25 @@ variants_json = [
 messages = messages_json
 variants = variants_json
 
+
 class BotGenerator():
-    def __init__(self, bot_id: int, messages: typing.List[str], variants: typing.List[str], start_message_id: int):
-        self._bot_id = bot_id
-        self._messages = messages
-        self._variants = variants
-        self._start_message_id = start_message_id
-        self._states = []
-        self._file_manager = FileManager()
+    def __init__(self, bot_api: BotApi, bot: BotDescription):
+        messages = bot_api.get_messages(bot)
+        all_vars = []
+        for mes in messages:
+            print(mes)
+            variants = bot_api.get_variants(mes)
+            all_vars.extend(variants)
+        print('------')
+        for var in all_vars:
+            print(var)
+
+        # self._bot_id = bot_id
+        # self._messages = messages
+        # self._variants = variants
+        # self._start_message_id = start_message_id
+        # self._states = []
+        # self._file_manager = FileManager()
 
     def create_bot(self) -> None:
         bot_directory = self._file_manager.create_bot_directory(self._bot_id)
@@ -97,24 +110,24 @@ class BotGenerator():
             keyboard_code = self.create_reply_keyboard(message_id, buttons) if buttons else ''
             keyboard_name = f'{message_id}_kb' if keyboard_code else ''
             import_keyboard = 'from keyboards import {0}'.format(keyboard_name) if keyboard_name else ''
-            if message_id == start_message_id:
+            if message_id == self._start_message_id:
                 if keyboard_name:
                     self.create_file_keyboard(bot_directory, keyboard_name, keyboard_code)
-                code = self.create_state_handler(import_keyboard, '', '', message_id, 'text', message['text'], keyboard_name)
+                handler_code = self.create_state_handler(import_keyboard, '', '', message_id, 'text', message['text'], keyboard_name)
 
             previouses = self.find_previous_messages(message_id, variants)            
             for previous in previouses:
                 print(previous)
                 if keyboard_name:
                     self.create_file_keyboard(bot_directory, keyboard_name, keyboard_code)
-                code = self.create_state_handler(import_keyboard, previous['current_id'], previous['text'], message_id, 'text', message['text'], keyboard_name)
-                self.create_file_handler(bot_directory, message_id, code)
+                handler_code = self.create_state_handler(import_keyboard, previous['current_id'], previous['text'], message_id, 'text', message['text'], keyboard_name)
+                self.create_file_handler(bot_directory, message_id, handler_code)
 
             if not previouses:
                 if keyboard_name:
                     self.create_file_keyboard(bot_directory, keyboard_name, keyboard_code)
-                code = self.create_state_handler(import_keyboard, '','', message_id, 'photo', message['text'], keyboard_name)
-                self.create_file_handler(bot_directory, message_id, code)
+                handler_code = self.create_state_handler(import_keyboard, '','', message_id, 'photo', message['text'], keyboard_name)
+                self.create_file_handler(bot_directory, message_id, handler_code)
         
         self.create_file_state(bot_directory, self._states)
         

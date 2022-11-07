@@ -5,19 +5,9 @@ import uuid
 import requests
 import json
 
-TESTING_SUITE = 'http://127.0.0.1:8000/'
-
 
 class TestUserUrls(unittest.TestCase):
-    def test_user_list(self):
-        """
-        Тестирование получения списка пользователей
-        """
-        get_users_response = requests.get(TESTING_SUITE + 'api/users')
-        self.assertEqual(get_users_response.status_code, 200)
-        users_data: typing.List[dict] = json.loads(get_users_response.text)
-        usernames: typing.List[str] = [user['username'] for user in users_data]
-        print(usernames)
+    _TESTING_SUITE = 'http://127.0.0.1:8000/'
 
     def test_user_creation_and_deletion(self):
         """
@@ -25,25 +15,55 @@ class TestUserUrls(unittest.TestCase):
         """
         unique_username_suffix = '{0}'.format(str(uuid.uuid4()).replace('-', ''))
 
+        test_name = "autotest_user_{0}".format(unique_username_suffix)
+
         # создаем пользователя
-        create_user_response = requests.post(TESTING_SUITE + 'api/users/', {
+        create_user_response = requests.post(self._TESTING_SUITE + 'api/users/', {
             "first_name": "Autotest user {0}".format(unique_username_suffix),
             "last_name": "autotest_user {0}".format(unique_username_suffix),
-            "username": "autotest_user_{0}".format(unique_username_suffix),
+            "username": test_name,
+            "password": "1",
             "email": "autotest_user_{0}@cuttlesystems.com".format(unique_username_suffix)
         })
         self.assertEqual(create_user_response.status_code, 201)
         created_user_id = json.loads(create_user_response.text)['id']
 
+        login_response = requests.post(
+            self._TESTING_SUITE + 'api/auth/token/login/',
+            {
+                'username': test_name,
+                'password': '1'
+            }
+        )
+        self.assertEqual(login_response.status_code, 200)
+        token = json.loads(login_response.text)['auth_token']
+
         # получаем созданного пользователя
-        get_user_by_id_response = requests.get(TESTING_SUITE + 'api/users/{id}'.format(
-            id=created_user_id))
+        get_user_by_id_response = requests.get(
+            self._TESTING_SUITE + 'api/users/{id}'.format(
+                id=created_user_id),
+            headers=self._get_headers(token)
+        )
         self.assertEqual(get_user_by_id_response.status_code, 200)
 
+        # для DELETE что-то автоматом content-type json не ставился
+        headers_with_content_type = self._get_headers(token)
+        headers_with_content_type['content-type'] = 'application/json'
+
         # удаляем созданного пользователя
-        user_deletion_response = requests.delete(TESTING_SUITE + 'api/users/{id}'.format(
-            id=created_user_id))
+        user_deletion_response = requests.delete(
+            self._TESTING_SUITE + 'api/users/{id}/'.format(id=created_user_id),
+            data=json.dumps({
+                'current_password': '1'
+            }),
+            headers=headers_with_content_type
+        )
+
         self.assertEqual(user_deletion_response.status_code, 204)
         print(user_deletion_response.text)
         print('user id {0}'.format(created_user_id))
 
+    def _get_headers(self, token: str) -> dict:
+        return {
+            'Authorization': f'Token {token}'
+        }

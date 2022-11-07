@@ -133,3 +133,5 @@ dmypy.json
 
 /bot_*/
 /backend/bot_django_project/data_files
+
+/venv*/
