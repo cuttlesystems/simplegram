@@ -1,7 +1,3 @@
-from cuttle_builder.builder.additional.file_read_write.file_manager import FileManager
-from cuttle_builder.builder.keyboard_generator.create_reply_keyboard import create_reply_keyboard
-from cuttle_builder.builder.handler_generator.create_state_handler import create_state_handler
-from cuttle_builder.builder.state_generator.create_state import create_state
 from b_logic.bot_api import BotApi
 from b_logic.data_objects import BotDescription
 from cuttle_builder.builder.additional.file_read_write.file_manager import FileManager
@@ -78,6 +74,7 @@ variants_json = [
 
 messages = messages_json
 variants = variants_json
+
 
 class BotGenerator():
     def __init__(self, bot_api: BotApi, bot: BotDescription):
