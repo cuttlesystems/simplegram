@@ -1,5 +1,8 @@
 import shutil
 from distutils.dir_util import copy_tree
+import os
+from pathlib import Path
+
 
 class FileManager():
     def __init__(self) -> None:
@@ -80,7 +83,10 @@ class FileManager():
         Returns:
             str: directory path
         """
+        print(os.getcwd())
         dir = self.get_dir(bot_id)
         self.delete_dir(dir)
-        copy_tree('bot', dir)
+        bot_dir = Path(__file__).parent.parent.parent.parent / 'bot'
+
+        copy_tree(str(bot_dir), dir)
         return dir
