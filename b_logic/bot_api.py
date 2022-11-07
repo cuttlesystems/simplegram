@@ -274,5 +274,6 @@ class BotApi:
         variant = MessageVariant()
         variant.id = variant_dict['id']
         variant.text = variant_dict['text']
+        variant.current_message_id = variant_dict['current_message']
         variant.next_message_id = variant_dict['next_message']
         return variant
