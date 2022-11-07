@@ -26,4 +26,5 @@ class BotMessage:
 class MessageVariant:
     id: Optional[int] = None
     text: Optional[str] = None
+    current_message_id: Optional[int] = None
     next_message_id: Optional[int] = None
