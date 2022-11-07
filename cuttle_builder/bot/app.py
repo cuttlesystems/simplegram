@@ -1,5 +1,7 @@
 from loader import dp
 from utils.notify_admins import on_startup_notify
+from aiogram import executor
+from handlers import dp
 
 
 async def on_startup(_unused_variable):
@@ -9,7 +11,4 @@ async def on_startup(_unused_variable):
 
 
 if __name__ == '__main__':
-    from aiogram import executor
-    from handlers import dp
-    
     executor.start_polling(dp, on_startup=on_startup)

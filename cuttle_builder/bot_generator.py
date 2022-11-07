@@ -67,7 +67,12 @@ variants_json = [
             'text': 'From 20 to 50',
             'current_id': 'message_20',
             'next_id': 'message_50'
-        }
+        },
+        # {
+        #     'text': 'From 50 to 10',
+        #     'current_id': 'message_50',
+        #     'next_id': 'message_10'
+        # }
     ]
 
 messages = messages_json
