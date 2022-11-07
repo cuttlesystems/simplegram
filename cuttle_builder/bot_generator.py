@@ -6,36 +6,36 @@ import typing
 
 messages_json = [
         {
-            'id': 'asdf',
-            'text': 'asdftext',
+            'id': 'message_10',
+            'text': 'Message 10 text',
             'photo': None,
             'video': None,
             'file': None
         },
         {
-            'id': 'qwer',
-            'text': 'qwertext',
+            'id': 'message_20',
+            'text': 'Message 20 text',
             'photo': None,
             'video': None,
             'file': None
         },
         {
-            'id': 'zxcv',
-            'text': 'zxcvtext',
+            'id': 'message_30',
+            'text': 'Message 30 text',
             'photo': None,
             'video': None,
             'file': None
         },
         {
-            'id': 'qaz',
-            'text': 'qaztext',
+            'id': 'message_40',
+            'text': 'Message 40 text',
             'photo': None,
             'video': None,
             'file': None
         },
         {
-            'id': 'wsx',
-            'text': 'wsxtext',
+            'id': 'message_50',
+            'text': 'Message 50 text',
             'photo': None,
             'video': None,
             'file': None
@@ -44,29 +44,29 @@ messages_json = [
 
 variants_json = [
         {
-            'text': 'asdf_to_zxcv',
-            'current_id': 'asdf',
-            'next_id': 'zxcv'
+            'text': 'from 10 to 30',
+            'current_id': 'message_10',
+            'next_id': 'message_30'
         },
         {
-            'text': 'asdf_to_qwer',
-            'current_id': 'asdf',
-            'next_id': 'qwer'
+            'text': 'From 10 to 20',
+            'current_id': 'message_10',
+            'next_id': 'message_20'
         },
         {
-            'text': 'asdf_to_qaz',
-            'current_id': 'asdf',
-            'next_id': 'qaz'
+            'text': 'From 10 to 40',
+            'current_id': 'message_10',
+            'next_id': 'message_40'
         },
         {
-            'text': 'zxcv_wsx',
-            'current_id': 'zxcv',
-            'next_id': 'wsx'
+            'text': 'From 30 to 50',
+            'current_id': 'message_30',
+            'next_id': 'message_50'
         },
         {
-            'text': 'qwer_to_wsx',
-            'current_id': 'qwer',
-            'next_id': 'wsx'
+            'text': 'From 20 to 50',
+            'current_id': 'message_20',
+            'next_id': 'message_50'
         }
     ]
 
