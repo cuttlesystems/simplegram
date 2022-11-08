@@ -1,12 +1,15 @@
 import json
 from pathlib import Path
+from typing import Optional
 
 
 class ConnectionSettings:
-    def __init__(self, filename: str):
+    def __init__(self, filename: Optional[str] = None):
+        if filename is None:
+            filename = str(Path(__file__).parent / 'connection_settings.json')
         if not Path(filename).exists():
             raise Exception(
-                'Создайте себе персональный файл с настройками connection_settings.json по'
+                f'Создайте себе персональный файл с настройками {filename} по'
                 ' примеру из connection_settings_template.json')
         with open(filename, 'r') as settings_file:
             settings_dict = json.load(settings_file)

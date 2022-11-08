@@ -2,7 +2,7 @@ import uuid
 from pathlib import Path
 
 from b_logic.bot_api import BotApi
-from tests.site_settings import ConnectionSettings
+from tests.connection_settings import ConnectionSettings
 
 
 def gen_unique_str() -> str:
@@ -10,7 +10,7 @@ def gen_unique_str() -> str:
 
 
 if __name__ == '__main__':
-    settings = ConnectionSettings(str(Path(__file__).parent / 'connection_settings.json'))
+    settings = ConnectionSettings()
     bot_api = BotApi(settings.site_addr)
     bot_api.authentication(settings.username, settings.password)
 
