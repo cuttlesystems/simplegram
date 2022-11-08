@@ -118,7 +118,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = '/media/'
 
-# путь с данными, которые не относятся к исходникам (сгенерированные боты,
+# путь с данными, которые не относятся к исходникам (сгенерированные боты, изображения, видео)
 DATA_FILES_ROOT = os.path.join(BASE_DIR, 'data_files')
 
 MEDIA_ROOT = os.path.join(DATA_FILES_ROOT, 'media')

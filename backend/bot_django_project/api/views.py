@@ -1,4 +1,6 @@
 import shutil
+import subprocess
+import sys
 import uuid
 from pathlib import Path
 from zipfile import ZipFile
@@ -120,6 +122,7 @@ class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
 
 @api_view(['GET'])
 def generate_bot(request: rest_framework.request.Request, bot_id: str):
+    # todo: тут, думаю, надо проверять, что мы запускаем бота от пользователя, который вызвал метод
     bot_api = BotApi('http://127.0.0.1:8000/')
     bot_api.auth_by_token(request.auth.key)
     bot = bot_api.get_bot_by_id(int(bot_id))
@@ -143,3 +146,17 @@ def generate_bot(request: rest_framework.request.Request, bot_id: str):
     shutil.make_archive(str(bot_dir), 'zip', bot_dir)
 
     return FileResponse(open(bot_zip_file_name, 'rb'))
+
+
+@api_view(['GET'])
+def start_bot(request: rest_framework.request.Request, bot_id: str):
+    # todo: тут будет проверка, что бот принадлежит заданному пользователю
+    bots_dir = Path(DATA_FILES_ROOT) / 'generated_bots'
+    bot_dir = bots_dir / f'bot_{bot_id}'
+    if bot_dir.exists():
+        bot_py_executable = str(bot_dir / 'app.py')
+        bot_process = subprocess.Popen([sys.executable, bot_py_executable])
+        result = HttpResponse(f'Start bot (pid={bot_process.pid})', status=200)
+    else:
+        result = HttpResponse('Bot not found', status=404)
+    return result

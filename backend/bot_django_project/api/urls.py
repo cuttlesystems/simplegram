@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from .views import (BotViewSet, MessageViewSet, OneMessageViewSet,
-                    VariantViewSet, OneVariantViewSet, generate_bot)
+                    VariantViewSet, OneVariantViewSet, generate_bot, start_bot)
 
 
 router = routers.DefaultRouter()
@@ -18,7 +18,8 @@ urlpatterns = [
     path('', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
 
-    path(r'generate_bot/<bot_id>/', generate_bot)
+    path(r'generate_bot/<bot_id>/', generate_bot),
+    path(r'start_bot/<bot_id>/', start_bot)
 ]
 
 # Как тут всё работает:
