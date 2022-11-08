@@ -123,6 +123,9 @@ DATA_FILES_ROOT = os.path.join(BASE_DIR, 'data_files')
 
 MEDIA_ROOT = os.path.join(DATA_FILES_ROOT, 'media')
 
+# путь, где лежат созданные пользователем боты
+BOTS_DIR = Path(DATA_FILES_ROOT) / 'generated_bots'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {

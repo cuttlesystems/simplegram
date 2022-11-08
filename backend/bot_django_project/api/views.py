@@ -12,7 +12,8 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
 from b_logic.bot_api import BotApi
-from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT
+from b_logic.bot_runner import BotRunner
+from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS_DIR
 from rest_framework.request import Request
 
 from .serializers import BotSerializer, MessageSerializer, VariantSerializer
@@ -133,7 +134,7 @@ def generate_bot(request: rest_framework.request.Request, bot_id: str):
         variants = bot_api.get_variants(message)
         for variant in variants:
             bot_info_str += f'        {variant}\n'
-    bots_dir = Path(DATA_FILES_ROOT) / 'generated_bots'
+    bots_dir = BOTS_DIR
     bots_dir.mkdir(parents=True, exist_ok=True)
     botname = str(uuid.uuid4())
     bot_dir = bots_dir / botname
@@ -151,12 +152,13 @@ def generate_bot(request: rest_framework.request.Request, bot_id: str):
 @api_view(['GET'])
 def start_bot(request: rest_framework.request.Request, bot_id: str):
     # todo: тут будет проверка, что бот принадлежит заданному пользователю
-    bots_dir = Path(DATA_FILES_ROOT) / 'generated_bots'
+    bots_dir = BOTS_DIR
     bot_dir = bots_dir / f'bot_{bot_id}'
-    if bot_dir.exists():
-        bot_py_executable = str(bot_dir / 'app.py')
-        bot_process = subprocess.Popen([sys.executable, bot_py_executable])
-        result = HttpResponse(f'Start bot (pid={bot_process.pid})', status=200)
+    runner = BotRunner(bot_dir)
+    process_id = runner.start()
+    if process_id is not None:
+        result = HttpResponse(f'Start bot (pid={process_id})', status=200)
     else:
         result = HttpResponse('Bot not found', status=404)
+
     return result
