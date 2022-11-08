@@ -13,23 +13,23 @@ class ConnectionSettings:
                 ' примеру из connection_settings_template.json')
         with open(filename, 'r') as settings_file:
             settings_dict = json.load(settings_file)
-        self._site_addr = settings_dict['suite_addr']
-        self._username = settings_dict['username']
-        self._password = settings_dict['password']
-        self._bot_id: int = settings_dict['bot_id']
+        self._site_addr: str = settings_dict['suite_addr']
+        self._username: str = settings_dict['username']
+        self._password: str = settings_dict['password']
+        self._bot_id: Optional[int] = settings_dict['bot_id']
 
     @property
-    def site_addr(self):
+    def site_addr(self) -> str:
         return self._site_addr
 
     @property
-    def username(self):
+    def username(self) -> str:
         return self._username
 
     @property
-    def password(self):
+    def password(self) -> str:
         return self._password
 
     @property
-    def bot_id(self):
+    def bot_id(self) -> Optional[int]:
         return self._bot_id
