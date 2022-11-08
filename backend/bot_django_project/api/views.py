@@ -5,7 +5,9 @@ import uuid
 from pathlib import Path
 from zipfile import ZipFile
 
+import django
 import rest_framework.request
+from django.db.models import Manager
 from django.http import HttpResponse, FileResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -149,16 +151,33 @@ def generate_bot(request: rest_framework.request.Request, bot_id: str):
     return FileResponse(open(bot_zip_file_name, 'rb'))
 
 
+class BotSt:
+    # это только для проверки (нельзя это использовать)
+    pid = None
+
+
 @api_view(['GET'])
 def start_bot(request: rest_framework.request.Request, bot_id: str):
     # todo: тут будет проверка, что бот принадлежит заданному пользователю
     bots_dir = BOTS_DIR
     bot_dir = bots_dir / f'bot_{bot_id}'
     runner = BotRunner(bot_dir)
+    # print(Bot.objects.filter(id == bot_id).all())
     process_id = runner.start()
     if process_id is not None:
+        BotSt.pid = process_id
         result = HttpResponse(f'Start bot (pid={process_id})', status=200)
     else:
         result = HttpResponse('Bot not found', status=404)
 
+    return result
+
+
+@api_view(['GET'])
+def stop_bot(request: rest_framework.request.Request, bot_id: str):
+    runner = BotRunner(Path())
+    if runner.stop(BotSt.pid):
+        result = HttpResponse('Bot stopped is ok', status=200)
+    else:
+        result = HttpResponse('Bot stop error', status=500)
     return result

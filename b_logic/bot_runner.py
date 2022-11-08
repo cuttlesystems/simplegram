@@ -2,7 +2,7 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
-# import psutil
+import psutil
 
 
 class BotRunner:
@@ -19,7 +19,23 @@ class BotRunner:
                 result = bot_process.pid
         return result
 
-    def stop(self, process_id: int):
-        # process = psutil.Process(process_id)
-        # print(process.name())
-        pass
+    def stop(self, process_id: int) -> bool:
+        result = False
+        try:
+            process = psutil.Process(process_id)
+            print(process.name(), process.cmdline())
+            process_name = process.name()
+            if '.' in process_name:
+                only_name = process_name.split('.')[0]
+            else:
+                only_name = process_name
+            only_name = only_name.lower()
+            if only_name == 'python':
+                print('kill bot')
+                process.kill()
+                result = True
+            else:
+                print('Invalid process id. It is not a python process')
+        except psutil.NoSuchProcess:
+            print('Can not found process')
+        return result

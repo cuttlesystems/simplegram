@@ -30,7 +30,7 @@ class Bot(models.Model):
         related_name='first_message_bot',
         null=True
     )
-    bot_process = models.IntegerField(null=True)
+    # bot_process = models.IntegerField(null=True)
 
     class Meta:
         ordering = ['id']
