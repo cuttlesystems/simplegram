@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
 from b_logic.bot_api import BotApi
-from b_logic.bot_processes import BotProcesses
+from b_logic.bot_processes_manager import BotProcessesManager
 from b_logic.bot_runner import BotRunner
 from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS_DIR
 from rest_framework.request import Request
@@ -152,11 +152,6 @@ def generate_bot(request: rest_framework.request.Request, bot_id: str):
     return FileResponse(open(bot_zip_file_name, 'rb'))
 
 
-class BotSt:
-    # это только для проверки (нельзя это использовать)
-    pid = None
-
-
 @api_view(['GET'])
 def start_bot(request: rest_framework.request.Request, bot_id: str):
     # todo: тут будет проверка, что бот принадлежит заданному пользователю
@@ -164,7 +159,7 @@ def start_bot(request: rest_framework.request.Request, bot_id: str):
     bot_id_int = int(bot_id)
     bot_dir = bots_dir / f'bot_{bot_id}'
     runner = BotRunner(bot_dir)
-    bot_process_manager = BotProcesses()
+    bot_process_manager = BotProcessesManager()
 
     # если оказалось, что этого бота уже запускали, то остановим его
     already_started_bot = bot_process_manager.get_process_info(bot_id_int)
@@ -186,7 +181,7 @@ def start_bot(request: rest_framework.request.Request, bot_id: str):
 def stop_bot(request: rest_framework.request.Request, bot_id: str):
     runner = BotRunner(Path())
     bot_id_int = int(bot_id)
-    bot_processes_manager = BotProcesses()
+    bot_processes_manager = BotProcessesManager()
     bot_process = bot_processes_manager.get_process_info(bot_id_int)
     if bot_process is not None:
         if runner.stop(bot_process.process_id):

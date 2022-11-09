@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Dict
-
+from typing import Dict, Optional
 from utils.singlethon import SingletonBase
 
 
@@ -10,7 +9,7 @@ class BotProcessInfo:
     process_id: int
 
 
-class BotProcesses(metaclass=SingletonBase):
+class BotProcessesManager(metaclass=SingletonBase):
     def __init__(self):
         self._processes: Dict[int, BotProcessInfo] = {}
 
@@ -28,10 +27,3 @@ class BotProcesses(metaclass=SingletonBase):
     def remove(self, bot_id: int):
         assert bot_id in self._processes
         del self._processes[bot_id]
-
-
-if __name__ == '__main__':
-    botp = BotProcesses()
-    botp.register(1, 2)
-    botp2 = BotProcesses()
-    print(botp2.get_process_info(1))
