@@ -79,11 +79,11 @@ variants_json = [
 
 messages = []
 variants = []
-for message in messages_json:
-    mes = BotMessage()
-    mes.text = message['text']
-    mes.id = message['id']
-    messages.append(mes)
+# for message in messages_json:
+#     mes = BotMessage()
+#     mes.text = message['text']
+#     mes.id = message['id']
+#     messages.append(mes)
 
 for varinat in variants_json:
     var = MessageVariant()
@@ -106,7 +106,6 @@ class BotGenerator():
         self._states = []
         self._bot_id = bot_id
         self._file_manager = FileManager()
-        pass
     # def __init__(self, bot_api: BotApi, bot: BotDescription):
     #     messages = bot_api.get_messages(bot)
     #     all_vars = []
@@ -138,8 +137,17 @@ class BotGenerator():
             self.create_file_keyboard(bot_directory, keyboard_name, keyboard_code)
         return keyboard_name
 
+    def validate(self) -> typing.List[BotMessage]:
+
+        return self._messages
     def create_bot(self) -> None:
+
+        if not self.validate():
+            print('U not create a messages')
+            self._file_manager.delete_bot_by_id(self._bot_id)
+            return
         bot_directory = self._file_manager.create_bot_directory(self._bot_id)
+
 
         for message in self._messages:
 
@@ -182,8 +190,6 @@ class BotGenerator():
                 keyboard_generation_counter += 1
 
             if not previous:
-                print('sorry, incorrect writen bot')
-                break
                 keyboard_name = self.generate_keyboard(message.id, bot_directory)
                 import_keyboard = 'from keyboards import {0}'.format(keyboard_name) if keyboard_name else ''
                 handler_code = self.create_state_handler(
@@ -205,7 +211,7 @@ class BotGenerator():
         self.create_file_state(bot_directory, self._states)
     
     def create_keyboard_array(self, message_id: int, variants: typing.List[MessageVariant]) -> typing.List[MessageVariant]:
-        """_summary_
+        """generate list of strs, names of buttons in keyboard
 
         Args:
             message_id (int): id of message
