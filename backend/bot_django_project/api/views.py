@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
 from b_logic.bot_api import BotApi
+from b_logic.bot_processes import BotProcesses
 from b_logic.bot_runner import BotRunner
 from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS_DIR
 from rest_framework.request import Request
@@ -160,15 +161,23 @@ class BotSt:
 def start_bot(request: rest_framework.request.Request, bot_id: str):
     # todo: тут будет проверка, что бот принадлежит заданному пользователю
     bots_dir = BOTS_DIR
+    bot_id_int = int(bot_id)
     bot_dir = bots_dir / f'bot_{bot_id}'
     runner = BotRunner(bot_dir)
-    # print(Bot.objects.filter(id == bot_id).all())
+    bot_process_manager = BotProcesses()
+
+    # если оказалось, что этого бота уже запускали, то остановим его
+    already_started_bot = bot_process_manager.get_process_info(bot_id_int)
+    if already_started_bot is not None:
+        runner.stop(already_started_bot.process_id)
+        bot_process_manager.remove(bot_id_int)
+
     process_id = runner.start()
     if process_id is not None:
-        BotSt.pid = process_id
+        bot_process_manager.register(bot_id_int, process_id)
         result = HttpResponse(f'Start bot (pid={process_id})', status=200)
     else:
-        result = HttpResponse('Bot not found', status=404)
+        result = HttpResponse('Bot start error', status=404)
 
     return result
 
@@ -176,8 +185,15 @@ def start_bot(request: rest_framework.request.Request, bot_id: str):
 @api_view(['GET'])
 def stop_bot(request: rest_framework.request.Request, bot_id: str):
     runner = BotRunner(Path())
-    if runner.stop(BotSt.pid):
-        result = HttpResponse('Bot stopped is ok', status=200)
+    bot_id_int = int(bot_id)
+    bot_processes_manager = BotProcesses()
+    bot_process = bot_processes_manager.get_process_info(bot_id_int)
+    if bot_process is not None:
+        if runner.stop(bot_process.process_id):
+            bot_processes_manager.remove(bot_id_int)
+            result = HttpResponse('Bot stopped is ok', status=200)
+        else:
+            result = HttpResponse('Can not stop bot', status=500)
     else:
-        result = HttpResponse('Bot stop error', status=500)
+        result = HttpResponse('Can not stop bot because bot is not stared', status=404)
     return result
