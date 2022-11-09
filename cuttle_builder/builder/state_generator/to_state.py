@@ -1,3 +1,3 @@
 
 def to_state(state: str):
-    return '\n\t{0} = State()'.format(state)
+    return '\n\ta{0} = State()'.format(state)

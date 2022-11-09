@@ -6,6 +6,6 @@ from state import States
 {0}
 
 @dp.message_handler({1})
-async def get_{2}(message: types.Message):
-    {3} # add commands 
+async def handler_message_{2}(message: types.Message):
+    {3} # add commands
     {4} # send message

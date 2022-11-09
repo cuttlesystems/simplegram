@@ -1,5 +1,5 @@
 from b_logic.bot_api import BotApi
-from b_logic.data_objects import BotDescription
+from b_logic.data_objects import BotDescription, BotMessage, MessageVariant
 from cuttle_builder.builder.additional.file_read_write.file_manager import FileManager
 from cuttle_builder.builder.keyboard_generator.create_reply_keyboard import create_reply_keyboard
 from cuttle_builder.builder.handler_generator.create_state_handler import create_state_handler
@@ -70,70 +70,148 @@ variants_json = [
             'current_id': 'message_20',
             'next_id': 'message_50'
         },
-        # {
-        #     'text': 'From 50 to 10',
-        #     'current_id': 'message_50',
-        #     'next_id': 'message_10'
-        # }
+        {
+            'text': 'From 50 to 10',
+            'current_id': 'message_50',
+            'next_id': 'message_10'
+        }
     ]
 
-messages = messages_json
-variants = variants_json
+messages = []
+variants = []
+# for message in messages_json:
+#     mes = BotMessage()
+#     mes.text = message['text']
+#     mes.id = message['id']
+#     messages.append(mes)
+
+for varinat in variants_json:
+    var = MessageVariant()
+    var.text = varinat['text']
+    var.current_message_id = varinat['current_id']
+    var.next_message_id = varinat['next_id']
+    variants.append(var)
+# messages = messages_json
+# variants = variants_json
+
 
 
 class BotGenerator():
-    def __init__(self, bot_api: BotApi, bot: BotDescription):
-        messages = bot_api.get_messages(bot)
-        all_vars = []
-        for mes in messages:
-            print(mes)
-            variants = bot_api.get_variants(mes)
-            all_vars.extend(variants)
-        print('------')
-        for var in all_vars:
-            print(var)
 
-        # self._bot_id = bot_id
-        # self._messages = messages
-        # self._variants = variants
-        # self._start_message_id = start_message_id
-        # self._states = []
-        # self._file_manager = FileManager()
+    def __init__(self, messages, variants, start_message_id, bot_id):
 
+        self._messages = messages
+        self._variants = variants
+        self._start_message_id = start_message_id
+        self._states = []
+        self._bot_id = bot_id
+        self._file_manager = FileManager()
+    # def __init__(self, bot_api: BotApi, bot: BotDescription):
+    #     messages = bot_api.get_messages(bot)
+    #     all_vars = []
+    #     for mes in messages:
+    #         var = bot_api.get_variants(mes)
+    #         all_vars.extend(var)
+    #
+    #     self._bot_id = bot.id
+    #     self._messages = messages
+    #     self._variants = all_vars
+    #     self._start_message_id = bot.start_message_id
+    #     self._states = []
+    #     self._file_manager = FileManager()
+
+    def generate_keyboard(self, message_id: int, bot_directory: str) -> str:
+        """create keyboard in directory and return name of this keyboard
+
+        Args:
+            message_id (int): id of message, that will used in name of keyboard
+            bot_directory (str): directory, where keyboard will store
+
+        Returns:
+            str: name of generated keyboard or ''
+        """
+        buttons = self.create_keyboard_array(message_id, self._variants)
+        keyboard_code = self.create_reply_keyboard(f'a{message_id}', buttons) if buttons else ''
+        keyboard_name = f'a{message_id}_kb' if keyboard_code else ''
+        if keyboard_name:
+            self.create_file_keyboard(bot_directory, keyboard_name, keyboard_code)
+        return keyboard_name
+
+    def validate(self) -> typing.List[BotMessage]:
+
+        return self._messages
     def create_bot(self) -> None:
+
+        if not self.validate():
+            print('U not create a messages')
+            self._file_manager.delete_bot_by_id(self._bot_id)
+            return
         bot_directory = self._file_manager.create_bot_directory(self._bot_id)
 
+
         for message in self._messages:
-            message_id = message['id']
-            self._states.append(message_id)
-            buttons = self.create_keyboard_array(message_id, variants)
-            keyboard_code = self.create_reply_keyboard(message_id, buttons) if buttons else ''
-            keyboard_name = f'{message_id}_kb' if keyboard_code else ''
-            import_keyboard = 'from keyboards import {0}'.format(keyboard_name) if keyboard_name else ''
+
+            keyboard_generation_counter = 0 # count number of generation of keyboard
+            message_id = f'a{message.id}'
+
             if message_id == self._start_message_id:
-                if keyboard_name:
-                    self.create_file_keyboard(bot_directory, keyboard_name, keyboard_code)
-                handler_code = self.create_state_handler(import_keyboard, '', '', message_id, 'text', message['text'], keyboard_name)
+                keyboard_name = self.generate_keyboard(message.id, bot_directory)
+                import_keyboard = 'from keyboards import {0}'.format(keyboard_name) if keyboard_name else ''
 
-            previouses = self.find_previous_messages(message_id, variants)            
-            for previous in previouses:
-                print(previous)
-                if keyboard_name:
-                    self.create_file_keyboard(bot_directory, keyboard_name, keyboard_code)
-                handler_code = self.create_state_handler(import_keyboard, previous['current_id'], previous['text'], message_id, 'text', message['text'], keyboard_name)
+                handler_code = self.create_state_handler(
+                    import_keyboard,
+                    'Command(\'start\')',
+                    '',
+                    '',
+                    f'a{message.id}',
+                    'text',
+                    message.text,
+                    keyboard_name
+                )
                 self.create_file_handler(bot_directory, message_id, handler_code)
+                # continue
 
-            if not previouses:
-                if keyboard_name:
-                    self.create_file_keyboard(bot_directory, keyboard_name, keyboard_code)
-                handler_code = self.create_state_handler(import_keyboard, '','', message_id, 'photo', message['text'], keyboard_name)
+            previous = self.find_previous_messages(message.id, self._variants)
+            for prev in previous:
+                if keyboard_generation_counter == 0:
+                    keyboard_name = self.generate_keyboard(message.id, bot_directory)
+                    import_keyboard = 'from keyboards import {0}'.format(keyboard_name) if keyboard_name else ''
+                handler_code = self.create_state_handler(
+                    import_keyboard,
+                    '',
+                    f'a{prev.current_message_id}',
+                    prev.text,
+                    f'a{message.id}',
+                    'text',
+                    message.text,
+                    keyboard_name
+                )
                 self.create_file_handler(bot_directory, message_id, handler_code)
-        
+                keyboard_generation_counter += 1
+
+            if not previous:
+                keyboard_name = self.generate_keyboard(message.id, bot_directory)
+                import_keyboard = 'from keyboards import {0}'.format(keyboard_name) if keyboard_name else ''
+                handler_code = self.create_state_handler(
+                    import_keyboard,
+                    '',
+                    '',
+                    '',
+                    message_id,
+                    'photo',
+                    message.text,
+                    keyboard_name
+                )
+                self.create_file_handler(bot_directory, message_id, handler_code)
+        self.generate_state(bot_directory)
+
+    def generate_state(self, bot_directory):
+        for message in self._messages:
+            self._states.append(message.id)
         self.create_file_state(bot_directory, self._states)
-        
     
-    def create_keyboard_array(self, message_id: int, variants: typing.List[dict]) -> typing.List[str]:
-        """_summary_
+    def create_keyboard_array(self, message_id: int, variants: typing.List[MessageVariant]) -> typing.List[MessageVariant]:
+        """generate list of strs, names of buttons in keyboard
 
         Args:
             message_id (int): id of message
@@ -142,7 +220,7 @@ class BotGenerator():
         Returns:
             typing.List[str]: list of keyboard buttons related to concrete message
         """
-        return [item['text'] for item in variants if item['current_id']==message_id]
+        return [item.text for item in variants if item.current_message_id==message_id]
     
     # generate code of reply keyboard, take text from file and add keyboard with keyboard name
     def create_reply_keyboard(self, kb_name: str, buttons: typing.List[str]) -> str:
@@ -158,7 +236,10 @@ class BotGenerator():
         return create_reply_keyboard(kb_name, buttons)
     
     # find previous message id's from variants list
-    def find_previous_messages(self, message_id: int, variants: typing.List[dict]) -> typing.List[dict]:
+    def find_previous_messages(self,
+                               message_id: int,
+                               variants: typing.List[MessageVariant]
+                               ) -> typing.List[MessageVariant]:
         """get previous message id's related to concrete message from list of all variants
 
         Args:
@@ -166,16 +247,16 @@ class BotGenerator():
             variants (typing.List[dict]): list of all variants
 
         Returns:
-            typing.List[dict]: _descrilist of all previous message id's for concrete messageption_
+            typing.List[dict]: list of all previous message id's for concrete message
         """
-        return [item for item in variants if item['next_id']==message_id]
+        return [item for item in variants if item.next_message_id == message_id]
 
-    # generate code of state handler, get imports (keyboard if in use), states (previous and next), text with keyboard and send method (send file, photo, video, text or group message)
-    def create_state_handler(self, imports: str, prev_state: str, prev_state_text: str, curr_state: str, send_method: str, text: str, kb: str) -> str:
+    def create_state_handler(self, imports: str, type_, prev_state: str, prev_state_text: str, curr_state: str, send_method: str, text: str, kb: str) -> str:
         """generate code of state handler
 
         Args:
             imports (str): imports used in this handler (keyboard and etc.)
+            type_ (str): type of message, command, content-type or null, if method give prev state
             prev_state (str): id of previous state
             prev_state_text (str): text of previous state that connect to current state
             curr_state (str): id of current state
@@ -186,7 +267,7 @@ class BotGenerator():
         Returns:
             str: generated code for handler with state and handled text
         """
-        return create_state_handler(imports, prev_state, prev_state_text, curr_state, send_method, text, kb)
+        return create_state_handler(imports, type_, prev_state, prev_state_text, curr_state, send_method, text, kb)
 
     # create keyboard file in directory
     def create_file_keyboard(self, bot_name: str, keyboard_name: str, keyboard_code: str):
@@ -234,6 +315,7 @@ class BotGenerator():
 
 
 if __name__ == '__main__':
-    start_message_id = 'asdf345'
-    botGenerator = BotGenerator('12354', messages, variants, start_message_id)
+    start_message_id = 'amessage_10'
+    botGenerator = BotGenerator(messages, variants, start_message_id, '12354')
     botGenerator.create_bot()
+
