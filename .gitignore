@@ -136,3 +136,8 @@ dmypy.json
 
 /venv*/
 /tests/connection_settings.json
+
+# static media
+
+static/
+media/
