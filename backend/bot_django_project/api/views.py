@@ -1,16 +1,22 @@
 import shutil
+import subprocess
+import sys
 import uuid
 from pathlib import Path
 from zipfile import ZipFile
 
+import django
 import rest_framework.request
+from django.db.models import Manager
 from django.http import HttpResponse, FileResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
 from b_logic.bot_api import BotApi
-from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT
+from b_logic.bot_processes_manager import BotProcessesManager
+from b_logic.bot_runner import BotRunner
+from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS_DIR
 from rest_framework.request import Request
 
 from .serializers import BotSerializer, MessageSerializer, VariantSerializer
@@ -120,6 +126,7 @@ class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
 
 @api_view(['GET'])
 def generate_bot(request: rest_framework.request.Request, bot_id: str):
+    # todo: тут, думаю, надо проверять, что мы запускаем бота от пользователя, который вызвал метод
     bot_api = BotApi('http://127.0.0.1:8000/')
     bot_api.auth_by_token(request.auth.key)
     bot = bot_api.get_bot_by_id(int(bot_id))
@@ -130,7 +137,7 @@ def generate_bot(request: rest_framework.request.Request, bot_id: str):
         variants = bot_api.get_variants(message)
         for variant in variants:
             bot_info_str += f'        {variant}\n'
-    bots_dir = Path(DATA_FILES_ROOT) / 'generated_bots'
+    bots_dir = BOTS_DIR
     bots_dir.mkdir(parents=True, exist_ok=True)
     botname = str(uuid.uuid4())
     bot_dir = bots_dir / botname
@@ -143,3 +150,45 @@ def generate_bot(request: rest_framework.request.Request, bot_id: str):
     shutil.make_archive(str(bot_dir), 'zip', bot_dir)
 
     return FileResponse(open(bot_zip_file_name, 'rb'))
+
+
+@api_view(['GET'])
+def start_bot(request: rest_framework.request.Request, bot_id: str):
+    # todo: тут будет проверка, что бот принадлежит заданному пользователю
+    bots_dir = BOTS_DIR
+    bot_id_int = int(bot_id)
+    bot_dir = bots_dir / f'bot_{bot_id}'
+    runner = BotRunner(bot_dir)
+    bot_process_manager = BotProcessesManager()
+
+    # если оказалось, что этого бота уже запускали, то остановим его
+    already_started_bot = bot_process_manager.get_process_info(bot_id_int)
+    if already_started_bot is not None:
+        runner.stop(already_started_bot.process_id)
+        bot_process_manager.remove(bot_id_int)
+
+    process_id = runner.start()
+    if process_id is not None:
+        bot_process_manager.register(bot_id_int, process_id)
+        result = HttpResponse(f'Start bot (pid={process_id})', status=200)
+    else:
+        result = HttpResponse('Bot start error', status=404)
+
+    return result
+
+
+@api_view(['GET'])
+def stop_bot(request: rest_framework.request.Request, bot_id: str):
+    runner = BotRunner(Path())
+    bot_id_int = int(bot_id)
+    bot_processes_manager = BotProcessesManager()
+    bot_process = bot_processes_manager.get_process_info(bot_id_int)
+    if bot_process is not None:
+        if runner.stop(bot_process.process_id):
+            bot_processes_manager.remove(bot_id_int)
+            result = HttpResponse('Bot stopped is ok', status=200)
+        else:
+            result = HttpResponse('Can not stop bot', status=500)
+    else:
+        result = HttpResponse('Can not stop bot because bot is not stared', status=404)
+    return result
