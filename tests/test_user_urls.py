@@ -5,9 +5,13 @@ import uuid
 import requests
 import json
 
+from tests.connection_settings import ConnectionSettings
+
 
 class TestUserUrls(unittest.TestCase):
-    _TESTING_SUITE = 'http://127.0.0.1:8000/'
+    def __init__(self, method_name: str):
+        super().__init__(method_name)
+        self._settings = ConnectionSettings()
 
     def test_user_creation_and_deletion(self):
         """
@@ -18,7 +22,7 @@ class TestUserUrls(unittest.TestCase):
         test_name = "autotest_user_{0}".format(unique_username_suffix)
 
         # создаем пользователя
-        create_user_response = requests.post(self._TESTING_SUITE + 'api/users/', {
+        create_user_response = requests.post(self._settings.site_addr + 'api/users/', {
             "first_name": "Autotest user {0}".format(unique_username_suffix),
             "last_name": "autotest_user {0}".format(unique_username_suffix),
             "username": test_name,
@@ -29,7 +33,7 @@ class TestUserUrls(unittest.TestCase):
         created_user_id = json.loads(create_user_response.text)['id']
 
         login_response = requests.post(
-            self._TESTING_SUITE + 'api/auth/token/login/',
+            self._settings.site_addr + 'api/auth/token/login/',
             {
                 'username': test_name,
                 'password': '1'
@@ -40,7 +44,7 @@ class TestUserUrls(unittest.TestCase):
 
         # получаем созданного пользователя
         get_user_by_id_response = requests.get(
-            self._TESTING_SUITE + 'api/users/{id}'.format(
+            self._settings.site_addr + 'api/users/{id}'.format(
                 id=created_user_id),
             headers=self._get_headers(token)
         )
@@ -52,7 +56,7 @@ class TestUserUrls(unittest.TestCase):
 
         # удаляем созданного пользователя
         user_deletion_response = requests.delete(
-            self._TESTING_SUITE + 'api/users/{id}/'.format(id=created_user_id),
+            self._settings.site_addr + 'api/users/{id}/'.format(id=created_user_id),
             data=json.dumps({
                 'current_password': '1'
             }),
