@@ -18,11 +18,12 @@ from b_logic.bot_processes_manager import BotProcessesManager
 from b_logic.bot_runner import BotRunner
 from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS_DIR
 from rest_framework.request import Request
+from rest_framework.decorators import action
 
 from .serializers import BotSerializer, MessageSerializer, VariantSerializer
 from bots.models import Bot, Message, Variant
 from .mixins import RetrieveUpdateDestroyViewSet
-from .permissions import IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden
+from .permissions import IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, IsBotOwnerOrForbidden
 
 
 class BotViewSet(viewsets.ModelViewSet):
@@ -30,14 +31,28 @@ class BotViewSet(viewsets.ModelViewSet):
     Отображение всех ботов пользователя и 
     CRUD-функционал для экземпляра бота
     """
+    # queryset = Bot.objects.all()
     serializer_class = BotSerializer
+    permission_classes = (IsBotOwnerOrForbidden,)
 
-    def get_queryset(self): 
+    def get_queryset(self):
         return Bot.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer: BotSerializer):
         author = self.request.user
         serializer.save(owner=author)
+    
+    @action(
+        methods=['post'],
+        detail=True,
+        url_path='start_bot')
+    def start_bot(self, request, pk=None):
+        bot = get_object_or_404(Bot, id=pk)
+        return Response(
+                {'deploy_status':(f'Бот {bot.name} запущен.')},
+                status=status.HTTP_200_OK
+        )
+
 
 # Вот эта функция, точнее класс, но в данный момент это не сильно важно))
 # Тут в 14 строке ссылка на BotSerializer, он импортирован из serializers.py, идем туда.
