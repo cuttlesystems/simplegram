@@ -41,15 +41,17 @@ class BotViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer: BotSerializer):
         author = self.request.user
         serializer.save(owner=author)
-    
+
     @action(
         methods=['post'],
         detail=True,
-        url_path='start_bot')
+        url_path='start_bot'
+    )
     def start_bot(self, request, pk=None):
         bot = get_object_or_404(Bot, id=pk)
+        self.check_object_permissions(request, bot)
         return Response(
-                {'deploy_status':(f'Бот {bot.name} запущен.')},
+                {'deploy_status': f'Бот {bot.name} запущен.'},
                 status=status.HTTP_200_OK
         )
 
