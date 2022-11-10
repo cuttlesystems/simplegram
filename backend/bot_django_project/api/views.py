@@ -83,6 +83,8 @@ class BotViewSet(viewsets.ModelViewSet):
     def stop_bot(self, request: Request, bot_id_str: str) -> HttpResponse:
         runner = BotRunner(Path())
         bot_id_int = int(bot_id_str)
+        bot = get_object_or_404(Bot, id=bot_id_int)
+        self.check_object_permissions(request, bot)
         bot_processes_manager = BotProcessesManager()
         bot_process = bot_processes_manager.get_process_info(bot_id_int)
         if bot_process is not None:
@@ -208,8 +210,3 @@ def generate_bot(request: rest_framework.request.Request, bot_id: str):
 
     return FileResponse(open(bot_zip_file_name, 'rb'))
 
-
-@api_view(['GET'])
-def stop_bot(request: rest_framework.request.Request, bot_id: str):
-
-    return result
