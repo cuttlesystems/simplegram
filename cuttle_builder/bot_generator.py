@@ -91,34 +91,30 @@ for varinat in variants_json:
     var.current_message_id = varinat['current_id']
     var.next_message_id = varinat['next_id']
     variants.append(var)
-# messages = messages_json
-# variants = variants_json
 
 
-
-class BotGenerator():
-
-    def __init__(self, messages, variants, start_message_id, bot_id):
-
-        self._messages = messages
-        self._variants = variants
-        self._start_message_id = start_message_id
-        self._states = []
-        self._bot_id = bot_id
-        self._file_manager = FileManager()
-    # def __init__(self, bot_api: BotApi, bot: BotDescription):
-    #     messages = bot_api.get_messages(bot)
-    #     all_vars = []
-    #     for mes in messages:
-    #         var = bot_api.get_variants(mes)
-    #         all_vars.extend(var)
+class BotGenerator:
+    # def __init__(self, messages, variants, start_message_id, bot_id):
     #
-    #     self._bot_id = bot.id
     #     self._messages = messages
-    #     self._variants = all_vars
-    #     self._start_message_id = bot.start_message_id
+    #     self._variants = variants
+    #     self._start_message_id = start_message_id
     #     self._states = []
+    #     self._bot_id = bot_id
     #     self._file_manager = FileManager()
+    def __init__(self, bot_api: BotApi, bot: BotDescription):
+        messages = bot_api.get_messages(bot)
+        all_vars = []
+        for mes in messages:
+            var = bot_api.get_variants(mes)
+            all_vars.extend(var)
+
+        self._bot_id = bot.id
+        self._messages = messages
+        self._variants = all_vars
+        self._start_message_id = bot.start_message_id
+        self._states = []
+        self._file_manager = FileManager()
 
     def generate_keyboard(self, message_id: int, bot_directory: str) -> str:
         """create keyboard in directory and return name of this keyboard
@@ -328,6 +324,6 @@ class BotGenerator():
 
 if __name__ == '__main__':
     start_message_id = 'amessage_10'
-    botGenerator = BotGenerator(messages, variants, start_message_id, '12354')
+    botGenerator = BotGenerator(messages, variants, start_message_id, 95)
     botGenerator.create_bot()
 
