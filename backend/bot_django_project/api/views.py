@@ -31,11 +31,14 @@ class BotViewSet(viewsets.ModelViewSet):
     Отображение всех ботов пользователя и 
     CRUD-функционал для экземпляра бота
     """
-    # queryset = Bot.objects.all()
     serializer_class = BotSerializer
     permission_classes = (IsBotOwnerOrForbidden,)
 
+    # указываем имя параметра, в котором будет приходить номер бота, взятый из url (по умолчанию 'pk')
+    lookup_url_kwarg = 'bot_id_str'
+
     def get_queryset(self):
+        # todo: не указан возвращаемый тип
         return Bot.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer: BotSerializer):
@@ -47,13 +50,30 @@ class BotViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path='start_bot'
     )
-    def start_bot(self, request, pk=None):
-        bot = get_object_or_404(Bot, id=pk)
+    def start_bot(self, request: Request, bot_id_str: str) -> HttpResponse:
+        bot_id = int(bot_id_str)
+        bot = get_object_or_404(Bot, id=bot_id)
         self.check_object_permissions(request, bot)
-        return Response(
-                {'deploy_status': f'Бот {bot.name} запущен.'},
-                status=status.HTTP_200_OK
-        )
+
+        bots_dir = BOTS_DIR
+        bot_dir = bots_dir / f'bot_{bot_id}'
+        runner = BotRunner(bot_dir)
+        bot_process_manager = BotProcessesManager()
+
+        # если оказалось, что этого бота уже запускали, то остановим его
+        already_started_bot = bot_process_manager.get_process_info(bot_id)
+        if already_started_bot is not None:
+            runner.stop(already_started_bot.process_id)
+            bot_process_manager.remove(bot_id)
+
+        process_id = runner.start()
+        if process_id is not None:
+            bot_process_manager.register(bot_id, process_id)
+            result = HttpResponse(f'Start bot (pid={process_id})', status=200)
+        else:
+            result = HttpResponse('Bot start error', status=404)
+
+        return result
 
 
 # Вот эта функция, точнее класс, но в данный момент это не сильно важно))
@@ -167,31 +187,6 @@ def generate_bot(request: rest_framework.request.Request, bot_id: str):
     shutil.make_archive(str(bot_dir), 'zip', bot_dir)
 
     return FileResponse(open(bot_zip_file_name, 'rb'))
-
-
-@api_view(['GET'])
-def start_bot(request: rest_framework.request.Request, bot_id: str):
-    # todo: тут будет проверка, что бот принадлежит заданному пользователю
-    bots_dir = BOTS_DIR
-    bot_id_int = int(bot_id)
-    bot_dir = bots_dir / f'bot_{bot_id}'
-    runner = BotRunner(bot_dir)
-    bot_process_manager = BotProcessesManager()
-
-    # если оказалось, что этого бота уже запускали, то остановим его
-    already_started_bot = bot_process_manager.get_process_info(bot_id_int)
-    if already_started_bot is not None:
-        runner.stop(already_started_bot.process_id)
-        bot_process_manager.remove(bot_id_int)
-
-    process_id = runner.start()
-    if process_id is not None:
-        bot_process_manager.register(bot_id_int, process_id)
-        result = HttpResponse(f'Start bot (pid={process_id})', status=200)
-    else:
-        result = HttpResponse('Bot start error', status=404)
-
-    return result
 
 
 @api_view(['GET'])
