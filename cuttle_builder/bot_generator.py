@@ -79,11 +79,11 @@ variants_json = [
 
 messages = []
 variants = []
-# for message in messages_json:
-#     mes = BotMessage()
-#     mes.text = message['text']
-#     mes.id = message['id']
-#     messages.append(mes)
+for message in messages_json:
+    mes = BotMessage()
+    mes.text = message['text']
+    mes.id = message['id']
+    messages.append(mes)
 
 for varinat in variants_json:
     var = MessageVariant()
@@ -158,7 +158,7 @@ class BotGenerator():
                 keyboard_name = self.generate_keyboard(message.id, bot_directory)
                 import_keyboard = 'from keyboards import {0}'.format(keyboard_name) if keyboard_name else ''
 
-                handler_code = self.create_state_handler(
+                start_handler_code = self.create_state_handler(
                     import_keyboard,
                     'Command(\'start\')',
                     '',
@@ -168,7 +168,19 @@ class BotGenerator():
                     message.text,
                     keyboard_name
                 )
-                self.create_file_handler(bot_directory, message_id, handler_code)
+                self.create_file_handler(bot_directory, message_id, start_handler_code)
+
+                restart_handler_code = self.create_state_handler(
+                    import_keyboard,
+                    'Command(\'restart\')',
+                    '*',
+                    '',
+                    f'a{message.id}',
+                    'text',
+                    message.text,
+                    keyboard_name
+                )
+                self.create_file_handler(bot_directory, message_id, restart_handler_code)
                 # continue
 
             previous = self.find_previous_messages(message.id, self._variants)
