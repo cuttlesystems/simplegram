@@ -1,15 +1,8 @@
 import shutil
-import subprocess
-import sys
 import uuid
 from pathlib import Path
-from zipfile import ZipFile
-
-import django
 import rest_framework.request
-from django.db.models import Manager
 from django.http import HttpResponse, FileResponse, HttpResponseBase
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
@@ -51,6 +44,15 @@ class BotViewSet(viewsets.ModelViewSet):
         url_path='start'
     )
     def start_bot(self, request: Request, bot_id_str: str) -> HttpResponse:
+        """
+        Запустить бота. Если бот уже был запущен, то он будет перезапущен
+        Args:
+            request: данные HTTP запроса
+            bot_id_str: идентификатор бота, который хотим запустить
+
+        Returns:
+            результат запуска бота
+        """
         bot_id = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id)
         self.check_object_permissions(request, bot)
@@ -81,6 +83,15 @@ class BotViewSet(viewsets.ModelViewSet):
         url_path='stop'
     )
     def stop_bot(self, request: Request, bot_id_str: str) -> HttpResponse:
+        """
+        Остановить бота
+        Args:
+            request: данные HTTP запроса
+            bot_id_str: идентификатор бота, которого хотим остановить
+
+        Returns:
+            http ответ результата запуска бота
+        """
         runner = BotRunner(Path())
         bot_id_int = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id_int)
@@ -103,6 +114,15 @@ class BotViewSet(viewsets.ModelViewSet):
         url_path='generate'
     )
     def generate_bot(self, request: rest_framework.request.Request, bot_id_str: str) -> HttpResponseBase:
+        """
+        Сгенерировать исходный код бота
+        Args:
+            request: данные запроса
+            bot_id_str: идентификатор бота, исходник которого надо сгенерировать
+
+        Returns:
+            http ответ - зип файл со сгенерированным ботом
+        """
         bot_id = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id)
 
