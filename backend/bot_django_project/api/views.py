@@ -219,8 +219,3 @@ class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
     serializer_class = VariantSerializer
     permission_classes = (IsVariantOwnerOrForbidden,)
 
-
-@api_view(['GET'])
-def generate_bot(request: rest_framework.request.Request, bot_id: str):
-    # todo: тут, думаю, надо проверять, что мы запускаем бота от пользователя, который вызвал метод
-    pass
