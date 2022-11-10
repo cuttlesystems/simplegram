@@ -8,7 +8,7 @@ from zipfile import ZipFile
 import django
 import rest_framework.request
 from django.db.models import Manager
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse, HttpResponseBase
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets, status
@@ -48,7 +48,7 @@ class BotViewSet(viewsets.ModelViewSet):
     @action(
         methods=['POST'],
         detail=True,
-        url_path='start_bot'
+        url_path='start'
     )
     def start_bot(self, request: Request, bot_id_str: str) -> HttpResponse:
         bot_id = int(bot_id_str)
@@ -78,7 +78,7 @@ class BotViewSet(viewsets.ModelViewSet):
     @action(
         methods=['POST'],
         detail=True,
-        url_path='stop_bot'
+        url_path='stop'
     )
     def stop_bot(self, request: Request, bot_id_str: str) -> HttpResponse:
         runner = BotRunner(Path())
@@ -96,6 +96,43 @@ class BotViewSet(viewsets.ModelViewSet):
         else:
             result = HttpResponse('Can not stop bot because bot is not stared', status=404)
         return result
+
+    @action(
+        methods=['POST'],
+        detail=True,
+        url_path='generate'
+    )
+    def generate_bot(self, request: rest_framework.request.Request, bot_id_str: str) -> HttpResponseBase:
+        bot_id = int(bot_id_str)
+        bot = get_object_or_404(Bot, id=bot_id)
+
+        # проверка прав, что пользователь может работать с данным ботом (владелец бота)
+        self.check_object_permissions(request, bot)
+
+        # todo: это заглушка, временный код (сюда состыкуем реальные данные)
+        bot_api = BotApi('http://127.0.0.1:8000/')
+        bot_api.auth_by_token(request.auth.key)
+        bot = bot_api.get_bot_by_id(bot.id)
+        bot_info_str = ''
+        messages = bot_api.get_messages(bot)
+        for message in messages:
+            bot_info_str += f'    {message}\n'
+            variants = bot_api.get_variants(message)
+            for variant in variants:
+                bot_info_str += f'        {variant}\n'
+        bots_dir = BOTS_DIR
+        bots_dir.mkdir(parents=True, exist_ok=True)
+        botname = str(uuid.uuid4())
+        bot_dir = bots_dir / botname
+        bot_dir.mkdir()
+        bot_info_file = bot_dir / 'bot_information.txt'
+        with open(bot_info_file, 'w') as bot_info_file:
+            bot_info_file.write(bot_info_str)
+
+        bot_zip_file_name = str(bot_dir) + '.zip'
+        shutil.make_archive(str(bot_dir), 'zip', bot_dir)
+
+        return FileResponse(open(bot_zip_file_name, 'rb'))
 
 
 # Вот эта функция, точнее класс, но в данный момент это не сильно важно))
@@ -186,27 +223,4 @@ class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
 @api_view(['GET'])
 def generate_bot(request: rest_framework.request.Request, bot_id: str):
     # todo: тут, думаю, надо проверять, что мы запускаем бота от пользователя, который вызвал метод
-    bot_api = BotApi('http://127.0.0.1:8000/')
-    bot_api.auth_by_token(request.auth.key)
-    bot = bot_api.get_bot_by_id(int(bot_id))
-    bot_info_str = ''
-    messages = bot_api.get_messages(bot)
-    for message in messages:
-        bot_info_str += f'    {message}\n'
-        variants = bot_api.get_variants(message)
-        for variant in variants:
-            bot_info_str += f'        {variant}\n'
-    bots_dir = BOTS_DIR
-    bots_dir.mkdir(parents=True, exist_ok=True)
-    botname = str(uuid.uuid4())
-    bot_dir = bots_dir / botname
-    bot_dir.mkdir()
-    bot_info_file = bot_dir / 'bot_information.txt'
-    with open(bot_info_file, 'w') as bot_info_file:
-        bot_info_file.write(bot_info_str)
-
-    bot_zip_file_name = str(bot_dir) + '.zip'
-    shutil.make_archive(str(bot_dir), 'zip', bot_dir)
-
-    return FileResponse(open(bot_zip_file_name, 'rb'))
-
+    pass
