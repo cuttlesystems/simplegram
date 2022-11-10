@@ -12,10 +12,6 @@ def create_state_handler(imports, type_, prev_state, prev_state_text, curr_state
     # prev_state_text = command_to_quotes(prev_state_text)
 
     lambda_mes = ''
-    if prev_state != '*' or prev_state:
-        st_mes = 'state=States.{0}'.format(prev_state)
-    else:
-        st_mes = prev_state
 
     list_of_content_type = [
         type_,
