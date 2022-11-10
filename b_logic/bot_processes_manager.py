@@ -10,10 +10,15 @@ class BotProcessInfo:
 
 
 class BotProcessesManager(metaclass=SingletonBase):
+    """
+    Синглтон для хранения данных о запущенных ботах
+    (информация о идентификаторе процесса)
+    """
+
     def __init__(self):
         self._processes: Dict[int, BotProcessInfo] = {}
 
-    def register(self, bot_id: int, process_id: int):
+    def register(self, bot_id: int, process_id: int) -> None:
         assert bot_id not in self._processes
         process_info = BotProcessInfo(
             bot_id=bot_id,
@@ -24,6 +29,6 @@ class BotProcessesManager(metaclass=SingletonBase):
     def get_process_info(self, bot_id: int) -> Optional[BotProcessInfo]:
         return self._processes.get(bot_id)
 
-    def remove(self, bot_id: int):
+    def remove(self, bot_id: int) -> None:
         assert bot_id in self._processes
         del self._processes[bot_id]

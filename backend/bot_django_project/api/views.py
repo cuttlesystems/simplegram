@@ -46,7 +46,7 @@ class BotViewSet(viewsets.ModelViewSet):
         serializer.save(owner=author)
 
     @action(
-        methods=['post'],
+        methods=['POST'],
         detail=True,
         url_path='start_bot'
     )
@@ -73,6 +73,26 @@ class BotViewSet(viewsets.ModelViewSet):
         else:
             result = HttpResponse('Bot start error', status=404)
 
+        return result
+
+    @action(
+        methods=['POST'],
+        detail=True,
+        url_path='stop_bot'
+    )
+    def stop_bot(self, request: Request, bot_id_str: str) -> HttpResponse:
+        runner = BotRunner(Path())
+        bot_id_int = int(bot_id_str)
+        bot_processes_manager = BotProcessesManager()
+        bot_process = bot_processes_manager.get_process_info(bot_id_int)
+        if bot_process is not None:
+            if runner.stop(bot_process.process_id):
+                bot_processes_manager.remove(bot_id_int)
+                result = HttpResponse('Bot stopped is ok', status=200)
+            else:
+                result = HttpResponse('Can not stop bot', status=500)
+        else:
+            result = HttpResponse('Can not stop bot because bot is not stared', status=404)
         return result
 
 
@@ -191,16 +211,5 @@ def generate_bot(request: rest_framework.request.Request, bot_id: str):
 
 @api_view(['GET'])
 def stop_bot(request: rest_framework.request.Request, bot_id: str):
-    runner = BotRunner(Path())
-    bot_id_int = int(bot_id)
-    bot_processes_manager = BotProcessesManager()
-    bot_process = bot_processes_manager.get_process_info(bot_id_int)
-    if bot_process is not None:
-        if runner.stop(bot_process.process_id):
-            bot_processes_manager.remove(bot_id_int)
-            result = HttpResponse('Bot stopped is ok', status=200)
-        else:
-            result = HttpResponse('Can not stop bot', status=500)
-    else:
-        result = HttpResponse('Can not stop bot because bot is not stared', status=404)
+
     return result
