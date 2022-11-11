@@ -46,33 +46,33 @@ class BotTestData:
     _VARIANTS_JSON = [
         {
             'text': 'from 10 to 30',
-            'current_id': 'message_10',
-            'next_id': 'message_30'
+            'current_id': 10,
+            'next_id': 30
         },
         {
             'text': 'From 10 to 20',
-            'current_id': 'message_10',
-            'next_id': 'message_20'
+            'current_id': 10,
+            'next_id': 20
         },
         {
             'text': 'From 10 to 40',
-            'current_id': 'message_10',
-            'next_id': 'message_40'
+            'current_id': 10,
+            'next_id': 40
         },
         {
             'text': 'From 30 to 50',
-            'current_id': 'message_30',
-            'next_id': 'message_50'
+            'current_id': 30,
+            'next_id': 50
         },
         {
             'text': 'From 20 to 50',
-            'current_id': 'message_20',
-            'next_id': 'message_50'
+            'current_id': 20,
+            'next_id': 50
         },
         {
             'text': 'From 50 to 10',
-            'current_id': 'message_50',
-            'next_id': 'message_10'
+            'current_id': 50,
+            'next_id': 10
         }
     ]
 

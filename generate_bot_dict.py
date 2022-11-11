@@ -4,9 +4,9 @@ from cuttle_builder.bot_test_data import BotTestData
 
 if __name__ == '__main__':
     test_data = BotTestData()
-    botGenerator = BotGenerator(
+    bot_generator = BotGenerator(
         test_data.messages,
         test_data.variants,
         test_data.start_message_id,
         95)
-    botGenerator.create_bot()
+    bot_generator.create_bot()
