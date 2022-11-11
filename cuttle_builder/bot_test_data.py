@@ -110,10 +110,9 @@ class BotTestData:
 
 if __name__ == '__main__':
     test_data = BotTestData()
-    workaround_start_message_id = 'a' + test_data.start_message_id
     botGenerator = BotGenerator(
         test_data.messages,
         test_data.variants,
-        workaround_start_message_id,
+        test_data.start_message_id,
         95)
     botGenerator.create_bot()

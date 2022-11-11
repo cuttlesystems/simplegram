@@ -236,4 +236,3 @@ class BotGenerator:
             str: generated class for states
         """
         return create_state(states)
-

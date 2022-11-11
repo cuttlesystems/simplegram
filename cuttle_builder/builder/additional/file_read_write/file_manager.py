@@ -17,10 +17,10 @@ class FileManager():
             dir (_type_): directory path
             code (_type_): generated code
         """
-        f = open(dir, "a", encoding='utf-8')
-        f.seek(0,0)
-        f.write(code)
-        f.close()
+        with open(dir, "a", encoding='utf-8') as f:
+            f.seek(0,0)
+            f.write(code)
+            f.close()
 
 
     def write_into_init(self, dir: str, code: str) -> None:
