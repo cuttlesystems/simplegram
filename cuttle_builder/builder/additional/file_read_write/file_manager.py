@@ -17,7 +17,7 @@ class FileManager():
             dir (_type_): directory path
             code (_type_): generated code
         """
-        f = open(dir, "a")
+        f = open(dir, "a", encoding='utf-8')
         f.seek(0,0)
         f.write(code)
         f.close()
