@@ -1,5 +1,5 @@
 from b_logic.bot_api import BotApi
-from cuttle_builder.bot_generator import BotGenerator
+from cuttle_builder.bot_generator import BotGenerator, BotGeneratorDb
 from tests.connection_settings import ConnectionSettings
 
 
@@ -10,5 +10,5 @@ if __name__ == '__main__':
 
     bot = bot_api.get_bot_by_id(settings.bot_id)
 
-    bot = BotGenerator(bot_api, bot)
+    bot = BotGeneratorDb(bot_api, bot)
     bot.create_bot()

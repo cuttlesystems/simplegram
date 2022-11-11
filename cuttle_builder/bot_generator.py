@@ -94,26 +94,12 @@ for varinat in variants_json:
 
 
 class BotGenerator:
-    # def __init__(self, messages, variants, start_message_id, bot_id):
-    #
-    #     self._messages = messages
-    #     self._variants = variants
-    #     self._start_message_id = start_message_id
-    #     self._states = []
-    #     self._bot_id = bot_id
-    #     self._file_manager = FileManager()
-    def __init__(self, bot_api: BotApi, bot: BotDescription):
-        messages = bot_api.get_messages(bot)
-        all_vars = []
-        for mes in messages:
-            var = bot_api.get_variants(mes)
-            all_vars.extend(var)
-
-        self._bot_id = bot.id
+    def __init__(self, messages, variants, start_message_id, bot_id):
         self._messages = messages
-        self._variants = all_vars
-        self._start_message_id = bot.start_message_id
+        self._variants = variants
+        self._start_message_id = start_message_id
         self._states = []
+        self._bot_id = bot_id
         self._file_manager = FileManager()
 
     def generate_keyboard(self, message_id: int, bot_directory: str) -> str:
@@ -320,6 +306,17 @@ class BotGenerator:
             str: generated class for states
         """
         return create_state(states)
+
+
+class BotGeneratorDb(BotGenerator):
+    def __init__(self, bot_api: BotApi, bot: BotDescription):
+        messages = bot_api.get_messages(bot)
+        all_vars = []
+        for mes in messages:
+            var = bot_api.get_variants(mes)
+            all_vars.extend(var)
+
+        super().__init__(messages, variants, bot.start_message_id, bot.id)
 
 
 if __name__ == '__main__':
