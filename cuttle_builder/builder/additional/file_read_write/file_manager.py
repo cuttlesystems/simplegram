@@ -58,7 +58,7 @@ class FileManager():
         Returns:
             str: file path
         """
-        return '../bot_{0}'.format(bot_id)
+        return 'bot_{0}'.format(bot_id)
     
     # 
     def delete_dir(self, dir: str) -> None:
