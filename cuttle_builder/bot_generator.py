@@ -25,8 +25,8 @@ class BotGenerator:
         self._messages: List[BotMessage] = messages
         self._variants: List[MessageVariant] = variants
         self._start_message_id_str = f'a{start_message_id}'
-        self._states = []
-        self._bot_id = bot_id
+        self._states: List[int] = []
+        self._bot_id: int = bot_id
         self._file_manager = FileManager()
 
     def generate_keyboard(self, message_id: int, bot_directory: str) -> str:
