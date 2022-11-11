@@ -5,7 +5,7 @@ import uuid
 import requests
 import json
 
-from tests.connection_settings import ConnectionSettings
+from app_tests.connection_settings import ConnectionSettings
 
 
 class TestUserUrls(unittest.TestCase):

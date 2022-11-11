@@ -1,7 +1,6 @@
 from b_logic.bot_api import BotApi
-from cuttle_builder.bot_generator import BotGenerator
 from cuttle_builder.bot_generator_db import BotGeneratorDb
-from tests.connection_settings import ConnectionSettings
+from app_tests.connection_settings import ConnectionSettings
 
 
 if __name__ == '__main__':
