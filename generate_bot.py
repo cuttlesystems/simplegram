@@ -1,5 +1,4 @@
 from b_logic.bot_api import BotApi
-from cuttle_builder.bot_generator import BotGenerator
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from app_tests.connection_settings import ConnectionSettings
 
