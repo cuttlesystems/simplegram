@@ -1,6 +1,6 @@
 import uuid
 from b_logic.bot_api import BotApi
-from tests.connection_settings import ConnectionSettings
+from app_tests.connection_settings import ConnectionSettings
 
 
 def gen_unique_str() -> str:

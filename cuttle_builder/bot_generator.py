@@ -3,13 +3,25 @@ from cuttle_builder.builder.additional.file_read_write.file_manager import FileM
 from cuttle_builder.builder.keyboard_generator.create_reply_keyboard import create_reply_keyboard
 from cuttle_builder.builder.handler_generator.create_state_handler import create_state_handler
 from cuttle_builder.builder.state_generator.create_state import create_state
+from typing import List
 import typing
 
 
 class BotGenerator:
-    def __init__(self, messages, variants, start_message_id, bot_id):
-        self._messages = messages
-        self._variants = variants
+    def __init__(
+            self,
+            messages: List[BotMessage],
+            variants: List[MessageVariant],
+            start_message_id: int,
+            bot_id: int):
+
+        # гарантии типов
+        assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
+        assert all(isinstance(variant, MessageVariant) for variant in variants)
+        assert isinstance(bot_id, int)
+
+        self._messages: List[BotMessage] = messages
+        self._variants: List[MessageVariant] = variants
         self._start_message_id = start_message_id
         self._states = []
         self._bot_id = bot_id
@@ -32,7 +44,7 @@ class BotGenerator:
             self.create_file_keyboard(bot_directory, keyboard_name, keyboard_code)
         return keyboard_name
 
-    def validate(self) -> typing.List[BotMessage]:
+    def validate(self) -> List[BotMessage]:
 
         return self._messages
     def create_bot(self) -> None:

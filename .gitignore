@@ -135,7 +135,7 @@ dmypy.json
 /backend/bot_django_project/data_files
 
 /venv*/
-/tests/connection_settings.json
+/app_tests/connection_settings.json
 
 # static media
 
