@@ -1,96 +1,9 @@
-from b_logic.bot_api import BotApi
-from b_logic.data_objects import BotDescription, BotMessage, MessageVariant
+from b_logic.data_objects import BotMessage, MessageVariant
 from cuttle_builder.builder.additional.file_read_write.file_manager import FileManager
 from cuttle_builder.builder.keyboard_generator.create_reply_keyboard import create_reply_keyboard
 from cuttle_builder.builder.handler_generator.create_state_handler import create_state_handler
 from cuttle_builder.builder.state_generator.create_state import create_state
 import typing
-
-messages_json = [
-        {
-            'id': 'message_10',
-            'text': 'Message 10 text',
-            'photo': None,
-            'video': None,
-            'file': None
-        },
-        {
-            'id': 'message_20',
-            'text': 'Message 20 text',
-            'photo': None,
-            'video': None,
-            'file': None
-        },
-        {
-            'id': 'message_30',
-            'text': 'Message 30 text',
-            'photo': None,
-            'video': None,
-            'file': None
-        },
-        {
-            'id': 'message_40',
-            'text': 'Message 40 text',
-            'photo': None,
-            'video': None,
-            'file': None
-        },
-        {
-            'id': 'message_50',
-            'text': 'Message 50 text',
-            'photo': None,
-            'video': None,
-            'file': None
-        },
-    ]
-
-variants_json = [
-        {
-            'text': 'from 10 to 30',
-            'current_id': 'message_10',
-            'next_id': 'message_30'
-        },
-        {
-            'text': 'From 10 to 20',
-            'current_id': 'message_10',
-            'next_id': 'message_20'
-        },
-        {
-            'text': 'From 10 to 40',
-            'current_id': 'message_10',
-            'next_id': 'message_40'
-        },
-        {
-            'text': 'From 30 to 50',
-            'current_id': 'message_30',
-            'next_id': 'message_50'
-        },
-        {
-            'text': 'From 20 to 50',
-            'current_id': 'message_20',
-            'next_id': 'message_50'
-        },
-        {
-            'text': 'From 50 to 10',
-            'current_id': 'message_50',
-            'next_id': 'message_10'
-        }
-    ]
-
-messages = []
-variants = []
-for message in messages_json:
-    mes = BotMessage()
-    mes.text = message['text']
-    mes.id = message['id']
-    messages.append(mes)
-
-for varinat in variants_json:
-    var = MessageVariant()
-    var.text = varinat['text']
-    var.current_message_id = varinat['current_id']
-    var.next_message_id = varinat['next_id']
-    variants.append(var)
 
 
 class BotGenerator:
@@ -308,19 +221,5 @@ class BotGenerator:
         return create_state(states)
 
 
-class BotGeneratorDb(BotGenerator):
-    def __init__(self, bot_api: BotApi, bot: BotDescription):
-        messages = bot_api.get_messages(bot)
-        all_vars = []
-        for mes in messages:
-            var = bot_api.get_variants(mes)
-            all_vars.extend(var)
 
-        super().__init__(messages, variants, bot.start_message_id, bot.id)
-
-
-if __name__ == '__main__':
-    start_message_id = 'amessage_10'
-    botGenerator = BotGenerator(messages, variants, start_message_id, 95)
-    botGenerator.create_bot()
 
