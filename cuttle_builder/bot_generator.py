@@ -16,7 +16,7 @@ class BotGenerator:
             start_message_id: int,
             bot_id: int):
 
-        # РіР°СЂР°РЅС‚РёРё С‚РёРїРѕРІ
+        # гарантии типов
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, MessageVariant) for variant in variants)
         assert isinstance(bot_id, int)
@@ -236,4 +236,3 @@ class BotGenerator:
             str: generated class for states
         """
         return create_state(states)
-
