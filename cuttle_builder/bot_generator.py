@@ -39,7 +39,7 @@ class BotGenerator:
         Returns:
             str: name of generated keyboard or ''
         """
-        buttons = self.create_keyboard_array(message_id)
+        buttons = self.get_variants_of_message(message_id)
         keyboard_code = self.create_reply_keyboard(f'a{message_id}', buttons) if buttons else ''
         keyboard_name = f'a{message_id}_kb' if keyboard_code else ''
         if keyboard_name:
@@ -131,25 +131,24 @@ class BotGenerator:
             self._states.append(message.id)
         self.create_file_state(bot_directory, self._states)
 
-    def create_keyboard_array(self, message_id: int) -> typing.List[MessageVariant]:
-        """generate list of strs, names of buttons in keyboard
+    def get_variants_of_message(self, message_id: int) -> typing.List[MessageVariant]:
+        """generate list of variants, names of buttons in keyboard
 
         Args:
             message_id (int): id of message
-            variants (typing.List[dict]): list of all varinats (contain text of button, previous and current states)
 
         Returns:
-            typing.List[str]: list of keyboard buttons related to concrete message
+            typing.List[MessageVariant]: list of variants (keyboard buttons) related to concrete message
         """
-        return [item.text for item in self._variants if item.current_message_id == message_id]
+        return [item for item in self._variants if item.current_message_id == message_id]
 
     # generate code of reply keyboard, take text from file and add keyboard with keyboard name
-    def create_reply_keyboard(self, kb_name: str, buttons: typing.List[str]) -> str:
+    def create_reply_keyboard(self, kb_name: str, buttons: typing.List[MessageVariant]) -> str:
         """generate code of reply keyboard
 
         Args:
             kb_name (str): name of keyboard
-            buttons (typing.List[str]): buttons, related to this keyboard
+            buttons (typing.List[MessageVariant]): buttons, related to this keyboard
 
         Returns:
             str: generated code for concrete keyboard
