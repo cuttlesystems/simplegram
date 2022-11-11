@@ -19,6 +19,7 @@ class BotGenerator:
         # гарантии типов
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, MessageVariant) for variant in variants)
+        assert isinstance(start_message_id, int)
         assert isinstance(bot_id, int)
 
         self._messages: List[BotMessage] = messages
