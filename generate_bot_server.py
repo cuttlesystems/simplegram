@@ -10,5 +10,7 @@ if __name__ == '__main__':
 
     bot = bot_api.get_bot_by_id(settings.bot_id)
 
-    bot = BotGeneratorDb(bot_api, bot)
-    bot.create_bot()
+    bot_generator = BotGeneratorDb(bot_api, bot)
+    bot_generator.create_bot()
+
+    print(f'Сгенерирован исходный код бота с номером {bot.id}')

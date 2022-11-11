@@ -19,16 +19,17 @@ class BotGenerator:
         # гарантии типов
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, MessageVariant) for variant in variants)
+        assert isinstance(start_message_id, int)
         assert isinstance(bot_id, int)
 
         self._messages: List[BotMessage] = messages
         self._variants: List[MessageVariant] = variants
         self._start_message_id_str = f'a{start_message_id}'
-        self._states = []
-        self._bot_id = bot_id
+        self._states: List[int] = []
+        self._bot_id: int = bot_id
         self._file_manager = FileManager()
 
-    def generate_keyboard(self, message_id: int, bot_directory: str) -> str:
+    def _generate_keyboard(self, message_id: int, bot_directory: str) -> str:
         """create keyboard in directory and return name of this keyboard
 
         Args:
@@ -38,11 +39,11 @@ class BotGenerator:
         Returns:
             str: name of generated keyboard or ''
         """
-        buttons = self.create_keyboard_array(message_id)
-        keyboard_code = self.create_reply_keyboard(f'a{message_id}', buttons) if buttons else ''
-        keyboard_name = f'a{message_id}_kb' if keyboard_code else ''
+        buttons = self.get_variants_of_message(message_id)
+        keyboard_source_code = self.create_reply_keyboard(f'a{message_id}', buttons) if buttons else ''
+        keyboard_name = f'a{message_id}_kb' if keyboard_source_code else ''
         if keyboard_name:
-            self.create_file_keyboard(bot_directory, keyboard_name, keyboard_code)
+            self.create_file_keyboard(bot_directory, keyboard_name, keyboard_source_code)
         return keyboard_name
 
     def validate(self) -> List[BotMessage]:
@@ -63,7 +64,7 @@ class BotGenerator:
             message_id = f'a{message.id}'
 
             if message_id == self._start_message_id_str:
-                keyboard_name = self.generate_keyboard(message.id, bot_directory)
+                keyboard_name = self._generate_keyboard(message.id, bot_directory)
                 import_keyboard = 'from keyboards import {0}'.format(keyboard_name) if keyboard_name else ''
 
                 start_handler_code = self.create_state_handler(
@@ -94,7 +95,7 @@ class BotGenerator:
             previous = self.find_previous_messages(message.id)
             for prev in previous:
                 if keyboard_generation_counter == 0:
-                    keyboard_name = self.generate_keyboard(message.id, bot_directory)
+                    keyboard_name = self._generate_keyboard(message.id, bot_directory)
                     import_keyboard = 'from keyboards import {0}'.format(keyboard_name) if keyboard_name else ''
                 handler_code = self.create_state_handler(
                     import_keyboard,
@@ -110,7 +111,7 @@ class BotGenerator:
                 keyboard_generation_counter += 1
 
             if not previous:
-                keyboard_name = self.generate_keyboard(message.id, bot_directory)
+                keyboard_name = self._generate_keyboard(message.id, bot_directory)
                 import_keyboard = 'from keyboards import {0}'.format(keyboard_name) if keyboard_name else ''
                 handler_code = self.create_state_handler(
                     import_keyboard,
@@ -130,30 +131,29 @@ class BotGenerator:
             self._states.append(message.id)
         self.create_file_state(bot_directory, self._states)
 
-    def create_keyboard_array(self, message_id: int) -> typing.List[MessageVariant]:
-        """generate list of strs, names of buttons in keyboard
+    def get_variants_of_message(self, message_id: int) -> typing.List[MessageVariant]:
+        """generate list of variants, names of buttons in keyboard
 
         Args:
             message_id (int): id of message
-            variants (typing.List[dict]): list of all varinats (contain text of button, previous and current states)
 
         Returns:
-            typing.List[str]: list of keyboard buttons related to concrete message
+            typing.List[MessageVariant]: list of variants (keyboard buttons) related to concrete message
         """
-        return [item.text for item in self._variants if item.current_message_id == message_id]
+        return [item for item in self._variants if item.current_message_id == message_id]
 
     # generate code of reply keyboard, take text from file and add keyboard with keyboard name
-    def create_reply_keyboard(self, kb_name: str, buttons: typing.List[str]) -> str:
+    def create_reply_keyboard(self, keyboard_variable_name_without_suffix: str, buttons: typing.List[MessageVariant]) -> str:
         """generate code of reply keyboard
 
         Args:
-            kb_name (str): name of keyboard
-            buttons (typing.List[str]): buttons, related to this keyboard
+            keyboard_variable_name_without_suffix (str): name of keyboard
+            buttons (typing.List[MessageVariant]): buttons, related to this keyboard
 
         Returns:
             str: generated code for concrete keyboard
         """
-        return create_reply_keyboard(kb_name, buttons)
+        return create_reply_keyboard(keyboard_variable_name_without_suffix, buttons)
 
     # find previous message id's from variants list
     def find_previous_messages(self,

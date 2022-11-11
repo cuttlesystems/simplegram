@@ -5,10 +5,15 @@ from cuttle_builder.bot_generator import BotGenerator
 
 class BotGeneratorDb(BotGenerator):
     def __init__(self, bot_api: BotApi, bot: BotDescription):
-        messages = bot_api.get_messages(bot)
-        all_vars = []
-        for mes in messages:
-            var = bot_api.get_variants(mes)
-            all_vars.extend(var)
+        assert isinstance(bot_api, BotApi)
+        assert isinstance(bot, BotDescription)
 
-        super().__init__(messages, all_vars, bot.start_message_id, bot.id)
+        messages = bot_api.get_messages(bot)
+
+        # соберем варианты, принадлежащие всем сообщениям в один список
+        all_variants = []
+        for mes in messages:
+            message_variants = bot_api.get_variants(mes)
+            all_variants.extend(message_variants)
+
+        super().__init__(messages, all_variants, bot.start_message_id, bot.id)

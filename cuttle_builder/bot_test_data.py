@@ -5,99 +5,101 @@ from cuttle_builder.bot_generator import BotGenerator
 
 
 class BotTestData:
+    _MESSAGES_JSON = [
+        {
+            'id': 10,
+            'text': 'Message 10 text',
+            'photo': None,
+            'video': None,
+            'file': None
+        },
+        {
+            'id': 20,
+            'text': 'Message 20 text',
+            'photo': None,
+            'video': None,
+            'file': None
+        },
+        {
+            'id': 30,
+            'text': 'Message 30 text',
+            'photo': None,
+            'video': None,
+            'file': None
+        },
+        {
+            'id': 40,
+            'text': 'Message 40 text',
+            'photo': None,
+            'video': None,
+            'file': None
+        },
+        {
+            'id': 50,
+            'text': 'Message 50 text',
+            'photo': None,
+            'video': None,
+            'file': None
+        },
+    ]
+
+    _VARIANTS_JSON = [
+        {
+            'text': 'from 10 to 30',
+            'current_id': 10,
+            'next_id': 30
+        },
+        {
+            'text': 'From 10 to 20',
+            'current_id': 10,
+            'next_id': 20
+        },
+        {
+            'text': 'From 10 to 40',
+            'current_id': 10,
+            'next_id': 40
+        },
+        {
+            'text': 'From 30 to 50',
+            'current_id': 30,
+            'next_id': 50
+        },
+        {
+            'text': 'From 20 to 50',
+            'current_id': 20,
+            'next_id': 50
+        },
+        {
+            'text': 'From 50 to 10',
+            'current_id': 50,
+            'next_id': 10
+        }
+    ]
+
+    _START_MESSAGE_ID = 10
+
     def __init__(self):
-        messages_json = [
-                {
-                    'id': 'message_10',
-                    'text': 'Message 10 text',
-                    'photo': None,
-                    'video': None,
-                    'file': None
-                },
-                {
-                    'id': 'message_20',
-                    'text': 'Message 20 text',
-                    'photo': None,
-                    'video': None,
-                    'file': None
-                },
-                {
-                    'id': 'message_30',
-                    'text': 'Message 30 text',
-                    'photo': None,
-                    'video': None,
-                    'file': None
-                },
-                {
-                    'id': 'message_40',
-                    'text': 'Message 40 text',
-                    'photo': None,
-                    'video': None,
-                    'file': None
-                },
-                {
-                    'id': 'message_50',
-                    'text': 'Message 50 text',
-                    'photo': None,
-                    'video': None,
-                    'file': None
-                },
-            ]
-
-        variants_json = [
-                {
-                    'text': 'from 10 to 30',
-                    'current_id': 'message_10',
-                    'next_id': 'message_30'
-                },
-                {
-                    'text': 'From 10 to 20',
-                    'current_id': 'message_10',
-                    'next_id': 'message_20'
-                },
-                {
-                    'text': 'From 10 to 40',
-                    'current_id': 'message_10',
-                    'next_id': 'message_40'
-                },
-                {
-                    'text': 'From 30 to 50',
-                    'current_id': 'message_30',
-                    'next_id': 'message_50'
-                },
-                {
-                    'text': 'From 20 to 50',
-                    'current_id': 'message_20',
-                    'next_id': 'message_50'
-                },
-                {
-                    'text': 'From 50 to 10',
-                    'current_id': 'message_50',
-                    'next_id': 'message_10'
-                }
-            ]
-
         messages: List[BotMessage] = []
         variants: List[MessageVariant] = []
-        for message in messages_json:
+        for message in self._MESSAGES_JSON:
             mes = BotMessage()
             mes.text = message['text']
             mes.id = message['id']
             messages.append(mes)
 
-        for varinat in variants_json:
+        for variant in self._VARIANTS_JSON:
             var = MessageVariant()
-            var.text = varinat['text']
-            var.current_message_id = varinat['current_id']
-            var.next_message_id = varinat['next_id']
+            var.text = variant['text']
+            var.current_message_id = variant['current_id']
+            var.next_message_id = variant['next_id']
             variants.append(var)
 
         self._messages = messages
         self._variants = variants
 
     @property
-    def start_message_id(self) -> str:
-        return 'message_10'
+    def start_message_id(self) -> int:
+        return 10
 
     @property
     def messages(self) -> List[BotMessage]:
@@ -108,11 +110,3 @@ class BotTestData:
         return self._variants
 
 
-if __name__ == '__main__':
-    test_data = BotTestData()
-    botGenerator = BotGenerator(
-        test_data.messages,
-        test_data.variants,
-        test_data.start_message_id,
-        95)
-    botGenerator.create_bot()

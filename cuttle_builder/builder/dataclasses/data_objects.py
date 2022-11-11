@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
-
+# todo: этот файл дублируется, удалить
 
 @dataclass
 class BotDescription:
