@@ -1,6 +1,4 @@
 import uuid
-from pathlib import Path
-
 from b_logic.bot_api import BotApi
 from tests.connection_settings import ConnectionSettings
 
