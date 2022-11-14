@@ -1,0 +1,26 @@
+FROM python:3.10
+
+RUN mkdir -p /usr/src/tg_bot_app
+WORKDIR /usr/src/tg_bot_app
+
+#копируем код бота в рабочую директорию приложения в контейнере
+COPY *.py ./
+
+#COPY requirements.txt ./
+
+#команда создания виртуального окружения для бота
+RUN python3 -m venv venv_4_tg_bot
+#команда активации виртуального окружения для бота
+RUN . venv_4_tg_bot/bin/activate
+
+#установка зависимостей
+#RUN python3 -m pip install -r requirements.txt
+RUN pip install --user aiogram
+
+#копируем содержимое проекта в рабочую директорию приложения
+# либо используя явный метод: COPY . /usr/src/app,
+# либо с использованием WORKDIR-инструкции:
+COPY . .
+
+#команда, выполняемая после запуская контейнера
+CMD ["python3", "tg_bot.py"]
