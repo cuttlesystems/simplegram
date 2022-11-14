@@ -12,17 +12,21 @@ class Widget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._load_ui()
+        self._connect_signals()
 
     def _load_ui(self):
         loader = QUiLoader()
-        path = Path(__file__).resolve().parent / "form.ui"
+        path = Path(__file__).resolve().parent / "login_form.ui"
         ui_file = QFile(path)
         ui_file.open(QFile.ReadOnly)
-        loader.load(ui_file, self)
+        self._ui = loader.load(ui_file, self)
         ui_file.close()
 
+    def _connect_signals(self):
+        self._ui.load_bots.clicked.connect(self._on_button_click)
+
     def _on_button_click(self):
-        pass
+        print('Нажали')
 
 
 if __name__ == "__main__":
