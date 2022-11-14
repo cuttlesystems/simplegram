@@ -40,7 +40,7 @@ class BotGenerator:
             str: name of generated keyboard or ''
         """
         buttons = self.get_variants_of_message(message_id)
-        keyboard_source_code = self.create_reply_keyboard(f'a{message_id}', buttons) if buttons else ''
+        keyboard_source_code = self.create_reply_keyboard(f'a{message_id}_kb', buttons) if buttons else ''
         keyboard_name = f'a{message_id}_kb' if keyboard_source_code else ''
         if keyboard_name:
             self.create_file_keyboard(bot_directory, keyboard_name, keyboard_source_code)
