@@ -78,6 +78,8 @@ class BotTestData:
 
     _START_MESSAGE_ID = 10
 
+    _TOKEN = '5689990303:AAEnr1DqNhBvx_zwVt9rnb2P3YJynvjq2rg'
+
     def __init__(self):
         messages: List[BotMessage] = []
         variants: List[MessageVariant] = []
@@ -108,5 +110,9 @@ class BotTestData:
     @property
     def variants(self) -> List[MessageVariant]:
         return self._variants
+
+    @property
+    def TOKEN(self) -> List[MessageVariant]:
+        return self._TOKEN
 
 

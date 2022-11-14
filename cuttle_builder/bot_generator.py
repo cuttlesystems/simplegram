@@ -2,11 +2,13 @@ from b_logic.data_objects import BotMessage, MessageVariant
 from cuttle_builder.builder.additional.file_read_write.file_manager import FileManager
 from cuttle_builder.builder.keyboard_generator.create_reply_keyboard import create_reply_keyboard
 from cuttle_builder.builder.handler_generator.create_state_handler import create_state_handler
+from cuttle_builder.builder.config_generator.create_config import create_config
 from cuttle_builder.builder.state_generator.create_state import create_state
 from typing import List
 import typing
 
 
+# underscore and types
 class BotGenerator:
 
     def __init__(
@@ -14,7 +16,9 @@ class BotGenerator:
             messages: List[BotMessage],
             variants: List[MessageVariant],
             start_message_id: int,
-            bot_id: int):
+            bot_id: int,
+            TOKEN: str
+    ):
 
         # гарантии типов
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
@@ -28,6 +32,10 @@ class BotGenerator:
         self._states: List[int] = []
         self._bot_id: int = bot_id
         self._file_manager = FileManager()
+        self._TOKEN = TOKEN
+
+        for message in self._messages:
+            self._states.append(message.id)
 
     def _get_keyboard_name_for_message(self, message_id: int) -> str:
         assert isinstance(message_id, int)
@@ -43,30 +51,42 @@ class BotGenerator:
         Returns:
             str: name of generated keyboard or None
         """
-        variants = self.get_variants_of_message(message_id)
+        variants = self._get_variants_of_message(message_id)
 
         keyboard_name: typing.Optional[str] = None
 
         # если есть варианты, которые принадлежат текущему сообщению
         if len(variants) > 0:
             keyboard_name = self._get_keyboard_name_for_message(message_id)
-            keyboard_source_code = self.create_reply_keyboard(keyboard_name, variants)
-            self._create_file_keyboard(bot_directory, keyboard_name, keyboard_source_code)
+            keyboard_source_code = self._create_reply_keyboard(keyboard_name, variants)
+            self.create_file_keyboard(bot_directory, keyboard_name, keyboard_source_code)
 
         return keyboard_name
 
-    def validate(self) -> List[BotMessage]:
-
+    def _validate(self) -> List[BotMessage]:
         return self._messages
 
+    def check_token(self) -> bool:
+        """
+        Validate BOT token
+
+        :param token:
+        :return:
+        """
+        left, sep, right = self._TOKEN.partition(':')
+        if (not sep) or (not left.isdigit()) or (not right):
+            raise Exception('Token is invalid!')
+
+        return True
     def create_bot(self) -> None:
 
-        if not self.validate():
+        if not self._validate():
             print('U not create a messages')
             self._file_manager.delete_bot_by_id(self._bot_id)
             return
         bot_directory = self._file_manager.create_bot_directory(self._bot_id)
-
+        if self.check_token():
+            self._create_config_file(bot_directory)
         for message in self._messages:
 
             keyboard_generation_counter = 0  # count number of generation of keyboard
@@ -74,8 +94,8 @@ class BotGenerator:
 
             if message_id == self._start_message_id_str:
                 keyboard_name = self._generate_keyboard(message.id, bot_directory)
-
-                start_handler_code = self.create_state_handler(
+                keyboard_generation_counter += 1
+                start_handler_code = self._create_state_handler(
                     'Command(\'start\')',
                     None,
                     '',
@@ -86,7 +106,7 @@ class BotGenerator:
                 )
                 self.create_file_handler(bot_directory, message_id, start_handler_code)
 
-                restart_handler_code = self.create_state_handler(
+                restart_handler_code = self._create_state_handler(
                     'Command(\'restart\')',
                     '*',
                     '',
@@ -98,13 +118,14 @@ class BotGenerator:
                 self.create_file_handler(bot_directory, message_id, restart_handler_code)
                 # continue
 
-            previous = self.find_previous_messages(message.id)
+            previous = self._find_previous_messages(message.id)
             for prev in previous:
-                keyboard_name = None
+                keyboard_name = ''
                 if keyboard_generation_counter == 0:
                     keyboard_name = self._generate_keyboard(message.id, bot_directory)
-
-                handler_code = self.create_state_handler(
+                else:
+                    keyboard_name = self._get_keyboard_name_for_message(message.id)
+                handler_code = self._create_state_handler(
                     '',
                     f'a{prev.current_message_id}',
                     prev.text,
@@ -119,7 +140,7 @@ class BotGenerator:
             if not previous:
                 keyboard_name = self._generate_keyboard(message.id, bot_directory)
 
-                handler_code = self.create_state_handler(
+                handler_code = self._create_state_handler(
                     '',
                     None,
                     '',
@@ -129,14 +150,9 @@ class BotGenerator:
                     keyboard_name
                 )
                 self.create_file_handler(bot_directory, message_id, handler_code)
-        self.generate_state(bot_directory)
+        self.create_file_state(bot_directory)
 
-    def generate_state(self, bot_directory):
-        for message in self._messages:
-            self._states.append(message.id)
-        self.create_file_state(bot_directory, self._states)
-
-    def get_variants_of_message(self, message_id: int) -> typing.List[MessageVariant]:
+    def _get_variants_of_message(self, message_id: int) -> typing.List[MessageVariant]:
         """generate list of variants, names of buttons in keyboard
 
         Args:
@@ -148,7 +164,7 @@ class BotGenerator:
         return [item for item in self._variants if item.current_message_id == message_id]
 
     # generate code of reply keyboard, take text from file and add keyboard with keyboard name
-    def create_reply_keyboard(self, keyboard_variable_name_without_suffix: str, buttons: typing.List[MessageVariant]) -> str:
+    def _create_reply_keyboard(self, keyboard_variable_name_without_suffix: str, buttons: typing.List[MessageVariant]) -> str:
         """generate code of reply keyboard
 
         Args:
@@ -161,9 +177,9 @@ class BotGenerator:
         return create_reply_keyboard(keyboard_variable_name_without_suffix, buttons)
 
     # find previous message id's from variants list
-    def find_previous_messages(self,
-                               message_id: int
-                               ) -> typing.List[MessageVariant]:
+    def _find_previous_messages(self,
+                                message_id: int
+                                ) -> typing.List[MessageVariant]:
         """get previous message id's related to concrete message from list of all variants
 
         Args:
@@ -175,8 +191,8 @@ class BotGenerator:
         """
         return [item for item in self._variants if item.next_message_id == message_id]
 
-    def create_state_handler(self, type_, prev_state: str, prev_state_text: str, curr_state: str,
-                             send_method: str, text: str, kb: str, extended_imports: str = '') -> str:
+    def _create_state_handler(self, type_, prev_state: str, prev_state_text: str, curr_state: str,
+                              send_method: str, text: str, kb: str, extended_imports: str = '') -> str:
         """generate code of state handler
 
         Args:
@@ -203,7 +219,7 @@ class BotGenerator:
         return create_state_handler(all_imports, type_, prev_state, prev_state_text, curr_state, send_method, text, kb)
 
     # create keyboard file in directory
-    def _create_file_keyboard(self, bot_name: str, keyboard_name: str, keyboard_code: str):
+    def create_file_keyboard(self, bot_name: str, keyboard_name: str, keyboard_code: str):
         """create file in specific directory, contains keyboard and register this keyboard in the package
 
         Args:
@@ -228,24 +244,23 @@ class BotGenerator:
                                        f'from .get_{name} import dp\n')
 
     # create state file in directory
-    def create_file_state(self, bot_name: str, states: str) -> None:
+    def create_file_state(self, bot_name: str) -> None:
         """create file in specific directory, contains states class and register this class in the package
 
         Args:
             bot_name (str): name of bot
-            states (str): generated code of states
         """
-        self._file_manager.create_file(f'{bot_name}/state/states.py', self.create_state(states),
+        self._file_manager.create_file(f'{bot_name}/state/states.py', self._create_state(),
                                        f'{bot_name}/state/__init__.py', 'from .states import States')
+    def _create_config_file(self, bot_directory: str):
+        config_code = create_config({'TOKEN': self._TOKEN})
+        self._file_manager.create_file(f'{bot_directory}/data/config.py', config_code)
 
     # generate code of state, based on states, that given from bot (id's of each message given as state)
-    def create_state(self, states: list) -> str:
+    def _create_state(self) -> str:
         """generate code of state class
-
-        Args:
-            states (list): list of states (str)
 
         Returns:
             str: generated class for states
         """
-        return create_state(states)
+        return create_state(self._states)
