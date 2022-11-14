@@ -16,7 +16,9 @@ class BotGenerator:
             messages: List[BotMessage],
             variants: List[MessageVariant],
             start_message_id: int,
-            bot_id: int):
+            bot_id: int,
+            TOKEN: str
+    ):
 
         # гарантии типов
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
@@ -30,7 +32,7 @@ class BotGenerator:
         self._states: List[int] = []
         self._bot_id: int = bot_id
         self._file_manager = FileManager()
-        self._TOKEN = '5689990303:AAEnr1DqNhBvx_zwVt9rnb2P3YJynvjq2rg'
+        self._TOKEN = TOKEN
 
         for message in self._messages:
             self._states.append(message.id)
@@ -64,6 +66,18 @@ class BotGenerator:
     def _validate(self) -> List[BotMessage]:
         return self._messages
 
+    def check_token(self) -> bool:
+        """
+        Validate BOT token
+
+        :param token:
+        :return:
+        """
+        left, sep, right = self._TOKEN.partition(':')
+        if (not sep) or (not left.isdigit()) or (not right):
+            raise Exception('Token is invalid!')
+
+        return True
     def create_bot(self) -> None:
 
         if not self._validate():
@@ -71,10 +85,8 @@ class BotGenerator:
             self._file_manager.delete_bot_by_id(self._bot_id)
             return
         bot_directory = self._file_manager.create_bot_directory(self._bot_id)
-        if self._TOKEN:
+        if self.check_token():
             self._create_config_file(bot_directory)
-        else:
-            raise Exception("U don't write token of bot")
         for message in self._messages:
 
             keyboard_generation_counter = 0  # count number of generation of keyboard
