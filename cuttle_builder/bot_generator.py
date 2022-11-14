@@ -77,7 +77,7 @@ class BotGenerator:
 
                 start_handler_code = self.create_state_handler(
                     'Command(\'start\')',
-                    '',
+                    None,
                     '',
                     f'a{message.id}',
                     'text',
@@ -121,7 +121,7 @@ class BotGenerator:
 
                 handler_code = self.create_state_handler(
                     '',
-                    '',
+                    None,
                     '',
                     message_id,
                     'photo',
