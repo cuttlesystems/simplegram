@@ -3,13 +3,12 @@ import shutil
 import os
 
 from pathlib import Path
-from typing import Optional
 
 
 class FileManager():
     def __init__(self) -> None:
         pass
-
+    
 
     def write_file(self, dir: str, code: str) -> None:
         """add into directory file, that contains generated code
@@ -37,7 +36,8 @@ class FileManager():
             file.write(code + file_data)
             # file.close()
 
-    def create_file(self, file_path: str, code: str, init_path: Optional[str] = None, import_code: Optional[str] = None) -> None:
+    
+    def create_file(self, file_path: str, code: str, init_path: str, import_code: str) -> None:
         """create and register new unit of telegram bot
 
         Args:
@@ -47,8 +47,7 @@ class FileManager():
             import_code (_type_): generated code (import inside init)
         """
         self.write_file(file_path, code)
-        if init_path is not None and import_code is not None:
-            self.write_into_init(init_path, import_code)
+        self.write_into_init(init_path, import_code)
 
     def get_dir(self, bot_id: int) -> str:
         """generate path, where bot is store (doesn't work if call outside of cuttle_builder directory)
@@ -60,7 +59,7 @@ class FileManager():
             str: file path
         """
         return 'bot_{0}'.format(bot_id)
-
+    
     # 
     def delete_dir(self, dir: str) -> None:
         """delete directory, to prevent writing file over exist file
@@ -71,7 +70,7 @@ class FileManager():
         try:
             shutil.rmtree(dir)
         except FileNotFoundError:
-            pass
+            pass 
         except Exception as e:
             print(e)
 
