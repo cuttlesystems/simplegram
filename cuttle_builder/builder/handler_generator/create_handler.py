@@ -1,5 +1,4 @@
 # base method to create handler
-from pathlib import Path
 
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.additional.file_read_write.read_file import read_file
