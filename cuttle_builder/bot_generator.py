@@ -6,6 +6,7 @@ from cuttle_builder.builder.keyboard_generator.create_reply_keyboard import crea
 from cuttle_builder.builder.handler_generator.create_state_handler import create_state_handler
 from cuttle_builder.builder.config_generator.create_config import create_config
 from cuttle_builder.builder.state_generator.create_state import create_state
+from cuttle_builder.APIFileCreator import APIFileCreator
 from typing import List
 import typing
 
@@ -84,21 +85,9 @@ class BotGenerator:
         if len(variants) > 0:
             keyboard_name = self._get_keyboard_name_for_message(message_id)
             keyboard_source_code = create_reply_keyboard(keyboard_name, variants, imports_for_keyboard)
-            self.create_file_keyboard(self._bot_directory, keyboard_name, keyboard_source_code)
+            self._file_manager.create_file_keyboard(self._bot_directory, keyboard_name, keyboard_source_code)
 
         return keyboard_name
-
-    def create_file_handler(self, bot_directory, name: str, code: str):
-        """create file in specific directory, contains handler and register this handler in the package
-
-        Args:
-            bot_name (str): name of bot
-            name (str): name of handler (message_id)
-            code (str): generated code of handler
-        """
-        self._file_manager.create_file(f'{bot_directory}/handlers/get_{name}.py', code,
-                                       f'{bot_directory}/handlers/__init__.py',
-                                       f'from .get_{name} import dp\n')
 
     def _create_state_handler(self, type_, prev_state: str, prev_state_text: str, curr_state: str,
                               send_method: str, text: str, kb: str, extended_imports: str = '') -> str:
@@ -160,7 +149,8 @@ class BotGenerator:
                 keyboard_name,
                 imports_for_start_handler
             )
-            self.create_file_handler(self._bot_directory, message.id, start_handler_code)
+
+            self._file_manager.create_file_handler(self._bot_directory, message.id, start_handler_code)
             imports_generation_counter += 1
             restart_handler_code = self._create_state_handler(
                 'Command(\'restart\')',
@@ -172,7 +162,7 @@ class BotGenerator:
                 keyboard_name,
                 ''
             )
-            self.create_file_handler(self._bot_directory, message.id, restart_handler_code)
+            self._file_manager.create_file_handler(self._bot_directory, message.id, restart_handler_code)
 
         previous: typing.List[MessageVariant] = self._find_previous_messages(message.id)
         for prev in previous:
@@ -190,7 +180,7 @@ class BotGenerator:
                 keyboard_name,
                 imports_for_handler if imports_generation_counter == 0 else ''
             )
-            self.create_file_handler(self._bot_directory, message.id, handler_code)
+            self._file_manager.create_file_handler(self._bot_directory, message.id, handler_code)
             keyboard_generation_counter += 1
             imports_generation_counter += 1
 
@@ -209,7 +199,7 @@ class BotGenerator:
                 message.text,
                 keyboard_name
             )
-            self.create_file_handler(message.id, handler_code)
+            self._file_manager.create_file_handler(message.id, handler_code)
 
 
     def create_bot(self) -> None:
@@ -218,18 +208,6 @@ class BotGenerator:
         for message in self._messages:
             self.create_file_handlers(message)
         self._file_manager.create_file_state(self._bot_directory, self._create_state())
-    def create_file_keyboard(self, bot_name: str, keyboard_name: str, keyboard_code: str):
-        """create file in specific directory, contains keyboard and register this keyboard in the package
-
-        Args:
-            bot_name (str): name of bot
-            keyboard_name (str): name of keyboard (message_id + _kb)
-            keyboard_code (str): generated code of keyboard
-        """
-        self._file_manager.create_file(f'{bot_name}/keyboards/{keyboard_name}.py', keyboard_code,
-                                       f'{bot_name}/keyboards/__init__.py',
-                                       f'\nfrom .{keyboard_name} import {keyboard_name}')
-
 
     def _create_state(self) -> str:
         """generate code of state class
@@ -237,50 +215,10 @@ class BotGenerator:
         Returns:
             str: generated class for states
         """
-        imports_for_state = (
-                CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'imports' / 'state_import.txt')
-        extended_imports = self._file_manager.read_file(imports_for_state)
+        extended_imports = self._get_imports_sample('state_import')
         return create_state(extended_imports, self._states)
 
     def _create_config_file(self):
-        config_code = create_config({'TOKEN': self._TOKEN})
-        self._file_manager.create_file(f'{self._bot_directory}/data/config.py', config_code)
-
-
-class APIFileCreator(FileManager):
-
-    def create_file_keyboard(self, bot_name: str, keyboard_name: str, keyboard_code: str):
-        """create file in specific directory, contains keyboard and register this keyboard in the package
-
-        Args:
-            bot_name (str): name of bot
-            keyboard_name (str): name of keyboard (message_id + _kb)
-            keyboard_code (str): generated code of keyboard
-        """
-        self.create_file(f'{bot_name}/keyboards/{keyboard_name}.py', keyboard_code,
-                                       f'{bot_name}/keyboards/__init__.py',
-                                       f'\nfrom .{keyboard_name} import {keyboard_name}')
-
-    def create_file_handler(self, bot_name: str, name: str, code: str):
-        """create file in specific directory, contains handler and register this handler in the package
-
-        Args:
-            bot_name (str): name of bot
-            name (str): name of handler (message_id)
-            code (str): generated code of handler
-        """
-        self.create_file(f'{bot_name}/handlers/get_{name}.py', code, f'{bot_name}/handlers/__init__.py',
-                                       f'from .get_{name} import dp\n')
-
-    def create_file_state(self, bot_name: str, code) -> None:
-        """create file in specific directory, contains states class and register this class in the package
-
-        Args:
-            bot_name (str): name of bot
-        """
-        self.create_file(f'{bot_name}/state/states.py', code,
-                                       f'{bot_name}/state/__init__.py', 'from .states import States')
-
-    def _create_config_file(self, TOKEN, bot_directory):
-        config_code = create_config({'TOKEN': TOKEN})
-        self.create_file(f'{bot_directory}/data/config.py', config_code)
+        extend_imports = self._get_imports_sample('config_import')
+        config_code = create_config(extend_imports, {'TOKEN': self._TOKEN})
+        self._file_manager.create_config_file(self._bot_directory, config_code)
