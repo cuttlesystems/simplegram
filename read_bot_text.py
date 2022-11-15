@@ -7,7 +7,7 @@ if __name__ == '__main__':
     bot_api = BotApi(settings.site_addr)
     bot_api.authentication(settings.username, settings.password)
     bot = bot_api.get_bot_by_id(settings.bot_id)
-
+    print(bot)
     messages = bot_api.get_messages(bot)
     for message in messages:
         print('    ', message)
