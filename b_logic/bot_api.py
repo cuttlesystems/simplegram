@@ -7,8 +7,13 @@ import requests
 from b_logic.data_objects import BotDescription, BotMessage, MessageVariant
 
 
+class BotApiException(Exception):
+    def __init__(self, mes: str):
+        super().__init__(mes)
+
+
 class BotApi:
-    def __init__(self, suite_url: str):
+    def __init__(self, suite_url: typing.Optional[str] = None):
         """
         Создать объект для работы с данными ботов через rest_api
         Args:
@@ -16,6 +21,10 @@ class BotApi:
         """
         self._suite_url: str = suite_url
         self._auth_token: Optional[str] = None
+
+    def set_suite(self, suite_url: str):
+        assert isinstance(suite_url, str)
+        self._suite_url = suite_url
 
     def authentication(self, username: str, password: str) -> None:
         """
@@ -33,7 +42,7 @@ class BotApi:
             }
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise Exception('Ошибка аутентификации пользователя {0}'.format(response.text))
+            raise BotApiException('Ошибка аутентификации пользователя {0}'.format(response.text))
         self._auth_token = json.loads(response.text)['auth_token']
 
     def auth_by_token(self, token: str) -> None:
@@ -66,7 +75,7 @@ class BotApi:
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
-            raise Exception('Ошибка при создании бота: {0}'.format(response.text))
+            raise BotApiException('Ошибка при создании бота: {0}'.format(response.text))
         return self._create_bot_obj_from_dict(json.loads(response.text))
 
     def get_bots(self) -> List[BotDescription]:
@@ -80,7 +89,7 @@ class BotApi:
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise Exception('Ошибка при получении списка ботов')
+            raise BotApiException('Ошибка при получении списка ботов')
         bots_dict_list: List[dict] = json.loads(response.text)
         bots_list: List[BotDescription] = []
         for bot_dict in bots_dict_list:
@@ -101,7 +110,7 @@ class BotApi:
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise Exception(f'Ошибка при получении списка ботов {response.text}')
+            raise BotApiException(f'Ошибка при получении списка ботов {response.text}')
 
         return self._create_bot_obj_from_dict(json.loads(response.text))
 
@@ -128,7 +137,7 @@ class BotApi:
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
-            raise Exception('Ошибка при создании сообщения: {0}'.format(response.text))
+            raise BotApiException('Ошибка при создании сообщения: {0}'.format(response.text))
         return self._create_bot_message_from_dict(json.loads(response.text))
 
     def get_messages(self, bot: BotDescription) -> List[BotMessage]:
@@ -146,7 +155,7 @@ class BotApi:
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise Exception(f'Ошибка при получении сообщений бота {response.text}')
+            raise BotApiException(f'Ошибка при получении сообщений бота {response.text}')
         messages_list: List[BotMessage] = []
         for message_dict in json.loads(response.text):
             messages_list.append(self._create_bot_message_from_dict(message_dict))
@@ -171,7 +180,7 @@ class BotApi:
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
-            raise Exception('Ошибка при создании варианта: {0}'.format(response.text))
+            raise BotApiException('Ошибка при создании варианта: {0}'.format(response.text))
         return self._create_variant_from_dict(json.loads(response.text))
 
     def get_variants(self, message: BotMessage) -> List[MessageVariant]:
@@ -189,7 +198,7 @@ class BotApi:
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise Exception(
+            raise BotApiException(
                 f'Ошибка при получении списка вариантов для сообщения {response.text}')
         variants: List[MessageVariant] = []
         variants_dict_list: List[dict] = json.loads(response.text)
@@ -214,7 +223,7 @@ class BotApi:
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise Exception(
+            raise BotApiException(
                 'Ошибка при связывании варианта с последующим сообщением: {0}'.format(response.text))
 
     def set_bot_start_message(self, bot: BotDescription, start_message: BotMessage) -> None:
@@ -235,7 +244,7 @@ class BotApi:
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise Exception('Ошибка при установке стартового сообщения бота: {0}'.format(
+            raise BotApiException('Ошибка при установке стартового сообщения бота: {0}'.format(
                 response.text))
 
     def _get_headers(self) -> typing.Dict[str, str]:

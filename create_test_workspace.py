@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     bot = bot_api.create_bot(
         'Имя тестовое бота {0}'.format(gen_unique_str()),
-        gen_unique_str(),
+        '5689990303:AAEnr1DqNhBvx_zwVt9rnb2P3YJynvjq2rg',
         'Описание созданного бота')
 
     main_message = bot_api.create_message(bot, 'Что вас интересует?', 10, 10)
