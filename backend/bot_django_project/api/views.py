@@ -38,6 +38,11 @@ class BotViewSet(viewsets.ModelViewSet):
         author = self.request.user
         serializer.save(owner=author)
 
+    def _get_bot_dir(self, bot_id: int) -> Path:
+        assert isinstance(bot_id, int)
+        bot_dir = BOTS_DIR / f'bot_{bot_id}'
+        return bot_dir
+
     @action(
         methods=['POST'],
         detail=True,
@@ -57,8 +62,7 @@ class BotViewSet(viewsets.ModelViewSet):
         bot = get_object_or_404(Bot, id=bot_id)
         self.check_object_permissions(request, bot)
 
-        bots_dir = BOTS_DIR
-        bot_dir = bots_dir / f'bot_{bot_id}'
+        bot_dir = self._get_bot_dir(bot_id)
         runner = BotRunner(bot_dir)
         bot_process_manager = BotProcessesManager()
 

@@ -5,7 +5,6 @@ from rest_framework.viewsets import ModelViewSet
 from bots.models import Message, Variant, Bot
 
 
-
 class IsMessageOwnerOrForbidden(permissions.BasePermission):
     """
     Проверка получения доступа к объекту Message.
@@ -36,9 +35,7 @@ class IsBotOwnerOrForbidden(permissions.BasePermission):
     Разрешен доступ только для своего бота.
     """
     def has_object_permission(self, request: Request, view: ModelViewSet, obj: Bot) -> bool:
-        print('has_object_permission')
         return obj.owner == request.user
 
     def has_permission(self, request: Request, view: ModelViewSet) -> bool:
-        print('has_permission')
         return all(bot.owner == request.user for bot in view.get_queryset())

@@ -38,6 +38,7 @@ if __name__ == '__main__':
     bot_api.connect_variant(android_variant, android_select_message)
     samsung_galaxy_s22 = bot_api.create_variant(android_select_message, 'Samsung Galaxy S22')
     samsung_galaxy_a53 = bot_api.create_variant(android_select_message, 'Samsung Galaxy A53')
+    mobile_test_variant = bot_api.create_variant(android_select_message, 'Huawei')
 
     buy_samsung_galaxy_s22_message = bot_api.create_message(
         bot, 'Вы оформляете заказ Samsung Galaxy S22', 300, 150)
@@ -46,6 +47,10 @@ if __name__ == '__main__':
     buy_samsung_galaxy_a53_message = bot_api.create_message(
         bot, 'Вы оформляете заказ Samsung Galaxy A53', 300, 200)
     bot_api.connect_variant(samsung_galaxy_a53, buy_samsung_galaxy_a53_message)
+
+    bot_mobile_test_mes = bot_api.create_message(
+        bot, 'Оформляем Huawei', 160, 180)
+    bot_api.connect_variant(mobile_test_variant, bot_mobile_test_mes)
 
     iphone_select_message = bot_api.create_message(
         bot, 'Выберите модель IPhone, которую хотите приобрести', 200, 300)
