@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from b_logic.bot_api import BotApi
 from b_logic.data_objects import BotDescription
 from cuttle_builder.bot_generator import BotGenerator
@@ -16,4 +18,5 @@ class BotGeneratorDb(BotGenerator):
             message_variants = bot_api.get_variants(mes)
             all_variants.extend(message_variants)
 
-        super().__init__(messages, all_variants, bot.start_message_id, bot.id)
+        bot_dir = str(Path(__file__).parent.parent / f'bot_{bot.id}')
+        super().__init__(messages, all_variants, bot.start_message_id, bot.id, bot.bot_token, bot_dir)

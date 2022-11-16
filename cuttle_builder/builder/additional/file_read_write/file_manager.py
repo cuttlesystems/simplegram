@@ -82,17 +82,17 @@ class FileManager:
         except Exception as e:
             print(e)
 
-    def create_bot_directory(self, bot_id: int) -> str:
+    def create_bot_directory(self, directory: str) -> str:
         """ get template of bot and copy in upper directory with id of bot (doesn't work if call outside of cuttle_builder directory)
 
         Args:
             bot_id (int): id of bot
-
+            directory (str): directory
         Returns:
             str: directory path
         """
-        directory = self.get_dir(bot_id)
-        self.delete_bot_by_id(bot_id)
+        # directory = self.get_dir(bot_id)
+        self.delete_dir(directory)
         bot_dir = Path(__file__).parent.parent.parent.parent / 'bot'
         shutil.copytree(str(bot_dir), directory)
         return directory

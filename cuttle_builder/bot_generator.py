@@ -19,8 +19,10 @@ class BotGenerator:
             variants: List[MessageVariant],
             start_message_id: int,
             bot_id: int,
-            TOKEN: str
+            token: str,
+            bot_path: str
     ):
+
 
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, MessageVariant) for variant in variants)
@@ -33,9 +35,10 @@ class BotGenerator:
         self._states: List[int] = []
         self._bot_id: int = bot_id
         self._file_manager = APIFileCreator()
-        self._TOKEN = TOKEN
-        self._bot_directory = self._file_manager.create_bot_directory(self._bot_id)
-        self._bot_path = None
+        self._TOKEN = token
+        self._bot_directory = bot_path
+        self._bot_path = bot_path
+
 
         for message in self._messages:
             self._states.append(message.id)
@@ -47,12 +50,13 @@ class BotGenerator:
 
         return True
 
-    def set_generated_bot_directory(self, path: str) -> None:
-        pass
+    def _set_generated_bot_directory(self) -> None:
+        print(self._bot_directory)
+        self._file_manager.create_bot_directory(self._bot_directory)
 
     def _is_valid_data(self) -> bool:
         if not self._messages:
-            self._file_manager.delete_bot_by_id(self._bot_id)
+            self._file_manager.delete_dir(self._bot_directory)
             raise BotGeneratorException('No messages in database')
         self._check_token()
         return True
@@ -93,7 +97,7 @@ class BotGenerator:
 
         return keyboard_name
 
-    def _create_state_handler(self, type_, prev_state: str, prev_state_text: str, curr_state: str,
+    def _create_state_handler(self, type_, prev_state: typing.Optional[str], prev_state_text: typing.Optional[str], curr_state: typing.Optional[str],
                               send_method: str, text: str, kb: str, extended_imports: str = '') -> str:
         """generate code of state handler
 
@@ -131,8 +135,6 @@ class BotGenerator:
             typing.List[dict]: list of all previous message id's for concrete message
         """
         return [item for item in self._variants if item.next_message_id == message_id]
-
-
 
     def create_file_handlers(self, message: BotMessage) -> None:
         keyboard_generation_counter = 0
@@ -207,7 +209,8 @@ class BotGenerator:
 
 
     def create_bot(self) -> None:
-        self._is_valid_data()
+        # self._is_valid_data()
+        self._set_generated_bot_directory()
         self._create_config_file()
         for message in self._messages:
             self.create_file_handlers(message)

@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 
 from b_logic.data_objects import BotMessage, MessageVariant
@@ -78,6 +79,7 @@ class BotTestData:
 
     _START_MESSAGE_ID = 10
     _TOKEN = '5689990303:AAEnr1DqNhBvx_zwVt9rnb2P3YJynvjq2rg'
+
     def __init__(self):
         messages: List[BotMessage] = []
         variants: List[MessageVariant] = []
@@ -96,7 +98,6 @@ class BotTestData:
 
         self._messages = messages
         self._variants = variants
-        # self.TOKEN = '5689990303:AAEnr1DqNhBvx_zwVt9rnb2P3YJynvjq2rg'
     @property
     def start_message_id(self) -> int:
         return 10
@@ -112,3 +113,7 @@ class BotTestData:
     @property
     def token(self) -> str:
         return self._TOKEN
+
+    @property
+    def bot_directory(self) -> str:
+        return str(Path(__file__).parent.parent / 'bot_test')
