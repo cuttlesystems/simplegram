@@ -1,7 +1,6 @@
 from b_logic.data_objects import BotMessage, MessageVariant
 from cuttle_builder.bot_gen_exceptions import BotGeneratorException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
-from cuttle_builder.builder.additional.file_read_write.file_manager import FileManager
 from cuttle_builder.builder.keyboard_generator.create_reply_keyboard import create_reply_keyboard
 from cuttle_builder.builder.handler_generator.create_state_handler import create_state_handler
 from cuttle_builder.builder.config_generator.create_config import create_config

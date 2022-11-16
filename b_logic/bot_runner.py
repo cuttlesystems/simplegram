@@ -6,8 +6,8 @@ import psutil
 
 
 class BotRunner:
-    def __init__(self, bot_directory: Path):
-        assert isinstance(bot_directory, Path)
+    def __init__(self, bot_directory: Optional[Path]):
+        assert isinstance(bot_directory, Path) or bot_directory is None
         self._bot_directory = bot_directory
 
     def start(self) -> Optional[int]:

@@ -9,7 +9,7 @@ class BotProcessInfo:
     process_id: int
 
 
-class BotProcessesManager(metaclass=SingletonBase):
+class BotProcessesManagerSingle(metaclass=SingletonBase):
     """
     Синглтон для хранения данных о запущенных ботах
     (информация о идентификаторе процесса)

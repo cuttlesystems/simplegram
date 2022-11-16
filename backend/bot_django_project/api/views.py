@@ -1,13 +1,16 @@
 import shutil
 import uuid
 from pathlib import Path
+
+import requests
 import rest_framework.request
+from django.db.models import QuerySet
 from django.http import HttpResponse, FileResponse, HttpResponseBase
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
 from b_logic.bot_api import BotApi
-from b_logic.bot_processes_manager import BotProcessesManager
+from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from b_logic.bot_runner import BotRunner
 from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS_DIR
 from rest_framework.request import Request
@@ -31,8 +34,7 @@ class BotViewSet(viewsets.ModelViewSet):
     # указываем имя параметра, в котором будет приходить номер бота, взятый из url (по умолчанию 'pk')
     lookup_url_kwarg = 'bot_id_str'
 
-    def get_queryset(self):
-        # todo: не указан возвращаемый тип
+    def get_queryset(self) -> QuerySet:
         return Bot.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer: BotSerializer):
@@ -43,6 +45,16 @@ class BotViewSet(viewsets.ModelViewSet):
         assert isinstance(bot_id, int)
         bot_dir = BOTS_DIR / f'bot_{bot_id}'
         return bot_dir
+
+    def _stop_bot_if_it_run(self, bot_id: int):
+        assert isinstance(bot_id, int)
+        runner = BotRunner(None)
+        bot_process_manager = BotProcessesManagerSingle()
+        # если оказалось, что этого бота уже запускали, то остановим его
+        already_started_bot = bot_process_manager.get_process_info(bot_id)
+        if already_started_bot is not None:
+            runner.stop(already_started_bot.process_id)
+            bot_process_manager.remove(bot_id)
 
     @action(
         methods=['POST'],
@@ -64,21 +76,18 @@ class BotViewSet(viewsets.ModelViewSet):
         self.check_object_permissions(request, bot)
 
         bot_dir = self._get_bot_dir(bot_id)
-        runner = BotRunner(bot_dir)
-        bot_process_manager = BotProcessesManager()
 
-        # если оказалось, что этого бота уже запускали, то остановим его
-        already_started_bot = bot_process_manager.get_process_info(bot_id)
-        if already_started_bot is not None:
-            runner.stop(already_started_bot.process_id)
-            bot_process_manager.remove(bot_id)
+        self._stop_bot_if_it_run(bot_id)
+
+        runner = BotRunner(bot_dir)
 
         process_id = runner.start()
         if process_id is not None:
+            bot_process_manager = BotProcessesManagerSingle()
             bot_process_manager.register(bot_id, process_id)
-            result = HttpResponse(f'Start bot (pid={process_id})', status=200)
+            result = HttpResponse(f'Start bot (pid={process_id})', status=requests.codes.ok)
         else:
-            result = HttpResponse('Bot start error', status=404)
+            result = HttpResponse('Bot start error', status=requests.codes.method_not_allowed)
 
         return result
 
@@ -97,11 +106,11 @@ class BotViewSet(viewsets.ModelViewSet):
         Returns:
             http ответ результата запуска бота
         """
-        runner = BotRunner(Path())
+        runner = BotRunner(None)
         bot_id_int = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id_int)
         self.check_object_permissions(request, bot)
-        bot_processes_manager = BotProcessesManager()
+        bot_processes_manager = BotProcessesManagerSingle()
         bot_process = bot_processes_manager.get_process_info(bot_id_int)
         if bot_process is not None:
             if runner.stop(bot_process.process_id):
@@ -133,6 +142,8 @@ class BotViewSet(viewsets.ModelViewSet):
 
         # проверка прав, что пользователь может работать с данным ботом (владелец бота)
         self.check_object_permissions(request, bot_django)
+
+        self._stop_bot_if_it_run(bot_id)
 
         # подключаемся к api на локалхост, чтобы считать данные бота
         # (хотя можно было и по другому сделать или переделать)
