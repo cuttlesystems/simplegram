@@ -1,9 +1,6 @@
 
-from aiogram import types
-from aiogram.dispatcher.filters import Command
-from loader import dp
-from state import States
 {0}
+
 
 @dp.message_handler({1})
 async def handler_message_{2}(message: types.Message):

@@ -3,41 +3,47 @@ import shutil
 import os
 
 from pathlib import Path
+from typing import Optional
 
 
-class FileManager():
+class FileManager:
     def __init__(self) -> None:
         pass
-    
 
-    def write_file(self, dir: str, code: str) -> None:
+    def read_file(self, directory: str):
+        with open(directory, 'r') as file:
+            return file.read()
+
+    def read_file_by_line(self, directory: str):
+        with open(directory, 'r') as file:
+            return file.read().split('\n')
+    def write_file(self, directory: str, code: str) -> None:
         """add into directory file, that contains generated code
 
         Args:
             dir (_type_): directory path
             code (_type_): generated code
         """
-        with open(dir, "a", encoding='utf-8') as f:
+
+        with open(directory, 'a', encoding='utf-8') as f:
             f.seek(0,0)
             f.write(code)
             f.close()
 
-
-    def write_into_init(self, dir: str, code: str) -> None:
+    def write_into_init(self, directory: str, code: str) -> None:
         """add into init files names of new units to register generated code (dir - init directory, code - import of unit)
 
         Args:
             dir (_type_): directory path
             code (_type_): generated code (import insdide init)
         """
-        with open(dir, 'r+') as file:
+        with open(directory, 'r+') as file:
             file_data = file.read()
             file.seek(0, 0)
             file.write(code + file_data)
             # file.close()
 
-    
-    def create_file(self, file_path: str, code: str, init_path: str, import_code: str) -> None:
+    def create_file(self, file_path: str, code: str, init_path: Optional[str] = None, import_code: Optional[str] = None) -> None:
         """create and register new unit of telegram bot
 
         Args:
@@ -45,9 +51,11 @@ class FileManager():
             code (_type_): generated code
             init_path (_type_): init file path
             import_code (_type_): generated code (import inside init)
+            flag (_type_): write new file or rewrite exist file
         """
         self.write_file(file_path, code)
-        self.write_into_init(init_path, import_code)
+        if init_path is not None and import_code is not None:
+            self.write_into_init(init_path, import_code)
 
     def get_dir(self, bot_id: int) -> str:
         """generate path, where bot is store (doesn't work if call outside of cuttle_builder directory)
@@ -59,18 +67,18 @@ class FileManager():
             str: file path
         """
         return 'bot_{0}'.format(bot_id)
-    
+
     # 
-    def delete_dir(self, dir: str) -> None:
+    def delete_dir(self, directory: str) -> None:
         """delete directory, to prevent writing file over exist file
 
         Args:
-            dir (str): directory path
+            directory (str): directory path
         """
         try:
-            shutil.rmtree(dir)
+            shutil.rmtree(directory)
         except FileNotFoundError:
-            pass 
+            pass
         except Exception as e:
             print(e)
 
@@ -83,11 +91,11 @@ class FileManager():
         Returns:
             str: directory path
         """
-        dir = self.get_dir(bot_id)
+        directory = self.get_dir(bot_id)
         self.delete_bot_by_id(bot_id)
         bot_dir = Path(__file__).parent.parent.parent.parent / 'bot'
-        shutil.copytree(str(bot_dir), dir)
-        return dir
+        shutil.copytree(str(bot_dir), directory)
+        return directory
 
     def delete_bot_by_id(self, bot_id: int) -> None:
         """ delete directory created for bot
@@ -95,5 +103,5 @@ class FileManager():
                 Args:
                     bot_id (int): id of bot
                 """
-        dir = self.get_dir(bot_id)
-        self.delete_dir(dir)
+        directory = self.get_dir(bot_id)
+        self.delete_dir(directory)

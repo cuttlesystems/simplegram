@@ -1,10 +1,10 @@
 
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+{0}
 
-{0} = ReplyKeyboardMarkup(
+{1} = ReplyKeyboardMarkup(
     keyboard=[
         [
-        {1}
+        {2}
         ]
     ], resize_keyboard=True, one_time_keyboard=True
 )

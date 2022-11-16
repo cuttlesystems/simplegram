@@ -1,4 +1,4 @@
-from aiogram.dispatcher.filters.state import StatesGroup, State
+{0}
 
 
 class States(StatesGroup):
