@@ -17,29 +17,6 @@ class FileManager:
     def read_file_by_line(self, directory: str):
         with open(directory, 'r') as file:
             return file.read().split('\n')
-    def rewrite_file(self, directory: str, code: str) -> None:
-        """add into directory file, that contains generated code
-
-        Args:
-            dir (_type_): directory path
-            code (_type_): generated code
-        """
-        self.write_file(directory, code, 'a')
-        # with open(directory, "a", encoding='utf-8') as f:
-        #     f.seek(0,0)
-        #     f.write(code)
-        #     f.close()
-        #
-
-    def write_new_file(self, directory: str, code: str) -> None:
-        """add into directory file, that contains generated code
-
-        Args:
-            dir (_type_): directory path
-            code (_type_): generated code
-        """
-        self.write_file(directory, code, 'w')
-
     def write_file(self, directory: str, code: str) -> None:
         """add into directory file, that contains generated code
 

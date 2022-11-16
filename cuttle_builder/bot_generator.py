@@ -35,6 +35,7 @@ class BotGenerator:
         self._file_manager = APIFileCreator()
         self._TOKEN = TOKEN
         self._bot_directory = self._file_manager.create_bot_directory(self._bot_id)
+        self._bot_path = None
 
         for message in self._messages:
             self._states.append(message.id)
@@ -45,6 +46,9 @@ class BotGenerator:
             raise Exception('Token is invalid!')
 
         return True
+
+    def set_generated_bot_directory(self, path: str) -> None:
+        pass
 
     def _is_valid_data(self) -> bool:
         if not self._messages:
