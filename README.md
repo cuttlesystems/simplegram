@@ -94,3 +94,18 @@ http://127.0.0.1:8000/api/auth/token/login/
 - http://127.0.0.1:8000/api/messages/396/variants/ - получить варианты заданного сообщения
 - http://127.0.0.1:8000/api/variant/461/ - получить, поменять или удалить заданный вариант
 - http://127.0.0.1:8000/admin/ - админ зона
+
+
+#### Пример заполнения .env файла для работы с перемеными окружения
+- Создать в директории infra/ файл .env
+- пример заполнения:
+```
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=bot_constructor
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=172.21.0.1
+DB_PORT=5432
+
+SECRET_KEY = 'django-insecure-@a#@3^g@a#@3^g7vh@a#@3^g@a#@3^g@a#@3^g@a#@3^g'
+```

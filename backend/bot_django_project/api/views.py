@@ -13,6 +13,7 @@ from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS
 from rest_framework.request import Request
 from rest_framework.decorators import action
 
+from cuttle_builder.bot_generator_db import BotGeneratorDb
 from .serializers import BotSerializer, MessageSerializer, VariantSerializer
 from bots.models import Bot, Message, Variant
 from .mixins import RetrieveUpdateDestroyViewSet
@@ -38,6 +39,11 @@ class BotViewSet(viewsets.ModelViewSet):
         author = self.request.user
         serializer.save(owner=author)
 
+    def _get_bot_dir(self, bot_id: int) -> Path:
+        assert isinstance(bot_id, int)
+        bot_dir = BOTS_DIR / f'bot_{bot_id}'
+        return bot_dir
+
     @action(
         methods=['POST'],
         detail=True,
@@ -57,8 +63,7 @@ class BotViewSet(viewsets.ModelViewSet):
         bot = get_object_or_404(Bot, id=bot_id)
         self.check_object_permissions(request, bot)
 
-        bots_dir = BOTS_DIR
-        bot_dir = bots_dir / f'bot_{bot_id}'
+        bot_dir = self._get_bot_dir(bot_id)
         runner = BotRunner(bot_dir)
         bot_process_manager = BotProcessesManager()
 
@@ -124,30 +129,25 @@ class BotViewSet(viewsets.ModelViewSet):
             http ответ - зип файл со сгенерированным ботом
         """
         bot_id = int(bot_id_str)
-        bot = get_object_or_404(Bot, id=bot_id)
+        bot_django = get_object_or_404(Bot, id=bot_id)
 
         # проверка прав, что пользователь может работать с данным ботом (владелец бота)
-        self.check_object_permissions(request, bot)
+        self.check_object_permissions(request, bot_django)
 
-        # todo: это заглушка, временный код (сюда состыкуем реальные данные)
+        # подключаемся к api на локалхост, чтобы считать данные бота
+        # (хотя можно было и по другому сделать или переделать)
         bot_api = BotApi('http://127.0.0.1:8000/')
         bot_api.auth_by_token(request.auth.key)
-        bot = bot_api.get_bot_by_id(bot.id)
-        bot_info_str = ''
-        messages = bot_api.get_messages(bot)
-        for message in messages:
-            bot_info_str += f'    {message}\n'
-            variants = bot_api.get_variants(message)
-            for variant in variants:
-                bot_info_str += f'        {variant}\n'
-        bots_dir = BOTS_DIR
-        bots_dir.mkdir(parents=True, exist_ok=True)
-        botname = str(uuid.uuid4())
-        bot_dir = bots_dir / botname
-        bot_dir.mkdir()
-        bot_info_file = bot_dir / 'bot_information.txt'
-        with open(bot_info_file, 'w') as bot_info_file:
-            bot_info_file.write(bot_info_str)
+        bot_obj = bot_api.get_bot_by_id(bot_django.id)
+        generator = BotGeneratorDb(bot_api, bot_obj)
+
+        generator.set_generated_bot_directory(str(self._get_bot_dir(bot_obj.id)))
+        # generator.create_bot()
+
+        bot_dir = BOTS_DIR / self._get_bot_dir(bot_django.id)
+        bot_dir.mkdir(parents=True, exist_ok=True)
+        with open(bot_dir / 'info.txt', 'w') as info_file:
+            info_file.write('Когда будет доработан класс генерации бота, то сможем получить данные')
 
         bot_zip_file_name = str(bot_dir) + '.zip'
         shutil.make_archive(str(bot_dir), 'zip', bot_dir)
