@@ -4,5 +4,5 @@
 
 @dp.message_handler({1})
 async def handler_message_{2}(message: types.Message):
-    {3} # add commands
-    {4} # send message
+    {3}  # add commands
+    {4}  # send message

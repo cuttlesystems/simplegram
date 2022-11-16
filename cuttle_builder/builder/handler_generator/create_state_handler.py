@@ -4,7 +4,7 @@ from cuttle_builder.builder.additional.helpers.string_in_quotes import string_to
 
 
 def create_state_handler(imports, type_, prev_state, prev_state_text, curr_state, send_message_type, text, kb):
-    send_method = f'await message.answer(text=\'{text}\' {", reply_markup=" + kb if kb else ""})'
+    send_method = f'await message.answer(text=\'{text}\'{", reply_markup=" + kb if kb else ""})'
     message_body = 'await States.{0}.set()'.format(curr_state) if curr_state else ''
     list_of_content_type = [
         type_,

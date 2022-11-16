@@ -9,6 +9,7 @@ if __name__ == '__main__':
         test_data.variants,
         test_data.start_message_id,
         95,
-        test_data.token
+        test_data.token,
+        test_data.bot_directory
     )
     bot_generator.create_bot()
