@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  web:
+    build: ../
+    # restart: always
+    volumes:
+      - static_value:/app/backend/bot_django_project/static/
+      - media_value:/app/backend/bot_django_project/media/
+    env_file:
+      - ./.env
+    networks:
+      cuttle_net:
+        ipv4_address: 172.21.0.2
+
+  nginx:
+    image: nginx:1.22.1
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
+    networks:
+      cuttle_net:
+        ipv4_address: 172.21.0.3
+    depends_on:
+      - web
+
+volumes:
+  static_value:
+  media_value:
+
+networks:
+  cuttle_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16
