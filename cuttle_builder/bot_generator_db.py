@@ -16,4 +16,4 @@ class BotGeneratorDb(BotGenerator):
             message_variants = bot_api.get_variants(mes)
             all_variants.extend(message_variants)
 
-        super().__init__(messages, all_variants, bot.start_message_id, bot.id)
+        super().__init__(messages, all_variants, bot.start_message_id, bot.id, bot.bot_token)
