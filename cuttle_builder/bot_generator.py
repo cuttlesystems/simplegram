@@ -22,8 +22,6 @@ class BotGenerator:
             token: str,
             bot_path: str
     ):
-
-
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, MessageVariant) for variant in variants)
         assert isinstance(start_message_id, int)
@@ -37,8 +35,6 @@ class BotGenerator:
         self._file_manager = APIFileCreator()
         self._TOKEN = token
         self._bot_directory = bot_path
-        self._bot_path = bot_path
-
 
         for message in self._messages:
             self._states.append(message.id)
@@ -50,7 +46,7 @@ class BotGenerator:
 
         return True
 
-    def _set_generated_bot_directory(self) -> None:
+    def _create_generated_bot_directory(self) -> None:
         print(self._bot_directory)
         self._file_manager.create_bot_directory(self._bot_directory)
 
@@ -207,10 +203,9 @@ class BotGenerator:
             )
             self._file_manager.create_file_handler(message.id, handler_code)
 
-
     def create_bot(self) -> None:
-        # self._is_valid_data()
-        self._set_generated_bot_directory()
+        self._is_valid_data()
+        self._create_generated_bot_directory()
         self._create_config_file()
         for message in self._messages:
             self.create_file_handlers(message)

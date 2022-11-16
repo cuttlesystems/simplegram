@@ -6,7 +6,7 @@ from cuttle_builder.bot_generator import BotGenerator
 
 
 class BotGeneratorDb(BotGenerator):
-    def __init__(self, bot_api: BotApi, bot: BotDescription):
+    def __init__(self, bot_api: BotApi, bot: BotDescription, bot_dir: str):
         assert isinstance(bot_api, BotApi)
         assert isinstance(bot, BotDescription)
 
@@ -17,7 +17,6 @@ class BotGeneratorDb(BotGenerator):
         for mes in messages:
             message_variants = bot_api.get_variants(mes)
             all_variants.extend(message_variants)
-            
-        bot_dir = str(Path(__file__).parent.parent / f'bot_{bot.id}')
+
         super().__init__(messages, all_variants, bot.start_message_id, bot.id, bot.bot_token, bot_dir)
 

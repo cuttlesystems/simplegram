@@ -139,15 +139,10 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_api = BotApi('http://127.0.0.1:8000/')
         bot_api.auth_by_token(request.auth.key)
         bot_obj = bot_api.get_bot_by_id(bot_django.id)
-        generator = BotGeneratorDb(bot_api, bot_obj)
+        bot_dir = self._get_bot_dir(bot_django.id)
+        generator = BotGeneratorDb(bot_api, bot_obj, str(bot_dir))
 
-        generator.set_generated_bot_directory(str(self._get_bot_dir(bot_obj.id)))
-        # generator.create_bot()
-
-        bot_dir = BOTS_DIR / self._get_bot_dir(bot_django.id)
-        bot_dir.mkdir(parents=True, exist_ok=True)
-        with open(bot_dir / 'info.txt', 'w') as info_file:
-            info_file.write('Когда будет доработан класс генерации бота, то сможем получить данные')
+        generator.create_bot()
 
         bot_zip_file_name = str(bot_dir) + '.zip'
         shutil.make_archive(str(bot_dir), 'zip', bot_dir)
