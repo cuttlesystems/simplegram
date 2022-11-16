@@ -141,6 +141,7 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_obj = bot_api.get_bot_by_id(bot_django.id)
         generator = BotGeneratorDb(bot_api, bot_obj)
 
+        generator.set_generated_bot_directory(str(self._get_bot_dir(bot_obj.id)))
         # generator.create_bot()
 
         bot_dir = BOTS_DIR / self._get_bot_dir(bot_django.id)
