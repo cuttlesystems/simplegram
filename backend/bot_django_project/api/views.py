@@ -1,13 +1,16 @@
 import shutil
 import uuid
 from pathlib import Path
+
+import requests
 import rest_framework.request
-from django.http import HttpResponse, FileResponse, HttpResponseBase
+from django.db.models import QuerySet
+from django.http import HttpResponse, FileResponse, HttpResponseBase, JsonResponse
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
 from b_logic.bot_api import BotApi
-from b_logic.bot_processes_manager import BotProcessesManager
+from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from b_logic.bot_runner import BotRunner
 from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS_DIR
 from rest_framework.request import Request
@@ -24,6 +27,21 @@ class BotViewSet(viewsets.ModelViewSet):
     """
     Отображение всех ботов пользователя и 
     CRUD-функционал для экземпляра бота
+
+    Есть такое описание:
+    Вот эта функция, точнее класс, но в данный момент это не сильно важно))
+    Тут в 14 строке ссылка на BotSerializer, он импортирован из serializers.py, идем туда.
+
+    Вью функция(вью класс) инициализирует сериализатор.
+    А данные для сериализатора она возьмет из коллекции Queryset.
+    Queryset определяется в методе get_queryset, которая возвращает множество
+    объектов Bot в которых Bot.owner равен пользователю, который делает запрос.
+    В итоге BotViewSet вернет данные из Queryset, прошедшие через сереализатор,
+    то есть только с теми полями, которые мы выбрали в сериализаторе и в формате JSON.
+
+    P.S. В функции perform_create задается значение для поля Bot.owner, функция актуальна для POST запросов.
+    POST запрос создает новую запись в таблице Bot.
+    В теле POST запроса мы не будем указывать значение для поля owner явно, за нас это сделает метод perform_create.
     """
     serializer_class = BotSerializer
     permission_classes = (IsBotOwnerOrForbidden,)
@@ -31,8 +49,7 @@ class BotViewSet(viewsets.ModelViewSet):
     # указываем имя параметра, в котором будет приходить номер бота, взятый из url (по умолчанию 'pk')
     lookup_url_kwarg = 'bot_id_str'
 
-    def get_queryset(self):
-        # todo: не указан возвращаемый тип
+    def get_queryset(self) -> QuerySet:
         return Bot.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer: BotSerializer):
@@ -43,6 +60,16 @@ class BotViewSet(viewsets.ModelViewSet):
         assert isinstance(bot_id, int)
         bot_dir = BOTS_DIR / f'bot_{bot_id}'
         return bot_dir
+
+    def _stop_bot_if_it_run(self, bot_id: int):
+        assert isinstance(bot_id, int)
+        runner = BotRunner(None)
+        bot_process_manager = BotProcessesManagerSingle()
+        # если оказалось, что этого бота уже запускали, то остановим его
+        already_started_bot = bot_process_manager.get_process_info(bot_id)
+        if already_started_bot is not None:
+            runner.stop(already_started_bot.process_id)
+            bot_process_manager.remove(bot_id)
 
     @action(
         methods=['POST'],
@@ -64,21 +91,30 @@ class BotViewSet(viewsets.ModelViewSet):
         self.check_object_permissions(request, bot)
 
         bot_dir = self._get_bot_dir(bot_id)
-        runner = BotRunner(bot_dir)
-        bot_process_manager = BotProcessesManager()
 
-        # если оказалось, что этого бота уже запускали, то остановим его
-        already_started_bot = bot_process_manager.get_process_info(bot_id)
-        if already_started_bot is not None:
-            runner.stop(already_started_bot.process_id)
-            bot_process_manager.remove(bot_id)
+        self._stop_bot_if_it_run(bot_id)
+
+        runner = BotRunner(bot_dir)
 
         process_id = runner.start()
         if process_id is not None:
+            bot_process_manager = BotProcessesManagerSingle()
             bot_process_manager.register(bot_id, process_id)
-            result = HttpResponse(f'Start bot (pid={process_id})', status=200)
+            result = JsonResponse(
+                {
+                    'result': 'Start bot ok',
+                    'bot_id': bot_id,
+                    'process_id': process_id
+                },
+                status=requests.codes.ok
+            )
         else:
-            result = HttpResponse('Bot start error', status=404)
+            result = JsonResponse(
+                {
+                    'result': 'Bot start error'
+                },
+                status=requests.codes.method_not_allowed
+            )
 
         return result
 
@@ -97,20 +133,36 @@ class BotViewSet(viewsets.ModelViewSet):
         Returns:
             http ответ результата запуска бота
         """
-        runner = BotRunner(Path())
+        runner = BotRunner(None)
         bot_id_int = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id_int)
         self.check_object_permissions(request, bot)
-        bot_processes_manager = BotProcessesManager()
+        bot_processes_manager = BotProcessesManagerSingle()
         bot_process = bot_processes_manager.get_process_info(bot_id_int)
         if bot_process is not None:
             if runner.stop(bot_process.process_id):
                 bot_processes_manager.remove(bot_id_int)
-                result = HttpResponse('Bot stopped is ok', status=200)
+                result = JsonResponse(
+                    {
+                        'result': 'Bot stopped is ok',
+                        'bot_id': bot_id_int
+                    },
+                    status=requests.codes.ok
+                )
             else:
-                result = HttpResponse('Can not stop bot', status=500)
+                result = JsonResponse(
+                    {
+                        'result': 'Bot stop error'
+                    },
+                    status=requests.codes.internal_server_error
+                )
         else:
-            result = HttpResponse('Can not stop bot because bot is not stared', status=404)
+            result = JsonResponse(
+                {
+                    'result': 'Can not stop bot because bot is not stared'
+                },
+                status=requests.codes.conflict
+            )
         return result
 
     @action(
@@ -134,6 +186,8 @@ class BotViewSet(viewsets.ModelViewSet):
         # проверка прав, что пользователь может работать с данным ботом (владелец бота)
         self.check_object_permissions(request, bot_django)
 
+        self._stop_bot_if_it_run(bot_id)
+
         # подключаемся к api на локалхост, чтобы считать данные бота
         # (хотя можно было и по другому сделать или переделать)
         bot_api = BotApi('http://127.0.0.1:8000/')
@@ -149,20 +203,31 @@ class BotViewSet(viewsets.ModelViewSet):
 
         return FileResponse(open(bot_zip_file_name, 'rb'))
 
+    @action(
+        methods=['GET'],
+        detail=True,
+        url_path='state'
+    )
+    def bot_state(self, request: rest_framework.request.Request, bot_id_str: str) -> JsonResponse:
+        bot_id = int(bot_id_str)
+        bot_django = get_object_or_404(Bot, id=bot_id)
 
-# Вот эта функция, точнее класс, но в данный момент это не сильно важно))
-# Тут в 14 строке ссылка на BotSerializer, он импортирован из serializers.py, идем туда.
-# 
-# Вью функция(вью класс) инициализирует сериализатор.
-# А данные для сериализатора она возьмет из коллекции Queryset.
-# Queryset определяется в методе get_queryset, которая возвращает множество
-# объектов Bot в которых Bot.owner равен пользователю, который делает запрос.
-# В итоге BotViewSet вернет данные из Queryset, прошедшие через сереализатор,
-# то есть только с теми полями, которые мы выбрали в сериализаторе и в формате JSON.
-#
-# P.S. В функции perform_create задается значение для поля Bot.owner, функция актуальна для POST запросов.
-# POST запрос создает новую запись в таблице Bot.
-# В теле POST запроса мы не будем указывать значение для поля owner явно, за нас это сделает метод perform_create.
+        # проверка прав, что пользователь может работать с данным ботом (владелец бота)
+        self.check_object_permissions(request, bot_django)
+
+        result_dict = {
+            'is_started': False,
+            'process_id': None,
+            'is_generated': self._get_bot_dir(bot_id).exists(),
+            'bot_id': bot_id
+        }
+        bot_processes_manager = BotProcessesManagerSingle()
+        bot_info = bot_processes_manager.get_process_info(bot_id)
+        if bot_info is not None:
+            result_dict['is_started'] = True
+            result_dict['process_id'] = bot_info.process_id
+            result_dict['bot_id'] = bot_info.bot_id
+        return JsonResponse(result_dict, status=requests.codes.ok)
 
 
 class MessageViewSet(viewsets.ModelViewSet):

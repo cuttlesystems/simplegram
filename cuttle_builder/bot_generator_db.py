@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from b_logic.bot_api import BotApi
 from b_logic.data_objects import BotDescription
 from cuttle_builder.bot_generator import BotGenerator
