@@ -13,14 +13,14 @@ class APIFileCreator(FileManager):
             keyboard_name (str): name of keyboard (message_id + _kb)
             keyboard_code (str): generated code of keyboard
         """
-        keyboard_directory = str(
+        keyboard_code_file = str(
             Path(bot_directory) / 'keyboards' / f'{keyboard_name}.py')
 
-        init_directory = str(
+        keyboard_init_file = str(
             Path(bot_directory) / 'keyboards' / '__init__.py')
 
-        self.create_file(keyboard_directory, keyboard_code,
-                         init_directory,
+        self.create_file(keyboard_code_file, keyboard_code,
+                         keyboard_init_file,
                          f'\nfrom .{keyboard_name} import {keyboard_name}')
 
     def create_file_handler(self, bot_directory: str, name: str, code: str):
@@ -31,13 +31,13 @@ class APIFileCreator(FileManager):
             name (str): name of handler (message_id)
             code (str): generated code of handler
         """
-        handler_directory = str(
+        handler_code_file = str(
             Path(bot_directory) / 'handlers' / f'get_{name}.py')
 
-        init_directory = str(
+        handler_init_file = str(
             Path(bot_directory) / 'handlers' / '__init__.py')
 
-        self.create_file(handler_directory, code, init_directory,
+        self.create_file(handler_code_file, code, handler_init_file,
                          f'from .get_{name} import dp\n')
 
     def create_file_state(self, bot_directory: str, code) -> None:
@@ -47,17 +47,17 @@ class APIFileCreator(FileManager):
             bot_directory (str): name of bot
             code (str): code of state
         """
-        handler_directory = str(
+        state_code_file = str(
             Path(bot_directory) / 'state' / 'states.py')
 
-        init_directory = str(
+        state_init_directory = str(
             Path(bot_directory) / 'state' / '__init__.py')
 
-        self.create_file(handler_directory, code,
-                         init_directory, 'from .states import States')
+        self.create_file(state_code_file, code,
+                         state_init_directory, 'from .states import States')
 
     def create_config_file(self, bot_directory, code):
-        config_directory = str(
+        config_code_file = str(
             Path(bot_directory) / 'data' / 'config.py')
 
-        self.create_file(config_directory, code)
+        self.create_file(config_code_file, code)
