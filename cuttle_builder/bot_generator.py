@@ -17,29 +17,37 @@ class BotGenerator:
             messages: List[BotMessage],
             variants: List[MessageVariant],
             start_message_id: int,
-            bot_id: int,
             token: str,
             bot_path: str
     ):
+        """
+        Класс для создания исходного кода ТГ бота по входному набору сообщений и вариантов
+        Args:
+            messages: список сообщений
+            variants: список вариантов
+            start_message_id: идентификатор начального сообщения, с которого начинается бот
+            token: токен телеграм бота
+            bot_path: путь куда будут помещены исходники бота
+        """
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, MessageVariant) for variant in variants)
         assert isinstance(start_message_id, int)
-        assert isinstance(bot_id, int)
+        assert isinstance(token, str)
+        assert isinstance(bot_path, str)
 
         self._messages: List[BotMessage] = messages
         self._variants: List[MessageVariant] = variants
         self._start_message_id = start_message_id
         self._states: List[int] = []
-        self._bot_id: int = bot_id
         self._file_manager = APIFileCreator()
-        self._TOKEN = token
+        self._token = token
         self._bot_directory = bot_path
 
         for message in self._messages:
             self._states.append(message.id)
 
     def _check_token(self):
-        left, sep, right = self._TOKEN.partition(':')
+        left, sep, right = self._token.partition(':')
         if (not sep) or (not left.isdigit()) or (not right):
             raise Exception('Token is invalid!')
 
@@ -73,7 +81,10 @@ class BotGenerator:
 
     def _get_handler_name_for_message(self, message_id: int) -> str:
         assert isinstance(message_id, int)
-        return f'a{message_id}'
+        # todo: возможность поменять название переменной, чтобы при этом не отвалилось, улучшить качество кода
+        #  ("AttributeError: type object 'States' has no attribute 'message_559'")
+        return f'ab{message_id}'
+
     def _get_imports_sample(self, imports_file_name):
         imports = str(
             CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'imports' / f'{imports_file_name}.txt')
@@ -224,5 +235,5 @@ class BotGenerator:
 
     def _create_config_file(self):
         extend_imports = self._get_imports_sample('config_import')
-        config_code = create_config(extend_imports, {'TOKEN': self._TOKEN})
+        config_code = create_config(extend_imports, {'TOKEN': self._token})
         self._file_manager.create_config_file(self._bot_directory, config_code)
