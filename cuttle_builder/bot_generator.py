@@ -76,6 +76,9 @@ class BotGenerator:
         assert isinstance(message_id, int)
         return f'keyboard_for_message_id_{message_id}'
 
+    def _get_handler_name_for_message(self, message_id: int) -> str:
+        assert isinstance(message_id, int)
+        return f'a{message_id}'
     def _get_imports_sample(self, imports_file_name):
         imports = str(
             CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'imports' / f'{imports_file_name}.txt')
@@ -149,7 +152,7 @@ class BotGenerator:
                 'Command(\'start\')',
                 None,
                 '',
-                f'a{message.id}',
+                self._get_handler_name_for_message(message.id),
                 'text',
                 message.text,
                 keyboard_name,
@@ -162,7 +165,7 @@ class BotGenerator:
                 'Command(\'restart\')',
                 '*',
                 '',
-                f'a{message.id}',
+                self._get_handler_name_for_message(message.id),
                 'text',
                 message.text,
                 keyboard_name,
@@ -180,7 +183,7 @@ class BotGenerator:
                 '',
                 f'a{prev.current_message_id}',
                 prev.text,
-                f'a{message.id}',
+                self._get_handler_name_for_message(message.id),
                 'text',
                 message.text,
                 keyboard_name,
@@ -200,7 +203,7 @@ class BotGenerator:
                 '',
                 None,
                 '',
-                message.id,
+                self._get_handler_name_for_message(message.id),
                 'text',
                 message.text,
                 keyboard_name
