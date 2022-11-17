@@ -188,6 +188,31 @@ class BotViewSet(viewsets.ModelViewSet):
 
         return FileResponse(open(bot_zip_file_name, 'rb'))
 
+    @action(
+        methods=['GET'],
+        detail=True,
+        url_path='state'
+    )
+    def bot_state(self, request: rest_framework.request.Request, bot_id_str: str) -> JsonResponse:
+        bot_id = int(bot_id_str)
+        bot_django = get_object_or_404(Bot, id=bot_id)
+
+        # проверка прав, что пользователь может работать с данным ботом (владелец бота)
+        self.check_object_permissions(request, bot_django)
+
+        result_dict = {
+            'is_started': False,
+            'process_id': None,
+            'bot_id': bot_id
+        }
+        bot_processes_manager = BotProcessesManagerSingle()
+        bot_info = bot_processes_manager.get_process_info(bot_id)
+        if bot_info is not None:
+            result_dict['is_started'] = True
+            result_dict['process_id'] = bot_info.process_id
+            result_dict['bot_id'] = bot_info.bot_id
+        return JsonResponse(result_dict, status=requests.codes.ok)
+
 
 # Вот эта функция, точнее класс, но в данный момент это не сильно важно))
 # Тут в 14 строке ссылка на BotSerializer, он импортирован из serializers.py, идем туда.
