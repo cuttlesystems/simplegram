@@ -27,6 +27,21 @@ class BotViewSet(viewsets.ModelViewSet):
     """
     Отображение всех ботов пользователя и 
     CRUD-функционал для экземпляра бота
+
+    Есть такое описание:
+    Вот эта функция, точнее класс, но в данный момент это не сильно важно))
+    Тут в 14 строке ссылка на BotSerializer, он импортирован из serializers.py, идем туда.
+
+    Вью функция(вью класс) инициализирует сериализатор.
+    А данные для сериализатора она возьмет из коллекции Queryset.
+    Queryset определяется в методе get_queryset, которая возвращает множество
+    объектов Bot в которых Bot.owner равен пользователю, который делает запрос.
+    В итоге BotViewSet вернет данные из Queryset, прошедшие через сереализатор,
+    то есть только с теми полями, которые мы выбрали в сериализаторе и в формате JSON.
+
+    P.S. В функции perform_create задается значение для поля Bot.owner, функция актуальна для POST запросов.
+    POST запрос создает новую запись в таблице Bot.
+    В теле POST запроса мы не будем указывать значение для поля owner явно, за нас это сделает метод perform_create.
     """
     serializer_class = BotSerializer
     permission_classes = (IsBotOwnerOrForbidden,)
@@ -203,6 +218,7 @@ class BotViewSet(viewsets.ModelViewSet):
         result_dict = {
             'is_started': False,
             'process_id': None,
+            'is_generated': self._get_bot_dir(bot_id).exists(),
             'bot_id': bot_id
         }
         bot_processes_manager = BotProcessesManagerSingle()
@@ -212,21 +228,6 @@ class BotViewSet(viewsets.ModelViewSet):
             result_dict['process_id'] = bot_info.process_id
             result_dict['bot_id'] = bot_info.bot_id
         return JsonResponse(result_dict, status=requests.codes.ok)
-
-
-# Вот эта функция, точнее класс, но в данный момент это не сильно важно))
-# Тут в 14 строке ссылка на BotSerializer, он импортирован из serializers.py, идем туда.
-# 
-# Вью функция(вью класс) инициализирует сериализатор.
-# А данные для сериализатора она возьмет из коллекции Queryset.
-# Queryset определяется в методе get_queryset, которая возвращает множество
-# объектов Bot в которых Bot.owner равен пользователю, который делает запрос.
-# В итоге BotViewSet вернет данные из Queryset, прошедшие через сереализатор,
-# то есть только с теми полями, которые мы выбрали в сериализаторе и в формате JSON.
-#
-# P.S. В функции perform_create задается значение для поля Bot.owner, функция актуальна для POST запросов.
-# POST запрос создает новую запись в таблице Bot.
-# В теле POST запроса мы не будем указывать значение для поля owner явно, за нас это сделает метод perform_create.
 
 
 class MessageViewSet(viewsets.ModelViewSet):
