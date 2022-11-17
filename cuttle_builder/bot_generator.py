@@ -59,6 +59,8 @@ class BotGenerator:
 
     def _is_valid_data(self) -> bool:
         if not self._messages:
+            # todo: метод проверки данных не должен удалять директорию (он должен только проверять),
+            #  а это удаление, вероятно, должно быть раньше
             self._file_manager.delete_dir(self._bot_directory)
             raise BotGeneratorException('No messages in database')
         self._check_token()
@@ -83,15 +85,15 @@ class BotGenerator:
         assert isinstance(message_id, int)
         # todo: возможность поменять название переменной, чтобы при этом не отвалилось, улучшить качество кода
         #  ("AttributeError: type object 'States' has no attribute 'message_559'")
-        return f'ab{message_id}'
+        return f'a{message_id}'
 
-    def _get_imports_sample(self, imports_file_name):
+    def _get_imports_sample(self, imports_file_name) -> str:
         imports = str(
             CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'imports' / f'{imports_file_name}.txt')
         extended_imports = self._file_manager.read_file(imports)
         return extended_imports
 
-    def create_reply_keyboard(self, message_id: int):
+    def create_reply_keyboard(self, message_id: int) -> typing.Optional[str]:
         keyboard_name: typing.Optional[str] = None
         # imports
         imports_for_keyboard = self._get_imports_sample('reply_keyboard_import')
@@ -187,7 +189,10 @@ class BotGenerator:
                 keyboard_name = self._get_keyboard_name_for_message(message.id)
             handler_code = self._create_state_handler(
                 '',
+
+                # todo: похоже, формирование имени объекта в обход метода (нет подобия prev_state с curr_state)
                 f'a{prev.current_message_id}',
+
                 prev.text,
                 self._get_handler_name_for_message(message.id),
                 'text',
@@ -214,6 +219,7 @@ class BotGenerator:
                 message.text,
                 keyboard_name
             )
+            # todo: вызов, вероятно, неправильный
             self._file_manager.create_file_handler(message.id, handler_code)
 
     def create_bot(self) -> None:
