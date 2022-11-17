@@ -38,4 +38,4 @@ class IsBotOwnerOrForbidden(permissions.BasePermission):
         return obj.owner == request.user
 
     def has_permission(self, request: Request, view: ModelViewSet) -> bool:
-        return all(bot.owner == request.user for bot in view.get_queryset())
+        return request.user.is_authenticated and all(bot.owner == request.user for bot in view.get_queryset())
