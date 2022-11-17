@@ -50,11 +50,11 @@ class APIFileCreator(FileManager):
         state_code_file = str(
             Path(bot_directory) / 'state' / 'states.py')
 
-        state_init_directory = str(
+        state_init_file = str(
             Path(bot_directory) / 'state' / '__init__.py')
 
         self.create_file(state_code_file, code,
-                         state_init_directory, 'from .states import States')
+                         state_init_file, 'from .states import States')
 
     def create_config_file(self, bot_directory, code):
         config_code_file = str(
