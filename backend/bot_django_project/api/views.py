@@ -5,7 +5,7 @@ from pathlib import Path
 import requests
 import rest_framework.request
 from django.db.models import QuerySet
-from django.http import HttpResponse, FileResponse, HttpResponseBase
+from django.http import HttpResponse, FileResponse, HttpResponseBase, JsonResponse
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
@@ -85,9 +85,21 @@ class BotViewSet(viewsets.ModelViewSet):
         if process_id is not None:
             bot_process_manager = BotProcessesManagerSingle()
             bot_process_manager.register(bot_id, process_id)
-            result = HttpResponse(f'Start bot (pid={process_id})', status=requests.codes.ok)
+            result = JsonResponse(
+                {
+                    'result': 'Start bot ok',
+                    'bot_id': bot_id,
+                    'process_id': process_id
+                },
+                status=requests.codes.ok
+            )
         else:
-            result = HttpResponse('Bot start error', status=requests.codes.method_not_allowed)
+            result = JsonResponse(
+                {
+                    'result': 'Bot start error'
+                },
+                status=requests.codes.method_not_allowed
+            )
 
         return result
 
@@ -115,11 +127,27 @@ class BotViewSet(viewsets.ModelViewSet):
         if bot_process is not None:
             if runner.stop(bot_process.process_id):
                 bot_processes_manager.remove(bot_id_int)
-                result = HttpResponse('Bot stopped is ok', status=200)
+                result = JsonResponse(
+                    {
+                        'result': 'Bot stopped is ok',
+                        'bot_id': bot_id_int
+                    },
+                    status=requests.codes.ok
+                )
             else:
-                result = HttpResponse('Can not stop bot', status=500)
+                result = JsonResponse(
+                    {
+                        'result': 'Bot stop error'
+                    },
+                    status=requests.codes.internal_server_error
+                )
         else:
-            result = HttpResponse('Can not stop bot because bot is not stared', status=404)
+            result = JsonResponse(
+                {
+                    'result': 'Can not stop bot because bot is not stared'
+                },
+                status=requests.codes.conflict
+            )
         return result
 
     @action(
