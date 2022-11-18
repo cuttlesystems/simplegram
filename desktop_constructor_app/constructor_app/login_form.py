@@ -1,5 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import typing
+from enum import Enum
 
 from PySide6 import QtCore
 from PySide6.QtWidgets import QWidget, QLineEdit, QListWidget, QMessageBox, QListWidgetItem
@@ -8,6 +9,11 @@ from b_logic.bot_api import BotApi, BotApiException
 from b_logic.data_objects import BotDescription
 from desktop_constructor_app.constructor_app.bot_editor_form import BotEditorForm
 from desktop_constructor_app.constructor_app.ui_login_form import Ui_LoginForm
+
+
+class LoginStateEnum(Enum):
+    LOGIN = 'login'
+    BOTS = 'bots'
 
 
 class LoginForm(QWidget):
@@ -20,12 +26,37 @@ class LoginForm(QWidget):
         self._ui.setupUi(self)
         self._connect_signals()
         self._bot_editor_form = BotEditorForm(None)
+        self._dialog_state: LoginStateEnum = LoginStateEnum.LOGIN
+        self._activate_controls()
 
     def _connect_signals(self):
         self._ui.load_bots.clicked.connect(self._on_load_bots_click)
         self._ui.open_bot_button.clicked.connect(self._on_open_bot_click)
         self._ui.delete_bot_button.clicked.connect(self._on_delete_bot_click)
         self._ui.create_bot_button.clicked.connect(self._on_create_bot_click)
+
+    def _activate_controls(self):
+        self._ui.server_addr_edit.setEnabled(False)
+        self._ui.username_edit.setEnabled(False)
+        self._ui.password_edit.setEnabled(False)
+        self._ui.load_bots.setEnabled(False)
+        self._ui.change_user_button.setEnabled(False)
+        self._ui.bot_list_widget.setEnabled(False)
+        self._ui.open_bot_button.setEnabled(False)
+        self._ui.create_bot_button.setEnabled(False)
+        self._ui.delete_bot_button.setEnabled(False)
+        if self._dialog_state == LoginStateEnum.LOGIN:
+            self._ui.server_addr_edit.setEnabled(True)
+            self._ui.username_edit.setEnabled(True)
+            self._ui.password_edit.setEnabled(True)
+            self._ui.load_bots.setEnabled(True)
+        elif self._dialog_state == LoginStateEnum.BOTS:
+            self._ui.change_user_button.setEnabled(True)
+            self._ui.bot_list_widget.setEnabled(True)
+            self._ui.create_bot_button.setEnabled(True)
+            is_selected_bot = self._ui.bot_list_widget.currentItem() is None
+            self._ui.open_bot_button.setEnabled(is_selected_bot)
+            self._ui.delete_bot_button.setEnabled(is_selected_bot)
 
     def __load_bots_list(self):
         try:
@@ -49,6 +80,8 @@ class LoginForm(QWidget):
         try:
             self._bot_api.set_suite(server_addr_edit.text())
             self._bot_api.authentication(username_edit.text(), password_edit.text())
+            self._dialog_state = LoginStateEnum.BOTS
+            self._activate_controls()
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
 
