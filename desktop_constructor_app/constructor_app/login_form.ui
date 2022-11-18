@@ -26,7 +26,7 @@
      <item row="0" column="1">
       <widget class="QLineEdit" name="server_addr_edit">
        <property name="text">
-        <string>https://ramasuchka.kz/</string>
+        <string>http://127.0.0.1:8000/</string>
        </property>
       </widget>
      </item>
@@ -65,6 +65,13 @@
    </item>
    <item>
     <widget class="QListWidget" name="bot_list_widget"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="open_bot_button">
+     <property name="text">
+      <string>Открыть бота</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

@@ -1,14 +1,10 @@
 # This Python file uses the following encoding: utf-8
-import os
 import typing
-from pathlib import Path
-import sys
 
-from PySide6.QtWidgets import QApplication, QWidget, QLineEdit, QListView, QListWidget, QMessageBox
-from PySide6.QtCore import QFile
-from PySide6.QtUiTools import QUiLoader
+from PySide6.QtWidgets import QWidget, QLineEdit, QListWidget, QMessageBox
 
 from b_logic.bot_api import BotApi, BotApiException
+from desktop_constructor_app.constructor_app.bot_editor_form import BotEditorForm
 from desktop_constructor_app.constructor_app.ui_login_form import Ui_LoginForm
 
 
@@ -18,15 +14,17 @@ class LoginForm(QWidget):
         self._bot_api = bot_api
         self._load_ui()
         self._connect_signals()
+        self._bot_editor_form = BotEditorForm(None)
 
     def _load_ui(self):
          self._ui = Ui_LoginForm()
          self._ui.setupUi(self)
 
     def _connect_signals(self):
-        self._ui.load_bots.clicked.connect(self._on_button_click)
+        self._ui.load_bots.clicked.connect(self._on_load_bots_click)
+        self._ui.open_bot_button.clicked.connect(self._on_open_bot_click)
 
-    def _on_button_click(self):
+    def _on_load_bots_click(self, _checked: bool):
         bot_list_widget: QListWidget = self._ui.bot_list_widget
         bot_list_widget.clear()
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
@@ -41,3 +39,5 @@ class LoginForm(QWidget):
         except BotApiException as error:
             QMessageBox.warning(self, 'Ошибка', str(error))
 
+    def _on_open_bot_click(self, _checked: bool):
+        self._bot_editor_form.show()
