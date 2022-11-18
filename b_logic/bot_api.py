@@ -114,6 +114,19 @@ class BotApi:
 
         return self._create_bot_obj_from_dict(json.loads(response.text))
 
+    def delete_bot(self, id: int):
+        """
+        Удалить бота
+        Args:
+            id: идентификатор бота
+        """
+        response = requests.delete(
+            self._suite_url + f'api/bots/{id}/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.no_content:
+            raise BotApiException(f'Ошибка при удалении бота')
+
     def create_message(self, bot: BotDescription, text: str, x: int, y: int) -> BotMessage:
         """
         Создать сообщение

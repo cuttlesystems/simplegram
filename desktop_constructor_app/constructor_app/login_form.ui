@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>349</width>
-    <height>297</height>
+    <width>361</width>
+    <height>319</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -67,11 +67,22 @@
     <widget class="QListWidget" name="bot_list_widget"/>
    </item>
    <item>
-    <widget class="QPushButton" name="open_bot_button">
-     <property name="text">
-      <string>Открыть бота</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="open_bot_button">
+       <property name="text">
+        <string>Открыть бота</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="delete_bot_button">
+       <property name="text">
+        <string>Удалить бота</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
