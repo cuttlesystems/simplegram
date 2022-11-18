@@ -46,8 +46,11 @@ class LoginForm(QWidget):
         username_edit: QLineEdit = self._ui.username_edit
         password_edit: QLineEdit = self._ui.password_edit
 
-        self._bot_api.set_suite(server_addr_edit.text())
-        self._bot_api.authentication(username_edit.text(), password_edit.text())
+        try:
+            self._bot_api.set_suite(server_addr_edit.text())
+            self._bot_api.authentication(username_edit.text(), password_edit.text())
+        except BotApiException as bot_api_exception:
+            QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
 
         self.__load_bots_list()
 
