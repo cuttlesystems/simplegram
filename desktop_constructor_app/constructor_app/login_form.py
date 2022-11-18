@@ -70,5 +70,25 @@ class LoginForm(QWidget):
             QMessageBox.warning(self, 'Ошибка', 'Не выбран бот')
 
     def _on_create_bot_click(self, _checked: bool):
-        bot = self._bot_api.create_bot('Новый Cuttle Systems бот', '', '')
         self.__load_bots_list()
+        bot = self._bot_api.create_bot(
+            self.__get_unique_bot_name('Новый Cuttle Systems бот'), '', '')
+        self.__load_bots_list()
+
+    def __get_all_bots(self) -> typing.List[BotDescription]:
+        all_bots = []
+        for index in range(self._ui.bot_list_widget.count()):
+            item: QListWidgetItem = self._ui.bot_list_widget.item(index)
+            bot: BotDescription = item.data(self._LIST_DATA_ROLE)
+            assert isinstance(bot, BotDescription)
+            all_bots.append(bot)
+        return all_bots
+
+    def __get_unique_bot_name(self, base_name: str):
+        used_names = [bot.bot_name for bot in self.__get_all_bots()]
+        test_name = base_name
+        n = 2
+        while test_name in used_names:
+            test_name = f'{base_name} {n}'
+            n += 1
+        return test_name
