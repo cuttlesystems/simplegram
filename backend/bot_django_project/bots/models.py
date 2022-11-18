@@ -17,8 +17,8 @@ User = get_user_model()
 
 class Bot(models.Model):
     name = models.CharField(max_length=200)
-    token = models.CharField(max_length=100)
-    description = models.TextField('Описание бота')
+    token = models.CharField(max_length=100, null=True)
+    description = models.TextField('Описание бота', null=True)
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

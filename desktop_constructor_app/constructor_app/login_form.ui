@@ -76,6 +76,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="create_bot_button">
+       <property name="text">
+        <string>Создать бота</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="delete_bot_button">
        <property name="text">
         <string>Удалить бота</string>

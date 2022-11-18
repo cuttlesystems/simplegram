@@ -25,6 +25,7 @@ class LoginForm(QWidget):
         self._ui.load_bots.clicked.connect(self._on_load_bots_click)
         self._ui.open_bot_button.clicked.connect(self._on_open_bot_click)
         self._ui.delete_bot_button.clicked.connect(self._on_delete_bot_click)
+        self._ui.create_bot_button.clicked.connect(self._on_create_bot_click)
 
     def __load_bots_list(self):
         try:
@@ -67,3 +68,7 @@ class LoginForm(QWidget):
             self.__load_bots_list()
         else:
             QMessageBox.warning(self, 'Ошибка', 'Не выбран бот')
+
+    def _on_create_bot_click(self, _checked: bool):
+        bot = self._bot_api.create_bot('Новый Cuttle Systems бот', '', '')
+        self.__load_bots_list()
