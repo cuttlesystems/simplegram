@@ -9,6 +9,7 @@ from PySide6.QtCore import QFile
 from PySide6.QtUiTools import QUiLoader
 
 from b_logic.bot_api import BotApi, BotApiException
+from desktop_constructor_app.constructor_app.ui_login_form import Ui_LoginForm
 
 
 class LoginForm(QWidget):
@@ -19,12 +20,8 @@ class LoginForm(QWidget):
         self._connect_signals()
 
     def _load_ui(self):
-        loader = QUiLoader()
-        path = Path(__file__).resolve().parent / "login_form.ui"
-        ui_file = QFile(path)
-        ui_file.open(QFile.ReadOnly)
-        self._ui = loader.load(ui_file, self)
-        ui_file.close()
+         self._ui = Ui_LoginForm()
+         self._ui.setupUi(self)
 
     def _connect_signals(self):
         self._ui.load_bots.clicked.connect(self._on_button_click)
