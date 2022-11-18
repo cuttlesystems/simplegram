@@ -17,8 +17,10 @@ jobs:
     - name: Build the Docker image
       run: docker build . --tag cuttle_docker:$(date +%s)
       
-    with:
-      name: cuttle_artifact
-      path: cuttle_docker*
-      retention-days: 5      
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: cuttle_artifact
+        path: cuttle_docker*
+        retention-days: 5      
 
