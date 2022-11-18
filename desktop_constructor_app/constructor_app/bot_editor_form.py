@@ -15,7 +15,8 @@ class BotEditorForm(QWidget):
         self._connect_signals()
 
     def set_bot(self, bot: BotDescription):
-        self._ui.token_line_edit.setText(bot.token)
+        assert isinstance(bot, BotDescription)
+        self._ui.token_line_edit.setText(bot.bot_token)
 
     def _connect_signals(self):
         pass
