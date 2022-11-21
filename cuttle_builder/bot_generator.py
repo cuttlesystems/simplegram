@@ -9,6 +9,8 @@ from cuttle_builder.APIFileCreator import APIFileCreator
 from typing import List
 import typing
 
+from cuttle_builder.builder.state_generator.to_state import get_state_name_by_mes_id
+
 
 class BotGenerator:
 
@@ -85,7 +87,7 @@ class BotGenerator:
         assert isinstance(message_id, int)
         # todo: возможность поменять название переменной, чтобы при этом не отвалилось, улучшить качество кода
         #  ("AttributeError: type object 'States' has no attribute 'message_559'")
-        return f'a{message_id}'
+        return get_state_name_by_mes_id(message_id)
 
     def _get_imports_sample(self, imports_file_name) -> str:
         imports = str(
@@ -191,7 +193,7 @@ class BotGenerator:
                 '',
 
                 # todo: похоже, формирование имени объекта в обход метода (нет подобия prev_state с curr_state)
-                f'a{prev.current_message_id}',
+                self._get_handler_name_for_message(prev.current_message_id),
 
                 prev.text,
                 self._get_handler_name_for_message(message.id),
