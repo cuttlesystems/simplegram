@@ -30,4 +30,5 @@ class WindowsManager(QObject):
     def _on_close_bot(self):
         print('close bot')
         self._bot_editor_form.hide()
+        self._login_form.update_data()
         self._login_form.show()

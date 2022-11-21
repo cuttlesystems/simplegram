@@ -35,6 +35,7 @@ class LoginForm(QWidget):
         self._ui.delete_bot_button.clicked.connect(self._on_delete_bot_click)
         self._ui.create_bot_button.clicked.connect(self._on_create_bot_click)
         self._ui.change_user_button.clicked.connect(self._on_change_user_click)
+        self._ui.bot_list_widget.currentItemChanged.connect(self._on_current_bot_changed)
 
     def _activate_controls(self):
         self._ui.server_addr_edit.setEnabled(False)
@@ -55,7 +56,7 @@ class LoginForm(QWidget):
             self._ui.change_user_button.setEnabled(True)
             self._ui.bot_list_widget.setEnabled(True)
             self._ui.create_bot_button.setEnabled(True)
-            is_selected_bot = self._ui.bot_list_widget.currentItem() is None
+            is_selected_bot = self._ui.bot_list_widget.currentItem() is not None
             self._ui.open_bot_button.setEnabled(is_selected_bot)
             self._ui.delete_bot_button.setEnabled(is_selected_bot)
 
@@ -72,8 +73,7 @@ class LoginForm(QWidget):
         except BotApiException as error:
             QMessageBox.warning(self, 'Ошибка', str(error))
 
-    def _on_load_bots_click(self, _checked: bool):
-
+    def update_data(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
         username_edit: QLineEdit = self._ui.username_edit
         password_edit: QLineEdit = self._ui.password_edit
@@ -82,10 +82,13 @@ class LoginForm(QWidget):
             self._bot_api.set_suite(server_addr_edit.text())
             self._bot_api.authentication(username_edit.text(), password_edit.text())
             self._dialog_state = LoginStateEnum.BOTS
-            self._activate_controls()
             self.__load_bots_list()
+            self._activate_controls()
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
+
+    def _on_load_bots_click(self, _checked: bool):
+        self.update_data()
 
     def _on_open_bot_click(self, _checked: bool):
         selected_item: typing.Optional[QListWidgetItem] = self._ui.bot_list_widget.currentItem()
@@ -113,6 +116,10 @@ class LoginForm(QWidget):
     def _on_change_user_click(self, _checked: bool):
         self._ui.bot_list_widget.clear()
         self._dialog_state = LoginStateEnum.LOGIN
+        self._activate_controls()
+
+    def _on_current_bot_changed(self, _item):
+        print('_on_current_bot_changed')
         self._activate_controls()
 
     def __get_all_bots(self) -> typing.List[BotDescription]:
