@@ -34,6 +34,7 @@ class LoginForm(QWidget):
         self._ui.open_bot_button.clicked.connect(self._on_open_bot_click)
         self._ui.delete_bot_button.clicked.connect(self._on_delete_bot_click)
         self._ui.create_bot_button.clicked.connect(self._on_create_bot_click)
+        self._ui.change_user_button.clicked.connect(self._on_change_user_click)
 
     def _activate_controls(self):
         self._ui.server_addr_edit.setEnabled(False)
@@ -109,6 +110,11 @@ class LoginForm(QWidget):
         bot = self._bot_api.create_bot(
             self.__get_unique_bot_name('Новый Cuttle Systems бот'), '', '')
         self.__load_bots_list()
+
+    def _on_change_user_click(self, _checked: bool):
+        self._ui.bot_list_widget.clear()
+        self._dialog_state = LoginStateEnum.LOGIN
+        self._activate_controls()
 
     def __get_all_bots(self) -> typing.List[BotDescription]:
         all_bots = []
