@@ -1,46 +1,153 @@
 # This Python file uses the following encoding: utf-8
-import os
 import typing
-from pathlib import Path
-import sys
+from enum import Enum
 
-from PySide6.QtWidgets import QApplication, QWidget, QLineEdit, QListView, QListWidget, QMessageBox
-from PySide6.QtCore import QFile
-from PySide6.QtUiTools import QUiLoader
+from PySide6 import QtCore
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
 from b_logic.bot_api import BotApi, BotApiException
+from b_logic.data_objects import BotDescription
+from desktop_constructor_app.constructor_app.ui_login_form import Ui_LoginForm
+
+
+class LoginStateEnum(Enum):
+    """
+    Текущее состояние окна логина
+    """
+
+    # состояние подключения к серверу
+    LOGIN = 'login'
+
+    # состояние работы со списком ботов
+    BOTS = 'bots'
 
 
 class LoginForm(QWidget):
+    """
+    Окно с логином и выбором бота
+    """
+
+    _LIST_DATA_ROLE = QtCore.Qt.UserRole + 1
+
+    open_bot_signal = Signal(BotDescription)
+
     def __init__(self, parent: typing.Optional[QWidget], bot_api: BotApi):
         super().__init__(parent)
         self._bot_api = bot_api
-        self._load_ui()
+        self._ui = Ui_LoginForm()
+        self._ui.setupUi(self)
         self._connect_signals()
-
-    def _load_ui(self):
-        loader = QUiLoader()
-        path = Path(__file__).resolve().parent / "login_form.ui"
-        ui_file = QFile(path)
-        ui_file.open(QFile.ReadOnly)
-        self._ui = loader.load(ui_file, self)
-        ui_file.close()
+        self._dialog_state: LoginStateEnum = LoginStateEnum.LOGIN
+        self._activate_controls()
 
     def _connect_signals(self):
-        self._ui.load_bots.clicked.connect(self._on_button_click)
+        self._ui.load_bots.clicked.connect(self._on_load_bots_click)
+        self._ui.open_bot_button.clicked.connect(self._on_open_bot_click)
+        self._ui.delete_bot_button.clicked.connect(self._on_delete_bot_click)
+        self._ui.create_bot_button.clicked.connect(self._on_create_bot_click)
+        self._ui.change_user_button.clicked.connect(self._on_change_user_click)
+        self._ui.bot_list_widget.currentItemChanged.connect(self._on_current_bot_changed)
 
-    def _on_button_click(self):
-        bot_list_widget: QListWidget = self._ui.bot_list_widget
-        bot_list_widget.clear()
-        server_addr_edit: QLineEdit = self._ui.server_addr_edit
-        username_edit: QLineEdit = self._ui.username_edit
-        password_edit: QLineEdit = self._ui.password_edit
+    def _activate_controls(self):
+        self._ui.server_addr_edit.setEnabled(False)
+        self._ui.username_edit.setEnabled(False)
+        self._ui.password_edit.setEnabled(False)
+        self._ui.load_bots.setEnabled(False)
+        self._ui.change_user_button.setEnabled(False)
+        self._ui.bot_list_widget.setEnabled(False)
+        self._ui.open_bot_button.setEnabled(False)
+        self._ui.create_bot_button.setEnabled(False)
+        self._ui.delete_bot_button.setEnabled(False)
+        if self._dialog_state == LoginStateEnum.LOGIN:
+            self._ui.server_addr_edit.setEnabled(True)
+            self._ui.username_edit.setEnabled(True)
+            self._ui.password_edit.setEnabled(True)
+            self._ui.load_bots.setEnabled(True)
+        elif self._dialog_state == LoginStateEnum.BOTS:
+            self._ui.change_user_button.setEnabled(True)
+            self._ui.bot_list_widget.setEnabled(True)
+            self._ui.create_bot_button.setEnabled(True)
+            is_selected_bot = self._ui.bot_list_widget.currentItem() is not None
+            self._ui.open_bot_button.setEnabled(is_selected_bot)
+            self._ui.delete_bot_button.setEnabled(is_selected_bot)
+
+    def __load_bots_list(self):
         try:
-            self._bot_api.set_suite(server_addr_edit.text())
-            self._bot_api.authentication(username_edit.text(), password_edit.text())
             bots = self._bot_api.get_bots()
-            bots_names = [bot.bot_name for bot in bots]
-            bot_list_widget.addItems(bots_names)
+            bot_items = []
+            self._ui.bot_list_widget.clear()
+            for bot in bots:
+                bot_item = QListWidgetItem(bot.bot_name)
+                bot_item.setData(self._LIST_DATA_ROLE, bot)
+                bot_items.append(bot_item)
+                self._ui.bot_list_widget.addItem(bot_item)
         except BotApiException as error:
             QMessageBox.warning(self, 'Ошибка', str(error))
 
+    def update_data(self):
+        server_addr_edit: QLineEdit = self._ui.server_addr_edit
+        username_edit: QLineEdit = self._ui.username_edit
+        password_edit: QLineEdit = self._ui.password_edit
+
+        try:
+            self._bot_api.set_suite(server_addr_edit.text())
+            self._bot_api.authentication(username_edit.text(), password_edit.text())
+            self._dialog_state = LoginStateEnum.BOTS
+            self.__load_bots_list()
+            self._activate_controls()
+        except BotApiException as bot_api_exception:
+            QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
+
+    def _on_load_bots_click(self, _checked: bool):
+        self.update_data()
+
+    def _on_open_bot_click(self, _checked: bool):
+        selected_item: typing.Optional[QListWidgetItem] = self._ui.bot_list_widget.currentItem()
+        if selected_item is not None:
+            selected_bot = selected_item.data(self._LIST_DATA_ROLE)
+            self.open_bot_signal.emit(selected_bot)
+        else:
+            QMessageBox.warning(self, 'Ошибка', 'Не выбран бот')
+
+    def _on_delete_bot_click(self, _checked: bool):
+        selected_item: typing.Optional[QListWidgetItem] = self._ui.bot_list_widget.currentItem()
+        if selected_item is not None:
+            selected_bot: BotDescription = selected_item.data(self._LIST_DATA_ROLE)
+            self._bot_api.delete_bot(selected_bot.id)
+            self.__load_bots_list()
+        else:
+            QMessageBox.warning(self, 'Ошибка', 'Не выбран бот')
+
+    def _on_create_bot_click(self, _checked: bool):
+        self.__load_bots_list()
+        bot = self._bot_api.create_bot(
+            self.__get_unique_bot_name('Новый Cuttle Systems бот'), '', '')
+        self.__load_bots_list()
+
+    def _on_change_user_click(self, _checked: bool):
+        self._ui.bot_list_widget.clear()
+        self._dialog_state = LoginStateEnum.LOGIN
+        self._activate_controls()
+
+    def _on_current_bot_changed(self, _item):
+        print('_on_current_bot_changed')
+        self._activate_controls()
+
+    def __get_all_bots(self) -> typing.List[BotDescription]:
+        all_bots = []
+        for index in range(self._ui.bot_list_widget.count()):
+            item: QListWidgetItem = self._ui.bot_list_widget.item(index)
+            bot: BotDescription = item.data(self._LIST_DATA_ROLE)
+            assert isinstance(bot, BotDescription)
+            all_bots.append(bot)
+        return all_bots
+
+    def __get_unique_bot_name(self, base_name: str):
+        used_names = [bot.bot_name for bot in self.__get_all_bots()]
+        test_name = base_name
+        n = 2
+        while test_name in used_names:
+            test_name = f'{base_name} {n}'
+            n += 1
+        return test_name

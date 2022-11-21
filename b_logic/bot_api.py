@@ -34,16 +34,19 @@ class BotApi:
             username: имя пользователя
             password: пароль
         """
-        response = requests.post(
-            self._suite_url + 'api/auth/token/login/',
-            {
-                'username': username,
-                'password': password
-            }
-        )
-        if response.status_code != requests.status_codes.codes.ok:
-            raise BotApiException('Ошибка аутентификации пользователя {0}'.format(response.text))
-        self._auth_token = json.loads(response.text)['auth_token']
+        try:
+            response = requests.post(
+                self._suite_url + 'api/auth/token/login/',
+                {
+                    'username': username,
+                    'password': password
+                }
+            )
+            if response.status_code != requests.status_codes.codes.ok:
+                raise BotApiException('Ошибка аутентификации пользователя {0}'.format(response.text))
+            self._auth_token = json.loads(response.text)['auth_token']
+        except requests.exceptions.ConnectionError as connection_error:
+            raise BotApiException('Ошибка подключения')
 
     def auth_by_token(self, token: str) -> None:
         """
@@ -113,6 +116,33 @@ class BotApi:
             raise BotApiException(f'Ошибка при получении списка ботов {response.text}')
 
         return self._create_bot_obj_from_dict(json.loads(response.text))
+
+    def change_bot(self, bot: BotDescription) -> None:
+        assert isinstance(bot.id, int)
+        response = requests.patch(
+            self._suite_url + f'api/bots/{bot.id}/',
+            {
+                'name': bot.bot_name,
+                'token': bot.bot_token,
+                'description': bot.bot_description
+            },
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException('Ошибка при изменении бота')
+
+    def delete_bot(self, id: int):
+        """
+        Удалить бота
+        Args:
+            id: идентификатор бота
+        """
+        response = requests.delete(
+            self._suite_url + f'api/bots/{id}/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.no_content:
+            raise BotApiException(f'Ошибка при удалении бота')
 
     def create_message(self, bot: BotDescription, text: str, x: int, y: int) -> BotMessage:
         """
