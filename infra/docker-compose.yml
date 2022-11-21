@@ -2,7 +2,7 @@ version: '3.8'
 services:
   web:
     build: ../
-    # restart: always
+    restart: always
     volumes:
       - static_value:/app/backend/bot_django_project/static/
       - media_value:/app/backend/bot_django_project/media/
