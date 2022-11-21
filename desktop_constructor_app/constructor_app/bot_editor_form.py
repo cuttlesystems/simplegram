@@ -12,6 +12,11 @@ from desktop_constructor_app.constructor_app.ui_bot_editor_form import Ui_BotEdi
 
 
 class BotEditorForm(QWidget):
+    """
+    Окно редактора бота
+    """
+
+    # сигнал, о том, что пользователь закрывает этот редактор
     close_bot = Signal()
 
     def __init__(self, parent: typing.Optional[QWidget], bot_api: BotApi):

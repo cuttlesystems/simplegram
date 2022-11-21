@@ -2,6 +2,7 @@
 import typing
 from enum import Enum
 
+from PySide6 import QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
@@ -11,12 +12,23 @@ from desktop_constructor_app.constructor_app.ui_login_form import Ui_LoginForm
 
 
 class LoginStateEnum(Enum):
+    """
+    Текущее состояние окна логина
+    """
+
+    # состояние подключения к серверу
     LOGIN = 'login'
+
+    # состояние работы со списком ботов
     BOTS = 'bots'
 
 
 class LoginForm(QWidget):
-    _LIST_DATA_ROLE = 175438
+    """
+    Окно с логином и выбором бота
+    """
+
+    _LIST_DATA_ROLE = QtCore.Qt.UserRole + 1
 
     open_bot_signal = Signal(BotDescription)
 
