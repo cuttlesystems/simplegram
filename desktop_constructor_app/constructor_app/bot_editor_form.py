@@ -1,6 +1,9 @@
 # This Python file uses the following encoding: utf-8
 import typing
 
+import PySide6
+from PySide6 import QtGui
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
 from b_logic.data_objects import BotDescription
@@ -8,6 +11,8 @@ from desktop_constructor_app.constructor_app.ui_bot_editor_form import Ui_BotEdi
 
 
 class BotEditorForm(QWidget):
+    close_bot = Signal()
+
     def __init__(self, parent: typing.Optional[QWidget]):
         super().__init__(parent)
         self._ui = Ui_BotEditorForm()
@@ -20,3 +25,6 @@ class BotEditorForm(QWidget):
 
     def _connect_signals(self):
         pass
+
+    def closeEvent(self, event: QtGui.QCloseEvent) -> None:
+        self.close_bot.emit()
