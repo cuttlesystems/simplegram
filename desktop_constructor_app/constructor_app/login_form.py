@@ -82,10 +82,9 @@ class LoginForm(QWidget):
             self._bot_api.authentication(username_edit.text(), password_edit.text())
             self._dialog_state = LoginStateEnum.BOTS
             self._activate_controls()
+            self.__load_bots_list()
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
-
-        self.__load_bots_list()
 
     def _on_open_bot_click(self, _checked: bool):
         selected_item: typing.Optional[QListWidgetItem] = self._ui.bot_list_widget.currentItem()

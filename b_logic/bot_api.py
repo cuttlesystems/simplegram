@@ -34,16 +34,19 @@ class BotApi:
             username: имя пользователя
             password: пароль
         """
-        response = requests.post(
-            self._suite_url + 'api/auth/token/login/',
-            {
-                'username': username,
-                'password': password
-            }
-        )
-        if response.status_code != requests.status_codes.codes.ok:
-            raise BotApiException('Ошибка аутентификации пользователя {0}'.format(response.text))
-        self._auth_token = json.loads(response.text)['auth_token']
+        try:
+            response = requests.post(
+                self._suite_url + 'api/auth/token/login/',
+                {
+                    'username': username,
+                    'password': password
+                }
+            )
+            if response.status_code != requests.status_codes.codes.ok:
+                raise BotApiException('Ошибка аутентификации пользователя {0}'.format(response.text))
+            self._auth_token = json.loads(response.text)['auth_token']
+        except requests.exceptions.ConnectionError as connection_error:
+            raise BotApiException('Ошибка подключения')
 
     def auth_by_token(self, token: str) -> None:
         """

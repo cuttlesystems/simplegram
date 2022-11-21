@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Подключение к конструтор ботов Cuttle Systems</string>
+   <string>Подключение к конструтору ботов Cuttle Systems</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
