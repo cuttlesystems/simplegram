@@ -2,13 +2,11 @@
 import typing
 from enum import Enum
 
-from PySide6 import QtCore
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget, QLineEdit, QListWidget, QMessageBox, QListWidgetItem
+from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
 from b_logic.bot_api import BotApi, BotApiException
 from b_logic.data_objects import BotDescription
-from desktop_constructor_app.constructor_app.bot_editor_form import BotEditorForm
 from desktop_constructor_app.constructor_app.ui_login_form import Ui_LoginForm
 
 
@@ -28,7 +26,6 @@ class LoginForm(QWidget):
         self._ui = Ui_LoginForm()
         self._ui.setupUi(self)
         self._connect_signals()
-        # self._bot_editor_form = BotEditorForm(None)
         self._dialog_state: LoginStateEnum = LoginStateEnum.LOGIN
         self._activate_controls()
 
@@ -95,8 +92,6 @@ class LoginForm(QWidget):
         if selected_item is not None:
             selected_bot = selected_item.data(self._LIST_DATA_ROLE)
             self.open_bot_signal.emit(selected_bot)
-            # self._bot_editor_form.set_bot(selected_bot)
-            # self._bot_editor_form.show()
         else:
             QMessageBox.warning(self, 'Ошибка', 'Не выбран бот')
 

@@ -11,7 +11,7 @@ class WindowsManager(QObject):
         super().__init__()
         bot_api = BotApi()
         self._login_form = LoginForm(None, bot_api)
-        self._bot_editor_form = BotEditorForm(None)
+        self._bot_editor_form = BotEditorForm(None, bot_api)
 
         self._login_form.open_bot_signal.connect(self._on_open_bot)
         self._bot_editor_form.close_bot.connect(self._on_close_bot)

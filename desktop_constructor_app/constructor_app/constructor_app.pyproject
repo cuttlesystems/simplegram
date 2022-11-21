@@ -1,3 +1,3 @@
 {
-    "files": ["login_form.ui","login_form.py","../../start_constructor.py","bot_editor_form.ui"]
+    "files": ["bot_editor_form.ui","login_form.py","../../start_constructor.py","login_form.ui","bot_editor_form.py"]
 }

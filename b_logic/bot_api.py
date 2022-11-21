@@ -117,6 +117,20 @@ class BotApi:
 
         return self._create_bot_obj_from_dict(json.loads(response.text))
 
+    def change_bot(self, bot: BotDescription) -> None:
+        assert isinstance(bot.id, int)
+        response = requests.patch(
+            self._suite_url + f'api/bots/{bot.id}/',
+            {
+                'name': bot.bot_name,
+                'token': bot.bot_token,
+                'description': bot.bot_description
+            },
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException('Ошибка при изменении бота')
+
     def delete_bot(self, id: int):
         """
         Удалить бота
