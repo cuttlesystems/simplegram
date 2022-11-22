@@ -1,5 +1,3 @@
-from email.policy import default
-from importlib.metadata import requires
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
