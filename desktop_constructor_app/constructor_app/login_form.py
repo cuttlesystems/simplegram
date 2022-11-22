@@ -121,8 +121,11 @@ class LoginForm(QWidget):
 
     def _on_create_bot_click(self, _checked: bool):
         self.__load_bots_list()
-        bot = self._bot_api.create_bot(
-            self.__get_unique_bot_name('Новый Cuttle Systems бот'), '', '')
+        try:
+            bot = self._bot_api.create_bot(
+                self.__get_unique_bot_name('Новый Cuttle Systems бот'), '', '')
+        except BotApiException as error:
+            QMessageBox.warning(self, 'Ошибка', f'Не удалось создать бота {error}')
         self.__load_bots_list()
 
     def _on_change_user_click(self, _checked: bool):
