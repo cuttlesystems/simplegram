@@ -30,7 +30,7 @@ class BotRunner:
             else:
                 only_name = process_name
             only_name = only_name.lower()
-            if only_name == 'python':
+            if only_name in ['python', 'python3']:
                 print('kill bot')
                 process.kill()
                 result = True

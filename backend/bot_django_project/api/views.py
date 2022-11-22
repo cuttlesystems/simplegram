@@ -189,7 +189,7 @@ class BotViewSet(viewsets.ModelViewSet):
         # (хотя можно было и по другому сделать или переделать)
         # bot_api = BotApiByRequests('http://127.0.0.1:8000/')
         bot_api = BotApiByDjangoORM()
-        bot_api.auth_by_token(request.auth.key)
+        # bot_api.auth_by_token(request.auth.key)
         bot_obj = bot_api.get_bot_by_id(bot_django.id)
         bot_dir = self._get_bot_dir(bot_django.id)
         generator = BotGeneratorDb(bot_api, bot_obj, str(bot_dir))
