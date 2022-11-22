@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>469</width>
-    <height>251</height>
+    <width>599</width>
+    <height>485</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,17 +73,7 @@
     </layout>
    </item>
    <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>106</height>
-      </size>
-     </property>
-    </spacer>
+    <widget class="QTreeView" name="bot_params_view"/>
    </item>
   </layout>
  </widget>
