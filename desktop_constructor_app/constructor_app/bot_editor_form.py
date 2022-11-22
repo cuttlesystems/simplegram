@@ -39,18 +39,18 @@ class BotEditorForm(QWidget):
             self._prop_name = PropertyInModel(name='Название бота', value=bot.bot_name)
             self._prop_token = PropertyInModel(name='Токен бота', value=bot.bot_token)
             self._prop_description = PropertyInModel(name='Описание', value=bot.bot_description)
-            self._ui.token_line_edit.setText(bot.bot_token)
-            self._ui.bot_name_line_edit.setText(bot.bot_name)
-            self._ui.descrtiption_text_edit.setText(bot.bot_description)
+
             self._prop_model = PropertiesModel([
                 self._prop_name,
                 self._prop_token,
                 self._prop_description
             ])
         else:
-            self._ui.token_line_edit.setText('')
-            self._ui.bot_name_line_edit.setText('')
-            self._ui.descrtiption_text_edit.setText('')
+
+            self._prop_name = None
+            self._prop_token = None
+            self._prop_description = None
+
             self._prop_model = PropertiesModel([])
         self._ui.bot_params_view.setModel(self._prop_model)
 
@@ -58,10 +58,6 @@ class BotEditorForm(QWidget):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
 
     def _on_apply_button(self, _checked: bool):
-        # self._bot.bot_name = self._ui.bot_name_line_edit.text()
-        # self._bot.bot_token = self._ui.token_line_edit.text()
-        # self._bot.bot_description = self._ui.descrtiption_text_edit.text()
-
         self._bot.bot_name = self._prop_name.value
         self._bot.bot_token = self._prop_token.value
         self._bot.bot_description = self._prop_description.value
