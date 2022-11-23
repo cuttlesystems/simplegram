@@ -1,196 +1,10 @@
 import json
 import typing
 from typing import List, Optional
-from abc import abstractmethod, ABC
-
 import requests
 
+from b_logic.bot_api_abstract import IBotApi, BotApiException
 from b_logic.data_objects import BotDescription, BotMessage, MessageVariant
-from bots.models import Bot, Message, Variant
-
-class BotApiException(Exception):
-    def __init__(self, mes: str):
-        super().__init__(mes)
-
-
-class IBotApi(ABC):
-    @abstractmethod
-    def set_suite(self, suite_url: str) -> None:
-        """Устанавливает suite_url: корневой URL для API запросов"""
-        pass
-
-    @abstractmethod
-    def authentication(self, username: str, password: str) -> None:
-        """
-        Провести аутентификацию пользователя и запомнить токен авторизации для
-        дальнейшего вызова методов
-        Args:
-            username: имя пользователя
-            password: пароль
-        """
-        pass
-
-    @abstractmethod
-    def auth_by_token(self, token: str) -> None:
-        """
-        Авторизация пользователя по токену
-        Args:
-            token: токен авторизации
-        """
-        pass
-
-    @abstractmethod
-    def create_bot(self, bot_name: str, bot_token: str, bot_description: str) -> BotDescription:
-        """
-        Создать бота
-        Args:
-            bot_name: название бота
-            bot_token: токен бота
-            bot_description: описание бота
-
-        Returns:
-            идентификатор созданного бота
-        """
-        pass
-
-    @abstractmethod
-    def get_bots(self) -> List[BotDescription]:
-        """
-        Получить список ботов пользователя
-        Returns:
-            список ботов
-        """
-        pass
-
-    @abstractmethod
-    def get_bot_by_id(self, id: int) -> BotDescription:
-        """
-        Получить объект бота с заданным идентификатором
-        Args:
-            id: идентификатор бота
-
-        Returns:
-            объект бота
-        """
-        pass
-
-    @abstractmethod
-    def change_bot(self, bot: BotDescription) -> None:
-        """
-        Изменить бота
-        Args:
-            bot_name: название бота
-            bot_token: токен бота
-            bot_description: описание бота
-        """
-        pass
-
-    @abstractmethod
-    def delete_bot(self, id: int) -> None:
-        """
-        Удалить бота
-        Args:
-            id: идентификатор бота
-        """
-        pass
-
-    @abstractmethod
-    def create_message(self, bot: BotDescription, text: str, x: int, y: int) -> BotMessage:
-        """
-        Создать сообщение
-        Args:
-            bot: объект бота, для которого создается сообщение
-            text: тест сообщения
-            x: координата по x
-            y: координата по y
-
-        Returns:
-            идентификатор созданного сообщения
-        """
-        pass
-
-    @abstractmethod
-    def get_messages(self, bot: BotDescription) -> List[BotMessage]:
-        """
-        Получить все сообщения заданного бота
-        Args:
-            bot: бот, у которого нужно получить сообщения
-
-        Returns:
-            список сообщений бота
-        """
-        pass
-
-    @abstractmethod
-    def create_variant(self, message: BotMessage, text: str) -> MessageVariant:
-        """
-        Создание варианта
-        Args:
-            message: объект сообщения для которого создается вариант
-            text: текст создаваемого варианта
-
-        Returns:
-            идентификатор созданного варианта
-        """
-        pass
-
-    @abstractmethod
-    def get_variants(self, message: BotMessage) -> List[MessageVariant]:
-        """
-        Получить варианты для заданного сообщения
-        Args:
-            message: сообщение для которого получаем варианты
-
-        Returns:
-            список вариантов
-        """
-        pass
-
-    @abstractmethod
-    def connect_variant(self, variant: MessageVariant, message: BotMessage) -> None:
-        """
-        Связать вариант и сообщение, к которому перейдем при выборе этого варианта
-        Args:
-            variant: связываемый вариант
-            message: сообщение к которому перейдем
-        """
-        pass
-
-    @abstractmethod
-    def set_bot_start_message(self, bot: BotDescription, start_message: BotMessage) -> None:
-        """
-        Установить сообщение с которого начнется работа с ботом
-        Args:
-            bot: объект бота
-            start_message: объект сообщения, которое будет установлено в качестве стартового
-        в качестве стартового
-        """
-        pass
-
-    @abstractmethod
-    def _get_headers(self) -> typing.Dict[str, str]:
-        """
-        Получить словарь заголовков, которые добавляются к запросам.
-        Содержит информацию об авторизации.
-        Returns:
-            словарь с заголовками для запроса
-        """
-        pass
-
-    @abstractmethod
-    def _create_bot_obj_from_data(self, bot_dict: dict) -> BotDescription:
-        """Создает объект класса BotDescription из входящих данных"""
-        pass
-
-    @abstractmethod
-    def _create_bot_message_from_data(self, message_dict: dict) -> BotMessage:
-        """Создает объект класса BotMessage из входящих данных"""
-        pass
-
-    @abstractmethod
-    def _create_variant_from_data(self, variant_dict: dict) -> MessageVariant:
-        """Создает объект класса MessageVariant из входящих данных"""
-        pass
 
 
 class BotApiByRequests(IBotApi):
@@ -248,7 +62,7 @@ class BotApiByRequests(IBotApi):
             bot_description: описание бота
 
         Returns:
-            идентификатор созданного бота
+            объект созданного бота
         """
         response = requests.post(
             self._suite_url + 'api/bots/',
@@ -336,7 +150,7 @@ class BotApiByRequests(IBotApi):
             y: координата по y
 
         Returns:
-            идентификатор созданного сообщения
+            объект созданного сообщения
         """
         assert isinstance(bot, BotDescription)
         response = requests.post(
@@ -381,7 +195,7 @@ class BotApiByRequests(IBotApi):
             text: текст создаваемого варианта
 
         Returns:
-            идентификатор созданного варианта
+            объект созданного варианта
         """
         assert isinstance(message, BotMessage)
         response = requests.post(
@@ -497,123 +311,4 @@ class BotApiByRequests(IBotApi):
         variant.text = variant_dict['text']
         variant.current_message_id = variant_dict['current_message']
         variant.next_message_id = variant_dict['next_message']
-        return variant
-
-
-class BotApiByDjangoORM(IBotApi):
-    def set_suite(self, suite_url: str):
-        raise NotImplementedError('Метод не определен!')
-
-    def authentication(self, username: str, password: str) -> None:
-        raise NotImplementedError('Метод не определен!')
-
-    def auth_by_token(self, token: str) -> None:
-        raise NotImplementedError('Метод не определен!')
-
-    def create_bot(self, bot_name: str, bot_token: str, bot_description: str) -> BotDescription:
-        raise NotImplementedError('Метод не определен!')
-
-    def get_bots(self) -> List[BotDescription]:
-        raise NotImplementedError('Метод не определен!')
-
-    def get_bot_by_id(self, id: int) -> BotDescription:
-        """
-        Получить объект бота с заданным идентификатором
-        Args:
-            id: идентификатор бота
-
-        Returns:
-            объект бота
-        """
-        bot = Bot.objects.get(id=id)
-        if not bot:
-            raise BotApiException(f'Ошибка при получении бота № {id}')
-        return self._create_bot_obj_from_data(bot)
-
-    def change_bot(self, bot: BotDescription) -> None:
-        raise NotImplementedError('Метод не определен!')
-    
-    def delete_bot(self, id: int) -> None:
-        raise NotImplementedError('Метод не определен!')
-
-    def create_message(self, bot: BotDescription, text: str, x: int, y: int) -> BotMessage:
-        raise NotImplementedError('Метод не определен!')
-
-    def get_messages(self, bot: BotDescription) -> List[BotMessage]:
-        """
-        Получить все сообщения заданного бота
-        Args:
-            bot: бот, у которого нужно получить сообщения
-
-        Returns:
-            список сообщений бота
-        """
-        messages = Message.objects.filter(bot__id=bot.id)
-        if len(messages) == 0:
-            raise BotApiException(
-                f'Ошибка. Количество сообщений бота = {len(messages)}')
-        messages_list: List[BotMessage] = []
-        for message in messages:
-            messages_list.append(self._create_bot_message_from_data(message))
-        return messages_list
-    
-    def create_variant(self, message: BotMessage, text: str) -> MessageVariant:
-        raise NotImplementedError('Метод не определен!')
-
-    def get_variants(self, message: BotMessage) -> List[MessageVariant]:
-        """
-        Получить варианты для заданного сообщения
-        Args:
-            message: сообщение для которого получаем варианты
-
-        Returns:
-            список вариантов
-        """
-        variants = Variant.objects.filter(current_message__id=message.id)
-        variants_list: List[MessageVariant] = []
-        for variant in variants:
-            variants_list.append(self._create_variant_from_data(variant))
-        return variants_list
-
-    def connect_variant(self, variant: MessageVariant, message: BotMessage) -> None:
-        raise NotImplementedError('Метод не определен!')
-
-    def set_bot_start_message(self, bot: BotDescription, start_message: BotMessage) -> None:
-        raise NotImplementedError('Метод не определен!')
-
-    def _get_headers(self) -> typing.Dict[str, str]:
-        raise NotImplementedError('Метод не определен!')
-
-    def _create_bot_obj_from_data(self, bot_django: Bot) -> BotDescription:
-        """Создает объект класса BotDescription из входящих данных"""
-        bot_description = BotDescription()
-        bot_description.id = bot_django.id
-        bot_description.bot_name = bot_django.name
-        bot_description.bot_token = bot_django.token
-        bot_description.bot_description = bot_django.description
-        bot_description.start_message_id = bot_django.start_message.id
-        return bot_description
-    
-    def _create_bot_message_from_data(self, message_django: Message) -> BotMessage:
-        """Создает объект класса BotMessage из входящих данных"""
-        bot_message = BotMessage()
-        bot_message.id = message_django.id
-        bot_message.text = message_django.text
-        bot_message.photo = message_django.photo
-        bot_message.video = message_django.video
-        bot_message.file = message_django.file
-        bot_message.x = message_django.coordinate_x
-        bot_message.y = message_django.coordinate_y
-        return bot_message
-    
-    def _create_variant_from_data(self, variant_django: Variant) -> MessageVariant:
-        """Создает объект класса BotMessage из входящих данных"""
-        variant = MessageVariant()
-        variant.id = variant_django.id
-        variant.text = variant_django.text
-        variant.current_message_id = variant_django.current_message.id
-        if variant_django.next_message:
-            variant.next_message_id = variant_django.next_message.id
-        else:
-            variant.next_message_id = None
         return variant

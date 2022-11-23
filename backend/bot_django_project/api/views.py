@@ -9,7 +9,8 @@ from django.http import HttpResponse, FileResponse, HttpResponseBase, JsonRespon
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
-from b_logic.bot_api import BotApiByRequests, BotApiByDjangoORM
+from b_logic.bot_api import BotApiByRequests
+from b_logic.bot_api_django import BotApiByDjangoORM
 from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from b_logic.bot_runner import BotRunner
 from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS_DIR
@@ -145,7 +146,8 @@ class BotViewSet(viewsets.ModelViewSet):
                 result = JsonResponse(
                     {
                         'result': 'Bot stopped is ok',
-                        'bot_id': bot_id_int
+                        'bot_id': bot_id_int,
+                        'process_id': bot_process.process_id
                     },
                     status=requests.codes.ok
                 )
@@ -159,7 +161,7 @@ class BotViewSet(viewsets.ModelViewSet):
         else:
             result = JsonResponse(
                 {
-                    'result': 'Can not stop bot because bot is not stared'
+                    'result': 'Can not stop bot because bot is not started'
                 },
                 status=requests.codes.conflict
             )
