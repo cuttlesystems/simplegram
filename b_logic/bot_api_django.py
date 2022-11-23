@@ -1,4 +1,3 @@
-import typing
 from typing import List
 
 from b_logic.bot_api_abstract import IBotApi, BotApiException
@@ -57,9 +56,6 @@ class BotApiByDjangoORM(IBotApi):
             список сообщений бота
         """
         messages = Message.objects.filter(bot__id=bot.id)
-        if len(messages) == 0:
-            raise BotApiException(
-                f'Ошибка. Количество сообщений бота = {len(messages)}')
         messages_list: List[BotMessage] = []
         for message in messages:
             messages_list.append(self._create_bot_message_from_data(message))
@@ -89,9 +85,6 @@ class BotApiByDjangoORM(IBotApi):
 
     def set_bot_start_message(self, bot: BotDescription,
                               start_message: BotMessage) -> None:
-        raise NotImplementedError('Метод не определен!')
-
-    def _get_headers(self) -> typing.Dict[str, str]:
         raise NotImplementedError('Метод не определен!')
 
     def _create_bot_obj_from_data(self, bot_django: Bot) -> BotDescription:

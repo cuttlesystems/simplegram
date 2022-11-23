@@ -1,4 +1,3 @@
-import typing
 from typing import List
 from abc import abstractmethod, ABC
 
@@ -167,29 +166,4 @@ class IBotApi(ABC):
             start_message: объект сообщения, которое будет установлено в
             качестве стартового
         """
-        pass
-
-    @abstractmethod
-    def _get_headers(self) -> typing.Dict[str, str]:
-        """
-        Получить словарь заголовков, которые добавляются к запросам.
-        Содержит информацию об авторизации.
-        Returns:
-            словарь с заголовками для запроса
-        """
-        pass
-
-    @abstractmethod
-    def _create_bot_obj_from_data(self, bot_dict: dict) -> BotDescription:
-        """Создает объект класса BotDescription из входящих данных"""
-        pass
-
-    @abstractmethod
-    def _create_bot_message_from_data(self, message_dict: dict) -> BotMessage:
-        """Создает объект класса BotMessage из входящих данных"""
-        pass
-
-    @abstractmethod
-    def _create_variant_from_data(self, variant_dict: dict) -> MessageVariant:
-        """Создает объект класса MessageVariant из входящих данных"""
         pass

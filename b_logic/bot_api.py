@@ -286,6 +286,7 @@ class BotApiByRequests(IBotApi):
         }
 
     def _create_bot_obj_from_data(self, bot_dict: dict) -> BotDescription:
+        """Создает объект класса BotDescription из входящих данных"""
         bot_description = BotDescription()
         bot_description.id = bot_dict['id']
         bot_description.bot_name = bot_dict['name']
@@ -295,6 +296,7 @@ class BotApiByRequests(IBotApi):
         return bot_description
 
     def _create_bot_message_from_data(self, message_dict: dict) -> BotMessage:
+        """Создает объект класса BotMessage из входящих данных"""
         bot_message = BotMessage()
         bot_message.id = message_dict['id']
         bot_message.text = message_dict['text']
@@ -306,6 +308,7 @@ class BotApiByRequests(IBotApi):
         return bot_message
 
     def _create_variant_from_data(self, variant_dict: dict) -> MessageVariant:
+        """Создает объект класса MessageVariant из входящих данных"""
         variant = MessageVariant()
         variant.id = variant_dict['id']
         variant.text = variant_dict['text']
