@@ -12,6 +12,7 @@ class MessageGraphicsItem(QGraphicsItem):
     _MESSAGE_COLOR = 0xceffff
     _PEN_COLOR = 0x137b7b
     _BORDER_THICKNESS = 5
+    _ROUND_RADIUS = 30
 
     def __init__(self, x: float, y: float):
         super().__init__()
@@ -19,7 +20,8 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(y, float)
 
         self._brush = QBrush(QColor(self._MESSAGE_COLOR))
-        self._normal_pen = QPen(QColor(self._PEN_COLOR), self._BORDER_THICKNESS, QtCore.Qt.PenStyle.DotLine)
+        self._selected_pen = QPen(QColor(self._PEN_COLOR), self._BORDER_THICKNESS, QtCore.Qt.PenStyle.DotLine)
+        self._normal_pen = QPen(QColor(self._PEN_COLOR), self._BORDER_THICKNESS, QtCore.Qt.PenStyle.SolidLine)
 
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
@@ -45,6 +47,9 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(painter, QtGui.QPainter)
         assert isinstance(option, QtWidgets.QStyleOptionGraphicsItem)
         assert isinstance(widget, QtWidgets.QWidget) or widget is None
-        painter.setPen(self._normal_pen)
+        if self.isSelected():
+            painter.setPen(self._selected_pen)
+        else:
+            painter.setPen(self._normal_pen)
         painter.setBrush(self._brush)
-        painter.drawRect(self._graphic_rect())
+        painter.drawRoundedRect(self._graphic_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
