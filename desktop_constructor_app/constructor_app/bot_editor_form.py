@@ -7,6 +7,7 @@ from PySide6.QtWidgets import QWidget
 
 from b_logic.bot_api import BotApi
 from b_logic.data_objects import BotDescription
+from desktop_constructor_app.constructor_app.bot_scene import BotScene
 from desktop_constructor_app.constructor_app.properties_model import PropertiesModel, PropertyInModel
 from desktop_constructor_app.constructor_app.ui_bot_editor_form import Ui_BotEditorForm
 
@@ -29,6 +30,10 @@ class BotEditorForm(QWidget):
         self._prop_name: typing.Optional[PropertyInModel] = None
         self._prop_token: typing.Optional[PropertyInModel] = None
         self._prop_description: typing.Optional[PropertyInModel] = None
+
+        self._bot_scene = BotScene(self)
+        self._ui.graphics_view.setScene(self._bot_scene)
+
         self._connect_signals()
 
     def set_bot(self, bot: typing.Optional[BotDescription]):
