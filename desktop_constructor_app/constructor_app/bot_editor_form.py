@@ -60,9 +60,13 @@ class BotEditorForm(QWidget):
 
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
+        self._ui.add_message_button.clicked.connect(self._on_add_message)
 
     def _on_apply_button(self, _checked: bool):
         self._save_changes()
+
+    def _on_add_message(self, _checked: bool):
+        self._bot_scene.add_message(10, 10)
 
     def _save_changes(self):
         self._bot.bot_name = self._prop_name.value

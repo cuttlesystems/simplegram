@@ -1,6 +1,6 @@
 from PySide6 import QtCore
 from PySide6.QtGui import QBrush, QColor
-from PySide6.QtWidgets import QGraphicsScene, QGraphicsRectItem
+from PySide6.QtWidgets import QGraphicsScene, QGraphicsRectItem, QGraphicsItem
 
 
 class BotScene(QGraphicsScene):
@@ -12,11 +12,21 @@ class BotScene(QGraphicsScene):
 
         self._brush = QBrush(QColor(0xceffff))
 
-        self._create_message(10, 10)
+        self._background_brush = QBrush(QColor(0xf0ffff))
 
-        self._create_message(10, 180)
+        self.setBackgroundBrush(self._background_brush)
+
+        self.add_message(10, 10)
+
+        self.add_message(10, 180)
+
+    def add_message(self, x: int, y: int):
+        self._create_message(x, y)
 
     def _create_message(self, x: int, y: int) -> QGraphicsRectItem:
-        rect = self.addRect(QtCore.QRect(x, y, self._MSG_WIDTH, self._MSG_HEIGHT), brush=self._brush)
+        rect: QGraphicsRectItem = self.addRect(
+            QtCore.QRect(x, y, self._MSG_WIDTH, self._MSG_HEIGHT), brush=self._brush)
+
+        rect.setFlag(QGraphicsItem.ItemIsMovable, True)
         assert isinstance(rect, QGraphicsRectItem)
         return rect
