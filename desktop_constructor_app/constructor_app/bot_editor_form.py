@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QWidget
 
 from b_logic.bot_api import BotApi
 from b_logic.data_objects import BotDescription
-from desktop_constructor_app.constructor_app.bot_scene import BotScene
+from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.constructor_app.properties_model import PropertiesModel, PropertyInModel
 from desktop_constructor_app.constructor_app.ui_bot_editor_form import Ui_BotEditorForm
 
