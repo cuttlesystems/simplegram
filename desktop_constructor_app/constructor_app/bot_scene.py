@@ -2,7 +2,7 @@ import typing
 
 from PySide6 import QtCore
 from PySide6.QtCore import QRectF
-from PySide6.QtGui import QBrush, QColor
+from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsRectItem, QGraphicsItem
 
 
@@ -17,9 +17,15 @@ class BotScene(QGraphicsScene):
 
         self._background_brush = QBrush(QColor(0xf0ffff))
 
+        self._background_pen = QPen(QColor(0xc5ecec), 5, QtCore.Qt.DotLine)
+
         # self.setSceneRect(5, 5, 300, 300)
 
-        self._background_rect = self.addRect(QtCore.QRect(0, 0, 480, 640), brush=self._background_brush)
+        self._background_rect = self.addRect(
+            QtCore.QRect(0, 0, 480, 640),
+            pen=self._background_pen,
+            brush=self._background_brush
+        )
 
         self._messages_rects: typing.List[QGraphicsRectItem] = []
 
