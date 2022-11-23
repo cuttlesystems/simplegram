@@ -57,6 +57,7 @@ class BotEditorForm(QWidget):
 
             self._prop_model = PropertiesModel([])
         self._ui.bot_params_view.setModel(self._prop_model)
+        self._ui.graphics_view.centerOn(0.0, 0.0)
 
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
