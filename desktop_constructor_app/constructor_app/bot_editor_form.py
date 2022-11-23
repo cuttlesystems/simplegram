@@ -46,7 +46,6 @@ class BotEditorForm(QWidget):
                 self._prop_description
             ])
         else:
-
             self._prop_name = None
             self._prop_token = None
             self._prop_description = None
@@ -58,6 +57,9 @@ class BotEditorForm(QWidget):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
 
     def _on_apply_button(self, _checked: bool):
+        self._save_changes()
+
+    def _save_changes(self):
         self._bot.bot_name = self._prop_name.value
         self._bot.bot_token = self._prop_token.value
         self._bot.bot_description = self._prop_description.value
@@ -65,4 +67,5 @@ class BotEditorForm(QWidget):
         self._bot_api.change_bot(self._bot)
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
+        self._save_changes()
         self.close_bot.emit()
