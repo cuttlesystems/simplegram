@@ -35,6 +35,14 @@ class BotScene(QGraphicsScene):
     def add_message(self, x: int, y: int):
         self._messages_rects.append(self._create_message(x, y))
 
+    def get_selected_items(self) -> typing.List[QGraphicsRectItem]:
+        return self.selectedItems()
+
+    def delete_messages(self, messages: typing.List[QGraphicsRectItem]):
+        for del_mes in messages:
+            self._messages_rects.remove(del_mes)
+            self.removeItem(del_mes)
+
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, 640, 480)
         for message_rect in self._messages_rects:

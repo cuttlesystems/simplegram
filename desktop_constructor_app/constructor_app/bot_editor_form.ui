@@ -32,6 +32,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="delete_message">
+           <property name="text">
+            <string>Удалить сообщение</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
