@@ -87,6 +87,12 @@ class BotApiByDjangoORM(IBotApi):
                               start_message: BotMessage) -> None:
         raise NotImplementedError('Метод не определен!')
 
+    def delete_message(self, message: BotMessage):
+        raise NotImplementedError('Метод не определен!')
+
+    def change_message(self, message: BotMessage) -> None:
+        raise NotImplementedError('Метод не определен!')
+
     def _create_bot_obj_from_data(self, bot_django: Bot) -> BotDescription:
         """Создает объект класса BotDescription из входящих данных"""
         bot_description = BotDescription()

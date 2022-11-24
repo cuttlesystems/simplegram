@@ -263,7 +263,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(bot, BotDescription)
         assert isinstance(start_message, BotMessage)
         response = requests.patch(
-            self._suite_url + 'api/bots/{0}/'.format(bot.id),
+            self._suite_url + f'api/bots/{bot.id}/',
             {
                 'start_message': start_message.id
             },
@@ -272,6 +272,32 @@ class BotApiByRequests(IBotApi):
         if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException('Ошибка при установке стартового сообщения бота: {0}'.format(
                 response.text))
+
+    def delete_message(self, message: BotMessage):
+        assert isinstance(message, BotMessage)
+        print(f'delete message id {message.id}')
+        response = requests.delete(
+            self._suite_url + f'api/message/{message.id}/',
+            headers=self._get_headers()
+        )
+        print(f'delete response {response.status_code}')
+        if response.status_code != requests.status_codes.codes.no_content:
+            raise BotApiException(f'Ошибка при удалении сообщения: {response.text}')
+
+    def change_message(self, message: BotMessage) -> None:
+        assert isinstance(message, BotMessage)
+        response = requests.patch(
+            self._suite_url + f'api/message/{message.id}/',
+            {
+                # todo: тут надо доделать, чтобы менялись все поля. И сделать цивилизованно
+                'coordinate_x': message.x,
+                'coordinate_y': message.y
+            },
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException(
+                'Ошибка при изменении сообщения: {0}'.format(response.text))
 
     def _get_headers(self) -> typing.Dict[str, str]:
         """

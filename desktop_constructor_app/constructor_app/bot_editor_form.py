@@ -38,8 +38,6 @@ class BotEditorForm(QWidget):
         self._ui.graphics_view.setScene(self._bot_scene)
         self._ui.graphics_view.setRenderHint(QPainter.Antialiasing)
 
-        self._test_id = 1
-
         self._connect_signals()
 
     def set_bot(self, bot: typing.Optional[BotDescription]):
@@ -79,29 +77,31 @@ class BotEditorForm(QWidget):
         for message in bot_messages:
             self._bot_scene.add_message(message)
 
-    # def _upload_bot_scene(self):
-    #     scene_messages = self._bot_scene.get_all_messages()
-    #     bot_messages = self._bot_api.get_messages(self._bot)
-    #     bot_messages_ids = {msg.id for msg in bot_messages}
-    #     removed_bot_messages = []
-    #     for scene_message in scene_messages:
-    #         if scene_message.id in bot_messages_ids:
+    def _upload_bot_scene(self):
+        scene_messages = self._bot_scene.get_all_messages()
+        for message in scene_messages:
+            self._bot_api.change_message(message)
 
     def _on_apply_button(self, _checked: bool):
         self._save_changes()
 
     def _on_add_message(self, _checked: bool):
-        message = BotMessage(self._test_id, 'Текст ботового сообщения', x=10, y=10)
-        self._test_id += 1
+        message = self._bot_api.create_message(
+            self._bot, 'Текст ботового сообщения', x=10, y=10)
         self._bot_scene.add_message(message)
 
     def _on_delete_message(self, _checked: bool):
-        self._bot_scene.delete_messages(self._bot_scene.get_selected_messages())
+        messages_for_delete = self._bot_scene.get_selected_messages()
+        self._bot_scene.delete_messages(messages_for_delete)
+        for message in messages_for_delete:
+            self._bot_api.delete_message(message)
 
     def _save_changes(self):
         self._bot.bot_name = self._prop_name.value
         self._bot.bot_token = self._prop_token.value
         self._bot.bot_description = self._prop_description.value
+
+        self._upload_bot_scene()
 
         self._bot_api.change_bot(self._bot)
 

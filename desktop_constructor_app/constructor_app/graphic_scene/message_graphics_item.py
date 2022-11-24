@@ -1,7 +1,7 @@
 import typing
 
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import QPointF, QRectF
+from PySide6.QtCore import QPointF, QRectF, Signal
 from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsItem
 
@@ -15,6 +15,8 @@ class MessageGraphicsItem(QGraphicsItem):
     _PEN_COLOR = 0x137b7b
     _BORDER_THICKNESS = 5
     _ROUND_RADIUS = 30
+
+    # message_moved = Signal(BotMessage)
 
     def __init__(self, x: float, y: float, message: BotMessage):
         super().__init__()
@@ -34,6 +36,10 @@ class MessageGraphicsItem(QGraphicsItem):
 
         self.setPos(QPointF(x, y))
 
+        # после setPos происходит зануление координат, чуть подкостыляем пока что так
+        self._message.x = int(x)
+        self._message.y = int(y)
+
     def get_message(self) -> BotMessage:
         return self._message
 
@@ -52,6 +58,7 @@ class MessageGraphicsItem(QGraphicsItem):
             position = self.pos()
             self._message.x = int(position.x())
             self._message.y = int(position.y())
+            # self.message_moved.emit(self._message)
         return result
 
     def paint(

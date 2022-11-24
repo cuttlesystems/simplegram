@@ -167,3 +167,20 @@ class IBotApi(ABC):
             качестве стартового
         """
         pass
+
+    @abstractmethod
+    def delete_message(self, message: BotMessage) -> None:
+        """
+        Удалить сообщение из бота
+        Args:
+            message: сообщение, которое требуется удалить
+        """
+        pass
+
+    def change_message(self, message: BotMessage) -> None:
+        """
+        Изменить сообщение
+        Args:
+            message: сообщение, которое необходимо изменить
+        """
+        pass
