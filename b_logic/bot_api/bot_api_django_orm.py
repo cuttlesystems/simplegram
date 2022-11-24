@@ -1,6 +1,6 @@
 from typing import List
 
-from b_logic.bot_api_abstract import IBotApi, BotApiException
+from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotDescription, BotMessage, MessageVariant
 from bots.models import Bot, Message, Variant
 

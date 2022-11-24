@@ -1,6 +1,5 @@
 import sys
 from PySide6.QtWidgets import QApplication
-from b_logic.bot_api import BotApi
 from desktop_constructor_app.constructor_app.windows_manager import WindowsManager
 
 

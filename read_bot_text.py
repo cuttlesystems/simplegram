@@ -1,4 +1,4 @@
-from b_logic.bot_api import BotApi
+from b_logic.bot_api.bot_api_by_requests import BotApi
 from app_tests.connection_settings import ConnectionSettings
 
 

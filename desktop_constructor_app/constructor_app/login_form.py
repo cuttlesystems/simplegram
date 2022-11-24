@@ -6,7 +6,8 @@ from PySide6 import QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
-from b_logic.bot_api import BotApi, BotApiException
+from b_logic.bot_api.bot_api_by_requests import BotApiException
+from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
 from desktop_constructor_app.constructor_app.ui_login_form import Ui_LoginForm
 
@@ -32,7 +33,7 @@ class LoginForm(QWidget):
 
     open_bot_signal = Signal(BotDescription)
 
-    def __init__(self, parent: typing.Optional[QWidget], bot_api: BotApi):
+    def __init__(self, parent: typing.Optional[QWidget], bot_api: IBotApi):
         super().__init__(parent)
         self._bot_api = bot_api
         self._ui = Ui_LoginForm()
@@ -121,8 +122,11 @@ class LoginForm(QWidget):
 
     def _on_create_bot_click(self, _checked: bool):
         self.__load_bots_list()
-        bot = self._bot_api.create_bot(
-            self.__get_unique_bot_name('Новый Cuttle Systems бот'), '', '')
+        try:
+            bot = self._bot_api.create_bot(
+                self.__get_unique_bot_name('Новый Cuttle Systems бот'), '', '')
+        except BotApiException as error:
+            QMessageBox.warning(self, 'Ошибка', f'Не удалось создать бота {error}')
         self.__load_bots_list()
 
     def _on_change_user_click(self, _checked: bool):

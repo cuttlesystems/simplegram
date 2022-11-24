@@ -1,5 +1,4 @@
 import shutil
-import uuid
 from pathlib import Path
 
 import requests
@@ -9,11 +8,10 @@ from django.http import HttpResponse, FileResponse, HttpResponseBase, JsonRespon
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
-from b_logic.bot_api import BotApiByRequests
-from b_logic.bot_api_django import BotApiByDjangoORM
+from b_logic.bot_api.bot_api_django_orm import BotApiByDjangoORM
 from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from b_logic.bot_runner import BotRunner
-from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS_DIR
+from bot_constructor.settings import BOTS_DIR
 from rest_framework.request import Request
 from rest_framework.decorators import action
 

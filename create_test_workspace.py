@@ -1,6 +1,6 @@
 import uuid
-from b_logic.bot_api import BotApi
 from app_tests.connection_settings import ConnectionSettings
+from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 
 
 def gen_unique_str() -> str:
@@ -9,7 +9,7 @@ def gen_unique_str() -> str:
 
 if __name__ == '__main__':
     settings = ConnectionSettings()
-    bot_api = BotApi(settings.site_addr)
+    bot_api = BotApiByRequests(settings.site_addr)
     bot_api.authentication(settings.username, settings.password)
 
     bot = bot_api.create_bot(
