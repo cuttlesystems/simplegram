@@ -30,6 +30,7 @@ class MessageGraphicsItem(QGraphicsItem):
 
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges, True)
 
         self.setPos(QPointF(x, y))
 
@@ -43,6 +44,15 @@ class MessageGraphicsItem(QGraphicsItem):
         width = rect.width() + self._BORDER_THICKNESS * 2
         height = rect.height() + self._BORDER_THICKNESS * 2
         return QRectF(x, y, width, height)
+
+    def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value: typing.Any) -> typing.Any:
+        result = super().itemChange(change, value)
+        # синхронизируем позицию графического элемента и координаты сообщения
+        if change == QGraphicsItem.ItemPositionChange:
+            position = self.pos()
+            self._message.x = int(position.x())
+            self._message.y = int(position.y())
+        return result
 
     def paint(
             self,
