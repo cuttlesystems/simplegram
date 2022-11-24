@@ -6,7 +6,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget
 
-from b_logic.bot_api import BotApi
+from b_logic.bot_api_abstract import IBotApi
 from b_logic.data_objects import BotDescription
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.constructor_app.properties_model import PropertiesModel, PropertyInModel
@@ -21,8 +21,10 @@ class BotEditorForm(QWidget):
     # сигнал, о том, что пользователь закрывает этот редактор
     close_bot = Signal()
 
-    def __init__(self, parent: typing.Optional[QWidget], bot_api: BotApi):
+    def __init__(self, parent: typing.Optional[QWidget], bot_api: IBotApi):
         super().__init__(parent)
+        assert isinstance(bot_api, IBotApi)
+
         self._ui = Ui_BotEditorForm()
         self._ui.setupUi(self)
         self._bot_api = bot_api

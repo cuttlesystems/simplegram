@@ -1,6 +1,6 @@
 from PySide6.QtCore import QObject
 
-from b_logic.bot_api import BotApi
+from b_logic.bot_api import BotApiByRequests
 from b_logic.data_objects import BotDescription
 from desktop_constructor_app.constructor_app.bot_editor_form import BotEditorForm
 from desktop_constructor_app.constructor_app.login_form import LoginForm
@@ -9,7 +9,7 @@ from desktop_constructor_app.constructor_app.login_form import LoginForm
 class WindowsManager(QObject):
     def __init__(self):
         super().__init__()
-        bot_api = BotApi()
+        bot_api = BotApiByRequests()
         self._login_form = LoginForm(None, bot_api)
         self._bot_editor_form = BotEditorForm(None, bot_api)
 

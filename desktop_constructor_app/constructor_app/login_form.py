@@ -6,7 +6,8 @@ from PySide6 import QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
-from b_logic.bot_api import BotApi, BotApiException
+from b_logic.bot_api import BotApiException
+from b_logic.bot_api_abstract import IBotApi
 from b_logic.data_objects import BotDescription
 from desktop_constructor_app.constructor_app.ui_login_form import Ui_LoginForm
 
@@ -32,7 +33,7 @@ class LoginForm(QWidget):
 
     open_bot_signal = Signal(BotDescription)
 
-    def __init__(self, parent: typing.Optional[QWidget], bot_api: BotApi):
+    def __init__(self, parent: typing.Optional[QWidget], bot_api: IBotApi):
         super().__init__(parent)
         self._bot_api = bot_api
         self._ui = Ui_LoginForm()
