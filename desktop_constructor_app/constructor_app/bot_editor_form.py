@@ -3,6 +3,7 @@ import typing
 
 from PySide6 import QtGui
 from PySide6.QtCore import Signal
+from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget
 
 from b_logic.bot_api import BotApi
@@ -33,6 +34,7 @@ class BotEditorForm(QWidget):
 
         self._bot_scene = BotScene(self)
         self._ui.graphics_view.setScene(self._bot_scene)
+        self._ui.graphics_view.setRenderHint(QPainter.Antialiasing)
 
         self._connect_signals()
 
