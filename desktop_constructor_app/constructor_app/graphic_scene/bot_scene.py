@@ -9,18 +9,30 @@ from desktop_constructor_app.constructor_app.graphic_scene.message_graphics_item
 
 
 class BotScene(QGraphicsScene):
+    """
+    Сцена для отображения редактора бота
+    """
+
+    _WORKSPACE_BACKGROUND_COLOR = 0xf0ffff
+    _WORKSPACE_BACKGROUND_BORDER_COLOR = 0xc5ecec
+    _WORKSPACE_BACKGROUND_LINE_THICKNESS = 5
+    _WORKSPACE_BACKGROUND_LINE_STYLE = QtCore.Qt.DotLine
+    _MIN_WORKSPACE_WIDTH = 640
+    _MIN_WORKSPACE_HEIGHT = 480
+
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
 
-        # todo: выделить цвета и прочее в константы
-        self._brush = QBrush(QColor(0xceffff))
+        self._background_brush = QBrush(QColor(self._WORKSPACE_BACKGROUND_COLOR))
 
-        self._background_brush = QBrush(QColor(0xf0ffff))
-
-        self._background_pen = QPen(QColor(0xc5ecec), 5, QtCore.Qt.DotLine)
+        self._background_pen = QPen(
+            QColor(self._WORKSPACE_BACKGROUND_BORDER_COLOR),
+            self._WORKSPACE_BACKGROUND_LINE_THICKNESS,
+            self._WORKSPACE_BACKGROUND_LINE_STYLE
+        )
 
         self._background_rect = self.addRect(
-            QtCore.QRect(0, 0, 480, 640),
+            QtCore.QRect(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT),
             pen=self._background_pen,
             brush=self._background_brush
         )
@@ -45,12 +57,13 @@ class BotScene(QGraphicsScene):
             self.removeItem(del_mes)
 
     def _get_work_field_rect(self) -> QRectF:
-        result = QRectF(0, 0, 640, 480)
+        result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)
         for message_rect in self._messages_rects:
             result = result.united(message_rect.sceneBoundingRect())
         return result
 
-    def _on_item_changed(self, region):
+    def _on_item_changed(self, region: typing.List[QRectF]):
+        assert all(isinstance(r, QRectF) for r in region)
         items_bounding_rect: QRectF = self._get_work_field_rect()
         background_rect_size = self._extend_rect(items_bounding_rect, 50, 50)
         self._background_rect.setRect(background_rect_size)
