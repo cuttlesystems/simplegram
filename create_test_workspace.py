@@ -29,6 +29,18 @@ if __name__ == '__main__':
     computer_message = bot_api.create_message(bot, 'Какие компьютеры предпочитаете?', 200, 150)
     bot_api.connect_variant(computer_variant, computer_message)
 
+    computer_message_variant_desc = bot_api.create_variant(computer_message, 'Прочитать описание компьютеров')
+    computer_to_mobile_var = bot_api.create_variant(computer_message, 'Переключиться на айфоны')
+
+    computer_description_message = bot_api.create_message(
+        bot,
+        'Тут будет длинное сообщение. Чтобы проверить, что будет если сообщение не '
+        'помещается внутри прямоугольника для сообщения. Проверяем, что если сообщение еще длиннее. '
+        'А если еще длиннее. И совсем длинное, которое не помещается', 500, 10)
+
+    bot_api.connect_variant(computer_message_variant_desc, computer_description_message)
+
+
     android_variant = bot_api.create_variant(mobile_message, 'Android')
     iphone_variant = bot_api.create_variant(mobile_message, 'IPhone')
     mobile_cancel_variant = bot_api.create_variant(mobile_message, 'Вернуться в начало')
@@ -58,6 +70,8 @@ if __name__ == '__main__':
 
     iphone_13_variant = bot_api.create_variant(iphone_select_message, 'IPhone 13')
     iphone_14_variant = bot_api.create_variant(iphone_select_message, 'IPhone 14')
+
+    bot_api.connect_variant(computer_to_mobile_var, iphone_select_message)
 
     buy_iphone_13_message = bot_api.create_message(bot, 'Вы оформляете заказ IPhone 13', 300, 300)
     bot_api.connect_variant(iphone_13_variant, buy_iphone_13_message)

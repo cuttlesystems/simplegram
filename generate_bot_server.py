@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from b_logic.bot_api.bot_api_by_requests import BotApi
+from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from app_tests.connection_settings import ConnectionSettings
 
 
 if __name__ == '__main__':
     settings = ConnectionSettings()
-    bot_api = BotApi(settings.site_addr)
+    bot_api = BotApiByRequests(settings.site_addr)
     bot_api.authentication(settings.username, settings.password)
 
     bot = bot_api.get_bot_by_id(settings.bot_id)

@@ -37,7 +37,7 @@ class Bot(models.Model):
 
 
 class Message(models.Model):
-    text = models.CharField(max_length=200)
+    text = models.TextField()
     photo = models.ImageField(
         upload_to='messages_images/',
         null=True,

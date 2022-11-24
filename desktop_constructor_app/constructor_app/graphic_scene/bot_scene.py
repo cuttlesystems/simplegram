@@ -85,6 +85,7 @@ class BotScene(QGraphicsScene):
 
     def get_all_messages(self) -> typing.List[BotMessage]:
         return [message_graphics.get_message() for message_graphics in self._message_graphics_list]
+
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)
         for message_rect in self._message_graphics_list:
