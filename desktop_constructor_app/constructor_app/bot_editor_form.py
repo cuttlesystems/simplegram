@@ -66,10 +66,26 @@ class BotEditorForm(QWidget):
         self._ui.bot_params_view.setModel(self._prop_model)
         self._ui.graphics_view.centerOn(0.0, 0.0)
 
+        self._load_bot_scene()
+
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
         self._ui.add_message_button.clicked.connect(self._on_add_message)
         self._ui.delete_message.clicked.connect(self._on_delete_message)
+
+    def _load_bot_scene(self):
+        self._bot_scene.clear_scene()
+        bot_messages = self._bot_api.get_messages(self._bot)
+        for message in bot_messages:
+            self._bot_scene.add_message(message)
+
+    # def _upload_bot_scene(self):
+    #     scene_messages = self._bot_scene.get_all_messages()
+    #     bot_messages = self._bot_api.get_messages(self._bot)
+    #     bot_messages_ids = {msg.id for msg in bot_messages}
+    #     removed_bot_messages = []
+    #     for scene_message in scene_messages:
+    #         if scene_message.id in bot_messages_ids:
 
     def _on_apply_button(self, _checked: bool):
         self._save_changes()

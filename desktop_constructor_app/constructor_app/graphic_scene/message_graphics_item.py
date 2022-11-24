@@ -68,6 +68,10 @@ class MessageGraphicsItem(QGraphicsItem):
             painter.setPen(self._normal_pen)
         painter.setBrush(self._brush)
         painter.drawRoundedRect(self._graphic_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
+        painter.drawText(self._text_rect(), self._message.text)
 
     def _graphic_rect(self) -> QRectF:
         return QRectF(0, 0, self._MSG_WIDTH, self._MSG_HEIGHT)
+
+    def _text_rect(self) -> QRectF:
+        return QRectF(25, 25, self._MSG_WIDTH - 50, self._MSG_HEIGHT - 50)

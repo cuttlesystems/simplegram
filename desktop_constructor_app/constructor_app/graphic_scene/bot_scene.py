@@ -43,6 +43,11 @@ class BotScene(QGraphicsScene):
 
         self.changed.connect(self._on_item_changed)
 
+    def clear_scene(self):
+        for message in self._message_graphics_list:
+            self.removeItem(message)
+        self._message_graphics_list.clear()
+
     def add_message(self, message: BotMessage):
         # todo: тут надо проверять, что id уникальный и не конфликтует
         message_graphics = self._create_message_graphics(message)
@@ -78,6 +83,8 @@ class BotScene(QGraphicsScene):
             self.removeItem(removed_graphics_item)
             self._message_graphics_list.remove(removed_graphics_item)
 
+    def get_all_messages(self) -> typing.List[BotMessage]:
+        return [message_graphics.get_message() for message_graphics in self._message_graphics_list]
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)
         for message_rect in self._message_graphics_list:
