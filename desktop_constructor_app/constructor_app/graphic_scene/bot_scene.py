@@ -50,15 +50,11 @@ class BotScene(QGraphicsScene):
         return result
 
     def _on_item_changed(self, region):
-        print('changed ', region)
-
         items_bounding_rect: QRectF = self._get_work_field_rect()
         background_rect_size = self._extend_rect(items_bounding_rect, 50, 50)
         self._background_rect.setRect(background_rect_size)
         scene_rect_size = self._extend_rect(background_rect_size, 30, 30)
         self.setSceneRect(scene_rect_size)
-        print('background rect ', background_rect_size)
-        print('scene rect ', scene_rect_size)
 
     def _extend_rect(self, rect: QRectF, by_x: float, by_y: float) -> QRectF:
         x = rect.x() - by_x

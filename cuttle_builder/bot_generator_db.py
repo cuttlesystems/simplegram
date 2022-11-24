@@ -1,4 +1,4 @@
-from b_logic.bot_api import IBotApi
+from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
 from cuttle_builder.bot_generator import BotGenerator
 

@@ -6,7 +6,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget
 
-from b_logic.bot_api_abstract import IBotApi
+from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.constructor_app.properties_model import PropertiesModel, PropertyInModel
