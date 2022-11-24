@@ -1,10 +1,12 @@
 import typing
+from dataclasses import dataclass
 
 from PySide6 import QtCore
 from PySide6.QtCore import QRectF
 from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsRectItem, QGraphicsItem
 
+from b_logic.data_objects import BotMessage
 from desktop_constructor_app.constructor_app.graphic_scene.message_graphics_item import MessageGraphicsItem
 
 
@@ -37,28 +39,48 @@ class BotScene(QGraphicsScene):
             brush=self._background_brush
         )
 
-        self._messages_rects: typing.List[QGraphicsRectItem] = []
-
-        self.add_message(100, 10)
-
-        self.add_message(100, 180)
+        self._message_graphics_list: typing.List[MessageGraphicsItem] = []
 
         self.changed.connect(self._on_item_changed)
 
-    def add_message(self, x: int, y: int):
-        self._messages_rects.append(self._create_message(x, y))
+    def add_message(self, message: BotMessage):
+        # todo: тут надо проверять, что id уникальный и не конфликтует
+        message_graphics = self._create_message_graphics(message)
+        self._message_graphics_list.append(message_graphics)
 
-    def get_selected_items(self) -> typing.List[QGraphicsRectItem]:
-        return self.selectedItems()
+    def get_selected_messages(self) -> typing.List[BotMessage]:
+        result: typing.List[BotMessage] = []
+        for item in self.selectedItems():
+            item: MessageGraphicsItem
+            assert isinstance(item, MessageGraphicsItem)
+            result.append(item.get_message())
 
-    def delete_messages(self, messages: typing.List[QGraphicsRectItem]):
-        for del_mes in messages:
-            self._messages_rects.remove(del_mes)
-            self.removeItem(del_mes)
+        return result
+
+    def delete_messages(self, messages: typing.List[BotMessage]):
+        deleted_messages_ids: typing.List[typing.Optional[int]] = [message.id for message in messages]
+
+        # гарантия, что все сообщения с id
+        assert all(isinstance(message, int) for message in deleted_messages_ids)
+
+        deleted_messages_ids_set = set(deleted_messages_ids)
+
+        # гарантия, что нет одинаковых id
+        assert len(deleted_messages_ids_set) == len(deleted_messages_ids)
+
+        removed_graphics_items: typing.List[MessageGraphicsItem] = [
+            message_graphics
+            for message_graphics in self._message_graphics_list
+            if message_graphics.get_message().id in deleted_messages_ids_set
+        ]
+
+        for removed_graphics_item in removed_graphics_items:
+            self.removeItem(removed_graphics_item)
+            self._message_graphics_list.remove(removed_graphics_item)
 
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)
-        for message_rect in self._messages_rects:
+        for message_rect in self._message_graphics_list:
             result = result.united(message_rect.sceneBoundingRect())
         return result
 
@@ -77,8 +99,8 @@ class BotScene(QGraphicsScene):
         height = rect.height() + by_y * 2
         return QRectF(x, y, width, height)
 
-    def _create_message(self, x: int, y: int) -> QGraphicsItem:
-        rect = MessageGraphicsItem(float(x), float(y))
+    def _create_message_graphics(self, message: BotMessage) -> MessageGraphicsItem:
+        rect = MessageGraphicsItem(float(message.x), float(message.y), message)
         self.addItem(rect)
 
         assert isinstance(rect, QGraphicsItem)

@@ -7,7 +7,7 @@ from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget
 
 from b_logic.bot_api.i_bot_api import IBotApi
-from b_logic.data_objects import BotDescription
+from b_logic.data_objects import BotDescription, BotMessage
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.constructor_app.properties_model import PropertiesModel, PropertyInModel
 from desktop_constructor_app.constructor_app.ui_bot_editor_form import Ui_BotEditorForm
@@ -37,6 +37,8 @@ class BotEditorForm(QWidget):
         self._bot_scene = BotScene(self)
         self._ui.graphics_view.setScene(self._bot_scene)
         self._ui.graphics_view.setRenderHint(QPainter.Antialiasing)
+
+        self._test_id = 1
 
         self._connect_signals()
 
@@ -73,10 +75,12 @@ class BotEditorForm(QWidget):
         self._save_changes()
 
     def _on_add_message(self, _checked: bool):
-        self._bot_scene.add_message(10, 10)
+        message = BotMessage(self._test_id, 'Текст ботового сообщения', x=10, y=10)
+        self._test_id += 1
+        self._bot_scene.add_message(message)
 
     def _on_delete_message(self, _checked: bool):
-        self._bot_scene.delete_messages(self._bot_scene.get_selected_items())
+        self._bot_scene.delete_messages(self._bot_scene.get_selected_messages())
 
     def _save_changes(self):
         self._bot.bot_name = self._prop_name.value

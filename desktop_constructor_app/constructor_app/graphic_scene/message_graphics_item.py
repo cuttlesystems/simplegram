@@ -5,6 +5,8 @@ from PySide6.QtCore import QPointF, QRectF
 from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsItem
 
+from b_logic.data_objects import BotMessage
+
 
 class MessageGraphicsItem(QGraphicsItem):
     _MSG_WIDTH = 150
@@ -14,22 +16,25 @@ class MessageGraphicsItem(QGraphicsItem):
     _BORDER_THICKNESS = 5
     _ROUND_RADIUS = 30
 
-    def __init__(self, x: float, y: float):
+    def __init__(self, x: float, y: float, message: BotMessage):
         super().__init__()
         assert isinstance(x, float)
         assert isinstance(y, float)
+        assert isinstance(message, BotMessage)
 
         self._brush = QBrush(QColor(self._MESSAGE_COLOR))
         self._selected_pen = QPen(QColor(self._PEN_COLOR), self._BORDER_THICKNESS, QtCore.Qt.PenStyle.DotLine)
         self._normal_pen = QPen(QColor(self._PEN_COLOR), self._BORDER_THICKNESS, QtCore.Qt.PenStyle.SolidLine)
+
+        self._message: BotMessage = message
 
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
 
         self.setPos(QPointF(x, y))
 
-    def _graphic_rect(self) -> QRectF:
-        return QRectF(0, 0, self._MSG_WIDTH, self._MSG_HEIGHT)
+    def get_message(self) -> BotMessage:
+        return self._message
 
     def boundingRect(self) -> QRectF:
         rect = self._graphic_rect()
@@ -53,3 +58,6 @@ class MessageGraphicsItem(QGraphicsItem):
             painter.setPen(self._normal_pen)
         painter.setBrush(self._brush)
         painter.drawRoundedRect(self._graphic_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
+
+    def _graphic_rect(self) -> QRectF:
+        return QRectF(0, 0, self._MSG_WIDTH, self._MSG_HEIGHT)
