@@ -12,6 +12,7 @@ class BotScene(QGraphicsScene):
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
 
+        # todo: выделить цвета и прочее в константы
         self._brush = QBrush(QColor(0xceffff))
 
         self._background_brush = QBrush(QColor(0xf0ffff))

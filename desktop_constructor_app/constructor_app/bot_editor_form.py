@@ -45,6 +45,7 @@ class BotEditorForm(QWidget):
         self._bot = bot
 
         if bot is not None:
+            # todo: вот эти вещи надо будет в модель вытащить
             self._prop_name = PropertyInModel(name='Название бота', value=bot.bot_name)
             self._prop_token = PropertyInModel(name='Токен бота', value=bot.bot_token)
             self._prop_description = PropertyInModel(name='Описание', value=bot.bot_description)
