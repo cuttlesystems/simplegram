@@ -144,3 +144,4 @@ media/
 
 # файлы настройки среды VSCode 
 */.vscode/*
+.vscode/

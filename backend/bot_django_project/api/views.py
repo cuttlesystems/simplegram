@@ -9,7 +9,8 @@ from django.http import HttpResponse, FileResponse, HttpResponseBase, JsonRespon
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
-from b_logic.bot_api import BotApi
+from b_logic.bot_api import BotApiByRequests
+from b_logic.bot_api_django import BotApiByDjangoORM
 from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from b_logic.bot_runner import BotRunner
 from bot_constructor.settings import BASE_DIR, MEDIA_ROOT, DATA_FILES_ROOT, BOTS_DIR
@@ -145,7 +146,8 @@ class BotViewSet(viewsets.ModelViewSet):
                 result = JsonResponse(
                     {
                         'result': 'Bot stopped is ok',
-                        'bot_id': bot_id_int
+                        'bot_id': bot_id_int,
+                        'process_id': bot_process.process_id
                     },
                     status=requests.codes.ok
                 )
@@ -159,7 +161,7 @@ class BotViewSet(viewsets.ModelViewSet):
         else:
             result = JsonResponse(
                 {
-                    'result': 'Can not stop bot because bot is not stared'
+                    'result': 'Can not stop bot because bot is not started'
                 },
                 status=requests.codes.conflict
             )
@@ -182,20 +184,17 @@ class BotViewSet(viewsets.ModelViewSet):
         """
         bot_id = int(bot_id_str)
         bot_django = get_object_or_404(Bot, id=bot_id)
-
         # проверка прав, что пользователь может работать с данным ботом (владелец бота)
         self.check_object_permissions(request, bot_django)
-
         self._stop_bot_if_it_run(bot_id)
-
         # подключаемся к api на локалхост, чтобы считать данные бота
         # (хотя можно было и по другому сделать или переделать)
-        bot_api = BotApi('http://127.0.0.1:8000/')
-        bot_api.auth_by_token(request.auth.key)
+        # bot_api = BotApiByRequests('http://127.0.0.1:8000/')
+        bot_api = BotApiByDjangoORM()
+        # bot_api.auth_by_token(request.auth.key)
         bot_obj = bot_api.get_bot_by_id(bot_django.id)
         bot_dir = self._get_bot_dir(bot_django.id)
         generator = BotGeneratorDb(bot_api, bot_obj, str(bot_dir))
-
         generator.create_bot()
 
         bot_zip_file_name = str(bot_dir) + '.zip'
