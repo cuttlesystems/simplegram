@@ -7,9 +7,10 @@ from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget
 
 from b_logic.bot_api.i_bot_api import IBotApi
-from b_logic.data_objects import BotDescription, BotMessage
+from b_logic.data_objects import BotDescription
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
-from desktop_constructor_app.constructor_app.properties_model import PropertiesModel, PropertyInModel
+from desktop_constructor_app.common.properties_model import PropertiesModel
+from desktop_constructor_app.common.model_property import ModelProperty
 from desktop_constructor_app.constructor_app.ui_bot_editor_form import Ui_BotEditorForm
 
 
@@ -30,9 +31,9 @@ class BotEditorForm(QWidget):
         self._bot_api = bot_api
         self._bot: typing.Optional[BotDescription] = None
         self._prop_model = None
-        self._prop_name: typing.Optional[PropertyInModel] = None
-        self._prop_token: typing.Optional[PropertyInModel] = None
-        self._prop_description: typing.Optional[PropertyInModel] = None
+        self._prop_name: typing.Optional[ModelProperty] = None
+        self._prop_token: typing.Optional[ModelProperty] = None
+        self._prop_description: typing.Optional[ModelProperty] = None
 
         self._bot_scene = BotScene(self)
         self._ui.graphics_view.setScene(self._bot_scene)
@@ -46,9 +47,9 @@ class BotEditorForm(QWidget):
 
         if bot is not None:
             # todo: вот эти вещи надо будет в модель вытащить
-            self._prop_name = PropertyInModel(name='Название бота', value=bot.bot_name)
-            self._prop_token = PropertyInModel(name='Токен бота', value=bot.bot_token)
-            self._prop_description = PropertyInModel(name='Описание', value=bot.bot_description)
+            self._prop_name = ModelProperty(name='Название бота', value=bot.bot_name)
+            self._prop_token = ModelProperty(name='Токен бота', value=bot.bot_token)
+            self._prop_description = ModelProperty(name='Описание', value=bot.bot_description)
 
             self._prop_model = PropertiesModel([
                 self._prop_name,

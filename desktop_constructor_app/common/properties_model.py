@@ -1,15 +1,11 @@
-import dataclasses
 import typing
 
 import PySide6
+from PySide6 import QtCore
 from PySide6.QtCore import QAbstractTableModel, QModelIndex
 from PySide6.QtGui import Qt
 
-
-@dataclasses.dataclass
-class PropertyInModel:
-    name: str = ''
-    value: str = ''
+from desktop_constructor_app.common.model_property import ModelProperty
 
 
 class PropertiesModel(QAbstractTableModel):
@@ -18,23 +14,26 @@ class PropertiesModel(QAbstractTableModel):
     _COLUMN_PROPERTY_NAME = 0
     _COLUMN_PROPERTY_VALUE = 1
 
-    _HEADER_COLUMNS = {
+    _HEADER_COLUMNS: typing.Dict[int, str] = {
         0: 'Параметр',
         1: 'Значение'
     }
 
-    def __init__(self, properties: typing.List[PropertyInModel]):
+    def __init__(self, properties: typing.List[ModelProperty]):
         super().__init__()
-        self._properties: typing.List[PropertyInModel] = properties
+        self._properties: typing.List[ModelProperty] = properties
 
-    def rowCount(self, parent):
+    def rowCount(self, parent: QModelIndex):
+        assert isinstance(parent, QModelIndex)
         return len(self._properties)
 
-    def columnCount(self, parent):
+    def columnCount(self, parent: QModelIndex):
+        assert isinstance(parent, QModelIndex)
         return self._COLUMNS_COUNT
 
     def data(self, index: QModelIndex, role: int):
         assert isinstance(index, QModelIndex)
+        assert isinstance(role, int)
         result = None
         if role == Qt.DisplayRole or role == Qt.EditRole:
             column_number = index.column()
@@ -46,9 +45,11 @@ class PropertiesModel(QAbstractTableModel):
                 result = property.value
         return result
 
-    def setData(self, index: PySide6.QtCore.QModelIndex, value: typing.Any, role: int) -> bool:
+    def setData(self, index: QModelIndex, value: typing.Any, role: int) -> bool:
+        assert isinstance(index, QModelIndex)
+        assert isinstance(role, int)
         result = False
-        if role == Qt.EditRole:
+        if role == Qt.ItemDataRole.EditRole:
             if index.column() == self._COLUMN_PROPERTY_VALUE:
                 parameter = self._properties[index.row()]
                 parameter.value = value
@@ -61,9 +62,11 @@ class PropertiesModel(QAbstractTableModel):
             result |= Qt.ItemFlag.ItemIsEditable
         return result
 
-    def headerData(self, section, orientation, role):
-        if role != Qt.DisplayRole or orientation != Qt.Horizontal:
-            result = None
-        else:
+    def headerData(self, section: int, orientation: Qt.Orientation, role: int) -> typing.Optional[str]:
+        assert isinstance(section, int)
+        assert isinstance(orientation, Qt.Orientation)
+        assert isinstance(role, int)
+        result = None
+        if role == Qt.DisplayRole and orientation == Qt.Orientation.Horizontal:
             result = self._HEADER_COLUMNS.get(section)
         return result
