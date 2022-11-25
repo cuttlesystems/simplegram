@@ -67,6 +67,8 @@ class BotEditorForm(QWidget):
 
         self._load_bot_scene()
 
+        self._ui.splitter.setSizes([200, 600])
+
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
         self._ui.add_message_button.clicked.connect(self._on_add_message)
