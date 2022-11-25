@@ -58,6 +58,7 @@ class MessageGraphicsItem(QGraphicsItem):
             position = self.pos()
             self._message.x = int(position.x())
             self._message.y = int(position.y())
+            print(f'item pos ({position.x()}, {position.y()})')
             # self.message_moved.emit(self._message)
         return result
 
