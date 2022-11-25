@@ -11,7 +11,7 @@ from b_logic.data_objects import BotDescription
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.common.properties_model import PropertiesModel
 from desktop_constructor_app.common.model_property import ModelProperty
-from desktop_constructor_app.constructor_app.ui_bot_editor_form import Ui_BotEditorForm
+from desktop_constructor_app.constructor_app.widgets.ui_bot_editor_form import Ui_BotEditorForm
 
 
 class BotEditorForm(QWidget):

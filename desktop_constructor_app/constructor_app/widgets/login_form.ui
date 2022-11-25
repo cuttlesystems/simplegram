@@ -66,6 +66,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="update_bot_list_button">
+       <property name="text">
+        <string>Обновить список</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="change_user_button">
        <property name="text">
         <string>Сменить пользователя</string>

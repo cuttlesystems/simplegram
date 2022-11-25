@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 from b_logic.bot_api.bot_api_by_requests import BotApiException
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
-from desktop_constructor_app.constructor_app.ui_login_form import Ui_LoginForm
+from desktop_constructor_app.constructor_app.widgets.ui_login_form import Ui_LoginForm
 
 
 class LoginStateEnum(Enum):
