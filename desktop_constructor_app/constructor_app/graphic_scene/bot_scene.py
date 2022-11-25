@@ -1,10 +1,9 @@
 import typing
-from dataclasses import dataclass
 
 from PySide6 import QtCore
 from PySide6.QtCore import QRectF
 from PySide6.QtGui import QBrush, QColor, QPen
-from PySide6.QtWidgets import QGraphicsScene, QGraphicsRectItem, QGraphicsItem
+from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
 from b_logic.data_objects import BotMessage
 from desktop_constructor_app.constructor_app.graphic_scene.message_graphics_item import MessageGraphicsItem
@@ -108,7 +107,7 @@ class BotScene(QGraphicsScene):
         return QRectF(x, y, width, height)
 
     def _create_message_graphics(self, message: BotMessage) -> MessageGraphicsItem:
-        rect = MessageGraphicsItem(float(message.x), float(message.y), message)
+        rect = MessageGraphicsItem(message)
         self.addItem(rect)
 
         assert isinstance(rect, QGraphicsItem)

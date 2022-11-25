@@ -13,15 +13,13 @@ class MessageGraphicsItem(QGraphicsItem):
     _MSG_HEIGHT = 100
     _MESSAGE_COLOR = 0xceffff
     _PEN_COLOR = 0x137b7b
-    _BORDER_THICKNESS = 5
+    _BORDER_THICKNESS = 3
     _ROUND_RADIUS = 30
 
     # message_moved = Signal(BotMessage)
 
-    def __init__(self, x: float, y: float, message: BotMessage):
+    def __init__(self, message: BotMessage):
         super().__init__()
-        assert isinstance(x, float)
-        assert isinstance(y, float)
         assert isinstance(message, BotMessage)
 
         self._brush = QBrush(QColor(self._MESSAGE_COLOR))
@@ -34,11 +32,7 @@ class MessageGraphicsItem(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges, True)
 
-        self.setPos(QPointF(x, y))
-
-        # после setPos происходит зануление координат, чуть подкостыляем пока что так
-        self._message.x = int(x)
-        self._message.y = int(y)
+        self.setPos(QPointF(self._message.x, self._message.y))
 
     def get_message(self) -> BotMessage:
         return self._message
@@ -55,10 +49,11 @@ class MessageGraphicsItem(QGraphicsItem):
         result = super().itemChange(change, value)
         # синхронизируем позицию графического элемента и координаты сообщения
         if change == QGraphicsItem.ItemPositionChange:
-            position = self.pos()
-            self._message.x = int(position.x())
-            self._message.y = int(position.y())
-            print(f'item pos ({position.x()}, {position.y()})')
+            assert isinstance(value, QPointF)
+            new_position = value
+            self._message.x = int(new_position.x())
+            self._message.y = int(new_position.y())
+            print(f'item pos ({new_position.x()}, {new_position.y()})')
             # self.message_moved.emit(self._message)
         return result
 
