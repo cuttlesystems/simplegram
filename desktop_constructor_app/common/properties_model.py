@@ -31,14 +31,21 @@ class PropertiesModel(QAbstractTableModel):
         assert isinstance(parent, QModelIndex)
         return self._COLUMNS_COUNT
 
-    def data(self, index: QModelIndex, role: int):
+    def data(self, index: QModelIndex, role: int) -> typing.Optional[str]:
         assert isinstance(index, QModelIndex)
         assert isinstance(role, int)
         result = None
+
+        # определим, какие данные вернем для целей отображения и редактирования
         if role == Qt.DisplayRole or role == Qt.EditRole:
             column_number = index.column()
             row_number = index.row()
+
+            # найдем параметр, который относится к данной ячейке
             property = self._properties[row_number]
+
+            # в зависимости от того, что нужно, имя параметра
+            # или значение, вернем соответствующие данные
             if column_number == self._COLUMN_PROPERTY_NAME:
                 result = property.name
             elif column_number == self._COLUMN_PROPERTY_VALUE:
@@ -49,15 +56,19 @@ class PropertiesModel(QAbstractTableModel):
         assert isinstance(index, QModelIndex)
         assert isinstance(role, int)
         result = False
+        # получим значение, которое пользователь ввел для параметра
         if role == Qt.ItemDataRole.EditRole:
             if index.column() == self._COLUMN_PROPERTY_VALUE:
+                # найдем по индексу параметр, значение которого вводил пользователь
                 parameter = self._properties[index.row()]
                 parameter.value = value
                 result = True
         return result
 
-    def flags(self, index: PySide6.QtCore.QModelIndex) -> PySide6.QtCore.Qt.ItemFlag:
+    def flags(self, index: QtCore.QModelIndex) -> PySide6.QtCore.Qt.ItemFlag:
+        assert isinstance(index, QtCore.QModelIndex)
         result = super().flags(index)
+        # столбец со значением параметра можно редактировать
         if index.column() == self._COLUMN_PROPERTY_VALUE:
             result |= Qt.ItemFlag.ItemIsEditable
         return result
@@ -67,6 +78,7 @@ class PropertiesModel(QAbstractTableModel):
         assert isinstance(orientation, Qt.Orientation)
         assert isinstance(role, int)
         result = None
-        if role == Qt.DisplayRole and orientation == Qt.Orientation.Horizontal:
+
+        if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Horizontal:
             result = self._HEADER_COLUMNS.get(section)
         return result

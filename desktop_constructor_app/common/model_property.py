@@ -1,7 +1,8 @@
 import dataclasses
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(slots=True)
 class ModelProperty:
     name: str = ''
     value: str = ''
+

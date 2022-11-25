@@ -61,7 +61,7 @@
      <item>
       <widget class="QPushButton" name="load_bots">
        <property name="text">
-        <string>Посмотреть ботов пользователя</string>
+        <string>Подключиться</string>
        </property>
       </widget>
      </item>

@@ -12,6 +12,7 @@ class MessageGraphicsItem(QGraphicsItem):
     _MSG_WIDTH = 150
     _MSG_HEIGHT = 100
     _MESSAGE_COLOR = 0xceffff
+    _TEXT_COLOR = 0x154545
     _PEN_COLOR = 0x137b7b
     _BORDER_THICKNESS = 3
     _ROUND_RADIUS = 30
@@ -53,7 +54,6 @@ class MessageGraphicsItem(QGraphicsItem):
             new_position = value
             self._message.x = int(new_position.x())
             self._message.y = int(new_position.y())
-            print(f'item pos ({new_position.x()}, {new_position.y()})')
             # self.message_moved.emit(self._message)
         return result
 
@@ -71,6 +71,7 @@ class MessageGraphicsItem(QGraphicsItem):
             painter.setPen(self._normal_pen)
         painter.setBrush(self._brush)
         painter.drawRoundedRect(self._graphic_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
+        painter.setPen(QColor(self._TEXT_COLOR))
         painter.drawText(self._text_rect(), self._message.text)
 
     def _graphic_rect(self) -> QRectF:
