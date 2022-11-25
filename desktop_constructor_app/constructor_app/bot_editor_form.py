@@ -7,7 +7,7 @@ from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget
 
 from b_logic.bot_api.i_bot_api import IBotApi
-from b_logic.data_objects import BotDescription
+from b_logic.data_objects import BotDescription, BotMessage
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.constructor_app.properties_model import PropertiesModel, PropertyInModel
 from desktop_constructor_app.constructor_app.ui_bot_editor_form import Ui_BotEditorForm
@@ -64,24 +64,44 @@ class BotEditorForm(QWidget):
         self._ui.bot_params_view.setModel(self._prop_model)
         self._ui.graphics_view.centerOn(0.0, 0.0)
 
+        self._load_bot_scene()
+
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
         self._ui.add_message_button.clicked.connect(self._on_add_message)
         self._ui.delete_message.clicked.connect(self._on_delete_message)
 
+    def _load_bot_scene(self):
+        self._bot_scene.clear_scene()
+        bot_messages = self._bot_api.get_messages(self._bot)
+        for message in bot_messages:
+            self._bot_scene.add_message(message)
+
+    def _upload_bot_scene(self):
+        scene_messages = self._bot_scene.get_all_messages()
+        for message in scene_messages:
+            self._bot_api.change_message(message)
+
     def _on_apply_button(self, _checked: bool):
         self._save_changes()
 
     def _on_add_message(self, _checked: bool):
-        self._bot_scene.add_message(10, 10)
+        message = self._bot_api.create_message(
+            self._bot, 'Текст ботового сообщения', x=10, y=10)
+        self._bot_scene.add_message(message)
 
     def _on_delete_message(self, _checked: bool):
-        self._bot_scene.delete_messages(self._bot_scene.get_selected_items())
+        messages_for_delete = self._bot_scene.get_selected_messages()
+        self._bot_scene.delete_messages(messages_for_delete)
+        for message in messages_for_delete:
+            self._bot_api.delete_message(message)
 
     def _save_changes(self):
         self._bot.bot_name = self._prop_name.value
         self._bot.bot_token = self._prop_token.value
         self._bot.bot_description = self._prop_description.value
+
+        self._upload_bot_scene()
 
         self._bot_api.change_bot(self._bot)
 

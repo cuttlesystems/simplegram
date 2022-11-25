@@ -37,7 +37,7 @@ class Bot(models.Model):
 
 
 class Message(models.Model):
-    text = models.CharField(max_length=200)
+    text = models.TextField()
     photo = models.ImageField(
         upload_to='messages_images/',
         null=True,
@@ -58,17 +58,11 @@ class Message(models.Model):
         on_delete=models.CASCADE,
         related_name='messages'
     )
-    coordinate_x = models.SmallIntegerField(
-        'Координата по оси x',
-        validators=[
-            MinValueValidator(0),
-        ]
+    coordinate_x = models.IntegerField(
+        'Координата по оси x'
     )
-    coordinate_y = models.SmallIntegerField(
-        'Координата по оси y',
-        validators=[
-            MinValueValidator(0),
-        ]
+    coordinate_y = models.IntegerField(
+        'Координата по оси y'
     )
 
     def __str__(self):
