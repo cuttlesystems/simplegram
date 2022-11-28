@@ -3,10 +3,14 @@ from desktop_constructor_app.common.properties_model import PropertiesModel
 
 
 class BotPropertiesModel(PropertiesModel):
+    """
+    Модель свойств бота
+    """
+
     def __init__(self):
-        self._prop_name = ModelProperty(name='Название бота', value='')
-        self._prop_token = ModelProperty(name='Токен бота', value='')
-        self._prop_description = ModelProperty(name='Описание', value='')
+        self._prop_name = ModelProperty(name='Название бота')
+        self._prop_token = ModelProperty(name='Токен бота')
+        self._prop_description = ModelProperty(name='Описание')
 
         super().__init__([
             self._prop_name,
