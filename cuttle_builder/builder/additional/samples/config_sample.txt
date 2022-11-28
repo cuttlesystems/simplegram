@@ -1,5 +1,5 @@
-{0}
+{imports}
 
 load_dotenv()
 
-BOT_TOKEN = '{1}'
+BOT_TOKEN = '{bot_token}'

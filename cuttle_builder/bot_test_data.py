@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List
 
-from b_logic.data_objects import BotMessage, MessageVariant
+from b_logic.data_objects import BotMessage, BotVariant
 from cuttle_builder.bot_generator import BotGenerator
 
 
@@ -82,7 +82,7 @@ class BotTestData:
 
     def __init__(self):
         messages: List[BotMessage] = []
-        variants: List[MessageVariant] = []
+        variants: List[BotVariant] = []
         for message in self._MESSAGES_JSON:
             mes = BotMessage()
             mes.text = message['text']
@@ -90,7 +90,7 @@ class BotTestData:
             messages.append(mes)
 
         for variant in self._VARIANTS_JSON:
-            var = MessageVariant()
+            var = BotVariant()
             var.text = variant['text']
             var.current_message_id = variant['current_id']
             var.next_message_id = variant['next_id']
@@ -107,7 +107,7 @@ class BotTestData:
         return self._messages
 
     @property
-    def variants(self) -> List[MessageVariant]:
+    def variants(self) -> List[BotVariant]:
         return self._variants
 
     @property

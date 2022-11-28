@@ -1,7 +1,7 @@
 from typing import List
 from abc import abstractmethod, ABC
 
-from b_logic.data_objects import BotDescription, BotMessage, MessageVariant
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant
 
 
 class BotApiException(Exception):
@@ -120,7 +120,7 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def create_variant(self, message: BotMessage, text: str) -> MessageVariant:
+    def create_variant(self, message: BotMessage, text: str) -> BotVariant:
         """
         Создание варианта
         Args:
@@ -133,7 +133,7 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def get_variants(self, message: BotMessage) -> List[MessageVariant]:
+    def get_variants(self, message: BotMessage) -> List[BotVariant]:
         """
         Получить варианты для заданного сообщения
         Args:
@@ -145,7 +145,7 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def connect_variant(self, variant: MessageVariant,
+    def connect_variant(self, variant: BotVariant,
                         message: BotMessage) -> None:
         """
         Связать вариант и сообщение, к которому перейдем при выборе

@@ -4,7 +4,7 @@ from typing import List, Optional
 import requests
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotDescription, BotMessage, MessageVariant
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant
 
 
 class BotApiByRequests(IBotApi):
@@ -187,7 +187,7 @@ class BotApiByRequests(IBotApi):
             messages_list.append(self._create_bot_message_from_data(message_dict))
         return messages_list
 
-    def create_variant(self, message: BotMessage, text: str) -> MessageVariant:
+    def create_variant(self, message: BotMessage, text: str) -> BotVariant:
         """
         Создание варианта
         Args:
@@ -209,7 +209,7 @@ class BotApiByRequests(IBotApi):
             raise BotApiException('Ошибка при создании варианта: {0}'.format(response.text))
         return self._create_variant_from_data(json.loads(response.text))
 
-    def get_variants(self, message: BotMessage) -> List[MessageVariant]:
+    def get_variants(self, message: BotMessage) -> List[BotVariant]:
         """
         Получить варианты для заданного сообщения
         Args:
@@ -226,20 +226,20 @@ class BotApiByRequests(IBotApi):
         if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException(
                 f'Ошибка при получении списка вариантов для сообщения {response.text}')
-        variants: List[MessageVariant] = []
+        variants: List[BotVariant] = []
         variants_dict_list: List[dict] = json.loads(response.text)
         for variant_dict in variants_dict_list:
             variants.append(self._create_variant_from_data(variant_dict))
         return variants
 
-    def connect_variant(self, variant: MessageVariant, message: BotMessage) -> None:
+    def connect_variant(self, variant: BotVariant, message: BotMessage) -> None:
         """
         Связать вариант и сообщение, к которому перейдем при выборе этого варианта
         Args:
             variant: связываемый вариант
             message: сообщение к которому перейдем
         """
-        assert isinstance(variant, MessageVariant)
+        assert isinstance(variant, BotVariant)
         assert isinstance(message, BotMessage)
         response = requests.patch(
             self._suite_url + f'api/variant/{variant.id}/',
@@ -333,9 +333,9 @@ class BotApiByRequests(IBotApi):
         bot_message.y = message_dict['coordinate_y']
         return bot_message
 
-    def _create_variant_from_data(self, variant_dict: dict) -> MessageVariant:
+    def _create_variant_from_data(self, variant_dict: dict) -> BotVariant:
         """Создает объект класса MessageVariant из входящих данных"""
-        variant = MessageVariant()
+        variant = BotVariant()
         variant.id = variant_dict['id']
         variant.text = variant_dict['text']
         variant.current_message_id = variant_dict['current_message']

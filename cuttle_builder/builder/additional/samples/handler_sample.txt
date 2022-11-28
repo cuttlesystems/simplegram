@@ -1,8 +1,8 @@
 
-{0}
+{imports}
 
 
-@dp.message_handler({1})
-async def handler_message_{2}(message: types.Message):
-    {3}  # add commands
-    {4}  # send message
+@dp.message_handler({handler_params})
+async def handler_message_{handler_name}(message: types.Message):
+    {state_to_set}  # add commands
+    {answer_content}  # send message
