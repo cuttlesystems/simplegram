@@ -39,6 +39,17 @@ class BotEditorForm(QWidget):
         self._ui.graphics_view.setScene(self._bot_scene)
         self._ui.graphics_view.setRenderHint(QPainter.Antialiasing)
 
+        self._prop_name = ModelProperty(name='Название бота', value='')
+        self._prop_token = ModelProperty(name='Токен бота', value='')
+        self._prop_description = ModelProperty(name='Описание', value='')
+
+        self._prop_model = PropertiesModel([
+            self._prop_name,
+            self._prop_token,
+            self._prop_description
+        ])
+        self._ui.bot_params_view.setModel(self._prop_model)
+
         self._connect_signals()
 
     def set_bot(self, bot: typing.Optional[BotDescription]):
@@ -47,22 +58,22 @@ class BotEditorForm(QWidget):
 
         if bot is not None:
             # todo: вот эти вещи надо будет в модель вытащить
-            self._prop_name = ModelProperty(name='Название бота', value=bot.bot_name)
-            self._prop_token = ModelProperty(name='Токен бота', value=bot.bot_token)
-            self._prop_description = ModelProperty(name='Описание', value=bot.bot_description)
-
-            self._prop_model = PropertiesModel([
-                self._prop_name,
-                self._prop_token,
-                self._prop_description
-            ])
+            self._prop_model.beginResetModel()
+            try:
+                self._prop_name.value = bot.bot_name
+                self._prop_token.value = bot.bot_token
+                self._prop_description.value = bot.bot_description
+            finally:
+                self._prop_model.endResetModel()
         else:
-            self._prop_name = None
-            self._prop_token = None
-            self._prop_description = None
+            self._prop_model.beginResetModel()
+            try:
+                self._prop_name.value = None
+                self._prop_token.value = None
+                self._prop_description.value = None
+            finally:
+                self._prop_model.endResetModel()
 
-            self._prop_model = PropertiesModel([])
-        self._ui.bot_params_view.setModel(self._prop_model)
         self._ui.graphics_view.centerOn(0.0, 0.0)
 
         self._load_bot_scene()
