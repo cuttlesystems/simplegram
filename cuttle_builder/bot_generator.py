@@ -134,10 +134,7 @@ class BotGenerator:
             str: generated code for handler with state and handled text
         """
         import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
-
         extended_imports += '\n' + import_keyboard
-        # (function) create_state_handler: (imports: Any, type_: Any, prev_state: Any, text_to_handle: Any,
-        #  state_to_set: Any, send_message_type: Any, text_of_answer: Any, kb: Any) -> str
         return create_state_handler(extended_imports,
                                     type_,
                                     prev_state,
@@ -211,7 +208,6 @@ class BotGenerator:
             # Создание хэндлера для команды /prev_variant.text
             handler_code = self._create_state_handler(
                 type_='',
-                # todo: похоже, формирование имени объекта в обход метода (нет подобия prev_state с state_to_set_name)
                 prev_state=self._get_handler_name_for_message(prev_variant.current_message_id),
                 text_to_handle=prev_variant.text,
                 state_to_set_name=self._get_handler_name_for_message(message.id),
@@ -224,26 +220,6 @@ class BotGenerator:
 
             keyboard_generation_counter += 1
             imports_generation_counter += 1
-
-        # if not previous_variants:
-        #     # Если нету варинта который отсылает на текущее сообщение,
-        #     # зачем создавать для него хэндлер
-        #     if keyboard_generation_counter == 0:
-        #         keyboard_name = self.create_reply_keyboard(message.id)
-        #     else:
-        #         keyboard_name = self._get_keyboard_name_for_message(message.id)
-
-        #     # handler_code = self._create_state_handler(
-            #     type_='',
-            #     prev_state=None,
-            #     text_to_handle='',
-            #     state_to_set_name=self._get_handler_name_for_message(message.id),
-            #     send_method='text',
-            #     text_of_answer=message.text,
-            #     kb=keyboard_name
-            # )
-            # # todo: вызов, вероятно, неправильный
-            # self._file_manager.create_file_handler(self._bot_directory, message.id, handler_code)
 
     def create_bot(self) -> None:
         self._is_valid_data()

@@ -1,9 +1,9 @@
 import shutil
-# from distutils.dir_util import copy_tree
-import os
 
 from pathlib import Path
 from typing import Optional
+
+from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 
 
 class FileManager:
@@ -17,6 +17,7 @@ class FileManager:
     def read_file_by_line(self, directory: str):
         with open(directory, 'r') as file:
             return file.read().split('\n')
+
     def write_file(self, directory: str, code: str) -> None:
         """add into directory file, that contains generated code
 
@@ -26,7 +27,7 @@ class FileManager:
         """
 
         with open(directory, 'a', encoding='utf-8') as f:
-            f.seek(0,0)
+            f.seek(0, 0)
             f.write(code)
             f.close()
 
@@ -68,7 +69,6 @@ class FileManager:
         """
         return 'bot_{0}'.format(bot_id)
 
-    # 
     def delete_dir(self, directory: str) -> None:
         """delete directory, to prevent writing file over exist file
 
@@ -91,11 +91,9 @@ class FileManager:
         Returns:
             str: directory path
         """
-        # directory = self.get_dir(bot_id)
         self.delete_dir(directory)
-        # кажется лучше поменять имя bot_dir на bot_sample_dirs_tree
-        bot_dir = Path(__file__).parent.parent.parent.parent / 'bot'
-        shutil.copytree(str(bot_dir), directory)
+        bot_sample_dirs_tree = CUTTLE_BUILDER_PATH / 'bot'
+        shutil.copytree(str(bot_sample_dirs_tree), directory)
         return directory
 
     def delete_bot_by_id(self, bot_id: int) -> None:
