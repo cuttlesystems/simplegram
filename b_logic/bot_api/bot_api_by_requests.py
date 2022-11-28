@@ -151,13 +151,14 @@ class BotApiByRequests(IBotApi):
             объект созданного сообщения
         """
         assert isinstance(bot, BotDescription)
+        message = BotMessage(
+            text=text,
+            x=x,
+            y=y
+        )
         response = requests.post(
             self._suite_url + f'api/bots/{bot.id}/messages/',
-            {
-                'text': text,
-                'coordinate_x': x,
-                'coordinate_y': y,
-            },
+            self._create_message_dict_from_message_obj(message),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
@@ -196,11 +197,12 @@ class BotApiByRequests(IBotApi):
             объект созданного варианта
         """
         assert isinstance(message, BotMessage)
+        variant_obj = BotVariant(
+            text=text
+        )
         response = requests.post(
             self._suite_url + f'api/messages/{message.id}/variants/',
-            {
-                'text': text
-            },
+            self._create_variant_dict_from_variant_obj(variant_obj),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
@@ -286,12 +288,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(message, BotMessage)
         response = requests.patch(
             self._suite_url + f'api/message/{message.id}/',
-            {
-                # todo: тут надо доработать возможность сохранять файлы
-                'coordinate_x': message.x,
-                'coordinate_y': message.y,
-                'text': message.text
-            },
+            self._create_message_dict_from_message_obj(message),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -346,6 +343,19 @@ class BotApiByRequests(IBotApi):
         bot_message.y = message_dict['coordinate_y']
         return bot_message
 
+    def _create_message_dict_from_message_obj(self, message: BotMessage) -> dict:
+        assert isinstance(message, BotMessage)
+        message_dict = {
+            'id': message.id,
+            'text': message.text,
+
+            # todo: добавить работу с фото, видео, файлом
+
+            'coordinate_x': message.x,
+            'coordinate_y': message.y
+        }
+        return message_dict
+
     def _create_variant_from_data(self, variant_dict: dict) -> BotVariant:
         """Создает объект класса MessageVariant из входящих данных"""
         variant = BotVariant()
@@ -354,3 +364,12 @@ class BotApiByRequests(IBotApi):
         variant.current_message_id = variant_dict['current_message']
         variant.next_message_id = variant_dict['next_message']
         return variant
+
+    def _create_variant_dict_from_variant_obj(self, variant_obj: BotVariant) -> dict:
+        variant_dict = {
+            'id': variant_obj.id,
+            'text': variant_obj.text,
+            'current_message': variant_obj.current_message_id,
+            'next_message': variant_obj.next_message_id
+        }
+        return variant_dict
