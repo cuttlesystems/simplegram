@@ -23,7 +23,7 @@ class BotMessage:
 
 
 @dataclass
-class MessageVariant:
+class BotVariant:
     id: Optional[int] = None
     text: Optional[str] = None
     current_message_id: Optional[int] = None

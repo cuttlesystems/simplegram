@@ -1,10 +1,10 @@
 
-{0}
+{imports}
 
-{1} = ReplyKeyboardMarkup(
+{keyboard_name} = ReplyKeyboardMarkup(
     keyboard=[
         [
-        {2}
+        {all_buttons}
         ]
     ], resize_keyboard=True, one_time_keyboard=True
 )

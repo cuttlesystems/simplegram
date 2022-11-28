@@ -1,7 +1,7 @@
 from typing import List
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotDescription, BotMessage, MessageVariant
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant
 from bots.models import Bot, Message, Variant
 
 
@@ -61,10 +61,10 @@ class BotApiByDjangoORM(IBotApi):
             messages_list.append(self._create_bot_message_from_data(message))
         return messages_list
 
-    def create_variant(self, message: BotMessage, text: str) -> MessageVariant:
+    def create_variant(self, message: BotMessage, text: str) -> BotVariant:
         raise NotImplementedError('Метод не определен!')
 
-    def get_variants(self, message: BotMessage) -> List[MessageVariant]:
+    def get_variants(self, message: BotMessage) -> List[BotVariant]:
         """
         Получить варианты для заданного сообщения
         Args:
@@ -74,12 +74,12 @@ class BotApiByDjangoORM(IBotApi):
             список вариантов
         """
         variants = Variant.objects.filter(current_message__id=message.id)
-        variants_list: List[MessageVariant] = []
+        variants_list: List[BotVariant] = []
         for variant in variants:
             variants_list.append(self._create_variant_from_data(variant))
         return variants_list
 
-    def connect_variant(self, variant: MessageVariant,
+    def connect_variant(self, variant: BotVariant,
                         message: BotMessage) -> None:
         raise NotImplementedError('Метод не определен!')
 
@@ -115,9 +115,9 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.y = message_django.coordinate_y
         return bot_message
 
-    def _create_variant_from_data(self, variant_django: Variant) -> MessageVariant:
+    def _create_variant_from_data(self, variant_django: Variant) -> BotVariant:
         """Создает объект класса BotMessage из входящих данных"""
-        variant = MessageVariant()
+        variant = BotVariant()
         variant.id = variant_django.id
         variant.text = variant_django.text
         variant.current_message_id = variant_django.current_message.id

@@ -93,6 +93,7 @@ class FileManager:
         """
         # directory = self.get_dir(bot_id)
         self.delete_dir(directory)
+        # кажется лучше поменять имя bot_dir на bot_sample_dirs_tree
         bot_dir = Path(__file__).parent.parent.parent.parent / 'bot'
         shutil.copytree(str(bot_dir), directory)
         return directory
