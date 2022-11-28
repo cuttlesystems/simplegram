@@ -5,7 +5,7 @@ from PySide6.QtCore import QRectF
 from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
-from b_logic.data_objects import BotMessage
+from b_logic.data_objects import BotMessage, BotVariant
 from desktop_constructor_app.constructor_app.graphic_scene.message_graphics_item import MessageGraphicsItem
 
 
@@ -47,12 +47,12 @@ class BotScene(QGraphicsScene):
             self.removeItem(message)
         self._message_graphics_list.clear()
 
-    def add_message(self, message: BotMessage):
+    def add_message(self, message: BotMessage, variants: typing.List[BotVariant]):
         # проверяем, что id бота уникальный, не совпадает с другими id
         exists_bots_ids: typing.Set[int] = {message.id for message in self.get_all_messages()}
         assert message.id not in exists_bots_ids
 
-        message_graphics = self._create_message_graphics(message)
+        message_graphics = self._create_message_graphics(message, variants)
         self._message_graphics_list.append(message_graphics)
 
     def get_selected_messages(self) -> typing.List[BotMessage]:
@@ -109,8 +109,8 @@ class BotScene(QGraphicsScene):
         height = rect.height() + by_y * 2
         return QRectF(x, y, width, height)
 
-    def _create_message_graphics(self, message: BotMessage) -> MessageGraphicsItem:
-        rect = MessageGraphicsItem(message)
+    def _create_message_graphics(self, message: BotMessage, variants: typing.List[BotVariant]) -> MessageGraphicsItem:
+        rect = MessageGraphicsItem(message, variants)
         self.addItem(rect)
 
         assert isinstance(rect, QGraphicsItem)
