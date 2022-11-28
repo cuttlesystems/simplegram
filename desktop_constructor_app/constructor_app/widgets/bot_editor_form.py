@@ -7,10 +7,11 @@ from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget
 
 from b_logic.bot_api.i_bot_api import IBotApi
-from b_logic.data_objects import BotDescription, BotMessage
+from b_logic.data_objects import BotDescription
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
-from desktop_constructor_app.constructor_app.properties_model import PropertiesModel, PropertyInModel
-from desktop_constructor_app.constructor_app.ui_bot_editor_form import Ui_BotEditorForm
+from desktop_constructor_app.common.model_property import ModelProperty
+from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
+from desktop_constructor_app.constructor_app.widgets.ui_bot_editor_form import Ui_BotEditorForm
 
 
 class BotEditorForm(QWidget):
@@ -29,14 +30,16 @@ class BotEditorForm(QWidget):
         self._ui.setupUi(self)
         self._bot_api = bot_api
         self._bot: typing.Optional[BotDescription] = None
-        self._prop_model = None
-        self._prop_name: typing.Optional[PropertyInModel] = None
-        self._prop_token: typing.Optional[PropertyInModel] = None
-        self._prop_description: typing.Optional[PropertyInModel] = None
+        self._prop_name: typing.Optional[ModelProperty] = None
+        self._prop_token: typing.Optional[ModelProperty] = None
+        self._prop_description: typing.Optional[ModelProperty] = None
 
         self._bot_scene = BotScene(self)
         self._ui.graphics_view.setScene(self._bot_scene)
         self._ui.graphics_view.setRenderHint(QPainter.Antialiasing)
+
+        self._prop_model = BotPropertiesModel()
+        self._ui.bot_params_view.setModel(self._prop_model)
 
         self._connect_signals()
 
@@ -45,26 +48,19 @@ class BotEditorForm(QWidget):
         self._bot = bot
 
         if bot is not None:
-            # todo: вот эти вещи надо будет в модель вытащить
-            self._prop_name = PropertyInModel(name='Название бота', value=bot.bot_name)
-            self._prop_token = PropertyInModel(name='Токен бота', value=bot.bot_token)
-            self._prop_description = PropertyInModel(name='Описание', value=bot.bot_description)
-
-            self._prop_model = PropertiesModel([
-                self._prop_name,
-                self._prop_token,
-                self._prop_description
-            ])
+            self._prop_model.set_name(bot.bot_name)
+            self._prop_model.set_token(bot.bot_token)
+            self._prop_model.set_description(bot.bot_description)
         else:
-            self._prop_name = None
-            self._prop_token = None
-            self._prop_description = None
+            self._prop_model.set_name('')
+            self._prop_model.set_token('')
+            self._prop_model.set_description('')
 
-            self._prop_model = PropertiesModel([])
-        self._ui.bot_params_view.setModel(self._prop_model)
         self._ui.graphics_view.centerOn(0.0, 0.0)
 
         self._load_bot_scene()
+
+        self._ui.splitter.setSizes([200, 600])
 
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
@@ -97,9 +93,9 @@ class BotEditorForm(QWidget):
             self._bot_api.delete_message(message)
 
     def _save_changes(self):
-        self._bot.bot_name = self._prop_name.value
-        self._bot.bot_token = self._prop_token.value
-        self._bot.bot_description = self._prop_description.value
+        self._bot.bot_name = self._prop_model.get_name()
+        self._bot.bot_token = self._prop_model.get_token()
+        self._bot.bot_description = self._prop_model.get_description()
 
         self._upload_bot_scene()
 
