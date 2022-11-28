@@ -48,7 +48,10 @@ class BotScene(QGraphicsScene):
         self._message_graphics_list.clear()
 
     def add_message(self, message: BotMessage):
-        # todo: тут надо проверять, что id уникальный и не конфликтует
+        # проверяем, что id бота уникальный, не совпадает с другими id
+        exists_bots_ids: typing.Set[int] = {message.id for message in self.get_all_messages()}
+        assert message.id not in exists_bots_ids
+
         message_graphics = self._create_message_graphics(message)
         self._message_graphics_list.append(message_graphics)
 

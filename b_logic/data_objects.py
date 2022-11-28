@@ -15,9 +15,13 @@ class BotDescription:
 class BotMessage:
     id: Optional[int] = None
     text: Optional[str] = None
+
+    # todo: думаю, тут сделать байтовые поля в
+    #  которых хранить байтовое содержимое (надо подумать)
     photo: Optional[str] = None
     video: Optional[str] = None
     file: Optional[str] = None
+
     x: Optional[int] = None
     y: Optional[int] = None
 

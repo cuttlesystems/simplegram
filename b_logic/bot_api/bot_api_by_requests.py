@@ -64,13 +64,14 @@ class BotApiByRequests(IBotApi):
         Returns:
             объект созданного бота
         """
+        bot = BotDescription(
+            bot_name=bot_name,
+            bot_token=bot_token,
+            bot_description=bot_description
+        )
         response = requests.post(
             self._suite_url + 'api/bots/',
-            {
-                'name': bot_name,
-                'token': bot_token,
-                'description': bot_description
-            },
+            self._create_bot_dict_from_obj(bot),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
@@ -115,13 +116,10 @@ class BotApiByRequests(IBotApi):
 
     def change_bot(self, bot: BotDescription) -> None:
         assert isinstance(bot.id, int)
+        bot_dict = self._create_bot_dict_from_obj(bot)
         response = requests.patch(
             self._suite_url + f'api/bots/{bot.id}/',
-            {
-                'name': bot.bot_name,
-                'token': bot.bot_token,
-                'description': bot.bot_description
-            },
+            bot_dict,
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -289,9 +287,10 @@ class BotApiByRequests(IBotApi):
         response = requests.patch(
             self._suite_url + f'api/message/{message.id}/',
             {
-                # todo: тут надо доделать, чтобы менялись все поля. И сделать цивилизованно
+                # todo: тут надо доработать возможность сохранять файлы
                 'coordinate_x': message.x,
-                'coordinate_y': message.y
+                'coordinate_y': message.y,
+                'text': message.text
             },
             headers=self._get_headers()
         )
@@ -311,6 +310,16 @@ class BotApiByRequests(IBotApi):
             'Authorization': 'Token ' + self._auth_token
         }
 
+    def _create_bot_dict_from_obj(self, bot_obj: BotDescription) -> typing.Dict[str, typing.Any]:
+        assert isinstance(bot_obj, BotDescription)
+        return {
+            'id': bot_obj.id,
+            'name': bot_obj.bot_name,
+            'token': bot_obj.bot_token,
+            'description': bot_obj.bot_description,
+            'start_message': bot_obj.start_message_id
+        }
+
     def _create_bot_obj_from_data(self, bot_dict: dict) -> BotDescription:
         """Создает объект класса BotDescription из входящих данных"""
         bot_description = BotDescription()
@@ -326,9 +335,13 @@ class BotApiByRequests(IBotApi):
         bot_message = BotMessage()
         bot_message.id = message_dict['id']
         bot_message.text = message_dict['text']
+
+        # todo: с этими полями надо разобраться, похоже,
+        #  там передается url путь, который надо сначала получить
         bot_message.photo = message_dict['photo']
         bot_message.video = message_dict['video']
         bot_message.file = message_dict['file']
+
         bot_message.x = message_dict['coordinate_x']
         bot_message.y = message_dict['coordinate_y']
         return bot_message
