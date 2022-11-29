@@ -326,6 +326,7 @@ class BotApiByRequests(IBotApi):
         bot_message = BotMessage()
         bot_message.id = message_dict['id']
         bot_message.text = message_dict['text']
+        bot_message.keyboard_type = message_dict['keyboard_type']
         bot_message.photo = message_dict['photo']
         bot_message.video = message_dict['video']
         bot_message.file = message_dict['file']

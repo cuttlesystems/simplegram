@@ -108,6 +108,7 @@ class BotApiByDjangoORM(IBotApi):
         bot_message = BotMessage()
         bot_message.id = message_django.id
         bot_message.text = message_django.text
+        bot_message.keyboard_type = message_django.keyboard_type
         bot_message.photo = message_django.photo
         bot_message.video = message_django.video
         bot_message.file = message_django.file
