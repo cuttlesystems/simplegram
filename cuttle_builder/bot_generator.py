@@ -1,8 +1,8 @@
 from b_logic.data_objects import BotMessage, BotVariant
 from cuttle_builder.bot_gen_exceptions import BotGeneratorException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
-from cuttle_builder.builder.keyboard_generator.create_reply_keyboard import create_reply_keyboard
-from cuttle_builder.builder.handler_generator.create_state_handler import create_state_handler
+from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
+from cuttle_builder.builder.handler_generator.create_state_handler import create_state_message_handler, create_state_callback_handler
 from cuttle_builder.builder.config_generator.create_config import create_config
 from cuttle_builder.builder.state_generator.create_state import create_state
 from cuttle_builder.APIFileCreator import APIFileCreator
@@ -95,28 +95,36 @@ class BotGenerator:
         extended_imports = self._file_manager.read_file(imports)
         return extended_imports
 
-    def create_reply_keyboard(self, message_id: int) -> typing.Optional[str]:
-        keyboard_name: typing.Optional[str] = None
-        # imports
-        imports_for_keyboard = self._get_imports_sample('reply_keyboard_import')
-
+    def create_keyboard(self, message_id: int, keyboard_type: str) -> typing.Optional[str]:
         # variants
         variants = self._get_variants_of_message(message_id)
+        if len(variants) == 0:
+            return None
+        keyboard_name = self._get_keyboard_name_for_message(message_id)
 
-        if len(variants) > 0:
-            keyboard_name = self._get_keyboard_name_for_message(message_id)
+        # imports and keyboard
+        if keyboard_type == 'RKB':
+            imports_for_keyboard = self._get_imports_sample('reply_keyboard_import')
             keyboard_source_code = create_reply_keyboard(
                 keyboard_variable_name_without_suffix=keyboard_name,
                 buttons=variants,
                 extended_imports=imports_for_keyboard
             )
-            self._file_manager.create_file_keyboard(self._bot_directory, keyboard_name, keyboard_source_code)
+        elif keyboard_type == 'IKB':
+            imports_for_keyboard = self._get_imports_sample('inline_keyboard_import')
+            keyboard_source_code = create_inline_keyboard(
+                keyboard_variable_name_without_suffix=keyboard_name,
+                buttons=variants,
+                extended_imports=imports_for_keyboard
+            )
+
+        self._file_manager.create_file_keyboard(self._bot_directory, keyboard_name, keyboard_source_code)
 
         return keyboard_name
 
-    def _create_state_handler(self, type_, prev_state: typing.Optional[str],
-                              text_to_handle: typing.Optional[str], state_to_set_name: typing.Optional[str],
-                              send_method: str, text_of_answer: str, kb: str, extended_imports: str = '') -> str:
+    def _create_state_handler(self, type_, prev_state: typing.Optional[str], text_to_handle: typing.Optional[str],
+                              state_to_set_name: typing.Optional[str], send_method: str, text_of_answer: str,
+                              kb: str, kb_type: str, extended_imports: str = '') -> str:
         """generate code of state handler
 
         Args:
@@ -135,14 +143,12 @@ class BotGenerator:
         """
         import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
         extended_imports += '\n' + import_keyboard
-        return create_state_handler(extended_imports,
-                                    type_,
-                                    prev_state,
-                                    text_to_handle,
-                                    state_to_set_name,
-                                    send_method,
-                                    text_of_answer,
-                                    kb)
+        if kb_type == 'RKB' or type_ in ['Command(\'start\')', 'Command(\'restart\')']:
+            return create_state_message_handler(extended_imports, type_, prev_state, text_to_handle,
+                                                state_to_set_name, send_method, text_of_answer, kb)
+        elif kb_type == 'IKB':
+            return create_state_callback_handler(extended_imports, type_, prev_state, text_to_handle,
+                                                 state_to_set_name, send_method, text_of_answer, kb)
 
     def _find_previous_variants(self, message_id: int) -> typing.List[BotVariant]:
         """Получает список вариантов у которых next_message == message.id (принемаемый
@@ -160,13 +166,14 @@ class BotGenerator:
         keyboard_generation_counter = 0
         imports_generation_counter = 0
         imports_for_handler = self._get_imports_sample('handler_import')
+        keyboard_type = message.keyboard_type
         if message.id == self._start_message_id:
 
             # Создание клавиатуры для сообщения.
-            keyboard_name = self.create_reply_keyboard(message.id)
+            keyboard_name = self.create_keyboard(message.id, keyboard_type)
             keyboard_generation_counter += 1
 
-            # Создание стартового хэндлера.
+            # Создание стартовых хэндлеров.
             imports_for_start_handler = imports_for_handler + '\n' + 'from aiogram.dispatcher.filters import ' \
                                                                      'Command'
             start_handler_code = self._create_state_handler(
@@ -177,11 +184,11 @@ class BotGenerator:
                 send_method='text',
                 text_of_answer=message.text,
                 kb=keyboard_name,
+                kb_type=keyboard_type,
                 extended_imports=imports_for_start_handler
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, start_handler_code)
 
-            # Создание хэндлера для команды /restart.
             imports_generation_counter += 1
             restart_handler_code = self._create_state_handler(
                 type_='Command(\'restart\')',
@@ -191,6 +198,7 @@ class BotGenerator:
                 send_method='text',
                 text_of_answer=message.text,
                 kb=keyboard_name,
+                kb_type=keyboard_type,
                 extended_imports=''
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, restart_handler_code)
@@ -201,7 +209,7 @@ class BotGenerator:
         previous_variants: typing.List[BotVariant] = self._find_previous_variants(message.id)
         for prev_variant in previous_variants:
             if keyboard_generation_counter == 0:
-                keyboard_name = self.create_reply_keyboard(message.id)
+                keyboard_name = self.create_keyboard(message.id, keyboard_type)
             else:
                 keyboard_name = self._get_keyboard_name_for_message(message.id)
 
@@ -214,6 +222,7 @@ class BotGenerator:
                 send_method='text',
                 text_of_answer=message.text,
                 kb=keyboard_name,
+                kb_type=keyboard_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else ''
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, handler_code)
