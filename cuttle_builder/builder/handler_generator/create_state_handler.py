@@ -1,6 +1,13 @@
 # method to create handler, based on state and text
 from cuttle_builder.builder.handler_generator.create_handler import create_handler
-from cuttle_builder.builder.additional.helpers.string_in_quotes import string_to_quotes
+
+
+def prev_state_code_line(prev_state):
+    if prev_state == '*':
+        return 'state=\'*\''
+    elif prev_state is not None:
+        return 'state=States.{0}'.format(prev_state)
+    return ''
 
 
 def create_state_message_handler(imports, type_, prev_state, text_to_handle, state_to_set_name,
@@ -9,8 +16,7 @@ def create_state_message_handler(imports, type_, prev_state, text_to_handle, sta
     list_of_handler_params = [
         type_,
         'lambda message: message.text == \'{0}\''.format(text_to_handle) if text_to_handle else '',
-        'state=States.{0}'.format(prev_state) if prev_state != '*' and prev_state is not None else 'state={0}'.format(
-            string_to_quotes(prev_state)) if prev_state else prev_state
+        prev_state_code_line(prev_state)
     ]
     handler_params = ', '.join(element for element in list_of_handler_params if element)
     state_to_set_content = 'await States.{state_name}.set()'.format(state_name=state_to_set_name) if state_to_set_name else ''
@@ -29,8 +35,7 @@ def create_state_callback_handler(imports, type_, prev_state, text_to_handle, st
     list_of_handler_params = [
         type_,
         'text = \'{0}\''.format(text_to_handle) if text_to_handle else '',
-        'state=States.{0}'.format(prev_state) if prev_state != '*' and prev_state is not None else 'state={0}'.format(
-            string_to_quotes(prev_state)) if prev_state else prev_state
+        prev_state_code_line(prev_state)
     ]
     handler_params = ', '.join(element for element in list_of_handler_params if element)
     state_to_set_content = 'await States.{state_name}.set()'.format(state_name=state_to_set_name) if state_to_set_name else ''
