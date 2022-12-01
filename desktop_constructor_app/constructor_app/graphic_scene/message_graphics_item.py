@@ -82,13 +82,22 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.drawText(self._text_rect(), self._message.text)
         for variant_index, variant in enumerate(self._variants):
             painter.drawRect(self._variant_rect(variant_index))
+            painter.setPen(QColor(self._TEXT_COLOR))
+            painter.drawText(self._variant_text_rect(variant_index), variant.text)
 
     def _variant_rect(self, variant_index: int) -> QRectF:
+        dy = self._VARIANT_HEIGHT + 20
         return QRectF(
             0,
-            self._MSG_HEIGHT + 20,
+            self._MSG_HEIGHT + 20 + dy * variant_index,
             self._MSG_WIDTH,
             self._VARIANT_HEIGHT)
+
+    def _variant_text_rect(self, variant_index: int) -> QRectF:
+        variant_rect = self._variant_rect(variant_index)
+        return QRectF(
+            variant_rect.x() + 10, variant_rect.y() + 10,
+            variant_rect.width() - 5, variant_rect.height() - 5)
 
     def _message_rect(self) -> QRectF:
         return QRectF(0, 0, self._MSG_WIDTH, self._MSG_HEIGHT)
