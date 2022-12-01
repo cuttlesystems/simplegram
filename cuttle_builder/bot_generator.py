@@ -12,8 +12,8 @@ import typing
 from cuttle_builder.builder.state_generator.to_state import get_state_name_by_mes_id
 
 START_COMANDS = [
-    'Command(\'start\')',
-    'Command(\'restart\')'
+    'start',
+    'restart'
 ]
 
 
@@ -148,11 +148,12 @@ class BotGenerator:
         """
         import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
         extended_imports += '\n' + import_keyboard
+        command_for_type = f'Command(\'{type_}\')' if type_ != '' else type_
         if kb_type == ButtonTypes.REPLY or type_ in START_COMANDS:
-            return create_state_message_handler(extended_imports, type_, prev_state, text_to_handle,
+            return create_state_message_handler(extended_imports, command_for_type, prev_state, text_to_handle,
                                                 state_to_set_name, send_method, text_of_answer, kb)
         elif kb_type == ButtonTypes.INLINE:
-            return create_state_callback_handler(extended_imports, type_, prev_state, text_to_handle,
+            return create_state_callback_handler(extended_imports, command_for_type, prev_state, text_to_handle,
                                                  state_to_set_name, send_method, text_of_answer, kb)
 
     def _find_previous_variants(self, message_id: int) -> typing.List[BotVariant]:
@@ -182,7 +183,7 @@ class BotGenerator:
             imports_for_start_handler = imports_for_handler + '\n' + 'from aiogram.dispatcher.filters import ' \
                                                                      'Command'
             start_handler_code = self._create_state_handler(
-                type_='Command(\'start\')',
+                type_='start',
                 prev_state=None,
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
@@ -196,7 +197,7 @@ class BotGenerator:
 
             imports_generation_counter += 1
             restart_handler_code = self._create_state_handler(
-                type_='Command(\'restart\')',
+                type_='restart',
                 prev_state='*',
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
