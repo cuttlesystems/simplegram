@@ -24,7 +24,7 @@ from .permissions import IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, I
 
 class BotViewSet(viewsets.ModelViewSet):
     """
-    Отображение всех ботов пользователя и 
+    Отображение всех ботов пользователя и
     CRUD-функционал для экземпляра бота
 
     Есть такое описание:
@@ -229,7 +229,7 @@ class BotViewSet(viewsets.ModelViewSet):
 
 class MessageViewSet(viewsets.ModelViewSet):
     """
-    Отображение всех меседжей бота и 
+    Отображение всех меседжей бота и
     CRUD-функционал для экземпляра меседжа
     """
     serializer_class = MessageSerializer
@@ -239,12 +239,12 @@ class MessageViewSet(viewsets.ModelViewSet):
             bot__owner=self.request.user,
             bot__id=self.kwargs.get('bot_id')
         )
-    
+
     def perform_create(self, serializer: MessageSerializer) -> None:
         bot_id = self.kwargs.get('bot_id')
         bot = get_object_or_404(Bot, id=bot_id)
         serializer.save(bot=bot)
-    
+
     def create(self, request: Request, bot_id: int) -> Response:
         bot = get_object_or_404(Bot, id=bot_id)
         if bot.owner != request.user:
@@ -264,7 +264,7 @@ class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
 
 class VariantViewSet(viewsets.ModelViewSet):
     """
-    Отображение всех вариантов сообщения и 
+    Отображение всех вариантов сообщения и
     CRUD-функционал для экземпляра варианта
     """
     serializer_class = VariantSerializer
@@ -274,12 +274,12 @@ class VariantViewSet(viewsets.ModelViewSet):
             current_message__bot__owner=self.request.user,
             current_message__id=self.kwargs.get('message_id')
         )
-    
+
     def perform_create(self, serializer: VariantSerializer) -> None:
         message_id = self.kwargs.get('message_id')
         message = get_object_or_404(Message, id=message_id)
         serializer.save(current_message=message)
-    
+
     def create(self, request: Request, message_id: int) -> Response:
         message = get_object_or_404(Message, id=message_id)
         if message.bot.owner != request.user:
@@ -295,4 +295,3 @@ class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
     queryset = Variant.objects.all()
     serializer_class = VariantSerializer
     permission_classes = (IsVariantOwnerOrForbidden,)
-

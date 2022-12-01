@@ -1,4 +1,4 @@
-from b_logic.data_objects import BotMessage, BotVariant
+from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes
 from cuttle_builder.bot_gen_exceptions import BotGeneratorException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
@@ -10,6 +10,11 @@ from typing import List
 import typing
 
 from cuttle_builder.builder.state_generator.to_state import get_state_name_by_mes_id
+
+START_COMANDS = [
+    'Command(\'start\')',
+    'Command(\'restart\')'
+]
 
 
 class BotGenerator:
@@ -95,7 +100,7 @@ class BotGenerator:
         extended_imports = self._file_manager.read_file(imports)
         return extended_imports
 
-    def create_keyboard(self, message_id: int, keyboard_type: str) -> typing.Optional[str]:
+    def create_keyboard(self, message_id: int, keyboard_type: ButtonTypes) -> typing.Optional[str]:
         # variants
         variants = self._get_variants_of_message(message_id)
         if len(variants) == 0:
@@ -103,14 +108,14 @@ class BotGenerator:
         keyboard_name = self._get_keyboard_name_for_message(message_id)
 
         # imports and keyboard
-        if keyboard_type == 'RKB':
+        if keyboard_type == ButtonTypes.REPLY:
             imports_for_keyboard = self._get_imports_sample('reply_keyboard_import')
             keyboard_source_code = create_reply_keyboard(
                 keyboard_variable_name_without_suffix=keyboard_name,
                 buttons=variants,
                 extended_imports=imports_for_keyboard
             )
-        elif keyboard_type == 'IKB':
+        elif keyboard_type == ButtonTypes.INLINE:
             imports_for_keyboard = self._get_imports_sample('inline_keyboard_import')
             keyboard_source_code = create_inline_keyboard(
                 keyboard_variable_name_without_suffix=keyboard_name,
@@ -124,7 +129,7 @@ class BotGenerator:
 
     def _create_state_handler(self, type_, prev_state: typing.Optional[str], text_to_handle: typing.Optional[str],
                               state_to_set_name: typing.Optional[str], send_method: str, text_of_answer: str,
-                              kb: str, kb_type: str, extended_imports: str = '') -> str:
+                              kb: str, kb_type: ButtonTypes, extended_imports: str = '') -> str:
         """generate code of state handler
 
         Args:
@@ -143,10 +148,10 @@ class BotGenerator:
         """
         import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
         extended_imports += '\n' + import_keyboard
-        if kb_type == 'RKB' or type_ in ['Command(\'start\')', 'Command(\'restart\')']:
+        if kb_type == ButtonTypes.REPLY or type_ in START_COMANDS:
             return create_state_message_handler(extended_imports, type_, prev_state, text_to_handle,
                                                 state_to_set_name, send_method, text_of_answer, kb)
-        elif kb_type == 'IKB':
+        elif kb_type == ButtonTypes.INLINE:
             return create_state_callback_handler(extended_imports, type_, prev_state, text_to_handle,
                                                  state_to_set_name, send_method, text_of_answer, kb)
 

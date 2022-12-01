@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
 
+from b_logic.data_objects import ButtonTypes
 
 User = get_user_model()
 
@@ -12,12 +12,10 @@ User = get_user_model()
 # В методе __str__ определено строковое представление объекта Bot.
 # Идем обратно в сериалайзер.
 
-RKB = 'RKB'
-IKB = 'IKB'
 
 KEYBOARD_TYPES = [
-    (RKB, 'Reply Keyboard'),
-    (IKB, 'Inline Keyboard'),
+    (ButtonTypes.REPLY.value, 'Reply Keyboard'),
+    (ButtonTypes.INLINE.value, 'Inline Keyboard'),
 ]
 
 
@@ -77,6 +75,9 @@ class Message(models.Model):
     coordinate_y = models.IntegerField(
         'Координата по оси y'
     )
+
+    class Meta:
+        ordering = ['id']
 
     def __str__(self):
         return f'Message_id {self.id}: {self.text}'
