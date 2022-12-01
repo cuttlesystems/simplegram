@@ -2,7 +2,7 @@ import typing
 
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import QPointF, QRectF, Signal
-from PySide6.QtGui import QBrush, QColor, QPen
+from PySide6.QtGui import QBrush, QColor, QPen, QLinearGradient
 from PySide6.QtWidgets import QGraphicsItem
 
 from b_logic.data_objects import BotMessage, BotVariant
@@ -43,10 +43,7 @@ class MessageGraphicsItem(QGraphicsItem):
         return self._message
 
     def boundingRect(self) -> QRectF:
-        rect = self._message_rect()
-        for variant_index, variant in enumerate(self._variants):
-            rect = rect.united(self._variant_rect(variant_index))
-
+        rect = self._block_rect()
         x = rect.x() - self._BORDER_THICKNESS
         y = rect.y() - self._BORDER_THICKNESS
         width = rect.width() + self._BORDER_THICKNESS * 2
@@ -72,10 +69,27 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(painter, QtGui.QPainter)
         assert isinstance(option, QtWidgets.QStyleOptionGraphicsItem)
         assert isinstance(widget, QtWidgets.QWidget) or widget is None
+
+        gradient = QLinearGradient(0, 0, 100, 100)
+
+        painter.setPen(QColor(0, 0, 0, 0))
+        block_brush_color1 = QColor(0xb4e6ce)
+        block_brush_color1.setAlpha(200)
+
+        block_brush_color2 = QColor(0xaef7d5)
+        block_brush_color2.setAlpha(50)
+
+        gradient.setColorAt(0, block_brush_color1)
+        gradient.setColorAt(1, block_brush_color2)
+        block_brush = QBrush(gradient)
+        painter.setBrush(block_brush)
+        painter.drawRoundedRect(self._block_rect(), 30, 30)
+
         if self.isSelected():
             painter.setPen(self._selected_pen)
         else:
             painter.setPen(self._normal_pen)
+
         painter.setBrush(self._brush)
         painter.drawRoundedRect(self._message_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
         painter.setPen(QColor(self._TEXT_COLOR))
@@ -104,3 +118,14 @@ class MessageGraphicsItem(QGraphicsItem):
 
     def _text_rect(self) -> QRectF:
         return QRectF(25, 25, self._MSG_WIDTH - 50, self._MSG_HEIGHT - 50)
+
+    def _block_rect(self) -> QRectF:
+        rect = self._message_rect()
+        for variant_index, variant in enumerate(self._variants):
+            rect = rect.united(self._variant_rect(variant_index))
+
+        x = rect.x() - 25
+        y = rect.y() - 25
+        width = rect.width() + 50
+        height = rect.height() + 50
+        return QRectF(x, y, width, height)
