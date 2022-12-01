@@ -49,6 +49,7 @@ class LoginForm(QWidget):
         self._ui.create_bot_button.clicked.connect(self._on_create_bot_click)
         self._ui.change_user_button.clicked.connect(self._on_change_user_click)
         self._ui.bot_list_widget.currentItemChanged.connect(self._on_current_bot_changed)
+        self._ui.update_bot_list_button.clicked.connect(self._on_update_bot_list)
 
     def _activate_controls(self):
         self._ui.server_addr_edit.setEnabled(False)
@@ -60,6 +61,7 @@ class LoginForm(QWidget):
         self._ui.open_bot_button.setEnabled(False)
         self._ui.create_bot_button.setEnabled(False)
         self._ui.delete_bot_button.setEnabled(False)
+        self._ui.update_bot_list_button.setEnabled(False)
         if self._dialog_state == LoginStateEnum.LOGIN:
             self._ui.server_addr_edit.setEnabled(True)
             self._ui.username_edit.setEnabled(True)
@@ -72,6 +74,7 @@ class LoginForm(QWidget):
             is_selected_bot = self._ui.bot_list_widget.currentItem() is not None
             self._ui.open_bot_button.setEnabled(is_selected_bot)
             self._ui.delete_bot_button.setEnabled(is_selected_bot)
+            self._ui.update_bot_list_button.setEnabled(True)
 
     def __load_bots_list(self):
         try:
@@ -86,7 +89,7 @@ class LoginForm(QWidget):
         except BotApiException as error:
             QMessageBox.warning(self, 'Ошибка', str(error))
 
-    def update_data(self):
+    def login_to_server(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
         username_edit: QLineEdit = self._ui.username_edit
         password_edit: QLineEdit = self._ui.password_edit
@@ -101,7 +104,7 @@ class LoginForm(QWidget):
             QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
 
     def _on_load_bots_click(self, _checked: bool):
-        self.update_data()
+        self.login_to_server()
 
     def _on_open_bot_click(self, _checked: bool):
         selected_item: typing.Optional[QListWidgetItem] = self._ui.bot_list_widget.currentItem()
@@ -121,12 +124,15 @@ class LoginForm(QWidget):
             QMessageBox.warning(self, 'Ошибка', 'Не выбран бот')
 
     def _on_create_bot_click(self, _checked: bool):
+        # сначала обновим список ботов, чтобы получить актуальный набор названий,
+        # потому что от него будет зависеть следующее имя бота
         self.__load_bots_list()
         try:
             bot = self._bot_api.create_bot(
                 self.__get_unique_bot_name('Новый Cuttle Systems бот'), '', '')
         except BotApiException as error:
             QMessageBox.warning(self, 'Ошибка', f'Не удалось создать бота {error}')
+        # теперь обновим список ботов, чтобы увидеть нового созданного бота в списке
         self.__load_bots_list()
 
     def _on_change_user_click(self, _checked: bool):
@@ -137,6 +143,9 @@ class LoginForm(QWidget):
     def _on_current_bot_changed(self, _item):
         print('_on_current_bot_changed')
         self._activate_controls()
+
+    def _on_update_bot_list(self, _checked: bool):
+        self.__load_bots_list()
 
     def __get_all_bots(self) -> typing.List[BotDescription]:
         all_bots = []
