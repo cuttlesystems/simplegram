@@ -129,7 +129,7 @@ class BotGenerator:
 
     def _create_state_handler(self, type_, prev_state: typing.Optional[str], text_to_handle: typing.Optional[str],
                               state_to_set_name: typing.Optional[str], send_method: str, text_of_answer: str,
-                              kb: str, kb_type: ButtonTypes, extended_imports: str = '') -> str:
+                              kb: str, kb_type: ButtonTypes, handler_type: ButtonTypes, extended_imports: str = '') -> str:
         """generate code of state handler
 
         Args:
@@ -149,10 +149,10 @@ class BotGenerator:
         import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
         extended_imports += '\n' + import_keyboard
         command_for_type = f'Command(\'{type_}\')' if type_ != '' else type_
-        if kb_type == ButtonTypes.REPLY or type_ in START_COMANDS:
+        if handler_type == ButtonTypes.REPLY:
             return create_state_message_handler(extended_imports, command_for_type, prev_state, text_to_handle,
                                                 state_to_set_name, send_method, text_of_answer, kb)
-        elif kb_type == ButtonTypes.INLINE:
+        elif handler_type == ButtonTypes.INLINE:
             return create_state_callback_handler(extended_imports, command_for_type, prev_state, text_to_handle,
                                                  state_to_set_name, send_method, text_of_answer, kb)
 
@@ -191,6 +191,7 @@ class BotGenerator:
                 text_of_answer=message.text,
                 kb=keyboard_name,
                 kb_type=keyboard_type,
+                handler_type=ButtonTypes.REPLY,
                 extended_imports=imports_for_start_handler
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, start_handler_code)
@@ -205,6 +206,7 @@ class BotGenerator:
                 text_of_answer=message.text,
                 kb=keyboard_name,
                 kb_type=keyboard_type,
+                handler_type=ButtonTypes.REPLY,
                 extended_imports=''
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, restart_handler_code)
@@ -229,6 +231,7 @@ class BotGenerator:
                 text_of_answer=message.text,
                 kb=keyboard_name,
                 kb_type=keyboard_type,
+                handler_type=prev_variant.button_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else ''
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, handler_code)

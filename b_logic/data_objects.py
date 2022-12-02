@@ -34,4 +34,5 @@ class BotVariant:
     id: Optional[int] = None
     text: Optional[str] = None
     current_message_id: Optional[int] = None
+    button_type: ButtonTypes = ButtonTypes.REPLY
     next_message_id: Optional[int] = None
