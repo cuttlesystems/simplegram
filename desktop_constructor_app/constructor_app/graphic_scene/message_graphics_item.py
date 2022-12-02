@@ -70,19 +70,8 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(option, QtWidgets.QStyleOptionGraphicsItem)
         assert isinstance(widget, QtWidgets.QWidget) or widget is None
 
-        gradient = QLinearGradient(0, 0, 100, 100)
-
         painter.setPen(QColor(0, 0, 0, 0))
-        block_brush_color1 = QColor(0xb4e6ce)
-        block_brush_color1.setAlpha(200)
-
-        block_brush_color2 = QColor(0xaef7d5)
-        block_brush_color2.setAlpha(50)
-
-        gradient.setColorAt(0, block_brush_color1)
-        gradient.setColorAt(1, block_brush_color2)
-        block_brush = QBrush(gradient)
-        painter.setBrush(block_brush)
+        painter.setBrush(self._get_block_brush())
         painter.drawRoundedRect(self._block_rect(), 30, 30)
 
         if self.isSelected():
@@ -95,9 +84,24 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.setPen(QColor(self._TEXT_COLOR))
         painter.drawText(self._text_rect(), self._message.text)
         for variant_index, variant in enumerate(self._variants):
+            painter.setBrush(QColor(0x376497))
             painter.drawRect(self._variant_rect(variant_index))
             painter.setPen(QColor(self._TEXT_COLOR))
             painter.drawText(self._variant_text_rect(variant_index), variant.text)
+
+    def _get_block_brush(self) -> QBrush:
+        gradient = QLinearGradient(0, 0, 100, 100)
+
+        block_brush_color1 = QColor(0xb4e6ce)
+        block_brush_color1.setAlpha(200)
+
+        block_brush_color2 = QColor(0xaef7d5)
+        block_brush_color2.setAlpha(50)
+
+        gradient.setColorAt(0, block_brush_color1)
+        gradient.setColorAt(1, block_brush_color2)
+        block_brush = QBrush(gradient)
+        return block_brush
 
     def _variant_rect(self, variant_index: int) -> QRectF:
         dy = self._VARIANT_HEIGHT + 20
