@@ -3,11 +3,12 @@ from cuttle_builder.builder.handler_generator.create_handler import create_handl
 
 
 def prev_state_code_line(prev_state):
+    result = ''
     if prev_state == '*':
-        return 'state=\'*\''
+        result = 'state=\'*\''
     elif prev_state is not None:
-        return 'state=States.{0}'.format(prev_state)
-    return ''
+        result = 'state=States.{0}'.format(prev_state)
+    return result
 
 
 def create_state_message_handler(imports, type_, prev_state, text_to_handle, state_to_set_name,
