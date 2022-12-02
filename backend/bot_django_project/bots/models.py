@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
 
+from b_logic.data_objects import ButtonTypes
 
 User = get_user_model()
 
@@ -11,6 +11,12 @@ User = get_user_model()
 # В классе Meta определена сортировка по умолчанию, по id.
 # В методе __str__ определено строковое представление объекта Bot.
 # Идем обратно в сериалайзер.
+
+
+KEYBOARD_TYPES = [
+    (ButtonTypes.REPLY.value, 'Reply Keyboard'),
+    (ButtonTypes.INLINE.value, 'Inline Keyboard'),
+]
 
 
 class Bot(models.Model):
@@ -33,11 +39,16 @@ class Bot(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return f'Bot: {self.name}, Owner: {self.owner.username}'
+        return f'Bot {self.id}: {self.name}'
 
 
 class Message(models.Model):
     text = models.TextField()
+    keyboard_type = models.CharField(
+        max_length=3,
+        choices=KEYBOARD_TYPES,
+        default='RKB'
+    )
     photo = models.ImageField(
         upload_to='messages_images/',
         null=True,
@@ -65,8 +76,11 @@ class Message(models.Model):
         'Координата по оси y'
     )
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
-        return f'Message_id {self.id}: {self.text} of {self.bot}'
+        return f'Message_id {self.id}: {self.text}'
 
 
 class Variant(models.Model):
@@ -84,5 +98,11 @@ class Variant(models.Model):
         blank=True
     )
 
+    def display_bot(self):
+        """Метод для отображения бота для варианта в админке"""
+        return f'{self.current_message.bot}'
+
+    display_bot.short_description = 'Bot'
+
     def __str__(self):
-        return f'Variant_id {self.id}: {self.text} to {self.current_message}'
+        return f'Variant_id {self.id}: {self.text}'

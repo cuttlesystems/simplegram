@@ -37,7 +37,7 @@ class BotSerializer(serializers.ModelSerializer):
             'owner',
             'start_message'
         )
-    
+
     validators = [
             UniqueTogetherValidator(
                 queryset=Bot.objects.all(),
@@ -53,6 +53,7 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'text',
+            'keyboard_type',
             'photo',
             'video',
             'file',
@@ -68,6 +69,7 @@ class VariantSerializer(serializers.ModelSerializer):
         read_only=True,
         default=None
     )
+
     class Meta:
         model = Variant
         fields = (
