@@ -5,7 +5,7 @@ from PySide6.QtCore import QRectF
 from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
-from b_logic.data_objects import BotMessage
+from b_logic.data_objects import BotMessage, BotVariant
 from desktop_constructor_app.constructor_app.graphic_scene.message_graphics_item import MessageGraphicsItem
 
 
@@ -40,16 +40,19 @@ class BotScene(QGraphicsScene):
 
         self._message_graphics_list: typing.List[MessageGraphicsItem] = []
 
-        self.changed.connect(self._on_item_changed)
+        self._connect_signals()
 
     def clear_scene(self):
         for message in self._message_graphics_list:
             self.removeItem(message)
         self._message_graphics_list.clear()
 
-    def add_message(self, message: BotMessage):
-        # todo: тут надо проверять, что id уникальный и не конфликтует
-        message_graphics = self._create_message_graphics(message)
+    def add_message(self, message: BotMessage, variants: typing.List[BotVariant]):
+        # проверяем, что id бота уникальный, не совпадает с другими id
+        exists_bots_ids: typing.Set[int] = {message.id for message in self.get_all_messages()}
+        assert message.id not in exists_bots_ids
+
+        message_graphics = self._create_message_graphics(message, variants)
         self._message_graphics_list.append(message_graphics)
 
     def get_selected_messages(self) -> typing.List[BotMessage]:
@@ -85,11 +88,28 @@ class BotScene(QGraphicsScene):
     def get_all_messages(self) -> typing.List[BotMessage]:
         return [message_graphics.get_message() for message_graphics in self._message_graphics_list]
 
+    def _connect_signals(self):
+        self.changed.connect(self._on_item_changed)
+        self.selectionChanged.connect(self._on_selection_changed)
+
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)
         for message_rect in self._message_graphics_list:
             result = result.united(message_rect.sceneBoundingRect())
         return result
+
+    def _on_selection_changed(self):
+        for item in self.items():
+            if isinstance(item, MessageGraphicsItem):
+                item: MessageGraphicsItem
+                item.setZValue(0.0)
+
+        z_selected = 1.0
+        for item in self.selectedItems():
+            item: MessageGraphicsItem
+            assert isinstance(item, MessageGraphicsItem)
+            item.setZValue(z_selected)
+            z_selected += 1.0
 
     def _on_item_changed(self, region: typing.List[QRectF]):
         assert all(isinstance(r, QRectF) for r in region)
@@ -106,8 +126,8 @@ class BotScene(QGraphicsScene):
         height = rect.height() + by_y * 2
         return QRectF(x, y, width, height)
 
-    def _create_message_graphics(self, message: BotMessage) -> MessageGraphicsItem:
-        rect = MessageGraphicsItem(message)
+    def _create_message_graphics(self, message: BotMessage, variants: typing.List[BotVariant]) -> MessageGraphicsItem:
+        rect = MessageGraphicsItem(message, variants)
         self.addItem(rect)
 
         assert isinstance(rect, QGraphicsItem)

@@ -71,7 +71,8 @@ class BotEditorForm(QWidget):
         self._bot_scene.clear_scene()
         bot_messages = self._bot_api.get_messages(self._bot)
         for message in bot_messages:
-            self._bot_scene.add_message(message)
+            variants = self._bot_api.get_variants(message)
+            self._bot_scene.add_message(message, variants)
 
     def _upload_bot_scene(self):
         scene_messages = self._bot_scene.get_all_messages()
@@ -84,7 +85,7 @@ class BotEditorForm(QWidget):
     def _on_add_message(self, _checked: bool):
         message = self._bot_api.create_message(
             self._bot, 'Текст ботового сообщения', x=10, y=10)
-        self._bot_scene.add_message(message)
+        self._bot_scene.add_message(message, [])
 
     def _on_delete_message(self, _checked: bool):
         messages_for_delete = self._bot_scene.get_selected_messages()

@@ -64,13 +64,14 @@ class BotApiByRequests(IBotApi):
         Returns:
             объект созданного бота
         """
+        bot = BotDescription(
+            bot_name=bot_name,
+            bot_token=bot_token,
+            bot_description=bot_description
+        )
         response = requests.post(
             self._suite_url + 'api/bots/',
-            {
-                'name': bot_name,
-                'token': bot_token,
-                'description': bot_description
-            },
+            self._create_bot_dict_from_obj(bot),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
@@ -115,13 +116,10 @@ class BotApiByRequests(IBotApi):
 
     def change_bot(self, bot: BotDescription) -> None:
         assert isinstance(bot.id, int)
+        bot_dict = self._create_bot_dict_from_obj(bot)
         response = requests.patch(
             self._suite_url + f'api/bots/{bot.id}/',
-            {
-                'name': bot.bot_name,
-                'token': bot.bot_token,
-                'description': bot.bot_description
-            },
+            bot_dict,
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -153,13 +151,14 @@ class BotApiByRequests(IBotApi):
             объект созданного сообщения
         """
         assert isinstance(bot, BotDescription)
+        message = BotMessage(
+            text=text,
+            x=x,
+            y=y
+        )
         response = requests.post(
             self._suite_url + f'api/bots/{bot.id}/messages/',
-            {
-                'text': text,
-                'coordinate_x': x,
-                'coordinate_y': y,
-            },
+            self._create_message_dict_from_message_obj(message),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
@@ -198,11 +197,12 @@ class BotApiByRequests(IBotApi):
             объект созданного варианта
         """
         assert isinstance(message, BotMessage)
+        variant_obj = BotVariant(
+            text=text
+        )
         response = requests.post(
             self._suite_url + f'api/messages/{message.id}/variants/',
-            {
-                'text': text
-            },
+            self._create_variant_dict_from_variant_obj(variant_obj),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
@@ -288,11 +288,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(message, BotMessage)
         response = requests.patch(
             self._suite_url + f'api/message/{message.id}/',
-            {
-                # todo: тут надо доделать, чтобы менялись все поля. И сделать цивилизованно
-                'coordinate_x': message.x,
-                'coordinate_y': message.y
-            },
+            self._create_message_dict_from_message_obj(message),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -311,6 +307,16 @@ class BotApiByRequests(IBotApi):
             'Authorization': 'Token ' + self._auth_token
         }
 
+    def _create_bot_dict_from_obj(self, bot_obj: BotDescription) -> typing.Dict[str, typing.Any]:
+        assert isinstance(bot_obj, BotDescription)
+        return {
+            'id': bot_obj.id,
+            'name': bot_obj.bot_name,
+            'token': bot_obj.bot_token,
+            'description': bot_obj.bot_description,
+            'start_message': bot_obj.start_message_id
+        }
+
     def _create_bot_obj_from_data(self, bot_dict: dict) -> BotDescription:
         """Создает объект класса BotDescription из входящих данных"""
         bot_description = BotDescription()
@@ -327,12 +333,29 @@ class BotApiByRequests(IBotApi):
         bot_message.id = message_dict['id']
         bot_message.text = message_dict['text']
         bot_message.keyboard_type = ButtonTypes(message_dict['keyboard_type'])
+
+        # todo: с этими полями надо разобраться, похоже,
+        #  там передается url путь, который надо сначала получить
         bot_message.photo = message_dict['photo']
         bot_message.video = message_dict['video']
         bot_message.file = message_dict['file']
+
         bot_message.x = message_dict['coordinate_x']
         bot_message.y = message_dict['coordinate_y']
         return bot_message
+
+    def _create_message_dict_from_message_obj(self, message: BotMessage) -> dict:
+        assert isinstance(message, BotMessage)
+        message_dict = {
+            'id': message.id,
+            'text': message.text,
+
+            # todo: добавить работу с фото, видео, файлом
+
+            'coordinate_x': message.x,
+            'coordinate_y': message.y
+        }
+        return message_dict
 
     def _create_variant_from_data(self, variant_dict: dict) -> BotVariant:
         """Создает объект класса MessageVariant из входящих данных"""
@@ -342,3 +365,12 @@ class BotApiByRequests(IBotApi):
         variant.current_message_id = variant_dict['current_message']
         variant.next_message_id = variant_dict['next_message']
         return variant
+
+    def _create_variant_dict_from_variant_obj(self, variant_obj: BotVariant) -> dict:
+        variant_dict = {
+            'id': variant_obj.id,
+            'text': variant_obj.text,
+            'current_message': variant_obj.current_message_id,
+            'next_message': variant_obj.next_message_id
+        }
+        return variant_dict
