@@ -40,7 +40,7 @@ class BotScene(QGraphicsScene):
 
         self._message_graphics_list: typing.List[MessageGraphicsItem] = []
 
-        self.changed.connect(self._on_item_changed)
+        self._connect_signals()
 
     def clear_scene(self):
         for message in self._message_graphics_list:
@@ -88,11 +88,28 @@ class BotScene(QGraphicsScene):
     def get_all_messages(self) -> typing.List[BotMessage]:
         return [message_graphics.get_message() for message_graphics in self._message_graphics_list]
 
+    def _connect_signals(self):
+        self.changed.connect(self._on_item_changed)
+        self.selectionChanged.connect(self._on_selection_changed)
+
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)
         for message_rect in self._message_graphics_list:
             result = result.united(message_rect.sceneBoundingRect())
         return result
+
+    def _on_selection_changed(self):
+        for item in self.items():
+            if isinstance(item, MessageGraphicsItem):
+                item: MessageGraphicsItem
+                item.setZValue(0.0)
+
+        z_selected = 1.0
+        for item in self.selectedItems():
+            item: MessageGraphicsItem
+            assert isinstance(item, MessageGraphicsItem)
+            item.setZValue(z_selected)
+            z_selected += 1.0
 
     def _on_item_changed(self, region: typing.List[QRectF]):
         assert all(isinstance(r, QRectF) for r in region)
