@@ -18,6 +18,10 @@ class MessageGraphicsItem(QGraphicsItem):
     _BORDER_THICKNESS = 3
     _ROUND_RADIUS = 30
     _VARIANT_BACKGROUND = 0x9edee6
+    _BLOCK_RECT_EXTEND_SPACE = 25
+    _MESSAGE_TEXT_ALIGN = 25
+    _VARIANT_TEXT_ALIGN = 5
+    _SPARE_PAINTING_DISTANCE = 2
 
     # message_moved = Signal(BotMessage)
 
@@ -45,10 +49,10 @@ class MessageGraphicsItem(QGraphicsItem):
 
     def boundingRect(self) -> QRectF:
         rect = self._block_rect()
-        x = rect.x() - self._BORDER_THICKNESS
-        y = rect.y() - self._BORDER_THICKNESS
-        width = rect.width() + self._BORDER_THICKNESS * 2
-        height = rect.height() + self._BORDER_THICKNESS * 2
+        x = rect.x() - self._SPARE_PAINTING_DISTANCE
+        y = rect.y() - self._SPARE_PAINTING_DISTANCE
+        width = rect.width() + self._SPARE_PAINTING_DISTANCE * 2
+        height = rect.height() + self._SPARE_PAINTING_DISTANCE * 2
         return QRectF(x, y, width, height)
 
     def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value: typing.Any) -> typing.Any:
@@ -71,10 +75,22 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(option, QtWidgets.QStyleOptionGraphicsItem)
         assert isinstance(widget, QtWidgets.QWidget) or widget is None
 
+        self._draw_block(painter)
+
+        self._draw_message(painter)
+
+        for variant_index, variant in enumerate(self._variants):
+            painter.setBrush(QColor(self._VARIANT_BACKGROUND))
+            painter.drawRect(self._variant_rect(variant_index))
+            painter.setPen(QColor(self._TEXT_COLOR))
+            painter.drawText(self._variant_text_rect(variant_index), variant.text)
+
+    def _draw_block(self, painter: QtGui.QPainter):
         painter.setPen(QColor(0, 0, 0, 0))
         painter.setBrush(self._get_block_brush())
         painter.drawRoundedRect(self._block_rect(), 30, 30)
 
+    def _draw_message(self, painter: QtGui.QPainter):
         if self.isSelected():
             painter.setPen(self._selected_pen)
         else:
@@ -83,24 +99,19 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.setBrush(self._brush)
         painter.drawRoundedRect(self._message_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
         painter.setPen(QColor(self._TEXT_COLOR))
-        painter.drawText(self._text_rect(), self._message.text)
-        for variant_index, variant in enumerate(self._variants):
-            painter.setBrush(QColor(self._VARIANT_BACKGROUND))
-            painter.drawRect(self._variant_rect(variant_index))
-            painter.setPen(QColor(self._TEXT_COLOR))
-            painter.drawText(self._variant_text_rect(variant_index), variant.text)
+        painter.drawText(self._message_text_rect(), self._message.text)
 
     def _get_block_brush(self) -> QBrush:
         gradient = QLinearGradient(0, 0, 100, 100)
 
-        block_brush_color1 = QColor(0xb4e6ce)
-        block_brush_color1.setAlpha(200)
+        block_brush_color_top_left = QColor(0xb4e6ce)
+        block_brush_color_top_left.setAlpha(200)
 
-        block_brush_color2 = QColor(0xaef7d5)
-        block_brush_color2.setAlpha(50)
+        block_brush_color_right_bottom = QColor(0xaef7d5)
+        block_brush_color_right_bottom.setAlpha(50)
 
-        gradient.setColorAt(0, block_brush_color1)
-        gradient.setColorAt(1, block_brush_color2)
+        gradient.setColorAt(0.0, block_brush_color_top_left)
+        gradient.setColorAt(1.0, block_brush_color_right_bottom)
         block_brush = QBrush(gradient)
         return block_brush
 
@@ -115,22 +126,30 @@ class MessageGraphicsItem(QGraphicsItem):
     def _variant_text_rect(self, variant_index: int) -> QRectF:
         variant_rect = self._variant_rect(variant_index)
         return QRectF(
-            variant_rect.x() + 10, variant_rect.y() + 10,
-            variant_rect.width() - 5, variant_rect.height() - 5)
+            variant_rect.x() + self._VARIANT_TEXT_ALIGN,
+            variant_rect.y() + self._VARIANT_TEXT_ALIGN,
+            variant_rect.width() - self._VARIANT_TEXT_ALIGN * 2,
+            variant_rect.height() - self._VARIANT_TEXT_ALIGN * 2
+        )
 
     def _message_rect(self) -> QRectF:
         return QRectF(0, 0, self._MSG_WIDTH, self._MSG_HEIGHT)
 
-    def _text_rect(self) -> QRectF:
-        return QRectF(25, 25, self._MSG_WIDTH - 50, self._MSG_HEIGHT - 50)
+    def _message_text_rect(self) -> QRectF:
+        return QRectF(
+            self._MESSAGE_TEXT_ALIGN,
+            self._MESSAGE_TEXT_ALIGN,
+            self._MSG_WIDTH - self._MESSAGE_TEXT_ALIGN * 2,
+            self._MSG_HEIGHT - self._MESSAGE_TEXT_ALIGN * 2
+        )
 
     def _block_rect(self) -> QRectF:
         rect = self._message_rect()
         for variant_index, variant in enumerate(self._variants):
             rect = rect.united(self._variant_rect(variant_index))
 
-        x = rect.x() - 25
-        y = rect.y() - 25
-        width = rect.width() + 50
-        height = rect.height() + 50
+        x = rect.x() - self._BLOCK_RECT_EXTEND_SPACE
+        y = rect.y() - self._BLOCK_RECT_EXTEND_SPACE
+        width = rect.width() + 2 * self._BLOCK_RECT_EXTEND_SPACE
+        height = rect.height() + 2 * self._BLOCK_RECT_EXTEND_SPACE
         return QRectF(x, y, width, height)
