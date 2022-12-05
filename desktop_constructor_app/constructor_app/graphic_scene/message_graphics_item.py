@@ -11,7 +11,10 @@ from b_logic.data_objects import BotMessage, BotVariant
 class MessageGraphicsItem(QGraphicsItem):
     _MSG_WIDTH = 150
     _MSG_HEIGHT = 100
+
+    _VARIANT_WIDTH = 150
     _VARIANT_HEIGHT = 50
+
     _MESSAGE_COLOR = 0xceffff
     _TEXT_COLOR = 0x154545
     _PEN_COLOR = 0x137b7b
@@ -21,7 +24,8 @@ class MessageGraphicsItem(QGraphicsItem):
     _BLOCK_RECT_EXTEND_SPACE = 25
     _MESSAGE_TEXT_ALIGN = 25
     _VARIANT_TEXT_ALIGN = 5
-    _SPARE_PAINTING_DISTANCE = 2
+    _BOUNDING_RECT_SPARE_PAINTING_DISTANCE = 2
+    _VARIANT_DISTANCE = 25
 
     # message_moved = Signal(BotMessage)
 
@@ -49,10 +53,10 @@ class MessageGraphicsItem(QGraphicsItem):
 
     def boundingRect(self) -> QRectF:
         rect = self._block_rect()
-        x = rect.x() - self._SPARE_PAINTING_DISTANCE
-        y = rect.y() - self._SPARE_PAINTING_DISTANCE
-        width = rect.width() + self._SPARE_PAINTING_DISTANCE * 2
-        height = rect.height() + self._SPARE_PAINTING_DISTANCE * 2
+        x = rect.x() - self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE
+        y = rect.y() - self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE
+        width = rect.width() + self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE * 2
+        height = rect.height() + self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE * 2
         return QRectF(x, y, width, height)
 
     def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value: typing.Any) -> typing.Any:
@@ -80,13 +84,10 @@ class MessageGraphicsItem(QGraphicsItem):
         self._draw_message(painter)
 
         for variant_index, variant in enumerate(self._variants):
-            painter.setBrush(QColor(self._VARIANT_BACKGROUND))
-            painter.drawRect(self._variant_rect(variant_index))
-            painter.setPen(QColor(self._TEXT_COLOR))
-            painter.drawText(self._variant_text_rect(variant_index), variant.text)
+            self._draw_variant(painter, variant, variant_index)
 
     def _draw_block(self, painter: QtGui.QPainter):
-        painter.setPen(QColor(0, 0, 0, 0))
+        painter.setPen(QtCore.Qt.PenStyle.NoPen)
         painter.setBrush(self._get_block_brush())
         painter.drawRoundedRect(self._block_rect(), 30, 30)
 
@@ -100,6 +101,16 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.drawRoundedRect(self._message_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
         painter.setPen(QColor(self._TEXT_COLOR))
         painter.drawText(self._message_text_rect(), self._message.text)
+
+    def _draw_variant(self, painter: QtGui.QPainter, variant: BotVariant, index: int):
+        assert isinstance(painter, QtGui.QPainter)
+        assert isinstance(variant, BotVariant)
+        assert isinstance(index, int)
+        painter.setBrush(QColor(self._VARIANT_BACKGROUND))
+        painter.setPen(self._normal_pen)
+        painter.drawRect(self._variant_rect(index))
+        painter.setPen(QColor(self._TEXT_COLOR))
+        painter.drawText(self._variant_text_rect(index), variant.text)
 
     def _get_block_brush(self) -> QBrush:
         gradient = QLinearGradient(0, 0, 100, 100)
@@ -116,11 +127,11 @@ class MessageGraphicsItem(QGraphicsItem):
         return block_brush
 
     def _variant_rect(self, variant_index: int) -> QRectF:
-        dy = self._VARIANT_HEIGHT + 20
+        dy = self._VARIANT_HEIGHT + self._VARIANT_DISTANCE
         return QRectF(
             0,
-            self._MSG_HEIGHT + 20 + dy * variant_index,
-            self._MSG_WIDTH,
+            self._MSG_HEIGHT + self._VARIANT_DISTANCE + dy * variant_index,
+            self._VARIANT_WIDTH,
             self._VARIANT_HEIGHT)
 
     def _variant_text_rect(self, variant_index: int) -> QRectF:
