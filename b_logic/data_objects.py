@@ -23,8 +23,8 @@ class BotMessage:
     text: Optional[str] = None
 
     keyboard_type: ButtonTypes = ButtonTypes.REPLY
-    # todo: думаю, тут сделать байтовые поля в
-    #  которых хранить байтовое содержимое (надо подумать)
+    # todo: РґСѓРјР°СЋ, С‚СѓС‚ СЃРґРµР»Р°С‚СЊ Р±Р°Р№С‚РѕРІС‹Рµ РїРѕР»СЏ РІ
+    #  РєРѕС‚РѕСЂС‹С… С…СЂР°РЅРёС‚СЊ Р±Р°Р№С‚РѕРІРѕРµ СЃРѕРґРµСЂР¶РёРјРѕРµ (РЅР°РґРѕ РїРѕРґСѓРјР°С‚СЊ)
     photo: Optional[str] = None
     video: Optional[str] = None
     file: Optional[str] = None
