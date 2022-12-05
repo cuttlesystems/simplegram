@@ -1,0 +1,9 @@
+
+{imports}
+
+
+@dp.callback_query_handler({handler_params})
+async def handler_message_{handler_name}(callback: types.CallbackQuery):
+    {state_to_set}  # set state
+    {answer_content}  # send message
+    await callback.answer(callback.data)

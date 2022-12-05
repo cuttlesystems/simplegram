@@ -1,7 +1,7 @@
 from typing import List
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
 from bots.models import Bot, Message, Variant
 
 
@@ -108,6 +108,7 @@ class BotApiByDjangoORM(IBotApi):
         bot_message = BotMessage()
         bot_message.id = message_django.id
         bot_message.text = message_django.text
+        bot_message.keyboard_type = ButtonTypes(message_django.keyboard_type)
         bot_message.photo = message_django.photo
         bot_message.video = message_django.video
         bot_message.file = message_django.file
@@ -121,8 +122,6 @@ class BotApiByDjangoORM(IBotApi):
         variant.id = variant_django.id
         variant.text = variant_django.text
         variant.current_message_id = variant_django.current_message.id
-        if variant_django.next_message:
-            variant.next_message_id = variant_django.next_message.id
-        else:
-            variant.next_message_id = None
+        variant.button_type = ButtonTypes(variant_django.current_message.keyboard_type)
+        variant.next_message_id = variant_django.next_message.id if variant_django.next_message else None
         return variant

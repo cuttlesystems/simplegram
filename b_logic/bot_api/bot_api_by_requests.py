@@ -4,7 +4,7 @@ from typing import List, Optional
 import requests
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
 
 
 class BotApiByRequests(IBotApi):
@@ -332,6 +332,7 @@ class BotApiByRequests(IBotApi):
         bot_message = BotMessage()
         bot_message.id = message_dict['id']
         bot_message.text = message_dict['text']
+        bot_message.keyboard_type = ButtonTypes(message_dict['keyboard_type'])
 
         # todo: с этими полями надо разобраться, похоже,
         #  там передается url путь, который надо сначала получить

@@ -1,5 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional
+from enum import Enum
+
+
+class ButtonTypes(Enum):
+    INLINE = 'IKB'
+    REPLY = 'RKB'
 
 
 @dataclass
@@ -16,8 +22,9 @@ class BotMessage:
     id: Optional[int] = None
     text: Optional[str] = None
 
-    # todo: РґСѓРјР°СЋ, С‚СѓС‚ СЃРґРµР»Р°С‚СЊ Р±Р°Р№С‚РѕРІС‹Рµ РїРѕР»СЏ РІ
-    #  РєРѕС‚РѕСЂС‹С… С…СЂР°РЅРёС‚СЊ Р±Р°Р№С‚РѕРІРѕРµ СЃРѕРґРµСЂР¶РёРјРѕРµ (РЅР°РґРѕ РїРѕРґСѓРјР°С‚СЊ)
+    keyboard_type: ButtonTypes = ButtonTypes.REPLY
+    # todo: думаю, тут сделать байтовые поля в
+    #  которых хранить байтовое содержимое (надо подумать)
     photo: Optional[str] = None
     video: Optional[str] = None
     file: Optional[str] = None
@@ -31,4 +38,5 @@ class BotVariant:
     id: Optional[int] = None
     text: Optional[str] = None
     current_message_id: Optional[int] = None
+    button_type: ButtonTypes = ButtonTypes.REPLY
     next_message_id: Optional[int] = None
