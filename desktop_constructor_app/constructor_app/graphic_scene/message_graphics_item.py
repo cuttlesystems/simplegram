@@ -18,7 +18,10 @@ class MessageGraphicsItem(QGraphicsItem):
     _MESSAGE_COLOR = 0xceffff
     _TEXT_COLOR = 0x154545
     _PEN_COLOR = 0x137b7b
-    _BORDER_THICKNESS = 3
+
+    _BORDER_THICKNESS_NORMAL = 2
+    _BORDER_THICKNESS_SELECTED = 3
+
     _ROUND_RADIUS = 30
     _VARIANT_BACKGROUND = 0x9edee6
     _BLOCK_RECT_EXTEND_SPACE = 25
@@ -35,8 +38,19 @@ class MessageGraphicsItem(QGraphicsItem):
         assert all(isinstance(variant, BotVariant) for variant in variants)
 
         self._brush = QBrush(QColor(self._MESSAGE_COLOR))
-        self._selected_pen = QPen(QColor(self._PEN_COLOR), self._BORDER_THICKNESS, QtCore.Qt.PenStyle.DotLine)
-        self._normal_pen = QPen(QColor(self._PEN_COLOR), self._BORDER_THICKNESS, QtCore.Qt.PenStyle.SolidLine)
+
+        self._normal_pen = QPen(
+            QColor(self._PEN_COLOR),
+            self._BORDER_THICKNESS_NORMAL,
+            QtCore.Qt.PenStyle.SolidLine)
+
+        self._selected_pen = QPen(
+            QColor(self._PEN_COLOR),
+            self._BORDER_THICKNESS_SELECTED,
+            QtCore.Qt.PenStyle.SolidLine)
+
+        for pen in (self._selected_pen, self._normal_pen):
+            pen.setJoinStyle(QtCore.Qt.PenJoinStyle.RoundJoin)
 
         self._message: BotMessage = message
 
@@ -92,11 +106,7 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.drawRoundedRect(self._block_rect(), 30, 30)
 
     def _draw_message(self, painter: QtGui.QPainter):
-        if self.isSelected():
-            painter.setPen(self._selected_pen)
-        else:
-            painter.setPen(self._normal_pen)
-
+        self._set_pen(painter)
         painter.setBrush(self._brush)
         painter.drawRoundedRect(self._message_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
         painter.setPen(QColor(self._TEXT_COLOR))
@@ -107,24 +117,36 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(variant, BotVariant)
         assert isinstance(index, int)
         painter.setBrush(QColor(self._VARIANT_BACKGROUND))
-        painter.setPen(self._normal_pen)
+        self._set_pen(painter)
         painter.drawRect(self._variant_rect(index))
         painter.setPen(QColor(self._TEXT_COLOR))
         painter.drawText(self._variant_text_rect(index), variant.text)
 
     def _get_block_brush(self) -> QBrush:
+        alpha_top_left = 180
+        alpha_right_bottom = 50
+        if self.isSelected():
+            alpha_top_left = 230
+            alpha_right_bottom = 230
+
         gradient = QLinearGradient(0, 0, 100, 100)
 
         block_brush_color_top_left = QColor(0xb4e6ce)
-        block_brush_color_top_left.setAlpha(200)
+        block_brush_color_top_left.setAlpha(alpha_top_left)
 
         block_brush_color_right_bottom = QColor(0xaef7d5)
-        block_brush_color_right_bottom.setAlpha(50)
+        block_brush_color_right_bottom.setAlpha(alpha_right_bottom)
 
         gradient.setColorAt(0.0, block_brush_color_top_left)
         gradient.setColorAt(1.0, block_brush_color_right_bottom)
         block_brush = QBrush(gradient)
         return block_brush
+
+    def _set_pen(self, painter: QtGui.QPainter):
+        if self.isSelected():
+            painter.setPen(self._selected_pen)
+        else:
+            painter.setPen(self._normal_pen)
 
     def _variant_rect(self, variant_index: int) -> QRectF:
         dy = self._VARIANT_HEIGHT + self._VARIANT_DISTANCE
