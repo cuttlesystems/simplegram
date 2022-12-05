@@ -17,6 +17,7 @@ class MessageGraphicsItem(QGraphicsItem):
     _PEN_COLOR = 0x137b7b
     _BORDER_THICKNESS = 3
     _ROUND_RADIUS = 30
+    _VARIANT_BACKGROUND = 0x9edee6
 
     # message_moved = Signal(BotMessage)
 
@@ -84,7 +85,7 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.setPen(QColor(self._TEXT_COLOR))
         painter.drawText(self._text_rect(), self._message.text)
         for variant_index, variant in enumerate(self._variants):
-            painter.setBrush(QColor(0x376497))
+            painter.setBrush(QColor(self._VARIANT_BACKGROUND))
             painter.drawRect(self._variant_rect(variant_index))
             painter.setPen(QColor(self._TEXT_COLOR))
             painter.drawText(self._variant_text_rect(variant_index), variant.text)
