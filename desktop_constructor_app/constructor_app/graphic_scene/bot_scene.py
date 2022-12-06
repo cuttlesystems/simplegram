@@ -54,6 +54,7 @@ class BotScene(QGraphicsScene):
 
         message_graphics = self._create_message_graphics(message, variants)
         self._message_graphics_list.append(message_graphics)
+        message_graphics.signal_sender.add_variant_request.connect(self._on_add_variant)
 
     def get_selected_messages(self) -> typing.List[BotMessage]:
         result: typing.List[BotMessage] = []
@@ -91,6 +92,9 @@ class BotScene(QGraphicsScene):
     def _connect_signals(self):
         self.changed.connect(self._on_item_changed)
         self.selectionChanged.connect(self._on_selection_changed)
+
+    def _on_add_variant(self, message: BotMessage):
+        print(f'Добавить вариант для "{message.text}"')
 
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)

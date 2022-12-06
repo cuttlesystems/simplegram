@@ -64,7 +64,7 @@ class BotEditorForm(QWidget):
 
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
-        self._ui.add_message_button.clicked.connect(self._on_add_message)
+        self._ui.add_message_button.clicked.connect(self._on_add_new_message)
         self._ui.delete_message.clicked.connect(self._on_delete_message)
 
     def _load_bot_scene(self):
@@ -82,7 +82,7 @@ class BotEditorForm(QWidget):
     def _on_apply_button(self, _checked: bool):
         self._save_changes()
 
-    def _on_add_message(self, _checked: bool):
+    def _on_add_new_message(self, _checked: bool):
         message = self._bot_api.create_message(
             self._bot, 'Текст ботового сообщения', x=10, y=10)
         self._bot_scene.add_message(message, [])

@@ -1,12 +1,17 @@
 import typing
 
+import PySide6
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import QPointF, QRectF, Signal, QResource
+from PySide6.QtCore import QPointF, QRectF, Signal, QResource, QObject
 from PySide6.QtGui import QBrush, QColor, QPen, QLinearGradient
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import QGraphicsItem
 
 from b_logic.data_objects import BotMessage, BotVariant
+
+
+class MessageGraphicsSignalSender(QObject):
+    add_variant_request = Signal(BotMessage)
 
 
 class MessageGraphicsItem(QGraphicsItem):
@@ -32,12 +37,12 @@ class MessageGraphicsItem(QGraphicsItem):
     _VARIANT_DISTANCE = 25
     _VARIANT_ICON_RECT_BORDER = 10
 
-    # message_moved = Signal(BotMessage)
-
     def __init__(self, message: BotMessage, variants: typing.List[BotVariant]):
         super().__init__()
         assert isinstance(message, BotMessage)
         assert all(isinstance(variant, BotVariant) for variant in variants)
+
+        self.signal_sender: MessageGraphicsSignalSender = MessageGraphicsSignalSender()
 
         self._brush = QBrush(QColor(self._MESSAGE_COLOR))
 
@@ -83,7 +88,7 @@ class MessageGraphicsItem(QGraphicsItem):
             new_position = value
             self._message.x = int(new_position.x())
             self._message.y = int(new_position.y())
-            # self.message_moved.emit(self._message)
+
         return result
 
     def paint(
@@ -105,6 +110,15 @@ class MessageGraphicsItem(QGraphicsItem):
         illusory_variant_index = len(self._variants)
 
         self._draw_variant(painter, None, illusory_variant_index)
+
+    def mouseDoubleClickEvent(self, event: QtWidgets.QGraphicsSceneMouseEvent) -> None:
+        illusory_variant_index = len(self._variants)
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+            click_position: QPointF = event.pos()
+            add_variant_rect = self._variant_rect(illusory_variant_index)
+            if add_variant_rect.contains(click_position):
+                self.signal_sender.add_variant_request.emit(self._message)
+        super().mouseDoubleClickEvent(event)
 
     def _draw_block(self, painter: QtGui.QPainter):
         painter.setPen(QtCore.Qt.PenStyle.NoPen)
