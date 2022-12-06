@@ -101,6 +101,7 @@ class BotGenerator:
         return extended_imports
 
     def create_keyboard(self, message_id: int, keyboard_type: ButtonTypes) -> typing.Optional[str]:
+        assert isinstance(keyboard_type, ButtonTypes)
         # variants
         variants = self._get_variants_of_message(message_id)
         if len(variants) == 0:
@@ -127,14 +128,14 @@ class BotGenerator:
 
         return keyboard_name
 
-    def _create_state_handler(self, type_, prev_state: typing.Optional[str], text_to_handle: typing.Optional[str],
+    def _create_state_handler(self, command: str, prev_state: typing.Optional[str], text_to_handle: typing.Optional[str],
                               state_to_set_name: typing.Optional[str], send_method: str, text_of_answer: str,
-                              kb: str, kb_type: ButtonTypes, handler_type: ButtonTypes, extended_imports: str = '') -> str:
-        """generate code of state handler
+                              kb: str, handler_type: ButtonTypes, extended_imports: str = '') -> str:
+        """Подготовка данных и выбор генерируемого хэндлера в зависимости от типа клавиатуры
 
         Args:
             keyboard_name: keyboard name if it is need
-            type_ (str): type of message, command, content-type or null, if method give prev state
+            command (str): type of message, command, content-type or null, if method give prev state
             prev_state (str): id of previous state
             text_to_handle (str): text of previous state that connect to current state
             state_to_set_name (str): id of current state
@@ -146,14 +147,15 @@ class BotGenerator:
         Returns:
             str: generated code for handler with state and handled text
         """
+        assert isinstance(handler_type, ButtonTypes)
         import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
         extended_imports += '\n' + import_keyboard
-        command_for_type = f'Command(\'{type_}\')' if type_ != '' else type_
+        full_command = f'Command(\'{command}\')' if command != '' else command
         if handler_type == ButtonTypes.REPLY:
-            return create_state_message_handler(extended_imports, command_for_type, prev_state, text_to_handle,
+            return create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                 state_to_set_name, send_method, text_of_answer, kb)
         elif handler_type == ButtonTypes.INLINE:
-            return create_state_callback_handler(extended_imports, command_for_type, prev_state, text_to_handle,
+            return create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                  state_to_set_name, send_method, text_of_answer, kb)
 
     def _find_previous_variants(self, message_id: int) -> typing.List[BotVariant]:
@@ -183,14 +185,13 @@ class BotGenerator:
             imports_for_start_handler = imports_for_handler + '\n' + 'from aiogram.dispatcher.filters import ' \
                                                                      'Command'
             start_handler_code = self._create_state_handler(
-                type_='start',
+                command='start',
                 prev_state=None,
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 send_method='text',
                 text_of_answer=message.text,
                 kb=keyboard_name,
-                kb_type=keyboard_type,
                 handler_type=ButtonTypes.REPLY,
                 extended_imports=imports_for_start_handler
             )
@@ -198,14 +199,13 @@ class BotGenerator:
 
             imports_generation_counter += 1
             restart_handler_code = self._create_state_handler(
-                type_='restart',
+                command='restart',
                 prev_state='*',
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 send_method='text',
                 text_of_answer=message.text,
                 kb=keyboard_name,
-                kb_type=keyboard_type,
                 handler_type=ButtonTypes.REPLY,
                 extended_imports=''
             )
@@ -223,14 +223,13 @@ class BotGenerator:
 
             # Создание хэндлера для команды /prev_variant.text
             handler_code = self._create_state_handler(
-                type_='',
+                command='',
                 prev_state=self._get_handler_name_for_message(prev_variant.current_message_id),
                 text_to_handle=prev_variant.text,
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 send_method='text',
                 text_of_answer=message.text,
                 kb=keyboard_name,
-                kb_type=keyboard_type,
                 handler_type=prev_variant.button_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else ''
             )
