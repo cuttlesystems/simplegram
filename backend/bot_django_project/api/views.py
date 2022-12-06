@@ -1,5 +1,6 @@
 import shutil
 from pathlib import Path
+import os
 
 import requests
 import rest_framework.request
@@ -185,19 +186,43 @@ class BotViewSet(viewsets.ModelViewSet):
         # проверка прав, что пользователь может работать с данным ботом (владелец бота)
         self.check_object_permissions(request, bot_django)
         self._stop_bot_if_it_run(bot_id)
-        # подключаемся к api на локалхост, чтобы считать данные бота
-        # (хотя можно было и по другому сделать или переделать)
-        # bot_api = BotApiByRequests('http://127.0.0.1:8000/')
         bot_api = BotApiByDjangoORM()
-        # bot_api.auth_by_token(request.auth.key)
         bot_obj = bot_api.get_bot_by_id(bot_django.id)
         bot_dir = self._get_bot_dir(bot_django.id)
         generator = BotGeneratorDb(bot_api, bot_obj, str(bot_dir))
         generator.create_bot()
 
+        return Response({"generate_status": f"Бот № {bot_id} - успешно сгенерирован"},
+                        status=status.HTTP_200_OK)
+
+    @action(
+        methods=['GET'],
+        detail=True,
+        url_path='get_bot_zip'
+    )
+    def get_bot_zip(self, request: rest_framework.request.Request, bot_id_str: str) -> HttpResponseBase:
+        """
+        Получить zip архив с исходным кодом бота
+        Args:
+            request: данные запроса
+            bot_id_str: идентификатор бота, исходник которого надо получить
+
+        Returns:
+            http ответ - зип файл со сгенерированным ботом
+        """
+        bot_id = int(bot_id_str)
+        bot_django = get_object_or_404(Bot, id=bot_id)
+        # проверка прав, что пользователь может работать с данным ботом (владелец бота)
+        self.check_object_permissions(request, bot_django)
+        bot_dir = self._get_bot_dir(bot_django.id)
+
+        if not os.path.exists(bot_dir):
+            return Response(
+                {'error': f'Код для бота № {bot_id} ещё не сгенерирован'},
+                status=status.HTTP_204_NO_CONTENT)
+
         bot_zip_file_name = str(bot_dir) + '.zip'
         shutil.make_archive(str(bot_dir), 'zip', bot_dir)
-
         return FileResponse(open(bot_zip_file_name, 'rb'))
 
     @action(
