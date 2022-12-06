@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import typing
 
-from PySide6 import QtGui
+from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget
@@ -56,11 +56,16 @@ class BotEditorForm(QWidget):
             self._prop_model.set_token('')
             self._prop_model.set_description('')
 
-        self._ui.graphics_view.centerOn(0.0, 0.0)
-
         self._load_bot_scene()
 
         self._ui.splitter.setSizes([200, 600])
+
+        QtCore.QTimer.singleShot(0, self._on_after_set_bot)
+
+    def _on_after_set_bot(self):
+        # небольшое обходное решение, чтобы произвести центрирование области
+        scene_rect = self._bot_scene.itemsBoundingRect()
+        self._ui.graphics_view.centerOn(scene_rect.x(), scene_rect.y())
 
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)

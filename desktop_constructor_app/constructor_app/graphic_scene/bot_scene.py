@@ -1,7 +1,7 @@
 import typing
 
 from PySide6 import QtCore
-from PySide6.QtCore import QRectF
+from PySide6.QtCore import QRectF, Signal
 from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
@@ -20,6 +20,8 @@ class BotScene(QGraphicsScene):
     _WORKSPACE_BACKGROUND_LINE_STYLE = QtCore.Qt.DotLine
     _MIN_WORKSPACE_WIDTH = 640
     _MIN_WORKSPACE_HEIGHT = 480
+
+    request_add_new_variant = Signal(BotMessage)
 
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
@@ -95,6 +97,7 @@ class BotScene(QGraphicsScene):
 
     def _on_add_variant(self, message: BotMessage):
         print(f'Добавить вариант для "{message.text}"')
+        self.request_add_new_variant.emit(message)
 
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)
