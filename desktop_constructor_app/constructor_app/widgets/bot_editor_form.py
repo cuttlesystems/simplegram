@@ -7,7 +7,7 @@ from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget
 
 from b_logic.bot_api.i_bot_api import IBotApi
-from b_logic.data_objects import BotDescription
+from b_logic.data_objects import BotDescription, BotMessage
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.common.model_property import ModelProperty
 from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
@@ -71,6 +71,7 @@ class BotEditorForm(QWidget):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
         self._ui.add_message_button.clicked.connect(self._on_add_new_message)
         self._ui.delete_message.clicked.connect(self._on_delete_message)
+        self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -91,6 +92,11 @@ class BotEditorForm(QWidget):
         message = self._bot_api.create_message(
             self._bot, 'Текст ботового сообщения', x=10, y=10)
         self._bot_scene.add_message(message, [])
+
+    def _on_add_new_variant(self, message: BotMessage):
+        assert isinstance(message, BotMessage)
+        self._bot_api.create_variant(message, 'New bot variant')
+        print('add text for ', message.text)
 
     def _on_delete_message(self, _checked: bool):
         messages_for_delete = self._bot_scene.get_selected_messages()

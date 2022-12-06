@@ -96,7 +96,6 @@ class BotScene(QGraphicsScene):
         self.selectionChanged.connect(self._on_selection_changed)
 
     def _on_add_variant(self, message: BotMessage):
-        print(f'Добавить вариант для "{message.text}"')
         self.request_add_new_variant.emit(message)
 
     def _get_work_field_rect(self) -> QRectF:
