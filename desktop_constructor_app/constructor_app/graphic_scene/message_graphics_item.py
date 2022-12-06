@@ -1,8 +1,9 @@
 import typing
 
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import QPointF, QRectF, Signal
+from PySide6.QtCore import QPointF, QRectF, Signal, QResource
 from PySide6.QtGui import QBrush, QColor, QPen, QLinearGradient
+from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import QGraphicsItem
 
 from b_logic.data_objects import BotMessage, BotVariant
@@ -100,6 +101,10 @@ class MessageGraphicsItem(QGraphicsItem):
         for variant_index, variant in enumerate(self._variants):
             self._draw_variant(painter, variant, variant_index)
 
+        illusory_variant_index = len(self._variants)
+
+        self._draw_variant(painter, None, illusory_variant_index)
+
     def _draw_block(self, painter: QtGui.QPainter):
         painter.setPen(QtCore.Qt.PenStyle.NoPen)
         painter.setBrush(self._get_block_brush())
@@ -112,15 +117,33 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.setPen(QColor(self._TEXT_COLOR))
         painter.drawText(self._message_text_rect(), self._message.text)
 
-    def _draw_variant(self, painter: QtGui.QPainter, variant: BotVariant, index: int):
+    def _draw_variant(self, painter: QtGui.QPainter, variant: typing.Optional[BotVariant], index: int):
         assert isinstance(painter, QtGui.QPainter)
-        assert isinstance(variant, BotVariant)
+        assert isinstance(variant, BotVariant) or variant is None
         assert isinstance(index, int)
+
         painter.setBrush(QColor(self._VARIANT_BACKGROUND))
-        self._set_pen(painter)
+
+        if variant is not None:
+            self._set_pen(painter)
+        else:
+            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+
         painter.drawRect(self._variant_rect(index))
-        painter.setPen(QColor(self._TEXT_COLOR))
-        painter.drawText(self._variant_text_rect(index), variant.text)
+
+        if variant is not None:
+            painter.setPen(QColor(self._TEXT_COLOR))
+            painter.drawText(self._variant_text_rect(index), variant.text)
+        else:
+            # res = QResource(':/icons/images/add_variant.svg')
+            # print(res.size())
+            ren = QSvgRenderer(':/icons/images/add_variant.svg')
+            ren.render(painter, self._variant_text_rect(index))
+
+    def _get_plus_variant_rect(self, variant_index: int):
+        variant_rect = self._variant_rect(variant_index)
+        height = variant_rect.height()
+        variant_rect.x() + variant_rect.width() / 2.0 - height
 
     def _get_block_brush(self) -> QBrush:
         alpha_top_left = 180
@@ -178,7 +201,7 @@ class MessageGraphicsItem(QGraphicsItem):
 
     def _block_rect(self) -> QRectF:
         rect = self._message_rect()
-        for variant_index, variant in enumerate(self._variants):
+        for variant_index in range(len(self._variants) + 1):
             rect = rect.united(self._variant_rect(variant_index))
 
         x = rect.x() - self._BLOCK_RECT_EXTEND_SPACE

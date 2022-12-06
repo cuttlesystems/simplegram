@@ -145,3 +145,4 @@ media/
 # файлы настройки среды VSCode 
 */.vscode/*
 .vscode/
+/desktop_constructor_app/constructor_app/rc_bot_icons.py
