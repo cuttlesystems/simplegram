@@ -26,10 +26,11 @@ class MessageGraphicsItem(QGraphicsItem):
     _ROUND_RADIUS = 30
     _VARIANT_BACKGROUND = 0x9edee6
     _BLOCK_RECT_EXTEND_SPACE = 25
-    _MESSAGE_TEXT_ALIGN = 25
-    _VARIANT_TEXT_ALIGN = 5
+    _MESSAGE_TEXT_BORDER = 25
+    _VARIANT_TEXT_BORDER = 5
     _BOUNDING_RECT_SPARE_PAINTING_DISTANCE = 2
     _VARIANT_DISTANCE = 25
+    _VARIANT_ICON_RECT_BORDER = 10
 
     # message_moved = Signal(BotMessage)
 
@@ -135,10 +136,10 @@ class MessageGraphicsItem(QGraphicsItem):
             painter.setPen(QColor(self._TEXT_COLOR))
             painter.drawText(self._variant_text_rect(index), variant.text)
         else:
-            # res = QResource(':/icons/images/add_variant.svg')
-            # print(res.size())
-            ren = QSvgRenderer(':/icons/images/add_variant.svg')
-            ren.render(painter, self._variant_text_rect(index))
+            # отображается несуществующий вариант, который позволяет добавлять новые варианты
+            add_variant_icon_render = QSvgRenderer(':/icons/images/add_variant.svg')
+            add_variant_icon_render.setAspectRatioMode(QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+            add_variant_icon_render.render(painter, self._variant_icon_rect(index))
 
     def _get_plus_variant_rect(self, variant_index: int):
         variant_rect = self._variant_rect(variant_index)
@@ -182,10 +183,20 @@ class MessageGraphicsItem(QGraphicsItem):
     def _variant_text_rect(self, variant_index: int) -> QRectF:
         variant_rect = self._variant_rect(variant_index)
         return QRectF(
-            variant_rect.x() + self._VARIANT_TEXT_ALIGN,
-            variant_rect.y() + self._VARIANT_TEXT_ALIGN,
-            variant_rect.width() - self._VARIANT_TEXT_ALIGN * 2,
-            variant_rect.height() - self._VARIANT_TEXT_ALIGN * 2
+            variant_rect.x() + self._VARIANT_TEXT_BORDER,
+            variant_rect.y() + self._VARIANT_TEXT_BORDER,
+            variant_rect.width() - self._VARIANT_TEXT_BORDER * 2,
+            variant_rect.height() - self._VARIANT_TEXT_BORDER * 2
+        )
+
+    def _variant_icon_rect(self, variant_index: int) -> QRectF:
+        variant_rect = self._variant_rect(variant_index)
+
+        return QRectF(
+            variant_rect.x() + self._VARIANT_ICON_RECT_BORDER,
+            variant_rect.y() + self._VARIANT_ICON_RECT_BORDER,
+            variant_rect.width() - self._VARIANT_ICON_RECT_BORDER * 2,
+            variant_rect.height() - self._VARIANT_ICON_RECT_BORDER * 2
         )
 
     def _message_rect(self) -> QRectF:
@@ -193,10 +204,10 @@ class MessageGraphicsItem(QGraphicsItem):
 
     def _message_text_rect(self) -> QRectF:
         return QRectF(
-            self._MESSAGE_TEXT_ALIGN,
-            self._MESSAGE_TEXT_ALIGN,
-            self._MSG_WIDTH - self._MESSAGE_TEXT_ALIGN * 2,
-            self._MSG_HEIGHT - self._MESSAGE_TEXT_ALIGN * 2
+            self._MESSAGE_TEXT_BORDER,
+            self._MESSAGE_TEXT_BORDER,
+            self._MSG_WIDTH - self._MESSAGE_TEXT_BORDER * 2,
+            self._MSG_HEIGHT - self._MESSAGE_TEXT_BORDER * 2
         )
 
     def _block_rect(self) -> QRectF:
