@@ -6,7 +6,7 @@ from cuttle_builder.builder.handler_generator.create_state_handler import create
 from cuttle_builder.builder.config_generator.create_config import create_config
 from cuttle_builder.builder.state_generator.create_state import create_state
 from cuttle_builder.APIFileCreator import APIFileCreator
-from typing import List
+from typing import List, Optional
 import typing
 
 from cuttle_builder.builder.state_generator.to_state import get_state_name_by_mes_id
@@ -99,6 +99,20 @@ class BotGenerator:
             CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'imports' / f'{imports_file_name}.txt')
         extended_imports = self._file_manager.read_file(imports)
         return extended_imports
+
+    def _get_message_by_id(self, message_id: int) -> Optional[BotMessage]:
+        """Ищет и возвращает объект сообщения с нужным ид
+
+        Args:
+            message_id (int): Ид сообщения
+
+        Returns:
+            Optional[BotMessage]: Объект сообщения или None
+        """
+        for message in self._messages:
+            if message.id == message_id:
+                return message
+        return None
 
     def create_keyboard(self, message_id: int, keyboard_type: ButtonTypes) -> typing.Optional[str]:
         assert isinstance(keyboard_type, ButtonTypes)
@@ -222,6 +236,10 @@ class BotGenerator:
                 keyboard_name = self._get_keyboard_name_for_message(message.id)
 
             # Создание хэндлера для команды /prev_variant.text
+            # нужно получить prev_variant.current_message.keyboard_type
+            # prev_variant.current_message_id
+            current_message_of_variant = self._get_message_by_id(prev_variant.current_message_id)
+
             handler_code = self._create_state_handler(
                 command='',
                 prev_state=self._get_handler_name_for_message(prev_variant.current_message_id),
@@ -230,7 +248,7 @@ class BotGenerator:
                 send_method='text',
                 text_of_answer=message.text,
                 kb=keyboard_name,
-                handler_type=prev_variant.button_type,
+                handler_type=current_message_of_variant.keyboard_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else ''
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, handler_code)

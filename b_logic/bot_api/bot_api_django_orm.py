@@ -131,6 +131,5 @@ class BotApiByDjangoORM(IBotApi):
         variant.id = variant_django.id
         variant.text = variant_django.text
         variant.current_message_id = variant_django.current_message.id
-        variant.button_type = ButtonTypes(variant_django.current_message.keyboard_type)
         variant.next_message_id = variant_django.next_message.id if variant_django.next_message else None
         return variant
