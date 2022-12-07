@@ -232,6 +232,7 @@ class MessageGraphicsItem(QGraphicsItem):
 
     def _block_rect(self) -> QRectF:
         rect = self._message_rect()
+        # обычные варианты + иллюзорный вариант (через который добавляются новые варианты)
         for variant_index in range(len(self._variants) + 1):
             rect = rect.united(self._variant_rect(variant_index))
 
