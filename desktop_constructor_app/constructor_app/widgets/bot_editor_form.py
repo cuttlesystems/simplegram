@@ -4,7 +4,7 @@ import typing
 from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPainter
-from PySide6.QtWidgets import QWidget, QDialog
+from PySide6.QtWidgets import QWidget, QDialog, QApplication
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant
@@ -113,8 +113,18 @@ class BotEditorForm(QWidget):
 
     def _on_change_message(self, message: BotMessage):
         editor_dialog = MessageEditorDialog(self)
+        editor_dialog.set_message(message)
+
+        # todo: тут появляется побочный эффект - после закрытия окна диалога следующий клик пропадает,
+        #  надо бы поправить
+
         if editor_dialog.exec_() == QDialog.DialogCode.Accepted:
-            print('Пользователь подтвердил')
+            message.text = editor_dialog.message_text()
+            message.keyboard_type = editor_dialog.keyboard_type()
+            self._bot_api.change_message(message)
+            self._bot_scene.delete_messages([message])
+            # todo: временнО, чтобы проверить, потом сделать нормально
+            self._bot_scene.add_message(message, [])
 
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
         assert isinstance(variant_name, str)
