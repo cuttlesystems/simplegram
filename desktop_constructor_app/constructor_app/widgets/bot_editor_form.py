@@ -4,7 +4,7 @@ import typing
 from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPainter
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QDialog
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant
@@ -12,6 +12,7 @@ from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.common.model_property import ModelProperty
 from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
+from desktop_constructor_app.constructor_app.widgets.message_editor_dialog import MessageEditorDialog
 from desktop_constructor_app.constructor_app.widgets.ui_bot_editor_form import Ui_BotEditorForm
 
 
@@ -73,6 +74,7 @@ class BotEditorForm(QWidget):
         self._ui.add_message_button.clicked.connect(self._on_add_new_message)
         self._ui.delete_message.clicked.connect(self._on_delete_message)
         self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant)
+        self._bot_scene.request_change_message.connect(self._on_change_message)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -108,6 +110,11 @@ class BotEditorForm(QWidget):
         self._bot_scene.delete_messages([message])
         self._bot_scene.add_message(updated_message, updated_variants)
         print('add variant for message: ', message.text)
+
+    def _on_change_message(self, message: BotMessage):
+        editor_dialog = MessageEditorDialog(self)
+        if editor_dialog.exec_() == QDialog.DialogCode.Accepted:
+            print('Пользователь подтвердил')
 
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
         assert isinstance(variant_name, str)

@@ -34,6 +34,9 @@ class BotScene(QGraphicsScene):
     # (в списке передаются варианты сообщения)
     request_add_new_variant = Signal(BotMessage, list)
 
+    # пользователь запросил изменение сообщения
+    request_change_message = Signal(BotMessage)
+
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
 
@@ -76,7 +79,10 @@ class BotScene(QGraphicsScene):
 
         message_graphics = self._create_message_graphics(message, variants)
         self._message_graphics_list.append(message_graphics)
+
+        # подписываемся на события созданного графического элемента блока (сообщения)
         message_graphics.signal_sender.add_variant_request.connect(self._on_add_variant)
+        message_graphics.signal_sender.request_change_message.connect(self._on_change_message)
 
     def get_selected_messages(self) -> typing.List[BotMessage]:
         """
@@ -132,6 +138,9 @@ class BotScene(QGraphicsScene):
 
     def _on_add_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
         self.request_add_new_variant.emit(message, variants)
+
+    def _on_change_message(self, message: BotMessage):
+        self.request_change_message.emit(message)
 
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)
