@@ -21,7 +21,8 @@ class BotScene(QGraphicsScene):
     _MIN_WORKSPACE_WIDTH = 640
     _MIN_WORKSPACE_HEIGHT = 480
 
-    request_add_new_variant = Signal(BotMessage)
+    # в списке передаются варианты сообщения
+    request_add_new_variant = Signal(BotMessage, list)
 
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
@@ -95,8 +96,8 @@ class BotScene(QGraphicsScene):
         self.changed.connect(self._on_item_changed)
         self.selectionChanged.connect(self._on_selection_changed)
 
-    def _on_add_variant(self, message: BotMessage):
-        self.request_add_new_variant.emit(message)
+    def _on_add_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
+        self.request_add_new_variant.emit(message, variants)
 
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)

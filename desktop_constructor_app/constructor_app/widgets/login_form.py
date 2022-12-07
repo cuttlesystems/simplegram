@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 from b_logic.bot_api.bot_api_by_requests import BotApiException
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
+from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.widgets.ui_login_form import Ui_LoginForm
 
 
@@ -156,11 +157,6 @@ class LoginForm(QWidget):
             all_bots.append(bot)
         return all_bots
 
-    def __get_unique_bot_name(self, base_name: str):
+    def __get_unique_bot_name(self, base_name: str) -> str:
         used_names = [bot.bot_name for bot in self.__get_all_bots()]
-        test_name = base_name
-        n = 2
-        while test_name in used_names:
-            test_name = f'{base_name} {n}'
-            n += 1
-        return test_name
+        return gen_next_name(base_name, used_names)

@@ -11,7 +11,8 @@ from b_logic.data_objects import BotMessage, BotVariant
 
 
 class MessageGraphicsSignalSender(QObject):
-    add_variant_request = Signal(BotMessage)
+    # в списке передаются варианты сообщения
+    add_variant_request = Signal(BotMessage, list)
 
 
 class MessageGraphicsItem(QGraphicsItem):
@@ -117,7 +118,7 @@ class MessageGraphicsItem(QGraphicsItem):
             click_position: QPointF = event.pos()
             add_variant_rect = self._variant_rect(illusory_variant_index)
             if add_variant_rect.contains(click_position):
-                self.signal_sender.add_variant_request.emit(self._message)
+                self.signal_sender.add_variant_request.emit(self._message, self._variants)
         super().mouseDoubleClickEvent(event)
 
     def _draw_block(self, painter: QtGui.QPainter):
