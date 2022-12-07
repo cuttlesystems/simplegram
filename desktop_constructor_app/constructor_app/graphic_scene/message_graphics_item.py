@@ -16,6 +16,11 @@ class MessageGraphicsSignalSender(QObject):
 
 
 class MessageGraphicsItem(QGraphicsItem):
+    """
+    Объект графической сцены Блок.
+    Состоит из сообщений и принадлежащих ему Вариантов
+    """
+
     _MSG_WIDTH = 150
     _MSG_HEIGHT = 100
 
