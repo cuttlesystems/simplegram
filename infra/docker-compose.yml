@@ -14,17 +14,41 @@ services:
 
   nginx:
     image: nginx:1.22.1
+    restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - static_value:/var/html/static/
       - media_value:/var/html/media/
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+
+# добавляем секцию 'command', которая перезагружает nginx каждые 6 часов,
+# чтобы подгрузить новые сертификаты, если они изменились
+#  Сервис certbot отвечает за взаимодействие с сервером Let's Encrypt и обновлением SSL сертификата
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
     networks:
       cuttle_net:
         ipv4_address: 172.21.0.3
     depends_on:
       - web
+
+
+  certbot:
+    container_name: certbot
+    image: certbot/certbot:v1.17.0
+    restart: unless-stopped
+    entrypoint:  "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      cuttle_net:
+        ipv4_address: 172.21.0.4
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+
 
 volumes:
   static_value:
