@@ -1,13 +1,14 @@
 # This Python file uses the following encoding: utf-8
 import typing
 
-from PySide6 import QtGui
+from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget
 
 from b_logic.bot_api.i_bot_api import IBotApi
-from b_logic.data_objects import BotDescription
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant
+from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.common.model_property import ModelProperty
 from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
@@ -56,16 +57,22 @@ class BotEditorForm(QWidget):
             self._prop_model.set_token('')
             self._prop_model.set_description('')
 
-        self._ui.graphics_view.centerOn(0.0, 0.0)
-
         self._load_bot_scene()
 
         self._ui.splitter.setSizes([200, 600])
 
+        QtCore.QTimer.singleShot(0, self._on_after_set_bot)
+
+    def _on_after_set_bot(self):
+        # небольшое обходное решение, чтобы произвести центрирование области
+        scene_rect = self._bot_scene.itemsBoundingRect()
+        self._ui.graphics_view.centerOn(scene_rect.x(), scene_rect.y())
+
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
-        self._ui.add_message_button.clicked.connect(self._on_add_message)
+        self._ui.add_message_button.clicked.connect(self._on_add_new_message)
         self._ui.delete_message.clicked.connect(self._on_delete_message)
+        self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -82,10 +89,31 @@ class BotEditorForm(QWidget):
     def _on_apply_button(self, _checked: bool):
         self._save_changes()
 
-    def _on_add_message(self, _checked: bool):
+    def _on_add_new_message(self, _checked: bool):
         message = self._bot_api.create_message(
             self._bot, 'Текст ботового сообщения', x=10, y=10)
         self._bot_scene.add_message(message, [])
+
+    def _on_add_new_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
+        assert isinstance(message, BotMessage)
+        assert all(isinstance(variant, BotVariant) for variant in variants)
+        self._bot_api.change_message(message)
+
+        variant_name = self._generate_unique_variant_name('New bot variant', variants)
+        self._bot_api.create_variant(message, variant_name)
+        messages = self._bot_api.get_messages(self._bot)
+        # todo: этот момент можно оптимизировать и переписать лучше
+        updated_message = next(mes for mes in messages if mes.id == message.id)
+        updated_variants = self._bot_api.get_variants(updated_message)
+        self._bot_scene.delete_messages([message])
+        self._bot_scene.add_message(updated_message, updated_variants)
+        print('add variant for message: ', message.text)
+
+    def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
+        assert isinstance(variant_name, str)
+        assert all(isinstance(variant, BotVariant) for variant in variants)
+        names = [variant.text for variant in variants]
+        return gen_next_name(variant_name, names)
 
     def _on_delete_message(self, _checked: bool):
         messages_for_delete = self._bot_scene.get_selected_messages()

@@ -1,7 +1,7 @@
 import typing
 
 from PySide6 import QtCore
-from PySide6.QtCore import QRectF
+from PySide6.QtCore import QRectF, Signal
 from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
@@ -14,12 +14,25 @@ class BotScene(QGraphicsScene):
     Сцена для отображения редактора бота
     """
 
+    # цвет фона рабочей области
     _WORKSPACE_BACKGROUND_COLOR = 0xf0ffff
+
+    # цвет линии границы рабочей области
     _WORKSPACE_BACKGROUND_BORDER_COLOR = 0xc5ecec
+
+    # толщина линии границы рабочей области
     _WORKSPACE_BACKGROUND_LINE_THICKNESS = 5
+
+    # стиль линии границы рабочей области
     _WORKSPACE_BACKGROUND_LINE_STYLE = QtCore.Qt.DotLine
+
+    # минимальный размер рабочей области (если нет ни одного сообщения)
     _MIN_WORKSPACE_WIDTH = 640
     _MIN_WORKSPACE_HEIGHT = 480
+
+    # событие возникающее, когда сцена (пользователь) запрашивает добавление нового варианта для сообщения
+    # (в списке передаются варианты сообщения)
+    request_add_new_variant = Signal(BotMessage, list)
 
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
@@ -42,20 +55,35 @@ class BotScene(QGraphicsScene):
 
         self._connect_signals()
 
-    def clear_scene(self):
+    def clear_scene(self) -> None:
+        """
+        Очистить все добавленные объекты со сцены
+        """
         for message in self._message_graphics_list:
             self.removeItem(message)
         self._message_graphics_list.clear()
 
-    def add_message(self, message: BotMessage, variants: typing.List[BotVariant]):
+    def add_message(self, message: BotMessage, variants: typing.List[BotVariant]) -> None:
+        """
+        Добавить сообщение на сцену
+        Args:
+            message: сообщение
+            variants: варианты, относящиеся к сообщению
+        """
         # проверяем, что id бота уникальный, не совпадает с другими id
         exists_bots_ids: typing.Set[int] = {message.id for message in self.get_all_messages()}
         assert message.id not in exists_bots_ids
 
         message_graphics = self._create_message_graphics(message, variants)
         self._message_graphics_list.append(message_graphics)
+        message_graphics.signal_sender.add_variant_request.connect(self._on_add_variant)
 
     def get_selected_messages(self) -> typing.List[BotMessage]:
+        """
+        Получить выделенные сообщения со сцены
+        Returns:
+            список выбранных сообщений
+        """
         result: typing.List[BotMessage] = []
         for item in self.selectedItems():
             item: MessageGraphicsItem
@@ -64,7 +92,12 @@ class BotScene(QGraphicsScene):
 
         return result
 
-    def delete_messages(self, messages: typing.List[BotMessage]):
+    def delete_messages(self, messages: typing.List[BotMessage]) -> None:
+        """
+        Удалить заданные сообщения со сцены
+        Args:
+            messages: список сообщений для удаления
+        """
         deleted_messages_ids: typing.List[typing.Optional[int]] = [message.id for message in messages]
 
         # гарантия, что все сообщения с id
@@ -86,11 +119,19 @@ class BotScene(QGraphicsScene):
             self._message_graphics_list.remove(removed_graphics_item)
 
     def get_all_messages(self) -> typing.List[BotMessage]:
+        """
+        Получить список всех сообщений, которые находятся на сцене
+        Returns:
+            список всех сообщений со сцены
+        """
         return [message_graphics.get_message() for message_graphics in self._message_graphics_list]
 
     def _connect_signals(self):
         self.changed.connect(self._on_item_changed)
         self.selectionChanged.connect(self._on_selection_changed)
+
+    def _on_add_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
+        self.request_add_new_variant.emit(message, variants)
 
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)

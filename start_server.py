@@ -12,4 +12,9 @@ if __name__ == '__main__':
     sys.path.append(str(Path(__file__).parent / 'backend' / 'bot_django_project'))
 
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.bot_django_project.bot_constructor.settings')
-    execute_from_command_line([__file__, 'runserver'])
+    execute_from_command_line([
+        __file__,
+        'runserver',
+        # разрешить подключаться другим
+        # '0.0.0.0:8000'
+    ])

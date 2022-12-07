@@ -104,5 +104,8 @@ class Variant(models.Model):
 
     display_bot.short_description = 'Bot'
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return f'Variant_id {self.id}: {self.text}'
