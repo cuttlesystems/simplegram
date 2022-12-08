@@ -21,6 +21,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# FIX admin CSRF token issue
+# CSRF_TRUSTED_ORIGINS=['https://*.YOUR_DOMAIN.COM']
+##  CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*'] doesn't effect so the 'CSRF_TRUSTED_ORIGINS' value is assigned directly as 'http://*.domain.com'
+
+#if DEBUG == True:
+#    CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+#if not DEBUG == True:
+CSRF_TRUSTED_ORIGINS = ['http://*.ramasuchka.kz', 'https://*.ramasuchka.kz']
 
 # Application definition
 
