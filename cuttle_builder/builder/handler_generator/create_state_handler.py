@@ -13,7 +13,8 @@ def prev_state_code_line(prev_state: Optional[str]) -> str:
 
 
 def create_state_message_handler(imports: str, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
-                                 state_to_set_name: Optional[str], send_message_type: str, text_of_answer: str, kb: str) -> str:
+                                 state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
+                                 kb: str) -> str:
     """Подготовка данных для генерации кода меседж хэндлера
 
     Args:
@@ -22,7 +23,6 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
         prev_state (Optional[str]): Предыдущее состояние
         text_to_handle (Optional[str]): Текст перехватываемый хэндлером
         state_to_set_name (Optional[str]): Состояние к установке
-        send_message_type (str): Тип отправляемого сообщения
         text_of_answer (str): Текст ответа
         kb (str): Клавиатура
 

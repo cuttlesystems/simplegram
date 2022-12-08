@@ -1,13 +1,19 @@
+import typing
+import base64
+import io
+import os
+
 from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes
 from cuttle_builder.bot_gen_exceptions import BotGeneratorException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
-from cuttle_builder.builder.handler_generator.create_state_handler import create_state_message_handler, create_state_callback_handler
+from cuttle_builder.builder.handler_generator.create_state_handler import (create_state_message_handler,
+                                                                           create_state_callback_handler)
 from cuttle_builder.builder.config_generator.create_config import create_config
 from cuttle_builder.builder.state_generator.create_state import create_state
 from cuttle_builder.APIFileCreator import APIFileCreator
 from typing import List, Optional
-import typing
+from PIL import Image
 
 from cuttle_builder.builder.state_generator.to_state import get_state_name_by_mes_id
 
@@ -100,7 +106,7 @@ class BotGenerator:
         extended_imports = self._file_manager.read_file(imports)
         return extended_imports
 
-    def _get_message_by_id(self, message_id: int) -> Optional[BotMessage]:
+    def _get_message_object_by_id(self, message_id: int) -> Optional[BotMessage]:
         """Ищет и возвращает объект сообщения с нужным ид
 
         Args:
@@ -113,6 +119,13 @@ class BotGenerator:
             if message.id == message_id:
                 return message
         return None
+
+    def create_image_file_from_bytes(self, file: bytes, path_to_save: str, filename: str, format: str) -> str:
+        full_path = path_to_save + '/' + filename + '.' + format
+        Image.open(io.BytesIO(base64.b64decode(file))).save(full_path)
+        assert os.path.exists(full_path)
+        print('Created')
+        return full_path
 
     def create_keyboard(self, message_id: int, keyboard_type: ButtonTypes) -> typing.Optional[str]:
         assert isinstance(keyboard_type, ButtonTypes)
@@ -142,8 +155,8 @@ class BotGenerator:
 
         return keyboard_name
 
-    def _create_state_handler(self, command: str, prev_state: typing.Optional[str], text_to_handle: typing.Optional[str],
-                              state_to_set_name: typing.Optional[str], send_method: str, text_of_answer: str,
+    def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
+                              state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[bytes],
                               kb: str, handler_type: ButtonTypes, extended_imports: str = '') -> str:
         """Подготовка данных и выбор генерируемого хэндлера в зависимости от типа клавиатуры
 
@@ -153,7 +166,6 @@ class BotGenerator:
             prev_state (str): id of previous state
             text_to_handle (str): text of previous state that connect to current state
             state_to_set_name (str): id of current state
-            send_method (str): type of sending method (text, photo, video, file, group)
             text_of_answer (str): text of answer
             kb (str): keyboard of answer
             extended_imports: __
@@ -162,15 +174,16 @@ class BotGenerator:
             str: generated code for handler with state and handled text
         """
         assert isinstance(handler_type, ButtonTypes)
+
         import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
         extended_imports += '\n' + import_keyboard
         full_command = f'Command(\'{command}\')' if command != '' else command
         if handler_type == ButtonTypes.REPLY:
             return create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
-                                                state_to_set_name, send_method, text_of_answer, kb)
+                                                state_to_set_name, text_of_answer, image_answer, kb)
         elif handler_type == ButtonTypes.INLINE:
             return create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
-                                                 state_to_set_name, send_method, text_of_answer, kb)
+                                                 state_to_set_name, text_of_answer, image_answer, kb)
 
     def _find_previous_variants(self, message_id: int) -> typing.List[BotVariant]:
         """Получает список вариантов у которых next_message == message.id (принемаемый
@@ -189,6 +202,13 @@ class BotGenerator:
         imports_generation_counter = 0
         imports_for_handler = self._get_imports_sample('handler_import')
         keyboard_type = message.keyboard_type
+        # создать файл с изображение в директории бота и вернуть адрес
+        image = self.create_image_file_from_bytes(
+            file=message.photo,
+            path_to_save=self._bot_directory,
+            filename='message' + message.id,
+            format='png'
+        )
         if message.id == self._start_message_id:
 
             # Создание клавиатуры для сообщения.
@@ -203,8 +223,8 @@ class BotGenerator:
                 prev_state=None,
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                send_method='text',
                 text_of_answer=message.text,
+                image_answer=message.photo,
                 kb=keyboard_name,
                 handler_type=ButtonTypes.REPLY,
                 extended_imports=imports_for_start_handler
@@ -217,8 +237,8 @@ class BotGenerator:
                 prev_state='*',
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                send_method='text',
                 text_of_answer=message.text,
+                image_answer=message.photo,
                 kb=keyboard_name,
                 handler_type=ButtonTypes.REPLY,
                 extended_imports=''
@@ -238,15 +258,15 @@ class BotGenerator:
             # Создание хэндлера для команды /prev_variant.text
             # нужно получить prev_variant.current_message.keyboard_type
             # prev_variant.current_message_id
-            current_message_of_variant = self._get_message_by_id(prev_variant.current_message_id)
+            current_message_of_variant = self._get_message_object_by_id(prev_variant.current_message_id)
 
             handler_code = self._create_state_handler(
                 command='',
                 prev_state=self._get_handler_name_for_message(prev_variant.current_message_id),
                 text_to_handle=prev_variant.text,
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                send_method='text',
                 text_of_answer=message.text,
+                image_answer=message.photo,
                 kb=keyboard_name,
                 handler_type=current_message_of_variant.keyboard_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else ''

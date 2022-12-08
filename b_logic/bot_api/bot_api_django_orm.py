@@ -1,8 +1,40 @@
 from typing import List
+import base64
+from django.conf import settings
+from django.db.models.fields.files import ImageFieldFile
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
 from bots.models import Bot, Message, Variant
+
+
+def get_full_path_to_file(base_dir: str, path_from_django: ImageFieldFile) -> str:
+    """Получение полного пути к медиа файлу
+
+    Args:
+        base_dir (str): Кореневая директория для медиа файлов
+        path_from_django (ImageFieldFile): Данные из бд в Django формате
+
+    Returns:
+        str: Полный путь к медиа файлу
+    """
+    if not path_from_django:
+        return path_from_django
+    return base_dir + '/' + str(path_from_django)
+
+
+def convert_image_to_bytes(path_to_image: str) -> bytes:
+    """Конвертация изображения в байт код
+
+    Args:
+        path_to_image (str): Полный путь к файлу
+
+    Returns:
+        bytes: Байт код изображения
+    """
+    if not path_to_image:
+        return path_to_image
+    return base64.b64encode(open(path_to_image, "rb").read())
 
 
 class BotApiByDjangoORM(IBotApi):
@@ -118,7 +150,8 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.id = message_django.id
         bot_message.text = message_django.text
         bot_message.keyboard_type = ButtonTypes(message_django.keyboard_type)
-        bot_message.photo = message_django.photo
+        # фото в байт код
+        bot_message.photo = convert_image_to_bytes(get_full_path_to_file(settings.MEDIA_ROOT, message_django.photo))
         bot_message.video = message_django.video
         bot_message.file = message_django.file
         bot_message.x = message_django.coordinate_x
