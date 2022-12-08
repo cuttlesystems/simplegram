@@ -1,7 +1,7 @@
 from typing import List
 from abc import abstractmethod, ABC
 
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
 
 
 class BotApiException(Exception):
@@ -92,8 +92,8 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def create_message(self, bot: BotDescription,
-                       text: str, x: int, y: int) -> BotMessage:
+    def create_message(self, bot: BotDescription, text: str,
+                       keyboard_type: ButtonTypes, x: int, y: int) -> BotMessage:
         """
         Создать сообщение
         Args:

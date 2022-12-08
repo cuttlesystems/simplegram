@@ -203,12 +203,12 @@ class BotGenerator:
         imports_for_handler = self._get_imports_sample('handler_import')
         keyboard_type = message.keyboard_type
         # создать файл с изображение в директории бота и вернуть адрес
-        image = self.create_image_file_from_bytes(
-            file=message.photo,
-            path_to_save=self._bot_directory,
-            filename='message' + message.id,
-            format='png'
-        )
+        # image = self.create_image_file_from_bytes(
+        #     file=message.photo,
+        #     path_to_save=self._bot_directory,
+        #     filename='message' + str(message.id),
+        #     format='png'
+        # )
         if message.id == self._start_message_id:
 
             # Создание клавиатуры для сообщения.

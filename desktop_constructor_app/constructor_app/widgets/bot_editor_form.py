@@ -7,7 +7,7 @@ from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget, QDialog, QApplication, QMessageBox
 
 from b_logic.bot_api.i_bot_api import IBotApi
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
 from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.common.model_property import ModelProperty
@@ -97,7 +97,7 @@ class BotEditorForm(QWidget):
 
     def _on_add_new_message(self, _checked: bool):
         message = self._bot_api.create_message(
-            self._bot, 'Текст ботового сообщения', x=10, y=10)
+            self._bot, 'Текст ботового сообщения', ButtonTypes.REPLY, x=10, y=10)
         self._bot_scene.add_message(message, [])
 
     def _on_add_new_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
