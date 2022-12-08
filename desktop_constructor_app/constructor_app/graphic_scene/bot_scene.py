@@ -35,7 +35,7 @@ class BotScene(QGraphicsScene):
     request_add_new_variant = Signal(BotMessage, list)
 
     # пользователь запросил изменение сообщения
-    request_change_message = Signal(BotMessage)
+    request_change_message = Signal(BotMessage, list)
 
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
@@ -139,8 +139,10 @@ class BotScene(QGraphicsScene):
     def _on_add_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
         self.request_add_new_variant.emit(message, variants)
 
-    def _on_change_message(self, message: BotMessage):
-        self.request_change_message.emit(message)
+    def _on_change_message(self, message: BotMessage, variants: typing.List[BotVariant]):
+        assert isinstance(message, BotMessage)
+        assert all(isinstance(variant, BotVariant) for variant in variants)
+        self.request_change_message.emit(message, variants)
 
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)

@@ -15,7 +15,7 @@ class MessageGraphicsSignalSender(QObject):
     add_variant_request = Signal(BotMessage, list)
 
     # пользователь запросил изменение сообщения
-    request_change_message = Signal(BotMessage)
+    request_change_message = Signal(BotMessage, list)
 
 
 class MessageGraphicsItem(QGraphicsItem):
@@ -131,7 +131,7 @@ class MessageGraphicsItem(QGraphicsItem):
             if add_variant_rect.contains(click_position):
                 self.signal_sender.add_variant_request.emit(self._message, self._variants)
             elif message_rect.contains(click_position):
-                self.signal_sender.request_change_message.emit(self._message)
+                self.signal_sender.request_change_message.emit(self._message, self._variants)
 
         super().mouseDoubleClickEvent(event)
 

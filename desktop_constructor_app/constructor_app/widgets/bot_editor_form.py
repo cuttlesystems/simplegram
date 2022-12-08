@@ -111,7 +111,7 @@ class BotEditorForm(QWidget):
         self._bot_scene.add_message(updated_message, updated_variants)
         print('add variant for message: ', message.text)
 
-    def _on_change_message(self, message: BotMessage):
+    def _on_change_message(self, message: BotMessage, variants: typing.List[BotVariant]):
         editor_dialog = MessageEditorDialog(self)
         editor_dialog.set_message(message)
 
@@ -122,9 +122,10 @@ class BotEditorForm(QWidget):
             message.text = editor_dialog.message_text()
             message.keyboard_type = editor_dialog.keyboard_type()
             self._bot_api.change_message(message)
+
+            # удалим и добавим на сцену обратно, чтобы увидеть изменение
             self._bot_scene.delete_messages([message])
-            # todo: временнО, чтобы проверить, потом сделать нормально
-            self._bot_scene.add_message(message, [])
+            self._bot_scene.add_message(message, variants)
 
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
         assert isinstance(variant_name, str)
