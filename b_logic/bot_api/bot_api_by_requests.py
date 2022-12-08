@@ -295,6 +295,15 @@ class BotApiByRequests(IBotApi):
             raise BotApiException(
                 'Ошибка при изменении сообщения: {0}'.format(response.text))
 
+    def generate_bot(self, bot: BotDescription) -> None:
+        raise NotImplementedError('generate bot is not implemented')
+
+    def start_bot(self, bot: BotDescription) -> None:
+        raise NotImplementedError('is not implemented')
+
+    def stop_bot(self, bot: BotDescription) -> None:
+        raise NotImplementedError('is not implemented')
+
     def _get_headers(self) -> typing.Dict[str, str]:
         """
         Получить словарь заголовков, которые добавляются к запросам.

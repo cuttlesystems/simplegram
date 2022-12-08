@@ -1,3 +1,3 @@
 {
-    "files": ["../../start_constructor.py","widgets/login_form.py","widgets/bot_editor_form.ui","widgets/login_form.ui","widgets/bot_editor_form.py","bot_icons.qrc"]
+    "files": ["../../desktop_constructor_app/constructor_app/bot_icons.qrc","widgets/message_editor_dialog.ui","widgets/bot_editor_form.ui","widgets/login_form.py","../../start_constructor.py","widgets/login_form.ui","widgets/bot_editor_form.py"]
 }

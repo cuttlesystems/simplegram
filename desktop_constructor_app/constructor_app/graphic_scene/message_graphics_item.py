@@ -14,6 +14,10 @@ class MessageGraphicsSignalSender(QObject):
     # в списке передаются варианты сообщения
     add_variant_request = Signal(BotMessage, list)
 
+    # пользователь запросил изменение сообщения
+    # (в списке передаются варианты сообщения BotVariant)
+    request_change_message = Signal(BotMessage, list)
+
 
 class MessageGraphicsItem(QGraphicsItem):
     """
@@ -121,9 +125,15 @@ class MessageGraphicsItem(QGraphicsItem):
         illusory_variant_index = len(self._variants)
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
             click_position: QPointF = event.pos()
+
             add_variant_rect = self._variant_rect(illusory_variant_index)
+            message_rect = self._message_rect()
+
             if add_variant_rect.contains(click_position):
                 self.signal_sender.add_variant_request.emit(self._message, self._variants)
+            elif message_rect.contains(click_position):
+                self.signal_sender.request_change_message.emit(self._message, self._variants)
+
         super().mouseDoubleClickEvent(event)
 
     def _draw_block(self, painter: QtGui.QPainter):

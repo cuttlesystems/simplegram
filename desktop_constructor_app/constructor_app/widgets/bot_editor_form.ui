@@ -27,14 +27,35 @@
          <item>
           <widget class="QPushButton" name="add_message_button">
            <property name="text">
-            <string>Добавить сообщение</string>
+            <string>Add message</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="delete_message">
+          <widget class="QPushButton" name="delete_message_button">
            <property name="text">
-            <string>Удалить сообщение</string>
+            <string>Delete message</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="generate_bot_button">
+           <property name="text">
+            <string>Generate bot</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="start_bot_button">
+           <property name="text">
+            <string>Start bot</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="stop_bot_button">
+           <property name="text">
+            <string>Stop bot</string>
            </property>
           </widget>
          </item>
@@ -65,7 +86,7 @@
      <item>
       <widget class="QPushButton" name="apply_button">
        <property name="text">
-        <string>Применить изменения</string>
+        <string>Apply changes</string>
        </property>
       </widget>
      </item>

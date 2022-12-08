@@ -4,7 +4,7 @@ import typing
 from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPainter
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QDialog, QApplication, QMessageBox
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant
@@ -12,6 +12,7 @@ from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.common.model_property import ModelProperty
 from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
+from desktop_constructor_app.constructor_app.widgets.message_editor_dialog import MessageEditorDialog
 from desktop_constructor_app.constructor_app.widgets.ui_bot_editor_form import Ui_BotEditorForm
 
 
@@ -71,8 +72,13 @@ class BotEditorForm(QWidget):
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
         self._ui.add_message_button.clicked.connect(self._on_add_new_message)
-        self._ui.delete_message.clicked.connect(self._on_delete_message)
+        self._ui.delete_message_button.clicked.connect(self._on_delete_message)
+        self._ui.generate_bot_button.clicked.connect(self._on_generate_bot)
+        self._ui.start_bot_button.clicked.connect(self._on_start_bot)
+        self._ui.stop_bot_button.clicked.connect(self._on_stop_bot)
+
         self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant)
+        self._bot_scene.request_change_message.connect(self._on_change_message)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -109,6 +115,23 @@ class BotEditorForm(QWidget):
         self._bot_scene.add_message(updated_message, updated_variants)
         print('add variant for message: ', message.text)
 
+    def _on_change_message(self, message: BotMessage, variants: typing.List[BotVariant]):
+        editor_dialog = MessageEditorDialog(self)
+        editor_dialog.set_message(message)
+
+        # todo: тут появляется побочный эффект - после закрытия окна диалога следующий клик пропадает,
+        #  надо бы поправить
+
+        if editor_dialog.exec_() == QDialog.DialogCode.Accepted:
+            message.text = editor_dialog.message_text()
+            message.keyboard_type = editor_dialog.keyboard_type()
+            self._bot_api.change_message(message)
+
+            # todo: отрефакторить, нужно сделать один метод для изменения сообщения
+            # удалим и добавим на сцену обратно, чтобы увидеть изменение
+            self._bot_scene.delete_messages([message])
+            self._bot_scene.add_message(message, variants)
+
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
         assert isinstance(variant_name, str)
         assert all(isinstance(variant, BotVariant) for variant in variants)
@@ -120,6 +143,30 @@ class BotEditorForm(QWidget):
         self._bot_scene.delete_messages(messages_for_delete)
         for message in messages_for_delete:
             self._bot_api.delete_message(message)
+
+    def _on_generate_bot(self, _checked: bool):
+        try:
+            self._bot_api.generate_bot(self._bot)
+        except Exception as e:
+            self._process_exception(e)
+
+    def _on_start_bot(self, _checked: bool):
+        try:
+            self._bot_api.start_bot(self._bot)
+        except Exception as e:
+            self._process_exception(e)
+
+    def _on_stop_bot(self, _checked: bool):
+        try:
+            self._bot_api.stop_bot(self._bot)
+        except Exception as e:
+            self._process_exception(e)
+
+    def _process_exception(self, exception: Exception):
+        if isinstance(exception, NotImplementedError):
+            QMessageBox.warning(self, 'Error', str(exception))
+        else:
+            raise
 
     def _save_changes(self):
         self._bot.bot_name = self._prop_model.get_name()

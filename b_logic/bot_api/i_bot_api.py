@@ -177,10 +177,26 @@ class IBotApi(ABC):
         """
         pass
 
+    @abstractmethod
     def change_message(self, message: BotMessage) -> None:
         """
         Изменить сообщение
         Args:
             message: сообщение, которое необходимо изменить
         """
+        pass
+
+    @abstractmethod
+    def generate_bot(self, bot: BotDescription) -> None:
+        # todo: документация
+        pass
+
+    @abstractmethod
+    def start_bot(self, bot: BotDescription) -> None:
+        # todo: документация
+        pass
+
+    @abstractmethod
+    def stop_bot(self, bot: BotDescription) -> None:
+        # todo: документация
         pass
