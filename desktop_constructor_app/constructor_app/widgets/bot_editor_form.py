@@ -4,7 +4,7 @@ import typing
 from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPainter
-from PySide6.QtWidgets import QWidget, QDialog, QApplication
+from PySide6.QtWidgets import QWidget, QDialog, QApplication, QMessageBox
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant
@@ -72,7 +72,11 @@ class BotEditorForm(QWidget):
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
         self._ui.add_message_button.clicked.connect(self._on_add_new_message)
-        self._ui.delete_message.clicked.connect(self._on_delete_message)
+        self._ui.delete_message_button.clicked.connect(self._on_delete_message)
+        self._ui.generate_bot_button.clicked.connect(self._on_generate_bot)
+        self._ui.start_bot_button.clicked.connect(self._on_start_bot)
+        self._ui.stop_bot_button.clicked.connect(self._on_stop_bot)
+
         self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant)
         self._bot_scene.request_change_message.connect(self._on_change_message)
 
@@ -138,6 +142,30 @@ class BotEditorForm(QWidget):
         self._bot_scene.delete_messages(messages_for_delete)
         for message in messages_for_delete:
             self._bot_api.delete_message(message)
+
+    def _on_generate_bot(self, _checked: bool):
+        try:
+            self._bot_api.generate_bot(self._bot)
+        except Exception as e:
+            self._process_exception(e)
+
+    def _on_start_bot(self, _checked: bool):
+        try:
+            self._bot_api.start_bot(self._bot)
+        except Exception as e:
+            self._process_exception(e)
+
+    def _on_stop_bot(self, _checked: bool):
+        try:
+            self._bot_api.stop_bot(self._bot)
+        except Exception as e:
+            self._process_exception(e)
+
+    def _process_exception(self, exception: Exception):
+        if isinstance(exception, NotImplementedError):
+            QMessageBox.warning(self, 'Error', str(exception))
+        else:
+            raise
 
     def _save_changes(self):
         self._bot.bot_name = self._prop_model.get_name()
