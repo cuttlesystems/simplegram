@@ -20,11 +20,15 @@ SECRET_KEY = 'django-insecure-l^#t200))@a#@3^g7vhy4zk(0)pfg-xfecdr+$@41hw*id)(m6
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-#CSRF_TRUSTED_ORIGINS=['https://*.YOUR_DOMAIN.COM']
-if DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
-if not DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['http://*.ramasuchka.kz', 'https://*.ramasuchka.kz'] # FIX admin CSRF token issue
+
+# FIX admin CSRF token issue
+# CSRF_TRUSTED_ORIGINS=['https://*.YOUR_DOMAIN.COM']
+##  CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*'] doesn't effect so the 'CSRF_TRUSTED_ORIGINS' value is assigned directly as 'http://*.domain.com'
+
+#if DEBUG == True:
+#    CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+#if not DEBUG == True:
+CSRF_TRUSTED_ORIGINS = ['http://*.ramasuchka.kz', 'https://*.ramasuchka.kz']
 
 # Application definition
 
