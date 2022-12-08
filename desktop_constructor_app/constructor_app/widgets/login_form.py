@@ -4,6 +4,7 @@ from enum import Enum
 
 from PySide6 import QtCore
 from PySide6.QtCore import Signal
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
 from b_logic.bot_api.bot_api_by_requests import BotApiException
@@ -39,6 +40,10 @@ class LoginForm(QWidget):
         self._bot_api = bot_api
         self._ui = Ui_LoginForm()
         self._ui.setupUi(self)
+        logo_pixmap = QPixmap(':/icons/images/cuttle_systems_logo.png')
+        assert logo_pixmap.size().width() > 0
+        self._ui.cuttle_systems_logo_label.setFixedSize(115, 100)
+        self._ui.cuttle_systems_logo_label.setPixmap(logo_pixmap)
         self._connect_signals()
         self._dialog_state: LoginStateEnum = LoginStateEnum.LOGIN
         self._activate_controls()

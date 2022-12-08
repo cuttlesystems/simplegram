@@ -15,6 +15,7 @@ class MessageGraphicsSignalSender(QObject):
     add_variant_request = Signal(BotMessage, list)
 
     # пользователь запросил изменение сообщения
+    # (в списке передаются варианты сообщения BotVariant)
     request_change_message = Signal(BotMessage, list)
 
 

@@ -127,6 +127,7 @@ class BotEditorForm(QWidget):
             message.keyboard_type = editor_dialog.keyboard_type()
             self._bot_api.change_message(message)
 
+            # todo: отрефакторить, нужно сделать один метод для изменения сообщения
             # удалим и добавим на сцену обратно, чтобы увидеть изменение
             self._bot_scene.delete_messages([message])
             self._bot_scene.add_message(message, variants)

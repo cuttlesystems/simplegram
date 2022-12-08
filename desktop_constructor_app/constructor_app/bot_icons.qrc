@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
         <file>images/add_variant.svg</file>
+        <file>images/cuttle_systems_logo.png</file>
     </qresource>
 </RCC>

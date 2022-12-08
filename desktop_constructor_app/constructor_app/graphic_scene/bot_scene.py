@@ -35,6 +35,7 @@ class BotScene(QGraphicsScene):
     request_add_new_variant = Signal(BotMessage, list)
 
     # пользователь запросил изменение сообщения
+    # (в списке передаются варианты сообщения BotVariant)
     request_change_message = Signal(BotMessage, list)
 
     def __init__(self, parent: QtCore.QObject):
