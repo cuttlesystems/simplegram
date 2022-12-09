@@ -137,6 +137,15 @@ class BotScene(QGraphicsScene):
         """
         return [message_graphics.get_message() for message_graphics in self._message_graphics_list]
 
+    # def change_variant(self, message: BotMessage, variant: BotVariant):
+    #     message_graphics_list = [
+    #         message_graphics for message_graphics in self._message_graphics_list
+    #         if message_graphics.get_message().id == message.id
+    #     ]
+    #     # todo: рассмотреть случай когда это не так (не найдено)
+    #     assert len(message_graphics_list) == 1
+    #     message_graphics = message_graphics_list[0]
+
     def _connect_signals(self):
         self.changed.connect(self._on_item_changed)
         self.selectionChanged.connect(self._on_selection_changed)

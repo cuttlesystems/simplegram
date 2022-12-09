@@ -136,7 +136,10 @@ class BotEditorForm(QWidget):
 
     def _on_change_variant(self, variant: BotVariant):
         variant_editor_dialog = VariantEditorDialog(self)
-        print(f'variant dialog result {variant_editor_dialog.exec_()}')
+        messages = self._bot_scene.get_all_messages()
+        variant_editor_dialog.set_dialog_data(variant, messages)
+        if variant_editor_dialog.exec_() == QDialog.DialogCode.Accepted:
+            variant_editor_dialog.apply_variant_changes()
 
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
         assert isinstance(variant_name, str)
