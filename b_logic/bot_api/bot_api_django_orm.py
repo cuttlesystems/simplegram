@@ -80,8 +80,8 @@ class BotApiByDjangoORM(IBotApi):
     def delete_bot(self, id: int) -> None:
         raise NotImplementedError('Метод не определен!')
 
-    def create_message(self, bot: BotDescription,
-                       text: str, x: int, y: int) -> BotMessage:
+    def set_bot_start_message(self, bot: BotDescription,
+                              start_message: BotMessage) -> None:
         raise NotImplementedError('Метод не определен!')
 
     def get_messages(self, bot: BotDescription) -> List[BotMessage]:
@@ -99,7 +99,14 @@ class BotApiByDjangoORM(IBotApi):
             messages_list.append(self._create_bot_message_from_data(message))
         return messages_list
 
-    def create_variant(self, message: BotMessage, text: str) -> BotVariant:
+    def create_message(self, bot: BotDescription,
+                       text: str, x: int, y: int) -> BotMessage:
+        raise NotImplementedError('Метод не определен!')
+
+    def change_message(self, message: BotMessage) -> None:
+        raise NotImplementedError('Метод не определен!')
+
+    def delete_message(self, message: BotMessage):
         raise NotImplementedError('Метод не определен!')
 
     def get_variants(self, message: BotMessage) -> List[BotVariant]:
@@ -117,18 +124,17 @@ class BotApiByDjangoORM(IBotApi):
             variants_list.append(self._create_variant_from_data(variant))
         return variants_list
 
+    def create_variant(self, message: BotMessage, text: str) -> BotVariant:
+        raise NotImplementedError('Метод не определен!')
+
+    def change_variant(self, variant: BotVariant) -> None:
+        raise NotImplementedError('Метод не определен!')
+
     def connect_variant(self, variant: BotVariant,
                         message: BotMessage) -> None:
         raise NotImplementedError('Метод не определен!')
 
-    def set_bot_start_message(self, bot: BotDescription,
-                              start_message: BotMessage) -> None:
-        raise NotImplementedError('Метод не определен!')
-
-    def delete_message(self, message: BotMessage):
-        raise NotImplementedError('Метод не определен!')
-
-    def change_message(self, message: BotMessage) -> None:
+    def delete_variant(self, variant: BotVariant) -> None:
         raise NotImplementedError('Метод не определен!')
 
     def generate_bot(self, bot: BotDescription) -> None:
