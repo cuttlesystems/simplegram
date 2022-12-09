@@ -3,8 +3,6 @@ import typing
 from typing import List, Optional
 import requests
 
-from rest_framework import status
-
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
 
@@ -55,6 +53,24 @@ class BotApiByRequests(IBotApi):
         assert isinstance(token, str)
         self._auth_token = token
 
+    def get_bots(self) -> List[BotDescription]:
+        """
+        Получить список ботов пользователя
+        Returns:
+            список ботов
+        """
+        response = requests.get(
+            self._suite_url + 'api/bots/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException('Ошибка при получении списка ботов')
+        bots_dict_list: List[dict] = json.loads(response.text)
+        bots_list: List[BotDescription] = []
+        for bot_dict in bots_dict_list:
+            bots_list.append(self._create_bot_obj_from_data(bot_dict))
+        return bots_list
+
     def create_bot(self, bot_name: str, bot_token: str, bot_description: str) -> BotDescription:
         """
         Создать бота
@@ -79,24 +95,6 @@ class BotApiByRequests(IBotApi):
         if response.status_code != requests.status_codes.codes.created:
             raise BotApiException('Ошибка при создании бота: {0}'.format(response.text))
         return self._create_bot_obj_from_data(json.loads(response.text))
-
-    def get_bots(self) -> List[BotDescription]:
-        """
-        Получить список ботов пользователя
-        Returns:
-            список ботов
-        """
-        response = requests.get(
-            self._suite_url + 'api/bots/',
-            headers=self._get_headers()
-        )
-        if response.status_code != requests.status_codes.codes.ok:
-            raise BotApiException('Ошибка при получении списка ботов')
-        bots_dict_list: List[dict] = json.loads(response.text)
-        bots_list: List[BotDescription] = []
-        for bot_dict in bots_dict_list:
-            bots_list.append(self._create_bot_obj_from_data(bot_dict))
-        return bots_list
 
     def get_bot_by_id(self, id: int) -> BotDescription:
         """
@@ -295,7 +293,7 @@ class BotApiByRequests(IBotApi):
             self._create_message_dict_from_message_obj(message),
             headers=self._get_headers()
         )
-        if response.status_code != requests.status_codes.codes.created:
+        if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException(
                 'Ошибка при изменении сообщения: {0}'.format(response.text))
 
@@ -305,7 +303,7 @@ class BotApiByRequests(IBotApi):
             url=self._suite_url + f'api/bots/{bot.id}/generate/',
             headers=self._get_headers()
         )
-        if response.status_code != status.HTTP_200_OK:
+        if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException(
                 'Ошибка при генерации бота: {0}'.format(response.text))
 
@@ -315,7 +313,7 @@ class BotApiByRequests(IBotApi):
             url=self._suite_url + f'api/bots/{bot.id}/start/',
             headers=self._get_headers()
         )
-        if response.status_code != status.HTTP_200_OK:
+        if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException(
                 'Ошибка при старте бота: {0}'.format(response.text))
 
@@ -325,7 +323,7 @@ class BotApiByRequests(IBotApi):
             url=self._suite_url + f'api/bots/{bot.id}/stop/',
             headers=self._get_headers()
         )
-        if response.status_code != status.HTTP_200_OK:
+        if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException(
                 'Ошибка при остановке бота: {0}'.format(response.text))
 
