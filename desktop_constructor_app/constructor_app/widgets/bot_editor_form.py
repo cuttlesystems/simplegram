@@ -77,6 +77,7 @@ class BotEditorForm(QWidget):
         self._ui.generate_bot_button.clicked.connect(self._on_generate_bot)
         self._ui.start_bot_button.clicked.connect(self._on_start_bot)
         self._ui.stop_bot_button.clicked.connect(self._on_stop_bot)
+        self._ui.mark_as_start_button.clicked.connect(self._on_mark_as_start_button)
 
         self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant)
         self._bot_scene.request_change_message.connect(self._on_change_message)
@@ -140,6 +141,19 @@ class BotEditorForm(QWidget):
         variant_editor_dialog.set_dialog_data(variant, messages)
         if variant_editor_dialog.exec_() == QDialog.DialogCode.Accepted:
             variant_editor_dialog.apply_variant_changes()
+
+            # todo: тут надо гарантировать перерисовку варианта на схеме
+
+            self._bot_api.change_variant(variant)
+
+    def _on_mark_as_start_button(self, _checked: bool):
+        selected_messages = self._bot_scene.get_selected_messages()
+        selected_messages_number = len(selected_messages)
+        if selected_messages_number == 1:
+            selected_message = selected_messages[0]
+            self._bot_api.set_bot_start_message(self._bot, selected_message)
+        else:
+            QMessageBox.warning(self, 'Error', 'Select only one message to set is as start message')
 
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
         assert isinstance(variant_name, str)
