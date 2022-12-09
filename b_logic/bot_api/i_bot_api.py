@@ -1,7 +1,7 @@
 from typing import List
 from abc import abstractmethod, ABC
 
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
 
 
 class BotApiException(Exception):
@@ -12,7 +12,11 @@ class BotApiException(Exception):
 class IBotApi(ABC):
     @abstractmethod
     def set_suite(self, suite_url: str) -> None:
-        """Устанавливает suite_url: корневой URL для API запросов"""
+        """
+        Устанавливает suite_url: корневой URL для API запросов
+        Args:
+            suite_url: URL запроса
+        """
         pass
 
     @abstractmethod
@@ -36,6 +40,15 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
+    def get_bots(self) -> List[BotDescription]:
+        """
+        Получить список ботов пользователя
+        Returns:
+            список ботов
+        """
+        pass
+
+    @abstractmethod
     def create_bot(self, bot_name: str,
                    bot_token: str, bot_description: str) -> BotDescription:
         """
@@ -47,15 +60,6 @@ class IBotApi(ABC):
 
         Returns:
             объект созданного бота
-        """
-        pass
-
-    @abstractmethod
-    def get_bots(self) -> List[BotDescription]:
-        """
-        Получить список ботов пользователя
-        Returns:
-            список ботов
         """
         pass
 
@@ -92,8 +96,32 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def create_message(self, bot: BotDescription,
-                       text: str, x: int, y: int) -> BotMessage:
+    def set_bot_start_message(self, bot: BotDescription,
+                              start_message: BotMessage) -> None:
+        """
+        Установить сообщение с которого начнется работа с ботом
+        Args:
+            bot: объект бота
+            start_message: объект сообщения, которое будет установлено в
+            качестве стартового
+        """
+        pass
+
+    @abstractmethod
+    def get_messages(self, bot: BotDescription) -> List[BotMessage]:
+        """
+        Получить все сообщения заданного бота
+        Args:
+            bot: бот, у которого нужно получить сообщения
+
+        Returns:
+            список сообщений бота
+        """
+        pass
+
+    @abstractmethod
+    def create_message(self, bot: BotDescription, text: str,
+                       keyboard_type: ButtonTypes, x: int, y: int) -> BotMessage:
         """
         Создать сообщение
         Args:
@@ -108,14 +136,32 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def get_messages(self, bot: BotDescription) -> List[BotMessage]:
+    def change_message(self, message: BotMessage) -> None:
         """
-        Получить все сообщения заданного бота
+        Изменить сообщение
         Args:
-            bot: бот, у которого нужно получить сообщения
+            message: сообщение, которое необходимо изменить
+        """
+        pass
+
+    @abstractmethod
+    def delete_message(self, message: BotMessage) -> None:
+        """
+        Удалить сообщение из бота
+        Args:
+            message: сообщение, которое требуется удалить
+        """
+        pass
+
+    @abstractmethod
+    def get_variants(self, message: BotMessage) -> List[BotVariant]:
+        """
+        Получить варианты для заданного сообщения
+        Args:
+            message: сообщение для которого получаем варианты
 
         Returns:
-            список сообщений бота
+            список вариантов
         """
         pass
 
@@ -133,14 +179,14 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def get_variants(self, message: BotMessage) -> List[BotVariant]:
+    def change_variant(self, variant: BotVariant) -> BotVariant:
         """
-        Получить варианты для заданного сообщения
+        Изменение варианта
         Args:
-            message: сообщение для которого получаем варианты
+            variant: вариант который необходимо изменить
 
         Returns:
-            список вариантов
+            объект варианта
         """
         pass
 
@@ -157,46 +203,28 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def set_bot_start_message(self, bot: BotDescription,
-                              start_message: BotMessage) -> None:
-        """
-        Установить сообщение с которого начнется работа с ботом
-        Args:
-            bot: объект бота
-            start_message: объект сообщения, которое будет установлено в
-            качестве стартового
-        """
-        pass
-
-    @abstractmethod
-    def delete_message(self, message: BotMessage) -> None:
-        """
-        Удалить сообщение из бота
-        Args:
-            message: сообщение, которое требуется удалить
-        """
-        pass
-
-    @abstractmethod
-    def change_message(self, message: BotMessage) -> None:
-        """
-        Изменить сообщение
-        Args:
-            message: сообщение, которое необходимо изменить
-        """
-        pass
-
-    @abstractmethod
     def generate_bot(self, bot: BotDescription) -> None:
-        # todo: документация
+        """
+        Сгенерировать код бота.
+        Args:
+            bot (BotDescription): Бот которого необходимо сгенерировать.
+        """
         pass
 
     @abstractmethod
     def start_bot(self, bot: BotDescription) -> None:
-        # todo: документация
+        """
+        Запуск сгенерированного бота.
+        Args:
+            bot (BotDescription): Бот которого необходимо запустить.
+        """
         pass
 
     @abstractmethod
     def stop_bot(self, bot: BotDescription) -> None:
-        # todo: документация
+        """
+        Остановка запущеного бота.
+        Args:
+            bot (BotDescription): Бот которого необходимо остановить.
+        """
         pass

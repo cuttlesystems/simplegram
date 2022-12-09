@@ -53,6 +53,24 @@ class BotApiByRequests(IBotApi):
         assert isinstance(token, str)
         self._auth_token = token
 
+    def get_bots(self) -> List[BotDescription]:
+        """
+        Получить список ботов пользователя
+        Returns:
+            список ботов
+        """
+        response = requests.get(
+            self._suite_url + 'api/bots/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException('Ошибка при получении списка ботов')
+        bots_dict_list: List[dict] = json.loads(response.text)
+        bots_list: List[BotDescription] = []
+        for bot_dict in bots_dict_list:
+            bots_list.append(self._create_bot_obj_from_data(bot_dict))
+        return bots_list
+
     def create_bot(self, bot_name: str, bot_token: str, bot_description: str) -> BotDescription:
         """
         Создать бота
@@ -77,24 +95,6 @@ class BotApiByRequests(IBotApi):
         if response.status_code != requests.status_codes.codes.created:
             raise BotApiException('Ошибка при создании бота: {0}'.format(response.text))
         return self._create_bot_obj_from_data(json.loads(response.text))
-
-    def get_bots(self) -> List[BotDescription]:
-        """
-        Получить список ботов пользователя
-        Returns:
-            список ботов
-        """
-        response = requests.get(
-            self._suite_url + 'api/bots/',
-            headers=self._get_headers()
-        )
-        if response.status_code != requests.status_codes.codes.ok:
-            raise BotApiException('Ошибка при получении списка ботов')
-        bots_dict_list: List[dict] = json.loads(response.text)
-        bots_list: List[BotDescription] = []
-        for bot_dict in bots_dict_list:
-            bots_list.append(self._create_bot_obj_from_data(bot_dict))
-        return bots_list
 
     def get_bot_by_id(self, id: int) -> BotDescription:
         """
@@ -136,9 +136,10 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.no_content:
-            raise BotApiException(f'Ошибка при удалении бота')
+            raise BotApiException('Ошибка при удалении бота')
 
-    def create_message(self, bot: BotDescription, text: str, x: int, y: int) -> BotMessage:
+    def create_message(self, bot: BotDescription, text: str,
+                       keyboard_type: ButtonTypes, x: int, y: int) -> BotMessage:
         """
         Создать сообщение
         Args:
@@ -153,12 +154,13 @@ class BotApiByRequests(IBotApi):
         assert isinstance(bot, BotDescription)
         message = BotMessage(
             text=text,
+            keyboard_type=keyboard_type,
             x=x,
             y=y
         )
         response = requests.post(
-            self._suite_url + f'api/bots/{bot.id}/messages/',
-            self._create_message_dict_from_message_obj(message),
+            url=self._suite_url + f'api/bots/{bot.id}/messages/',
+            data=self._create_message_dict_from_message_obj(message),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
@@ -296,13 +298,34 @@ class BotApiByRequests(IBotApi):
                 'Ошибка при изменении сообщения: {0}'.format(response.text))
 
     def generate_bot(self, bot: BotDescription) -> None:
-        raise NotImplementedError('generate bot is not implemented')
+        assert isinstance(bot, BotDescription)
+        response = requests.post(
+            url=self._suite_url + f'api/bots/{bot.id}/generate/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException(
+                'Ошибка при генерации бота: {0}'.format(response.text))
 
     def start_bot(self, bot: BotDescription) -> None:
-        raise NotImplementedError('is not implemented')
+        assert isinstance(bot, BotDescription)
+        response = requests.post(
+            url=self._suite_url + f'api/bots/{bot.id}/start/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException(
+                'Ошибка при старте бота: {0}'.format(response.text))
 
     def stop_bot(self, bot: BotDescription) -> None:
-        raise NotImplementedError('is not implemented')
+        assert isinstance(bot, BotDescription)
+        response = requests.post(
+            url=self._suite_url + f'api/bots/{bot.id}/stop/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException(
+                'Ошибка при остановке бота: {0}'.format(response.text))
 
     def _get_headers(self) -> typing.Dict[str, str]:
         """
@@ -358,6 +381,7 @@ class BotApiByRequests(IBotApi):
         message_dict = {
             'id': message.id,
             'text': message.text,
+            'keyboard_type': message.keyboard_type.value,
 
             # todo: добавить работу с фото, видео, файлом
 
