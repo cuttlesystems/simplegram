@@ -18,6 +18,8 @@ class MessageGraphicsSignalSender(QObject):
     # (в списке передаются варианты сообщения BotVariant)
     request_change_message = Signal(BotMessage, list)
 
+    request_change_variant = Signal(BotVariant)
+
 
 class MessageGraphicsItem(QGraphicsItem):
     """
@@ -129,12 +131,24 @@ class MessageGraphicsItem(QGraphicsItem):
             add_variant_rect = self._variant_rect(illusory_variant_index)
             message_rect = self._message_rect()
 
+            variant_on_position = self._variant_by_position(click_position)
+
             if add_variant_rect.contains(click_position):
                 self.signal_sender.add_variant_request.emit(self._message, self._variants)
             elif message_rect.contains(click_position):
                 self.signal_sender.request_change_message.emit(self._message, self._variants)
+            elif variant_on_position is not None:
+                self.signal_sender.request_change_variant.emit(variant_on_position)
 
         super().mouseDoubleClickEvent(event)
+
+    def _variant_by_position(self, position: QPointF) -> typing.Optional[BotVariant]:
+        variant_on_position: typing.Optional[BotVariant] = None
+        for variant_index, variant in enumerate(self._variants):
+            if self._variant_rect(variant_index).contains(position):
+                variant_on_position = variant
+
+        return variant_on_position
 
     def _draw_block(self, painter: QtGui.QPainter):
         painter.setPen(QtCore.Qt.PenStyle.NoPen)

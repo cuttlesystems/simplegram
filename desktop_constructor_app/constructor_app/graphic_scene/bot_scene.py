@@ -38,6 +38,9 @@ class BotScene(QGraphicsScene):
     # (в списке передаются варианты сообщения BotVariant)
     request_change_message = Signal(BotMessage, list)
 
+    # пользователь запросил изменение варианта
+    request_change_variant = Signal(BotVariant)
+
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
 
@@ -84,6 +87,7 @@ class BotScene(QGraphicsScene):
         # подписываемся на события созданного графического элемента блока (сообщения)
         message_graphics.signal_sender.add_variant_request.connect(self._on_add_variant)
         message_graphics.signal_sender.request_change_message.connect(self._on_change_message)
+        message_graphics.signal_sender.request_change_variant.connect(self._on_change_variant)
 
     def get_selected_messages(self) -> typing.List[BotMessage]:
         """
@@ -133,6 +137,15 @@ class BotScene(QGraphicsScene):
         """
         return [message_graphics.get_message() for message_graphics in self._message_graphics_list]
 
+    # def change_variant(self, message: BotMessage, variant: BotVariant):
+    #     message_graphics_list = [
+    #         message_graphics for message_graphics in self._message_graphics_list
+    #         if message_graphics.get_message().id == message.id
+    #     ]
+    #     # todo: рассмотреть случай когда это не так (не найдено)
+    #     assert len(message_graphics_list) == 1
+    #     message_graphics = message_graphics_list[0]
+
     def _connect_signals(self):
         self.changed.connect(self._on_item_changed)
         self.selectionChanged.connect(self._on_selection_changed)
@@ -144,6 +157,10 @@ class BotScene(QGraphicsScene):
         assert isinstance(message, BotMessage)
         assert all(isinstance(variant, BotVariant) for variant in variants)
         self.request_change_message.emit(message, variants)
+
+    def _on_change_variant(self, variant: BotVariant):
+        assert isinstance(variant, BotVariant)
+        self.request_change_variant.emit(variant)
 
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)

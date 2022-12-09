@@ -33,6 +33,8 @@ class LoginForm(QWidget):
 
     _LIST_DATA_ROLE = QtCore.Qt.UserRole + 1
 
+    _LOGO_HEIGHT = 150
+
     open_bot_signal = Signal(BotDescription)
 
     def __init__(self, parent: typing.Optional[QWidget], bot_api: IBotApi):
@@ -41,9 +43,14 @@ class LoginForm(QWidget):
         self._ui = Ui_LoginForm()
         self._ui.setupUi(self)
         logo_pixmap = QPixmap(':/icons/images/cuttle_systems_logo.png')
-        assert logo_pixmap.size().width() > 0
-        self._ui.cuttle_systems_logo_label.setFixedSize(115, 100)
-        self._ui.cuttle_systems_logo_label.setPixmap(logo_pixmap)
+        if logo_pixmap.height() > 0:
+            logo_aspect_ratio = float(logo_pixmap.width()) / logo_pixmap.height()
+            self._ui.cuttle_systems_logo_label.setFixedSize(
+                int(logo_aspect_ratio * self._LOGO_HEIGHT),
+                self._LOGO_HEIGHT)
+            self._ui.cuttle_systems_logo_label.setPixmap(logo_pixmap)
+        else:
+            print('Can not load logo')
         self._connect_signals()
         self._dialog_state: LoginStateEnum = LoginStateEnum.LOGIN
         self._activate_controls()

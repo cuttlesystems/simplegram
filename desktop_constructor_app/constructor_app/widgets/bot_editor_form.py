@@ -14,6 +14,7 @@ from desktop_constructor_app.common.model_property import ModelProperty
 from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
 from desktop_constructor_app.constructor_app.widgets.message_editor_dialog import MessageEditorDialog
 from desktop_constructor_app.constructor_app.widgets.ui_bot_editor_form import Ui_BotEditorForm
+from desktop_constructor_app.constructor_app.widgets.variant_editor_dialog import VariantEditorDialog
 
 
 class BotEditorForm(QWidget):
@@ -79,6 +80,7 @@ class BotEditorForm(QWidget):
 
         self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant)
         self._bot_scene.request_change_message.connect(self._on_change_message)
+        self._bot_scene.request_change_variant.connect(self._on_change_variant)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -131,6 +133,13 @@ class BotEditorForm(QWidget):
             # удалим и добавим на сцену обратно, чтобы увидеть изменение
             self._bot_scene.delete_messages([message])
             self._bot_scene.add_message(message, variants)
+
+    def _on_change_variant(self, variant: BotVariant):
+        variant_editor_dialog = VariantEditorDialog(self)
+        messages = self._bot_scene.get_all_messages()
+        variant_editor_dialog.set_dialog_data(variant, messages)
+        if variant_editor_dialog.exec_() == QDialog.DialogCode.Accepted:
+            variant_editor_dialog.apply_variant_changes()
 
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
         assert isinstance(variant_name, str)

@@ -1,74 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MessageEditorDialog</class>
- <widget class="QDialog" name="MessageEditorDialog">
+ <class>VariantEditorDialog</class>
+ <widget class="QDialog" name="VariantEditorDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>440</width>
-    <height>238</height>
+    <width>340</width>
+    <height>297</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Change message</string>
+   <string>Variant Editor Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Message text</string>
+        <string>Variant (button) text</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QTextEdit" name="message_text_edit"/>
+      <widget class="QLineEdit" name="variant_text_edit"/>
      </item>
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Keyboard type for variants</string>
+        <string>On select this variant go to message</string>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QRadioButton" name="radio_reply">
-         <property name="text">
-          <string>Reply</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radio_inline">
-         <property name="text">
-          <string>Inline</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
+      <widget class="QListWidget" name="next_message_select_list_widget"/>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Мы не подключили это окно к бекенду, остальное с бекендом связано, но нужно будет еще все в порядок привести, отрефакторить, возможно, исправить ошибки</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -87,7 +69,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>MessageEditorDialog</receiver>
+   <receiver>VariantEditorDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -103,7 +85,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>MessageEditorDialog</receiver>
+   <receiver>VariantEditorDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
