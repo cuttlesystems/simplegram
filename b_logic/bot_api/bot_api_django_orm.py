@@ -19,7 +19,6 @@ def get_full_path_to_django_image(base_dir: str, path_from_django: Optional[Imag
     """
     assert isinstance(base_dir, str)
     assert isinstance(path_from_django, Optional[ImageFieldFile])
-    result = ''
     if not path_from_django:
         result = None
     else:
@@ -37,7 +36,6 @@ def convert_image_to_bytes(path_to_image: Optional[str]) -> Optional[bytes]:
         Optional[bytes]: Байт код изображения
     """
     assert isinstance(path_to_image, Optional[str])
-    result = ''
     if not path_to_image:
         result = None
     else:
