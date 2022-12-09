@@ -37,7 +37,7 @@ class VariantEditorDialog(QDialog):
         for item in list_items:
             message: BotMessage = item.data(self._DATA_ROLE)
             assert isinstance(message, BotMessage)
-            if message.id == variant.id:
+            if message.id == variant.next_message_id:
                 self._ui.next_message_select_list_widget.setCurrentItem(item)
 
     def apply_variant_changes(self):
