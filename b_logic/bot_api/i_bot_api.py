@@ -179,14 +179,12 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def change_variant(self, variant: BotVariant) -> BotVariant:
+    def change_variant(self, variant: BotVariant) -> None:
         """
         Изменение варианта
+
         Args:
             variant: вариант который необходимо изменить
-
-        Returns:
-            объект варианта
         """
         pass
 
@@ -199,6 +197,16 @@ class IBotApi(ABC):
         Args:
             variant: связываемый вариант
             message: сообщение к которому перейдем
+        """
+        pass
+
+    @abstractmethod
+    def delete_variant(self, variant: BotVariant) -> None:
+        """
+        Удаление варианта
+
+        Args:
+            variant: вариант который необходимо удалить
         """
         pass
 

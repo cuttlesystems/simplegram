@@ -277,6 +277,22 @@ class BotApiByRequests(IBotApi):
             raise BotApiException('Ошибка при создании варианта: {0}'.format(response.text))
         return self._create_variant_from_data(json.loads(response.text))
 
+    def change_variant(self, variant: BotVariant) -> None:
+        """
+        Изменение варианта.
+
+        Args:
+            variant (BotVariant): Вариант который необходимо изменить.
+        """
+        assert isinstance(variant, BotVariant)
+        response = requests.patch(
+            self._suite_url + f'api/variant/{variant.id}/',
+            self._create_variant_dict_from_variant_obj(variant),
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException('Ошибка при изменении варианта: {0}'.format(response.text))
+
     def connect_variant(self, variant: BotVariant, message: BotMessage) -> None:
         """
         Связать вариант и сообщение, к которому перейдем при выборе этого варианта
@@ -296,6 +312,23 @@ class BotApiByRequests(IBotApi):
         if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException(
                 'Ошибка при связывании варианта с последующим сообщением: {0}'.format(response.text))
+
+    def delete_variant(self, variant: BotVariant) -> None:
+        """
+        Удаление варианта
+
+        Args:
+            variant: вариант который необходимо удалить
+        """
+        assert isinstance(variant, BotVariant)
+        print(f'delete variant id {variant.id}')
+        response = requests.delete(
+            self._suite_url + f'api/variant/{variant.id}/',
+            headers=self._get_headers()
+        )
+        print(f'delete response {response.status_code}')
+        if response.status_code != requests.status_codes.codes.no_content:
+            raise BotApiException(f'Ошибка при удалении варианта: {response.text}')
 
     def generate_bot(self, bot: BotDescription) -> None:
         assert isinstance(bot, BotDescription)
@@ -326,9 +359,6 @@ class BotApiByRequests(IBotApi):
         if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException(
                 'Ошибка при остановке бота: {0}'.format(response.text))
-
-    def change_variant(self, variant: BotVariant) -> BotVariant:
-        pass
 
     def _get_headers(self) -> typing.Dict[str, str]:
         """
