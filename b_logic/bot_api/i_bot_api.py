@@ -206,6 +206,7 @@ class IBotApi(ABC):
     def generate_bot(self, bot: BotDescription) -> None:
         """
         Сгенерировать код бота.
+
         Args:
             bot (BotDescription): Бот которого необходимо сгенерировать.
         """
@@ -215,6 +216,7 @@ class IBotApi(ABC):
     def start_bot(self, bot: BotDescription) -> None:
         """
         Запуск сгенерированного бота.
+
         Args:
             bot (BotDescription): Бот которого необходимо запустить.
         """
@@ -224,6 +226,7 @@ class IBotApi(ABC):
     def stop_bot(self, bot: BotDescription) -> None:
         """
         Остановка запущеного бота.
+
         Args:
             bot (BotDescription): Бот которого необходимо остановить.
         """

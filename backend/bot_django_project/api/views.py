@@ -171,15 +171,12 @@ class BotViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path='generate'
     )
-    def generate_bot(self, request: rest_framework.request.Request, bot_id_str: str) -> HttpResponseBase:
+    def generate_bot(self, request: rest_framework.request.Request, bot_id_str: str) -> None:
         """
         Сгенерировать исходный код бота
         Args:
             request: данные запроса
             bot_id_str: идентификатор бота, исходник которого надо сгенерировать
-
-        Returns:
-            http ответ - зип файл со сгенерированным ботом
         """
         bot_id = int(bot_id_str)
         bot_django = get_object_or_404(Bot, id=bot_id)
