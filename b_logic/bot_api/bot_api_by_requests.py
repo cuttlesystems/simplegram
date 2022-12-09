@@ -327,6 +327,9 @@ class BotApiByRequests(IBotApi):
             raise BotApiException(
                 'Ошибка при остановке бота: {0}'.format(response.text))
 
+    def change_variant(self, variant: BotVariant) -> BotVariant:
+        pass
+
     def _get_headers(self) -> typing.Dict[str, str]:
         """
         Получить словарь заголовков, которые добавляются к запросам.
