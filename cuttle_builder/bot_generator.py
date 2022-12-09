@@ -125,7 +125,7 @@ class BotGenerator:
         full_path = path_to_save + '/' + filename + '.' + format
         Image.open(io.BytesIO(file)).save(full_path)
         assert os.path.exists(full_path)
-        print('Created')
+        # print(f'Image {filename} created')
         return full_path
 
     def create_keyboard(self, message_id: int, keyboard_type: ButtonTypes) -> typing.Optional[str]:
