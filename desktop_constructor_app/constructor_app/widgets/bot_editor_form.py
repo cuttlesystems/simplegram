@@ -142,6 +142,10 @@ class BotEditorForm(QWidget):
         if variant_editor_dialog.exec_() == QDialog.DialogCode.Accepted:
             variant_editor_dialog.apply_variant_changes()
 
+            # todo: тут надо гарантировать перерисовку варианта на схеме
+
+            self._bot_api.change_variant(variant)
+
     def _on_mark_as_start_button(self, _checked: bool):
         selected_messages = self._bot_scene.get_selected_messages()
         selected_messages_number = len(selected_messages)
