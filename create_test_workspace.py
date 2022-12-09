@@ -25,7 +25,7 @@ if __name__ == '__main__':
     computer_variant = bot_api.create_variant(main_message, 'Компьютеры')
     appliances_variant = bot_api.create_variant(main_message, 'Бытовая техника')
 
-    mobile_message = bot_api.create_message(bot, 'Какие телефоны предпочитаете?', ButtonTypes.REPLY, 100, 130)
+    mobile_message = bot_api.create_message(bot, 'Какие телефоны предпочитаете?', ButtonTypes.INLINE, 100, 130)
     bot_api.connect_variant(mobile_variant, mobile_message)
 
     computer_message = bot_api.create_message(bot, 'Какие компьютеры предпочитаете?', ButtonTypes.REPLY, 200, 150)
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     mobile_cancel_variant = bot_api.create_variant(mobile_message, 'Вернуться в начало')
 
     android_select_message = bot_api.create_message(
-        bot, 'Выберите телефон который хотите приобрести', ButtonTypes.REPLY, 200, 250)
+        bot, 'Выберите телефон который хотите приобрести', ButtonTypes.INLINE, 200, 250)
     bot_api.connect_variant(android_variant, android_select_message)
     samsung_galaxy_s22 = bot_api.create_variant(android_select_message, 'Samsung Galaxy S22')
     samsung_galaxy_a53 = bot_api.create_variant(android_select_message, 'Samsung Galaxy A53')

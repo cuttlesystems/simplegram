@@ -55,6 +55,7 @@ class BotGenerator:
         self._file_manager = APIFileCreator()
         self._token = token
         self._bot_directory = bot_path
+        self._media_directory = bot_path + '/media'
 
         for message in self._messages:
             self._states.append(message.id)
@@ -122,7 +123,7 @@ class BotGenerator:
 
     def create_image_file_from_bytes(self, file: bytes, path_to_save: str, filename: str, format: str) -> str:
         full_path = path_to_save + '/' + filename + '.' + format
-        Image.open(io.BytesIO(base64.b64decode(file))).save(full_path)
+        Image.open(io.BytesIO(file)).save(full_path)
         assert os.path.exists(full_path)
         print('Created')
         return full_path
@@ -156,7 +157,7 @@ class BotGenerator:
         return keyboard_name
 
     def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
-                              state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[bytes],
+                              state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
                               kb: str, handler_type: ButtonTypes, extended_imports: str = '') -> str:
         """Подготовка данных и выбор генерируемого хэндлера в зависимости от типа клавиатуры
 
@@ -167,7 +168,9 @@ class BotGenerator:
             text_to_handle (str): text of previous state that connect to current state
             state_to_set_name (str): id of current state
             text_of_answer (str): text of answer
+            image_answer (Optional[str]): path to image file in bot directory
             kb (str): keyboard of answer
+            handler_type (ButtonTypes): type of handler (inline or reply)
             extended_imports: __
 
         Returns:
@@ -203,12 +206,16 @@ class BotGenerator:
         imports_for_handler = self._get_imports_sample('handler_import')
         keyboard_type = message.keyboard_type
         # создать файл с изображение в директории бота и вернуть адрес
-        # image = self.create_image_file_from_bytes(
-        #     file=message.photo,
-        #     path_to_save=self._bot_directory,
-        #     filename='message' + str(message.id),
-        #     format='png'
-        # )
+        if message.photo:
+            image = self.create_image_file_from_bytes(
+                file=message.photo,
+                path_to_save=self._media_directory,
+                filename='message' + str(message.id),
+                format='png'
+            )
+        else:
+            image = message.photo
+
         if message.id == self._start_message_id:
 
             # Создание клавиатуры для сообщения.
@@ -224,7 +231,7 @@ class BotGenerator:
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=message.text,
-                image_answer=message.photo,
+                image_answer=image,
                 kb=keyboard_name,
                 handler_type=ButtonTypes.REPLY,
                 extended_imports=imports_for_start_handler
@@ -238,7 +245,7 @@ class BotGenerator:
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=message.text,
-                image_answer=message.photo,
+                image_answer=image,
                 kb=keyboard_name,
                 handler_type=ButtonTypes.REPLY,
                 extended_imports=''
@@ -266,7 +273,7 @@ class BotGenerator:
                 text_to_handle=prev_variant.text,
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=message.text,
-                image_answer=message.photo,
+                image_answer=image,
                 kb=keyboard_name,
                 handler_type=current_message_of_variant.keyboard_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else ''
