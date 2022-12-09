@@ -3,6 +3,8 @@ import typing
 from typing import List, Optional
 import requests
 
+from rest_framework import status
+
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
 
@@ -136,9 +138,10 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.no_content:
-            raise BotApiException(f'Ошибка при удалении бота')
+            raise BotApiException('Ошибка при удалении бота')
 
-    def create_message(self, bot: BotDescription, text: str, x: int, y: int) -> BotMessage:
+    def create_message(self, bot: BotDescription, text: str,
+                       keyboard_type: ButtonTypes, x: int, y: int) -> BotMessage:
         """
         Создать сообщение
         Args:
@@ -153,12 +156,13 @@ class BotApiByRequests(IBotApi):
         assert isinstance(bot, BotDescription)
         message = BotMessage(
             text=text,
+            keyboard_type=keyboard_type,
             x=x,
             y=y
         )
         response = requests.post(
-            self._suite_url + f'api/bots/{bot.id}/messages/',
-            self._create_message_dict_from_message_obj(message),
+            url=self._suite_url + f'api/bots/{bot.id}/messages/',
+            data=self._create_message_dict_from_message_obj(message),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
@@ -291,18 +295,39 @@ class BotApiByRequests(IBotApi):
             self._create_message_dict_from_message_obj(message),
             headers=self._get_headers()
         )
-        if response.status_code != requests.status_codes.codes.ok:
+        if response.status_code != requests.status_codes.codes.created:
             raise BotApiException(
                 'Ошибка при изменении сообщения: {0}'.format(response.text))
 
     def generate_bot(self, bot: BotDescription) -> None:
-        raise NotImplementedError('generate bot is not implemented')
+        assert isinstance(bot, BotDescription)
+        response = requests.post(
+            url=self._suite_url + f'api/bots/{bot.id}/generate/',
+            headers=self._get_headers()
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise BotApiException(
+                'Ошибка при генерации бота: {0}'.format(response.text))
 
     def start_bot(self, bot: BotDescription) -> None:
-        raise NotImplementedError('is not implemented')
+        assert isinstance(bot, BotDescription)
+        response = requests.post(
+            url=self._suite_url + f'api/bots/{bot.id}/start/',
+            headers=self._get_headers()
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise BotApiException(
+                'Ошибка при старте бота: {0}'.format(response.text))
 
     def stop_bot(self, bot: BotDescription) -> None:
-        raise NotImplementedError('is not implemented')
+        assert isinstance(bot, BotDescription)
+        response = requests.post(
+            url=self._suite_url + f'api/bots/{bot.id}/stop/',
+            headers=self._get_headers()
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise BotApiException(
+                'Ошибка при остановке бота: {0}'.format(response.text))
 
     def _get_headers(self) -> typing.Dict[str, str]:
         """
@@ -358,6 +383,7 @@ class BotApiByRequests(IBotApi):
         message_dict = {
             'id': message.id,
             'text': message.text,
+            'keyboard_type': message.keyboard_type.value,
 
             # todo: добавить работу с фото, видео, файлом
 
