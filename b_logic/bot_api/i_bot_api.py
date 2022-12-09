@@ -179,14 +179,12 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def change_variant(self, variant: BotVariant) -> BotVariant:
+    def change_variant(self, variant: BotVariant) -> None:
         """
         Изменение варианта
+
         Args:
             variant: вариант который необходимо изменить
-
-        Returns:
-            объект варианта
         """
         pass
 
@@ -203,9 +201,20 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
+    def delete_variant(self, variant: BotVariant) -> None:
+        """
+        Удаление варианта
+
+        Args:
+            variant: вариант который необходимо удалить
+        """
+        pass
+
+    @abstractmethod
     def generate_bot(self, bot: BotDescription) -> None:
         """
         Сгенерировать код бота.
+
         Args:
             bot (BotDescription): Бот которого необходимо сгенерировать.
         """
@@ -215,6 +224,7 @@ class IBotApi(ABC):
     def start_bot(self, bot: BotDescription) -> None:
         """
         Запуск сгенерированного бота.
+
         Args:
             bot (BotDescription): Бот которого необходимо запустить.
         """
@@ -224,6 +234,7 @@ class IBotApi(ABC):
     def stop_bot(self, bot: BotDescription) -> None:
         """
         Остановка запущеного бота.
+
         Args:
             bot (BotDescription): Бот которого необходимо остановить.
         """
