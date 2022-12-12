@@ -40,7 +40,6 @@ def create_reply_keyboard(keyboard_variable_name_without_suffix: str, buttons: t
     code = code.format(
         imports=extended_imports,
         keyboard_name=keyboard_variable_name_without_suffix,
-        # all_buttons=',\n\t\t'.join([f'KeyboardButton(text="{button.text}")'for button in buttons])
         all_buttons=generate_reply_keyboard_code(buttons=buttons, buttons_in_row=3)
     )
     return code
