@@ -97,8 +97,6 @@ class BotGenerator:
 
     def _get_handler_name_for_message(self, message_id: int) -> str:
         assert isinstance(message_id, int)
-        # todo: возможность поменять название переменной, чтобы при этом не отвалилось, улучшить качество кода
-        #  ("AttributeError: type object 'States' has no attribute 'message_559'")
         return get_state_name_by_mes_id(message_id)
 
     def _get_imports_sample(self, imports_file_name) -> str:
