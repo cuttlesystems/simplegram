@@ -1,3 +1,4 @@
+from io import BufferedIOBase
 from typing import List, Optional
 from django.conf import settings
 from django.db.models.fields.files import ImageFieldFile
@@ -162,7 +163,6 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.id = message_django.id
         bot_message.text = message_django.text
         bot_message.keyboard_type = ButtonTypes(message_django.keyboard_type)
-        # фото в байт код
         bot_message.photo = convert_image_to_bytes(
             get_full_path_to_django_image(settings.MEDIA_ROOT, message_django.photo)
         )
