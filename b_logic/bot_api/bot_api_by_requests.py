@@ -41,7 +41,7 @@ class BotApiByRequests(IBotApi):
             if response.status_code != requests.status_codes.codes.ok:
                 raise BotApiException('Ошибка аутентификации пользователя {0}'.format(response.text))
             self._auth_token = json.loads(response.text)['auth_token']
-        except requests.exceptions.ConnectionError as connection_error:
+        except requests.exceptions.ConnectionError:
             raise BotApiException('Ошибка подключения')
 
     def auth_by_token(self, token: str) -> None:
