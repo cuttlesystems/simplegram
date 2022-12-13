@@ -80,7 +80,7 @@ class Message(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return f'Message_id {self.id}: {self.text}'
+        return f'Message_id {self.id}: {self.text}'[:50]
 
 
 class Variant(models.Model):
