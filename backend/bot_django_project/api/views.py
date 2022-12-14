@@ -22,6 +22,8 @@ from bots.models import Bot, Message, Variant
 from .mixins import RetrieveUpdateDestroyViewSet
 from .permissions import IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, IsBotOwnerOrForbidden
 
+API_RESPONSE_WITH_VARIANTS = 'with_variants'
+
 
 class BotViewSet(viewsets.ModelViewSet):
     """
@@ -254,7 +256,6 @@ class MessageViewSet(viewsets.ModelViewSet):
     Отображение всех меседжей бота и
     CRUD-функционал для экземпляра меседжа
     """
-    # serializer_class = MessageSerializer
 
     def get_queryset(self):
         return Message.objects.filter(
@@ -263,7 +264,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         )
 
     def get_serializer_class(self):
-        if 'with_variants' in self.request.query_params.keys():
+        if self.request.query_params.get(API_RESPONSE_WITH_VARIANTS) == '1':
             return MessageSerializerWithVariants
         return MessageSerializer
 
@@ -287,7 +288,7 @@ class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
     queryset = Message.objects.all()
 
     def get_serializer_class(self):
-        if 'with_variants' in self.request.query_params.keys():
+        if self.request.query_params.get(API_RESPONSE_WITH_VARIANTS) == '1':
             return MessageSerializerWithVariants
         return MessageSerializer
 
