@@ -135,7 +135,7 @@ class MessageGraphicsItem(QGraphicsItem):
                 self._current_variant_index = self._variants.index(variant_on_position)
             else:
                 self._current_variant_index = None
-            self.update(self.boundingRect())
+            self._update_image()
 
         print('current variant index ', self._current_variant_index)
         super().mousePressEvent(event)
@@ -166,6 +166,13 @@ class MessageGraphicsItem(QGraphicsItem):
             variant = self._variants[self._current_variant_index]
         return variant
 
+    def _update_image(self) -> None:
+        """
+        Перерисовать блок. Нужно вызывать этот метод, когда визуальное отображение блока меняется,
+        чтобы избежать артефактов рисования
+        """
+        self.update(self.boundingRect())
+
     def _variant_by_position(self, position: QPointF) -> typing.Optional[BotVariant]:
         variant_on_position: typing.Optional[BotVariant] = None
         for variant_index, variant in enumerate(self._variants):
@@ -193,10 +200,7 @@ class MessageGraphicsItem(QGraphicsItem):
 
         illusory_variant = variant is None
 
-        if not illusory_variant:
-            self._setup_variant_colors(painter, index)
-        else:
-            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+        self._setup_variant_colors(painter, index, illusory_variant)
 
         painter.drawRect(self._variant_rect(index))
 
@@ -240,14 +244,26 @@ class MessageGraphicsItem(QGraphicsItem):
         else:
             painter.setPen(self._normal_pen)
 
-    def _setup_variant_colors(self, painter: QtGui.QPainter, painted_variant_index: typing.Optional[int]):
-        # понятие "текущий вариант" имеет смысл только тогда, когда текущий блок выделен
-        if self.isSelected() and painted_variant_index == self._current_variant_index:
-            painter.setBrush(QColor(self._SELECTED_VARIANT_BACKGROUND))
-            painter.setPen(self._selected_pen)
+    def _setup_variant_colors(
+            self,
+            painter: QtGui.QPainter,
+            painted_variant_index: typing.Optional[int],
+            is_illusory_variant: bool
+    ):
+        assert isinstance(painter, QtGui.QPainter)
+        assert isinstance(painted_variant_index, typing.Optional[int])
+        assert isinstance(is_illusory_variant, bool)
+        if not is_illusory_variant:
+            # понятие "текущий вариант" имеет смысл только тогда, когда текущий блок выделен
+            if self.isSelected() and painted_variant_index == self._current_variant_index:
+                painter.setBrush(QColor(self._SELECTED_VARIANT_BACKGROUND))
+                painter.setPen(self._selected_pen)
+            else:
+                painter.setBrush(QColor(self._VARIANT_BACKGROUND))
+                painter.setPen(self._normal_pen)
         else:
             painter.setBrush(QColor(self._VARIANT_BACKGROUND))
-            painter.setPen(self._normal_pen)
+            painter.setPen(QtCore.Qt.PenStyle.NoPen)
 
     def _variant_rect(self, variant_index: int) -> QRectF:
         dy = self._VARIANT_HEIGHT + self._VARIANT_DISTANCE
