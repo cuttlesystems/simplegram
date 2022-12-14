@@ -127,7 +127,6 @@ class MessageGraphicsItem(QGraphicsItem):
         self._draw_variant(painter, None, illusory_variant_index)
 
     def mousePressEvent(self, event: PySide6.QtWidgets.QGraphicsSceneMouseEvent) -> None:
-        print('press event')
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
             click_position: QPointF = event.pos()
             variant_on_position = self._variant_by_position(click_position)
@@ -137,7 +136,7 @@ class MessageGraphicsItem(QGraphicsItem):
                 self._current_variant_index = None
             self._update_image()
 
-        print('current variant index ', self._current_variant_index)
+        print(f'current variant index {self._current_variant_index}')
         super().mousePressEvent(event)
 
     def mouseDoubleClickEvent(self, event: QtWidgets.QGraphicsSceneMouseEvent) -> None:
@@ -160,6 +159,12 @@ class MessageGraphicsItem(QGraphicsItem):
         super().mouseDoubleClickEvent(event)
 
     def get_current_variant(self) -> typing.Optional[BotVariant]:
+        """
+        Получить текущий выбранный вариант.
+        Вариант может быть выбран только тогда, когда выбран блок
+        Returns:
+            Объект выбранного варианта или None, если вариант не выбран
+        """
         variant: typing.Optional[BotVariant] = None
         # понятие "текущий вариант" имеет смысл только тогда, когда текущий блок выделен
         if self._current_variant_index is not None and self.isSelected():
