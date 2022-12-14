@@ -42,6 +42,7 @@ class MessageGraphicsItem(QGraphicsItem):
 
     _ROUND_RADIUS = 30
     _VARIANT_BACKGROUND = 0x9edee6
+    _SELECTED_VARIANT_BACKGROUND = 0x84d2dc
     _BLOCK_RECT_EXTEND_SPACE = 25
     _MESSAGE_TEXT_BORDER = 25
     _VARIANT_TEXT_BORDER = 5
@@ -74,6 +75,8 @@ class MessageGraphicsItem(QGraphicsItem):
         self._message: BotMessage = message
 
         self._variants = variants
+
+        self._current_variant_index: typing.Optional[int] = None
 
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
@@ -123,6 +126,19 @@ class MessageGraphicsItem(QGraphicsItem):
 
         self._draw_variant(painter, None, illusory_variant_index)
 
+    def mousePressEvent(self, event: PySide6.QtWidgets.QGraphicsSceneMouseEvent) -> None:
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+            click_position: QPointF = event.pos()
+            variant_on_position = self._variant_by_position(click_position)
+            if variant_on_position is not None:
+                self._current_variant_index = self._variants.index(variant_on_position)
+            else:
+                self._current_variant_index = None
+            self._update_image()
+
+        print(f'current variant index {self._current_variant_index}')
+        super().mousePressEvent(event)
+
     def mouseDoubleClickEvent(self, event: QtWidgets.QGraphicsSceneMouseEvent) -> None:
         illusory_variant_index = len(self._variants)
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
@@ -142,6 +158,26 @@ class MessageGraphicsItem(QGraphicsItem):
 
         super().mouseDoubleClickEvent(event)
 
+    def get_current_variant(self) -> typing.Optional[BotVariant]:
+        """
+        Получить текущий выбранный вариант.
+        Вариант может быть выбран только тогда, когда выбран блок
+        Returns:
+            Объект выбранного варианта или None, если вариант не выбран
+        """
+        variant: typing.Optional[BotVariant] = None
+        # понятие "текущий вариант" имеет смысл только тогда, когда текущий блок выделен
+        if self._current_variant_index is not None and self.isSelected():
+            variant = self._variants[self._current_variant_index]
+        return variant
+
+    def _update_image(self) -> None:
+        """
+        Перерисовать блок. Нужно вызывать этот метод, когда визуальное отображение блока меняется,
+        чтобы избежать артефактов рисования
+        """
+        self.update(self.boundingRect())
+
     def _variant_by_position(self, position: QPointF) -> typing.Optional[BotVariant]:
         variant_on_position: typing.Optional[BotVariant] = None
         for variant_index, variant in enumerate(self._variants):
@@ -156,10 +192,12 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.drawRoundedRect(self._block_rect(), 30, 30)
 
     def _draw_message(self, painter: QtGui.QPainter):
-        self._set_pen(painter)
-        painter.setBrush(self._brush)
+        self._setup_message_colors(painter)
+
         painter.drawRoundedRect(self._message_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
-        painter.setPen(QColor(self._TEXT_COLOR))
+
+        self._setup_text_color(painter)
+
         painter.drawText(self._message_text_rect(), self._message.text)
 
     def _draw_variant(self, painter: QtGui.QPainter, variant: typing.Optional[BotVariant], index: int):
@@ -167,16 +205,13 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(variant, BotVariant) or variant is None
         assert isinstance(index, int)
 
-        painter.setBrush(QColor(self._VARIANT_BACKGROUND))
+        illusory_variant = variant is None
 
-        if variant is not None:
-            self._set_pen(painter)
-        else:
-            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+        self._setup_variant_colors(painter, index, illusory_variant)
 
         painter.drawRect(self._variant_rect(index))
 
-        if variant is not None:
+        if not illusory_variant:
             painter.setPen(QColor(self._TEXT_COLOR))
             painter.drawText(self._variant_text_rect(index), variant.text)
         else:
@@ -210,11 +245,36 @@ class MessageGraphicsItem(QGraphicsItem):
         block_brush = QBrush(gradient)
         return block_brush
 
-    def _set_pen(self, painter: QtGui.QPainter):
+    def _setup_message_colors(self, painter: QtGui.QPainter):
+        painter.setBrush(self._brush)
         if self.isSelected():
             painter.setPen(self._selected_pen)
         else:
             painter.setPen(self._normal_pen)
+
+    def _setup_variant_colors(
+            self,
+            painter: QtGui.QPainter,
+            painted_variant_index: typing.Optional[int],
+            is_illusory_variant: bool
+    ):
+        assert isinstance(painter, QtGui.QPainter)
+        assert isinstance(painted_variant_index, typing.Optional[int])
+        assert isinstance(is_illusory_variant, bool)
+        if not is_illusory_variant:
+            # понятие "текущий вариант" имеет смысл только тогда, когда текущий блок выделен
+            if self.isSelected() and painted_variant_index == self._current_variant_index:
+                painter.setBrush(QColor(self._SELECTED_VARIANT_BACKGROUND))
+                painter.setPen(self._selected_pen)
+            else:
+                painter.setBrush(QColor(self._VARIANT_BACKGROUND))
+                painter.setPen(self._normal_pen)
+        else:
+            painter.setBrush(QColor(self._VARIANT_BACKGROUND))
+            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+
+    def _setup_text_color(self, painter: QtGui.QPainter):
+        painter.setPen(QColor(self._TEXT_COLOR))
 
     def _variant_rect(self, variant_index: int) -> QRectF:
         dy = self._VARIANT_HEIGHT + self._VARIANT_DISTANCE
