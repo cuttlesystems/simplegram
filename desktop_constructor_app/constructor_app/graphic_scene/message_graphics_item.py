@@ -134,6 +134,7 @@ class MessageGraphicsItem(QGraphicsItem):
                 self._current_variant_index = self._variants.index(variant_on_position)
             else:
                 self._current_variant_index = None
+            self.update(self.boundingRect())
 
         print('current variant index ', self._current_variant_index)
         super().mousePressEvent(event)
@@ -156,6 +157,13 @@ class MessageGraphicsItem(QGraphicsItem):
                 self.signal_sender.request_change_variant.emit(variant_on_position)
 
         super().mouseDoubleClickEvent(event)
+
+    def get_current_variant(self) -> typing.Optional[BotVariant]:
+        variant: typing.Optional[BotVariant] = None
+        # понятие "текущий вариант" имеет смысл только тогда, когда текущий блок выделен
+        if self._current_variant_index is not None and self.isSelected():
+            variant = self._variants[self._current_variant_index]
+        return variant
 
     def _variant_by_position(self, position: QPointF) -> typing.Optional[BotVariant]:
         variant_on_position: typing.Optional[BotVariant] = None
@@ -234,7 +242,8 @@ class MessageGraphicsItem(QGraphicsItem):
             painter.setPen(self._normal_pen)
 
     def _set_pen_variant(self, painter: QtGui.QPainter, painted_variant_index: typing.Optional[int]):
-        if painted_variant_index == self._current_variant_index:
+        # понятие "текущий вариант" имеет смысл только тогда, когда текущий блок выделен
+        if self.isSelected() and painted_variant_index == self._current_variant_index:
             painter.setPen(self._selected_pen)
         else:
             painter.setPen(self._normal_pen)
