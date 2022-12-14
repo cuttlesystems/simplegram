@@ -43,7 +43,7 @@ class BotTestData:
             'file': None
         },
         {
-            'id': 0,
+            'id': 1,
             'text': 'Error message, press /restart or /start',
             'photo': None,
             'video': None,
@@ -84,7 +84,7 @@ class BotTestData:
         },
         {
             'text': 'Error to 10',
-            'current_id': 0,
+            'current_id': 1,
             'next_id': 10
         }
     ]
@@ -116,7 +116,7 @@ class BotTestData:
 
     @property
     def error_message_id(self) -> int:
-        return 0
+        return 1
 
     @property
     def messages(self) -> List[BotMessage]:
