@@ -187,10 +187,12 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.drawRoundedRect(self._block_rect(), 30, 30)
 
     def _draw_message(self, painter: QtGui.QPainter):
-        self._setup_message_pen(painter)
-        painter.setBrush(self._brush)
+        self._setup_message_colors(painter)
+
         painter.drawRoundedRect(self._message_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
-        painter.setPen(QColor(self._TEXT_COLOR))
+
+        self._setup_text_color(painter)
+
         painter.drawText(self._message_text_rect(), self._message.text)
 
     def _draw_variant(self, painter: QtGui.QPainter, variant: typing.Optional[BotVariant], index: int):
@@ -238,7 +240,8 @@ class MessageGraphicsItem(QGraphicsItem):
         block_brush = QBrush(gradient)
         return block_brush
 
-    def _setup_message_pen(self, painter: QtGui.QPainter):
+    def _setup_message_colors(self, painter: QtGui.QPainter):
+        painter.setBrush(self._brush)
         if self.isSelected():
             painter.setPen(self._selected_pen)
         else:
@@ -264,6 +267,9 @@ class MessageGraphicsItem(QGraphicsItem):
         else:
             painter.setBrush(QColor(self._VARIANT_BACKGROUND))
             painter.setPen(QtCore.Qt.PenStyle.NoPen)
+
+    def _setup_text_color(self, painter: QtGui.QPainter):
+        painter.setPen(QColor(self._TEXT_COLOR))
 
     def _variant_rect(self, variant_index: int) -> QRectF:
         dy = self._VARIANT_HEIGHT + self._VARIANT_DISTANCE
