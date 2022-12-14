@@ -42,6 +42,7 @@ class MessageGraphicsItem(QGraphicsItem):
 
     _ROUND_RADIUS = 30
     _VARIANT_BACKGROUND = 0x9edee6
+    _SELECTED_VARIANT_BACKGROUND = 0x84d2dc
     _BLOCK_RECT_EXTEND_SPACE = 25
     _MESSAGE_TEXT_BORDER = 25
     _VARIANT_TEXT_BORDER = 5
@@ -179,7 +180,7 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.drawRoundedRect(self._block_rect(), 30, 30)
 
     def _draw_message(self, painter: QtGui.QPainter):
-        self._set_pen_message(painter)
+        self._setup_message_pen(painter)
         painter.setBrush(self._brush)
         painter.drawRoundedRect(self._message_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
         painter.setPen(QColor(self._TEXT_COLOR))
@@ -190,12 +191,10 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(variant, BotVariant) or variant is None
         assert isinstance(index, int)
 
-        painter.setBrush(QColor(self._VARIANT_BACKGROUND))
-
         illusory_variant = variant is None
 
         if not illusory_variant:
-            self._set_pen_variant(painter, index)
+            self._setup_variant_colors(painter, index)
         else:
             painter.setPen(QtCore.Qt.PenStyle.NoPen)
 
@@ -235,17 +234,19 @@ class MessageGraphicsItem(QGraphicsItem):
         block_brush = QBrush(gradient)
         return block_brush
 
-    def _set_pen_message(self, painter: QtGui.QPainter):
+    def _setup_message_pen(self, painter: QtGui.QPainter):
         if self.isSelected():
             painter.setPen(self._selected_pen)
         else:
             painter.setPen(self._normal_pen)
 
-    def _set_pen_variant(self, painter: QtGui.QPainter, painted_variant_index: typing.Optional[int]):
+    def _setup_variant_colors(self, painter: QtGui.QPainter, painted_variant_index: typing.Optional[int]):
         # понятие "текущий вариант" имеет смысл только тогда, когда текущий блок выделен
         if self.isSelected() and painted_variant_index == self._current_variant_index:
+            painter.setBrush(QColor(self._SELECTED_VARIANT_BACKGROUND))
             painter.setPen(self._selected_pen)
         else:
+            painter.setBrush(QColor(self._VARIANT_BACKGROUND))
             painter.setPen(self._normal_pen)
 
     def _variant_rect(self, variant_index: int) -> QRectF:
