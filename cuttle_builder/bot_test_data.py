@@ -81,6 +81,11 @@ class BotTestData:
             'text': 'From 50 to 10',
             'current_id': 50,
             'next_id': 10
+        },
+        {
+            'text': 'Error to 10',
+            'current_id': 0,
+            'next_id': 10
         }
     ]
 

@@ -48,7 +48,6 @@ class BotGenerator:
         assert isinstance(token, str)
         assert isinstance(bot_path, str)
 
-        self._messages: List[BotMessage] = messages
         self._variants: List[BotVariant] = variants
         self._start_message_id = start_message_id
         self._states: List[int] = []
@@ -58,8 +57,18 @@ class BotGenerator:
         self._media_directory = bot_path + '/media'
         self._error_message_id = error_message_id
 
-        for message in self._messages:
+        for message in messages:
             self._states.append(message.id)
+
+        sorted_messages = []
+        error_mes = None
+        for message in messages:
+            if message.id == self._error_message_id:
+                error_mes = message
+            else:
+                sorted_messages.append(message)
+        sorted_messages.insert(0, error_mes)
+        self._messages: List[BotMessage] = sorted_messages
 
     def _check_token(self):
         left, sep, right = self._token.partition(':')
@@ -74,9 +83,6 @@ class BotGenerator:
 
     def _is_valid_data(self) -> bool:
         if not self._messages:
-            # todo: метод проверки данных не должен удалять директорию (он должен только проверять),
-            #  а это удаление, вероятно, должно быть раньше
-            self._file_manager.delete_dir(self._bot_directory)
             raise BotGeneratorException('No messages in database')
         self._check_token()
         return True
@@ -300,33 +306,13 @@ class BotGenerator:
             imports_generation_counter += 1
 
     def create_bot(self) -> None:
+        self._file_manager.delete_dir(self._bot_directory)
         self._is_valid_data()
         self._create_generated_bot_directory()
         self._create_config_file()
-        error_message = self._get_error_message()
-        self.create_file_handlers(error_message)
-        self._delete_variant_by_id(error_message.id)
-        self._delete_message_by_id(error_message.id)
         for message in self._messages:
             self.create_file_handlers(message)
         self._file_manager.create_file_state(self._bot_directory, self._create_state())
-
-    def _delete_variant_by_id(self, message_id):
-        for variant in self._variants:
-            if variant.current_message_id == message_id:
-                self._variants.remove(variant)
-    def _delete_message_by_id(self, message_id):
-        for message in self._messages:
-            if message.id==message_id:
-                self._messages.remove(message)
-    def _get_error_message(self):
-        error_message_index = None
-        for i in range(len(self._messages)):
-            if self._messages[i].id == self._error_message_id:
-                error_message_index = i
-
-        error_message = self._messages[error_message_index]
-        return error_message
 
     def _create_state(self) -> str:
         """generate code of state class
