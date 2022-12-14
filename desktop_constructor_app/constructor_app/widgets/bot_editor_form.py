@@ -78,6 +78,7 @@ class BotEditorForm(QWidget):
         self._ui.start_bot_button.clicked.connect(self._on_start_bot)
         self._ui.stop_bot_button.clicked.connect(self._on_stop_bot)
         self._ui.mark_as_start_button.clicked.connect(self._on_mark_as_start_button)
+        self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
 
         self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant)
         self._bot_scene.request_change_message.connect(self._on_change_message)
@@ -145,6 +146,10 @@ class BotEditorForm(QWidget):
             # todo: тут надо гарантировать перерисовку варианта на схеме
 
             self._bot_api.change_variant(variant)
+
+    def _on_delete_variant(self, _checked: bool):
+        # todo: продолжить
+        print('delete variants for: ', self._bot_scene.get_selected_messages())
 
     def _on_mark_as_start_button(self, _checked: bool):
         selected_messages = self._bot_scene.get_selected_messages()
