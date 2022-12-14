@@ -260,8 +260,6 @@ class BotGenerator:
                 keyboard_name = self._get_keyboard_name_for_message(message.id)
 
             # Создание хэндлера для команды /prev_variant.text
-            # нужно получить prev_variant.current_message.keyboard_type
-            # prev_variant.current_message_id
             current_message_of_variant = self._get_message_object_by_id(prev_variant.current_message_id)
 
             handler_code = self._create_state_handler(
