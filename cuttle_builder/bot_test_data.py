@@ -42,6 +42,13 @@ class BotTestData:
             'video': None,
             'file': None
         },
+        {
+            'id': 0,
+            'text': 'Error message, press /restart or /start',
+            'photo': None,
+            'video': None,
+            'file': None
+        }
     ]
 
     _VARIANTS_JSON = [
@@ -101,6 +108,10 @@ class BotTestData:
     @property
     def start_message_id(self) -> int:
         return 10
+
+    @property
+    def error_message_id(self) -> int:
+        return 0
 
     @property
     def messages(self) -> List[BotMessage]:

@@ -30,7 +30,8 @@ class BotGenerator:
             variants: List[BotVariant],
             start_message_id: int,
             token: str,
-            bot_path: str
+            bot_path: str,
+            error_message_id: int = None
     ):
         """
         Класс для создания исходного кода ТГ бота по входному набору сообщений и вариантов
@@ -55,6 +56,7 @@ class BotGenerator:
         self._token = token
         self._bot_directory = bot_path
         self._media_directory = bot_path + '/media'
+        self._error_message_id = error_message_id
 
         for message in self._messages:
             self._states.append(message.id)
@@ -249,7 +251,24 @@ class BotGenerator:
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, restart_handler_code)
 
-            # todo: Создание хэндлера который перехватывает команду, не подходящую не под один вариант.
+        if message.id == self._error_message_id:
+            # Создание клавиатуры для сообщения.
+            keyboard_name = self.create_keyboard(message.id, keyboard_type)
+            keyboard_generation_counter += 1
+
+            # Создание стартовых хэндлеров.
+            error_handler_code = self._create_state_handler(
+                command='',
+                prev_state='*',
+                text_to_handle='',
+                state_to_set_name=self._get_handler_name_for_message(message.id),
+                text_of_answer=message.text,
+                image_answer=image,
+                kb=keyboard_name,
+                handler_type=ButtonTypes.REPLY,
+                extended_imports=imports_for_handler
+            )
+            self._file_manager.create_file_handler(self._bot_directory, message.id, error_handler_code)
 
         # Получение списка вариантов у которых next_message == message.id (принемаемый на вход функцией).
         previous_variants: typing.List[BotVariant] = self._find_previous_variants(message.id)
@@ -284,9 +303,30 @@ class BotGenerator:
         self._is_valid_data()
         self._create_generated_bot_directory()
         self._create_config_file()
+        error_message = self._get_error_message()
+        self.create_file_handlers(error_message)
+        self._delete_variant_by_id(error_message.id)
+        self._delete_message_by_id(error_message.id)
         for message in self._messages:
             self.create_file_handlers(message)
         self._file_manager.create_file_state(self._bot_directory, self._create_state())
+
+    def _delete_variant_by_id(self, message_id):
+        for variant in self._variants:
+            if variant.current_message_id == message_id:
+                self._variants.remove(variant)
+    def _delete_message_by_id(self, message_id):
+        for message in self._messages:
+            if message.id==message_id:
+                self._messages.remove(message)
+    def _get_error_message(self):
+        error_message_index = None
+        for i in range(len(self._messages)):
+            if self._messages[i].id == self._error_message_id:
+                error_message_index = i
+
+        error_message = self._messages[error_message_index]
+        return error_message
 
     def _create_state(self) -> str:
         """generate code of state class
