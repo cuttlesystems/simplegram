@@ -75,6 +75,8 @@ class MessageGraphicsItem(QGraphicsItem):
 
         self._variants = variants
 
+        self._current_variant_index: typing.Optional[int] = None
+
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges, True)
@@ -123,6 +125,19 @@ class MessageGraphicsItem(QGraphicsItem):
 
         self._draw_variant(painter, None, illusory_variant_index)
 
+    def mousePressEvent(self, event: PySide6.QtWidgets.QGraphicsSceneMouseEvent) -> None:
+        print('press event')
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+            click_position: QPointF = event.pos()
+            variant_on_position = self._variant_by_position(click_position)
+            if variant_on_position is not None:
+                self._current_variant_index = self._variants.index(variant_on_position)
+            else:
+                self._current_variant_index = None
+
+        print('current variant index ', self._current_variant_index)
+        super().mousePressEvent(event)
+
     def mouseDoubleClickEvent(self, event: QtWidgets.QGraphicsSceneMouseEvent) -> None:
         illusory_variant_index = len(self._variants)
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
@@ -156,7 +171,7 @@ class MessageGraphicsItem(QGraphicsItem):
         painter.drawRoundedRect(self._block_rect(), 30, 30)
 
     def _draw_message(self, painter: QtGui.QPainter):
-        self._set_pen(painter)
+        self._set_pen_message(painter)
         painter.setBrush(self._brush)
         painter.drawRoundedRect(self._message_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
         painter.setPen(QColor(self._TEXT_COLOR))
@@ -169,14 +184,16 @@ class MessageGraphicsItem(QGraphicsItem):
 
         painter.setBrush(QColor(self._VARIANT_BACKGROUND))
 
-        if variant is not None:
-            self._set_pen(painter)
+        illusory_variant = variant is None
+
+        if not illusory_variant:
+            self._set_pen_variant(painter, index)
         else:
             painter.setPen(QtCore.Qt.PenStyle.NoPen)
 
         painter.drawRect(self._variant_rect(index))
 
-        if variant is not None:
+        if not illusory_variant:
             painter.setPen(QColor(self._TEXT_COLOR))
             painter.drawText(self._variant_text_rect(index), variant.text)
         else:
@@ -210,8 +227,14 @@ class MessageGraphicsItem(QGraphicsItem):
         block_brush = QBrush(gradient)
         return block_brush
 
-    def _set_pen(self, painter: QtGui.QPainter):
+    def _set_pen_message(self, painter: QtGui.QPainter):
         if self.isSelected():
+            painter.setPen(self._selected_pen)
+        else:
+            painter.setPen(self._normal_pen)
+
+    def _set_pen_variant(self, painter: QtGui.QPainter, painted_variant_index: typing.Optional[int]):
+        if painted_variant_index == self._current_variant_index:
             painter.setPen(self._selected_pen)
         else:
             painter.setPen(self._normal_pen)
