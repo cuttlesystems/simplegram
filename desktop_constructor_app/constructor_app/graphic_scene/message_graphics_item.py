@@ -5,7 +5,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import QPointF, QRectF, Signal, QResource, QObject
 from PySide6.QtGui import QBrush, QColor, QPen, QLinearGradient
 from PySide6.QtSvg import QSvgRenderer
-from PySide6.QtWidgets import QGraphicsItem
+from PySide6.QtWidgets import QGraphicsItem, QGraphicsObject
 
 from b_logic.data_objects import BotMessage, BotVariant
 
@@ -115,6 +115,8 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(option, QtWidgets.QStyleOptionGraphicsItem)
         assert isinstance(widget, QtWidgets.QWidget) or widget is None
 
+        print('we paint')
+
         self._draw_block(painter)
 
         self._draw_message(painter)
@@ -170,6 +172,23 @@ class MessageGraphicsItem(QGraphicsItem):
         if self._current_variant_index is not None and self.isSelected():
             variant = self._variants[self._current_variant_index]
         return variant
+
+    def delete_variant(self, variant_id: int) -> None:
+        big_bounding_rect = self.boundingRect()
+        big_scene_bounding_rect = self.sceneBoundingRect()
+        self.update(big_bounding_rect)
+        searched_var = None
+        for variant in self._variants:
+            if variant.id == variant_id:
+                searched_var = variant
+                break
+        self._variants.remove(searched_var)
+        # self._variants = [variant for variant in self._variants if variant.id != variant_id]
+        # self._current_variant_index = None
+        self.scene().update(big_scene_bounding_rect)
+        # print('big bounding rect ', big_bounding_rect)
+        print('update after delete')
+        self.update(big_bounding_rect)
 
     def _update_image(self) -> None:
         """

@@ -89,6 +89,8 @@ class BotScene(QGraphicsScene):
         message_graphics.signal_sender.request_change_message.connect(self._on_change_message)
         message_graphics.signal_sender.request_change_variant.connect(self._on_change_variant)
 
+        return message_graphics
+
     def get_selected_messages(self) -> typing.List[BotMessage]:
         """
         Получить выделенные сообщения со сцены
@@ -145,6 +147,13 @@ class BotScene(QGraphicsScene):
     #     # todo: рассмотреть случай когда это не так (не найдено)
     #     assert len(message_graphics_list) == 1
     #     message_graphics = message_graphics_list[0]
+
+    def get_selected_blocks_graphics(self) -> typing.List[MessageGraphicsItem]:
+        selected = []
+        for item in self._message_graphics_list:
+            if item.isSelected():
+                selected.append(item)
+        return selected
 
     def _connect_signals(self):
         self.changed.connect(self._on_item_changed)
