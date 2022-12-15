@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from backend.bot_django_project.bot_constructor.utils import cut_the_string
+from utils.cut_string import cut_string
 from b_logic.data_objects import ButtonTypes
 
 MAX_CHARS = 50
@@ -43,7 +43,7 @@ class Bot(models.Model):
 
     def __str__(self):
         string = f'Bot {self.id}: {self.name}'
-        return cut_the_string(string, MAX_CHARS)
+        return cut_string(string, MAX_CHARS)
 
 
 class Message(models.Model):
@@ -85,7 +85,7 @@ class Message(models.Model):
 
     def __str__(self):
         string = f'Message_id {self.id}: {self.text}'
-        return cut_the_string(string, MAX_CHARS)
+        return cut_string(string, MAX_CHARS)
 
 
 class Variant(models.Model):
@@ -114,4 +114,4 @@ class Variant(models.Model):
 
     def __str__(self):
         string = f'Variant_id {self.id}: {self.text}'
-        return cut_the_string(string, MAX_CHARS)
+        return cut_string(string, MAX_CHARS)
