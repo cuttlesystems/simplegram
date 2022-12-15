@@ -30,8 +30,7 @@ class BotGenerator:
             variants: List[BotVariant],
             start_message_id: int,
             token: str,
-            bot_path: str,
-            error_message_id: int = None
+            bot_path: str
     ):
         """
         Класс для создания исходного кода ТГ бота по входному набору сообщений и вариантов
@@ -48,6 +47,7 @@ class BotGenerator:
         assert isinstance(token, str)
         assert isinstance(bot_path, str)
 
+        self._messages: List[BotMessage] = messages
         self._variants: List[BotVariant] = variants
         self._start_message_id = start_message_id
         self._states: List[int] = []
@@ -55,20 +55,9 @@ class BotGenerator:
         self._token = token
         self._bot_directory = bot_path
         self._media_directory = bot_path + '/media'
-        self._error_message_id = error_message_id
 
-        for message in messages:
+        for message in self._messages:
             self._states.append(message.id)
-
-        sorted_messages = []
-        error_mes = None
-        for message in messages:
-            if message.id == self._error_message_id:
-                error_mes = message
-            else:
-                sorted_messages.append(message)
-        sorted_messages.insert(0, error_mes)
-        self._messages: List[BotMessage] = sorted_messages
 
     def _check_token(self):
         left, sep, right = self._token.partition(':')
@@ -83,6 +72,9 @@ class BotGenerator:
 
     def _is_valid_data(self) -> bool:
         if not self._messages:
+            # todo: метод проверки данных не должен удалять директорию (он должен только проверять),
+            #  а это удаление, вероятно, должно быть раньше
+            self._file_manager.delete_dir(self._bot_directory)
             raise BotGeneratorException('No messages in database')
         self._check_token()
         return True
@@ -257,24 +249,7 @@ class BotGenerator:
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, restart_handler_code)
 
-        if message.id == self._error_message_id:
-            # Создание клавиатуры для сообщения.
-            keyboard_name = self.create_keyboard(message.id, keyboard_type)
-            keyboard_generation_counter += 1
-
-            # Создание стартовых хэндлеров.
-            error_handler_code = self._create_state_handler(
-                command='',
-                prev_state='*',
-                text_to_handle='',
-                state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=message.text,
-                image_answer=image,
-                kb=keyboard_name,
-                handler_type=ButtonTypes.REPLY,
-                extended_imports=imports_for_handler
-            )
-            self._file_manager.create_file_handler(self._bot_directory, message.id, error_handler_code)
+            # todo: Создание хэндлера который перехватывает команду, не подходящую не под один вариант.
 
         # Получение списка вариантов у которых next_message == message.id (принемаемый на вход функцией).
         previous_variants: typing.List[BotVariant] = self._find_previous_variants(message.id)
@@ -304,7 +279,6 @@ class BotGenerator:
             imports_generation_counter += 1
 
     def create_bot(self) -> None:
-        self._file_manager.delete_dir(self._bot_directory)
         self._is_valid_data()
         self._create_generated_bot_directory()
         self._create_config_file()
