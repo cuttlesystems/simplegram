@@ -115,3 +115,20 @@ class Variant(models.Model):
     def __str__(self):
         string = f'Variant_id {self.id}: {self.text}'
         return cut_string(string, MAX_CHARS)
+
+
+class Command(models.Model):
+    bot = models.ForeignKey(
+        Bot,
+        on_delete=models.CASCADE,
+        related_name='commands'
+    )
+    command = models.CharField(max_length=32)
+    description = models.CharField(max_length=256)
+
+    class Meta:
+        ordering = ['id']
+
+    def __str__(self):
+        string = f'Command_id {self.id}: {self.command}'
+        return cut_string(string, MAX_CHARS)
