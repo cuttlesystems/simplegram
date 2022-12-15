@@ -93,6 +93,10 @@ class MessageSerializerWithVariants(serializers.ModelSerializer):
         many=True,
         read_only=True)
 
+    next_variants = VariantSerializer(
+        many=True,
+        read_only=True)
+
     class Meta:
         model = Message
         fields = (
@@ -105,6 +109,7 @@ class MessageSerializerWithVariants(serializers.ModelSerializer):
             'bot',
             'coordinate_x',
             'coordinate_y',
-            'current_variants'
+            'current_variants',
+            'next_variants'
         )
-        read_only_fields = ('bot', 'current_variants')
+        read_only_fields = ('bot', 'current_variants', 'next_variants')
