@@ -5,7 +5,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import QPointF, QRectF, Signal, QResource, QObject
 from PySide6.QtGui import QBrush, QColor, QPen, QLinearGradient
 from PySide6.QtSvg import QSvgRenderer
-from PySide6.QtWidgets import QGraphicsItem
+from PySide6.QtWidgets import QGraphicsItem, QGraphicsObject
 
 from b_logic.data_objects import BotMessage, BotVariant
 
@@ -115,15 +115,18 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(option, QtWidgets.QStyleOptionGraphicsItem)
         assert isinstance(widget, QtWidgets.QWidget) or widget is None
 
+        # нарисовать сам блок
         self._draw_block(painter)
 
+        # нарисовать сообщение
         self._draw_message(painter)
 
+        # нарисовать все обычные варианты
         for variant_index, variant in enumerate(self._variants):
             self._draw_variant(painter, variant, variant_index)
 
+        # нарисовать иллюзорный вариант, через который происходит добавление других вариантов
         illusory_variant_index = len(self._variants)
-
         self._draw_variant(painter, None, illusory_variant_index)
 
     def mousePressEvent(self, event: PySide6.QtWidgets.QGraphicsSceneMouseEvent) -> None:
@@ -171,6 +174,53 @@ class MessageGraphicsItem(QGraphicsItem):
             variant = self._variants[self._current_variant_index]
         return variant
 
+    def delete_variant(self, variant_id: int) -> None:
+        """
+        Удаляет из блока вариант с указанным индексом
+        Args:
+            variant_id: индекс удаляемого варианта
+        """
+
+        big_bounding_rect = self.boundingRect()
+        big_scene_bounding_rect = self.sceneBoundingRect()
+        self.update(big_bounding_rect)
+        self.prepareGeometryChange()
+
+        self._remove_variant_from_list(variant_id)
+
+        # после удаления варианта из списка индекс текущего варианта мог
+        # начать указывать на несуществующий вариант
+        self._fix_current_variant_index()
+
+        self.scene().update(big_scene_bounding_rect)
+
+        self.update(big_bounding_rect)
+
+    def _remove_variant_from_list(self, variant_id: int) -> None:
+        assert isinstance(variant_id, int)
+        searched_var: typing.Optional[BotVariant] = None
+        for variant in self._variants:
+            if variant.id == variant_id:
+                searched_var = variant
+                break
+        if searched_var is not None:
+            self._variants.remove(searched_var)
+        else:
+            print('Try remove not exists variant')
+
+    def _fix_current_variant_index(self) -> None:
+        """
+        Поправляет текущий вариант, если вдруг индекс текущего варианта перестанет
+        существовать (после удаления варианта)
+        """
+        if self._current_variant_index is not None:
+            variants_number = len(self._variants)
+            if self._current_variant_index >= variants_number:
+                if variants_number > 0:
+                    self._current_variant_index = variants_number - 1
+                else:
+                    self._current_variant_index = None
+
     def _update_image(self) -> None:
         """
         Перерисовать блок. Нужно вызывать этот метод, когда визуальное отображение блока меняется,
@@ -189,7 +239,7 @@ class MessageGraphicsItem(QGraphicsItem):
     def _draw_block(self, painter: QtGui.QPainter):
         painter.setPen(QtCore.Qt.PenStyle.NoPen)
         painter.setBrush(self._get_block_brush())
-        painter.drawRoundedRect(self._block_rect(), 30, 30)
+        painter.drawRoundedRect(self._block_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
 
     def _draw_message(self, painter: QtGui.QPainter):
         self._setup_message_colors(painter)
