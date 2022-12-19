@@ -81,6 +81,8 @@ class BotEditorForm(QWidget):
         self._ui.mark_as_start_button.clicked.connect(self._on_mark_as_start_button)
         self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
 
+        # todo: проверить (и продумать) необходимость использования QtCore.Qt.QueuedConnection,
+        #  если это необходимо, использовать в других местах, если нет, то убрать отсюда
         self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant, QtCore.Qt.QueuedConnection)
         self._bot_scene.request_change_message.connect(self._on_change_message, QtCore.Qt.QueuedConnection)
         self._bot_scene.request_change_variant.connect(self._on_change_variant)
