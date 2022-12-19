@@ -19,6 +19,10 @@ if __name__ == '__main__':
         '5689990303:AAEnr1DqNhBvx_zwVt9rnb2P3YJynvjq2rg',
         'Описание созданного бота')
 
+    bot_api.create_command(bot, 'start', 'start bot')
+    bot_api.create_command(bot, 'restart', 'restart bot')
+    bot_api.create_command(bot, 'command_1', 'any command')
+
     main_message = bot_api.create_message(bot, 'Что вас интересует?', ButtonTypes.REPLY, 10, 10)
     bot_api.set_bot_start_message(bot, main_message)
     mobile_variant = bot_api.create_variant(main_message, 'Телефоны')
@@ -43,7 +47,6 @@ if __name__ == '__main__':
         500, 10)
 
     bot_api.connect_variant(computer_message_variant_desc, computer_description_message)
-
 
     android_variant = bot_api.create_variant(mobile_message, 'Android')
     iphone_variant = bot_api.create_variant(mobile_message, 'IPhone')

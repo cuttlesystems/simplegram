@@ -1,0 +1,5 @@
+from aiogram import types, Dispatcher
+
+
+async def set_default_commands(dp: Dispatcher):
+    {commands_content}

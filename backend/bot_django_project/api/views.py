@@ -341,7 +341,8 @@ class CommandViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Command.objects.filter(
-            bot__owner=self.request.user)
+            bot__owner=self.request.user,
+            bot__id=self.kwargs.get('bot_id'))
 
     def perform_create(self, serializer: CommandSerializer) -> None:
         bot_id = self.kwargs.get('bot_id')
