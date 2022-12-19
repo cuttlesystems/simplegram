@@ -122,6 +122,7 @@ class BotEditorForm(QWidget):
         self._bot_scene.delete_messages([message])
         graphics_item = self._bot_scene.add_message(updated_message, updated_variants)
         print('add variant for message: ', message.text)
+        print('graphics_item sceneBoundingRect {0}'.format(graphics_item.sceneBoundingRect()))
         self._bot_scene.update(graphics_item.sceneBoundingRect())
 
     def _on_change_message(self, message: BotMessage, variants: typing.List[BotVariant]):

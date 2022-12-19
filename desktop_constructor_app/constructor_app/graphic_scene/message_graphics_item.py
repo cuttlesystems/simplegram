@@ -177,18 +177,37 @@ class MessageGraphicsItem(QGraphicsItem):
         big_bounding_rect = self.boundingRect()
         big_scene_bounding_rect = self.sceneBoundingRect()
         self.update(big_bounding_rect)
+        self.prepareGeometryChange()
+
+        self._remove_variant_from_list(variant_id)
+
+        self._fix_current_variant_index()
+
+        self.scene().update(big_scene_bounding_rect)
+
+        self.update(big_bounding_rect)
+
+    def _remove_variant_from_list(self, variant_id: int) -> None:
+        assert isinstance(variant_id, int)
         searched_var = None
         for variant in self._variants:
             if variant.id == variant_id:
                 searched_var = variant
                 break
         self._variants.remove(searched_var)
-        # self._variants = [variant for variant in self._variants if variant.id != variant_id]
-        # self._current_variant_index = None
-        self.scene().update(big_scene_bounding_rect)
-        # print('big bounding rect ', big_bounding_rect)
-        print('update after delete')
-        self.update(big_bounding_rect)
+
+    def _fix_current_variant_index(self) -> None:
+        """
+        Поправляет текущий вариант, если вдруг индекс текущего варианта перестанет
+        существовать (после удаления варианта)
+        """
+        if self._current_variant_index is not None:
+            variants_number = len(self._variants)
+            if self._current_variant_index >= variants_number:
+                if variants_number > 0:
+                    self._current_variant_index = variants_number - 1
+                else:
+                    self._current_variant_index = None
 
     def _update_image(self) -> None:
         """

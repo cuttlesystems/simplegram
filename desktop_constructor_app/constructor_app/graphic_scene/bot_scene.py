@@ -70,7 +70,7 @@ class BotScene(QGraphicsScene):
             self.removeItem(message)
         self._message_graphics_list.clear()
 
-    def add_message(self, message: BotMessage, variants: typing.List[BotVariant]) -> None:
+    def add_message(self, message: BotMessage, variants: typing.List[BotVariant]) -> MessageGraphicsItem:
         """
         Добавить сообщение на сцену
         Args:
@@ -206,8 +206,8 @@ class BotScene(QGraphicsScene):
         return QRectF(x, y, width, height)
 
     def _create_message_graphics(self, message: BotMessage, variants: typing.List[BotVariant]) -> MessageGraphicsItem:
-        rect = MessageGraphicsItem(message, variants)
-        self.addItem(rect)
+        message_graphics_item = MessageGraphicsItem(message, variants)
+        self.addItem(message_graphics_item)
 
-        assert isinstance(rect, QGraphicsItem)
-        return rect
+        assert isinstance(message_graphics_item, QGraphicsItem)
+        return message_graphics_item
