@@ -37,7 +37,7 @@ echo ""
 
 
 # copy modified 'docker-compose.yml' file to remote server
-#scp -r ~/tg_bot_constructor/infra/docker-compose.yml_move_2_server ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
+scp -r ~/tg_bot_constructor/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
 
 # To Do: IP адрес и наименование сервера брать из переменной
 
