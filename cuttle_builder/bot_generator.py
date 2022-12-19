@@ -2,7 +2,7 @@ import typing
 import io
 import os
 
-from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes
+from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit
 from cuttle_builder.bot_gen_exceptions import BotGeneratorException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
@@ -48,6 +48,7 @@ class BotGenerator:
         assert isinstance(token, str)
         assert isinstance(bot_path, str)
 
+        self._handler_inits: List[HandlerInit] = []
         self._variants: List[BotVariant] = variants
         self._start_message_id = start_message_id
         self._states: List[int] = []
@@ -56,19 +57,9 @@ class BotGenerator:
         self._bot_directory = bot_path
         self._media_directory = bot_path + '/media'
         self._error_message_id = error_message_id
-
         for message in messages:
             self._states.append(message.id)
-
-        sorted_messages = []
-        error_mes = None
-        for message in messages:
-            if message.id == self._error_message_id:
-                error_mes = message
-            else:
-                sorted_messages.append(message)
-        sorted_messages.insert(0, error_mes)
-        self._messages: List[BotMessage] = sorted_messages
+        self._messages: List[BotMessage] = messages
 
     def _check_token(self):
         left, sep, right = self._token.partition(':')
@@ -158,7 +149,7 @@ class BotGenerator:
             )
 
         self._file_manager.create_file_keyboard(self._bot_directory, keyboard_name, keyboard_source_code)
-
+        self._file_manager.create_keyboard_file_init(self._bot_directory, keyboard_name)
         return keyboard_name
 
     def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
@@ -205,11 +196,20 @@ class BotGenerator:
         """
         return [item for item in self._variants if item.next_message_id == message_id]
 
+    def _create_init_handler_files(self):
+        for handler_init in self._handler_inits:
+            if handler_init.is_error_message:
+                self._file_manager.create_handler_file_init(self._bot_directory, handler_init.handler_name)
+        for handler_init in self._handler_inits:
+            if not handler_init.is_error_message:
+                self._file_manager.create_handler_file_init(self._bot_directory, handler_init.handler_name)
+
     def create_file_handlers(self, message: BotMessage) -> None:
         keyboard_generation_counter = 0
         imports_generation_counter = 0
         imports_for_handler = self._get_imports_sample('handler_import')
         keyboard_type = message.keyboard_type
+        is_init_created = False
         # создать файл с изображение в директории бота и вернуть адрес
         if message.photo:
             image = self.create_image_file_from_bytes(
@@ -242,6 +242,11 @@ class BotGenerator:
                 extended_imports=imports_for_start_handler
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, start_handler_code)
+            if not is_init_created:
+                self._handler_inits.append(
+                    HandlerInit(handler_name=message.id, is_error_message=False)
+                )
+                is_init_created = True
 
             imports_generation_counter += 1
             restart_handler_code = self._create_state_handler(
@@ -275,6 +280,11 @@ class BotGenerator:
                 extended_imports=imports_for_handler
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, error_handler_code)
+            if not is_init_created:
+                self._handler_inits.append(
+                    HandlerInit(handler_name=message.id, is_error_message=True)
+                )
+                is_init_created = True
 
         # Получение списка вариантов у которых next_message == message.id (принемаемый на вход функцией).
         previous_variants: typing.List[BotVariant] = self._find_previous_variants(message.id)
@@ -301,6 +311,11 @@ class BotGenerator:
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else ''
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, handler_code)
+            if not is_init_created:
+                self._handler_inits.append(
+                    HandlerInit(handler_name=message.id, is_error_message=False)
+                )
+                is_init_created = True
 
             keyboard_generation_counter += 1
             imports_generation_counter += 1
@@ -312,7 +327,9 @@ class BotGenerator:
         self._create_config_file()
         for message in self._messages:
             self.create_file_handlers(message)
-        self._file_manager.create_file_state(self._bot_directory, self._create_state())
+        self._create_init_handler_files()
+        self._file_manager.create_state_file(self._bot_directory, self._create_state())
+        self._file_manager.create_state_file_init(self._bot_directory)
 
     def _create_state(self) -> str:
         """generate code of state class

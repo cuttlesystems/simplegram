@@ -58,6 +58,7 @@ class FileManager:
         if init_path is not None and import_code is not None:
             self.write_into_init(init_path, import_code)
 
+
     def get_dir(self, bot_id: int) -> str:
         """generate path, where bot is store (doesn't work if call outside of cuttle_builder directory)
 

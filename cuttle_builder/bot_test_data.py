@@ -44,7 +44,7 @@ class BotTestData:
         },
         {
             'id': 1,
-            'text': 'Error message, press /restart or /start',
+            'text': 'Error message, press /restart',
             'photo': None,
             'video': None,
             'file': None

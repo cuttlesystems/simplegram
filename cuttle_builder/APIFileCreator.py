@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from b_logic.data_objects import HandlerInit
 from cuttle_builder.builder.additional.file_read_write.file_manager import FileManager
 
 
@@ -15,13 +16,14 @@ class APIFileCreator(FileManager):
         """
         keyboard_code_file = str(
             Path(bot_directory) / 'keyboards' / f'{keyboard_name}.py')
+        self.write_file(keyboard_code_file, keyboard_code)
+        return f'\nfrom .{keyboard_name} import {keyboard_name}'
 
+    def create_keyboard_file_init(self, bot_directory: str, keyboard_name: str):
+        import_code = f'\nfrom .{keyboard_name} import {keyboard_name}'
         keyboard_init_file = str(
             Path(bot_directory) / 'keyboards' / '__init__.py')
-
-        self.create_file(keyboard_code_file, keyboard_code,
-                         keyboard_init_file,
-                         f'\nfrom .{keyboard_name} import {keyboard_name}')
+        self.write_into_init(keyboard_init_file, import_code)
 
     def create_file_handler(self, bot_directory: str, name: str, code: str):
         """create file in specific directory, contains handler and register this handler in the package
@@ -33,14 +35,15 @@ class APIFileCreator(FileManager):
         """
         handler_code_file = str(
             Path(bot_directory) / 'handlers' / f'get_{name}.py')
+        self.write_file(handler_code_file, code)
 
+    def create_handler_file_init(self, bot_directory: str, name: str):
+        import_code = f'from .get_{name} import dp\n'
         handler_init_file = str(
             Path(bot_directory) / 'handlers' / '__init__.py')
+        self.write_into_init(handler_init_file, import_code)
 
-        self.create_file(handler_code_file, code, handler_init_file,
-                         f'from .get_{name} import dp\n')
-
-    def create_file_state(self, bot_directory: str, code) -> None:
+    def create_state_file(self, bot_directory: str, code: str) -> None:
         """create file in specific directory, contains states class and register this class in the package
 
         Args:
@@ -49,12 +52,13 @@ class APIFileCreator(FileManager):
         """
         state_code_file = str(
             Path(bot_directory) / 'state' / 'states.py')
+        self.write_file(state_code_file, code)
 
+    def create_state_file_init(self, bot_directory: str):
+        import_code = 'from .states import States'
         state_init_file = str(
             Path(bot_directory) / 'state' / '__init__.py')
-
-        self.create_file(state_code_file, code,
-                         state_init_file, 'from .states import States')
+        self.write_into_init(state_init_file, import_code)
 
     def create_config_file(self, bot_directory, code):
         config_code_file = str(
