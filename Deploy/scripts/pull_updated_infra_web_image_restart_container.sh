@@ -8,6 +8,12 @@ sudo docker rmi -f infra-web:latest
 # '-f' force removing option
 sudo docker rmi -f ramasuchka.kz:4443/infra-web:latest
 
+# deleting images tagged as '<none>' from remote server...
+sudo docker rmi $(docker images | grep none | awk '{print $3}')
+echo ""
+echo "Deleting images tagged as '<none>' from remote server..."
+echo ""
+
 # pull updated image from the registry
 sudo docker pull ramasuchka.kz:4443/infra-web:latest
 echo ""
