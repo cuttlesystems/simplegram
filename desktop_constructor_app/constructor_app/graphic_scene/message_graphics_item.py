@@ -198,12 +198,15 @@ class MessageGraphicsItem(QGraphicsItem):
 
     def _remove_variant_from_list(self, variant_id: int) -> None:
         assert isinstance(variant_id, int)
-        searched_var = None
+        searched_var: typing.Optional[BotVariant] = None
         for variant in self._variants:
             if variant.id == variant_id:
                 searched_var = variant
                 break
-        self._variants.remove(searched_var)
+        if searched_var is not None:
+            self._variants.remove(searched_var)
+        else:
+            print('Try remove not exists variant')
 
     def _fix_current_variant_index(self) -> None:
         """

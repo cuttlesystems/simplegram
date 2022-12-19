@@ -149,7 +149,12 @@ class BotScene(QGraphicsScene):
     #     message_graphics = message_graphics_list[0]
 
     def get_selected_blocks_graphics(self) -> typing.List[MessageGraphicsItem]:
-        selected = []
+        """
+        Получить список выделенных блоков (графических элементов сцены)
+        Returns:
+            список графических элементов сцены
+        """
+        selected: typing.List[MessageGraphicsItem] = []
         for item in self._message_graphics_list:
             if item.isSelected():
                 selected.append(item)
