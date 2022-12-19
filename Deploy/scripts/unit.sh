@@ -39,6 +39,8 @@ echo ""
 # copy modified 'docker-compose.yml' file to remote server
 #scp -r ~/tg_bot_constructor/infra/docker-compose.yml_move_2_server ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
 
+# To Do: IP адрес и наименование сервера брать из переменной
+
 # recreate_restart_infra_web_container_migrate.sh
 echo ""
 echo "recreation of a container started"

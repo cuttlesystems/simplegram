@@ -3,6 +3,12 @@ GH_USER=cuttlesystems
 GH_REPO=tg_bot_constructor
 GH_BRANCH=main
 MY_TOKEN_CREATED_ON_GITHUB=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
+
+# To Do:
+# 	необходимо отделить логику от конфигурационных переменных -
+#	один файл - с логикой взаимодействия, другой файл - с конфигурационными переменными;
+#	или же все конфигурационные переменные вынести в 'env' файл
+
 DIR=./"$GH_REPO"
 echo "Будет выполнена загрузка zip-файла из репозитория '"$GH_REPO"' организации '"$GH_USER"';"
 echo "ветка: '"$GH_BRANCH"';"
@@ -16,6 +22,8 @@ if [ -d "$DIR" ]
 	else
 		mkdir -p ./$GH_REPO/infra
 fi
+
+# To Do: убрать лишнее
 echo 'B_ENGINE=django.db.backends.postgresql
 DB_NAME=bot_constructor
 POSTGRES_USER=postgres
@@ -27,7 +35,7 @@ DB_PORT=5432
 echo ""
 # директория с версиями файлов до последних изменений
 #LAST_WORKING_BOT_DIR=
-## todo: add server answer check on zip-file
+# To Do: add server answer check on zip-file download
 curl -H "Authorization: token "$MY_TOKEN_CREATED_ON_GITHUB -L https://api.github.com/repos/$GH_USER/$GH_REPO/zipball/$GH_BRANCH > $GH_REPO-$GH_BRANCH.zip
 echo ""
 echo "zip-архив загружен"

@@ -19,6 +19,8 @@
 #ssh ubuntu@185.146.3.196 'bash -s '$(cat ~/scripts/docreg_password.txt)' '$(cat ~/scripts/docreg_password.txt)'' -- < ~/scripts/docreg_login.sh
 #ssh ubuntu@185.146.3.196 'bash -s -- '$(cat ~/scripts/docreg_password.txt)'' -- $(cat ~/scripts/docreg_password.txt) < ~/scripts/docreg_login.sh
 
+
+# To Do: адрес сервера вынести либо в переменную окружения, либо в конфигурационный файл
 ssh ubuntu@185.146.3.196 'bash -s '$(cat ~/scripts/docreg_password.txt)' '$(cat ~/scripts/docreg_password.txt)'' -- < ~/scripts/docreg_login.sh
 
 exit 0
