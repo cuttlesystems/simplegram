@@ -29,6 +29,6 @@
 	- выполнение загрузки обновлённого образа 'infra-web' (требующих обновления слоёв docker-образа)
 	  и осуществление пересборки контейнера из обновлённого образа с автоматическим перезапуском и
 	  применением миграций в случае необходимости (скрипт 'pull_updated_infra_web_image_restart_container.sh')
-		ssh ubuntu@185.146.3.196 'bash -s' < ~/scripts/pull_updated_infra_web_image_restart_container.sh
+		ssh ubuntu@185.146.3.196 'bash -s' \< ~/scripts/pull_updated_infra_web_image_restart_container.sh
 	- выход из Private Docker Registry на удалённом сервере с удалением данных авторизации
 
