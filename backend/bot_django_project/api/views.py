@@ -17,10 +17,12 @@ from rest_framework.request import Request
 from rest_framework.decorators import action
 
 from cuttle_builder.bot_generator_db import BotGeneratorDb
-from .serializers import BotSerializer, MessageSerializer, VariantSerializer
+from .serializers import BotSerializer, MessageSerializer, MessageSerializerWithVariants, VariantSerializer
 from bots.models import Bot, Message, Variant
 from .mixins import RetrieveUpdateDestroyViewSet
 from .permissions import IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, IsBotOwnerOrForbidden
+
+API_RESPONSE_WITH_VARIANTS = 'with_variants'
 
 
 class BotViewSet(viewsets.ModelViewSet):
@@ -254,13 +256,17 @@ class MessageViewSet(viewsets.ModelViewSet):
     Отображение всех меседжей бота и
     CRUD-функционал для экземпляра меседжа
     """
-    serializer_class = MessageSerializer
 
     def get_queryset(self):
         return Message.objects.filter(
             bot__owner=self.request.user,
             bot__id=self.kwargs.get('bot_id')
         )
+
+    def get_serializer_class(self):
+        if self.request.query_params.get(API_RESPONSE_WITH_VARIANTS) == '1':
+            return MessageSerializerWithVariants
+        return MessageSerializer
 
     def perform_create(self, serializer: MessageSerializer) -> None:
         bot_id = self.kwargs.get('bot_id')
@@ -280,7 +286,12 @@ class MessageViewSet(viewsets.ModelViewSet):
 class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
     """Чтение, обновление и удаление для экземпляра сообщения"""
     queryset = Message.objects.all()
-    serializer_class = MessageSerializer
+
+    def get_serializer_class(self):
+        if self.request.query_params.get(API_RESPONSE_WITH_VARIANTS) == '1':
+            return MessageSerializerWithVariants
+        return MessageSerializer
+
     permission_classes = (IsMessageOwnerOrForbidden,)
 
 

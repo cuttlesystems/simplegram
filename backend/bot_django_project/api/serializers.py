@@ -59,7 +59,7 @@ class MessageSerializer(serializers.ModelSerializer):
             'file',
             'bot',
             'coordinate_x',
-            'coordinate_y'
+            'coordinate_y',
         )
         read_only_fields = ('bot',)
 
@@ -86,3 +86,30 @@ class VariantSerializer(serializers.ModelSerializer):
                 message='Такой вариант для сообщения уже существует.',
             )
         ]
+
+
+class MessageSerializerWithVariants(serializers.ModelSerializer):
+    current_variants = VariantSerializer(
+        many=True,
+        read_only=True)
+
+    next_variants = VariantSerializer(
+        many=True,
+        read_only=True)
+
+    class Meta:
+        model = Message
+        fields = (
+            'id',
+            'text',
+            'keyboard_type',
+            'photo',
+            'video',
+            'file',
+            'bot',
+            'coordinate_x',
+            'coordinate_y',
+            'current_variants',
+            'next_variants'
+        )
+        read_only_fields = ('bot', 'current_variants', 'next_variants')

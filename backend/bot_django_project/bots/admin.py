@@ -16,6 +16,7 @@ class MessageAdmin(admin.ModelAdmin):
 
 class VariantAdmin(admin.ModelAdmin):
     list_display = ['id', 'text', 'current_message', 'next_message', 'display_bot']
+    list_filter = ('current_message', 'next_message')
 
 
 admin.site.register(Bot, BotAdmin)

@@ -30,8 +30,7 @@ class BotGenerator:
             variants: List[BotVariant],
             start_message_id: int,
             token: str,
-            bot_path: str,
-            error_message_id: int = None
+            bot_path: str
     ):
         """
         Класс для создания исходного кода ТГ бота по входному набору сообщений и вариантов
@@ -48,7 +47,10 @@ class BotGenerator:
         assert isinstance(token, str)
         assert isinstance(bot_path, str)
 
+
         self._handler_inits: List[HandlerInit] = []
+        self._messages: List[BotMessage] = messages
+
         self._variants: List[BotVariant] = variants
         self._start_message_id = start_message_id
         self._states: List[int] = []
@@ -56,6 +58,7 @@ class BotGenerator:
         self._token = token
         self._bot_directory = bot_path
         self._media_directory = bot_path + '/media'
+
         self._error_message_id = error_message_id
         for message in messages:
             self._states.append(message.id)
@@ -74,6 +77,9 @@ class BotGenerator:
 
     def _is_valid_data(self) -> bool:
         if not self._messages:
+            # todo: метод проверки данных не должен удалять директорию (он должен только проверять),
+            #  а это удаление, вероятно, должно быть раньше
+            self._file_manager.delete_dir(self._bot_directory)
             raise BotGeneratorException('No messages in database')
         self._check_token()
         return True
@@ -262,6 +268,7 @@ class BotGenerator:
             )
             self._file_manager.create_file_handler(self._bot_directory, message.id, restart_handler_code)
 
+
         if message.id == self._error_message_id:
             # Создание клавиатуры для сообщения.
             keyboard_name = self.create_keyboard(message.id, keyboard_type)
@@ -286,6 +293,7 @@ class BotGenerator:
                 )
                 is_init_created = True
 
+
         # Получение списка вариантов у которых next_message == message.id (принемаемый на вход функцией).
         previous_variants: typing.List[BotVariant] = self._find_previous_variants(message.id)
         for prev_variant in previous_variants:
@@ -295,8 +303,6 @@ class BotGenerator:
                 keyboard_name = self._get_keyboard_name_for_message(message.id)
 
             # Создание хэндлера для команды /prev_variant.text
-            # нужно получить prev_variant.current_message.keyboard_type
-            # prev_variant.current_message_id
             current_message_of_variant = self._get_message_object_by_id(prev_variant.current_message_id)
 
             handler_code = self._create_state_handler(
@@ -321,7 +327,6 @@ class BotGenerator:
             imports_generation_counter += 1
 
     def create_bot(self) -> None:
-        self._file_manager.delete_dir(self._bot_directory)
         self._is_valid_data()
         self._create_generated_bot_directory()
         self._create_config_file()

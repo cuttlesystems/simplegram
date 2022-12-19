@@ -70,7 +70,7 @@ class BotScene(QGraphicsScene):
             self.removeItem(message)
         self._message_graphics_list.clear()
 
-    def add_message(self, message: BotMessage, variants: typing.List[BotVariant]) -> None:
+    def add_message(self, message: BotMessage, variants: typing.List[BotVariant]) -> MessageGraphicsItem:
         """
         Добавить сообщение на сцену
         Args:
@@ -88,6 +88,8 @@ class BotScene(QGraphicsScene):
         message_graphics.signal_sender.add_variant_request.connect(self._on_add_variant)
         message_graphics.signal_sender.request_change_message.connect(self._on_change_message)
         message_graphics.signal_sender.request_change_variant.connect(self._on_change_variant)
+
+        return message_graphics
 
     def get_selected_messages(self) -> typing.List[BotMessage]:
         """
@@ -146,6 +148,18 @@ class BotScene(QGraphicsScene):
     #     assert len(message_graphics_list) == 1
     #     message_graphics = message_graphics_list[0]
 
+    def get_selected_blocks_graphics(self) -> typing.List[MessageGraphicsItem]:
+        """
+        Получить список выделенных блоков (графических элементов сцены)
+        Returns:
+            список графических элементов сцены
+        """
+        selected: typing.List[MessageGraphicsItem] = []
+        for item in self._message_graphics_list:
+            if item.isSelected():
+                selected.append(item)
+        return selected
+
     def _connect_signals(self):
         self.changed.connect(self._on_item_changed)
         self.selectionChanged.connect(self._on_selection_changed)
@@ -197,8 +211,8 @@ class BotScene(QGraphicsScene):
         return QRectF(x, y, width, height)
 
     def _create_message_graphics(self, message: BotMessage, variants: typing.List[BotVariant]) -> MessageGraphicsItem:
-        rect = MessageGraphicsItem(message, variants)
-        self.addItem(rect)
+        message_graphics_item = MessageGraphicsItem(message, variants)
+        self.addItem(message_graphics_item)
 
-        assert isinstance(rect, QGraphicsItem)
-        return rect
+        assert isinstance(message_graphics_item, QGraphicsItem)
+        return message_graphics_item
