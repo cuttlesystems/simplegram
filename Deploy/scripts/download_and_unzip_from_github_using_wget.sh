@@ -29,9 +29,7 @@ DB_NAME=bot_constructor
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 DB_HOST=172.17.0.1
-DB_PORT=5432
-
-#SECRET_KEY = 'django-insecure-@a#@3^g@a#@3^g7vh@a#@3^g@a#@3^g@a#@3^g@a#@3^g'' > ./$GH_REPO/infra/.env
+DB_PORT=5432' > ./$GH_REPO/infra/.env
 echo ""
 # директория с версиями файлов до последних изменений
 #LAST_WORKING_BOT_DIR=
