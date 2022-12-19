@@ -25,7 +25,7 @@
 	- присвоение tag'а и загрузка (push) обновлённого образа 'infra-web' в Private Docker Registry как 'ramasuchka.kz:4443/infra-web:latest' (скрипт 'tag_and_push_infra_web_image.sh')
 	- выход из Private Docker Registry на локальной машине с удалением данных авторизации
 	- копирование модифицированного файла 'docker-compose.yml' на удалённый сервер командой:
-		scp -r ~/tg_bot_constructor/infra/docker-compose.yml_move_2_server ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
+		scp -r \~/tg_bot_constructor/infra/docker-compose.yml_move_2_server ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
 	- выполнение загрузки обновлённого образа 'infra-web' (требующих обновления слоёв docker-образа)
 	  и осуществление пересборки контейнера из обновлённого образа с автоматическим перезапуском и
 	  применением миграций в случае необходимости (скрипт 'pull_updated_infra_web_image_restart_container.sh')
