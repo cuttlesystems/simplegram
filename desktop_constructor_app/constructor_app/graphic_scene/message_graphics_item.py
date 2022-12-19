@@ -115,17 +115,18 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(option, QtWidgets.QStyleOptionGraphicsItem)
         assert isinstance(widget, QtWidgets.QWidget) or widget is None
 
-        print('we paint')
-
+        # нарисовать сам блок
         self._draw_block(painter)
 
+        # нарисовать сообщение
         self._draw_message(painter)
 
+        # нарисовать все обычные варианты
         for variant_index, variant in enumerate(self._variants):
             self._draw_variant(painter, variant, variant_index)
 
+        # нарисовать иллюзорный вариант, через который происходит добавление других вариантов
         illusory_variant_index = len(self._variants)
-
         self._draw_variant(painter, None, illusory_variant_index)
 
     def mousePressEvent(self, event: PySide6.QtWidgets.QGraphicsSceneMouseEvent) -> None:
@@ -174,6 +175,12 @@ class MessageGraphicsItem(QGraphicsItem):
         return variant
 
     def delete_variant(self, variant_id: int) -> None:
+        """
+        Удаляет из блока вариант с указанным индексом
+        Args:
+            variant_id: индекс удаляемого варианта
+        """
+
         big_bounding_rect = self.boundingRect()
         big_scene_bounding_rect = self.sceneBoundingRect()
         self.update(big_bounding_rect)
@@ -181,6 +188,8 @@ class MessageGraphicsItem(QGraphicsItem):
 
         self._remove_variant_from_list(variant_id)
 
+        # после удаления варианта из списка индекс текущего варианта мог
+        # начать указывать на несуществующий вариант
         self._fix_current_variant_index()
 
         self.scene().update(big_scene_bounding_rect)
@@ -227,7 +236,7 @@ class MessageGraphicsItem(QGraphicsItem):
     def _draw_block(self, painter: QtGui.QPainter):
         painter.setPen(QtCore.Qt.PenStyle.NoPen)
         painter.setBrush(self._get_block_brush())
-        painter.drawRoundedRect(self._block_rect(), 30, 30)
+        painter.drawRoundedRect(self._block_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
 
     def _draw_message(self, painter: QtGui.QPainter):
         self._setup_message_colors(painter)
