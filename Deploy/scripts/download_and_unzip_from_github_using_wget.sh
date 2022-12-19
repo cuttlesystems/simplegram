@@ -27,6 +27,7 @@ DB_PORT=5432
 echo ""
 # директория с версиями файлов до последних изменений
 #LAST_WORKING_BOT_DIR=
+## todo: add server answer check on zip-file
 curl -H "Authorization: token "$MY_TOKEN_CREATED_ON_GITHUB -L https://api.github.com/repos/$GH_USER/$GH_REPO/zipball/$GH_BRANCH > $GH_REPO-$GH_BRANCH.zip
 echo ""
 echo "zip-архив загружен"
