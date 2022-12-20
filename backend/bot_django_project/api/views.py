@@ -22,7 +22,7 @@ from .serializers import (BotSerializer, MessageSerializer, MessageSerializerWit
 from bots.models import Bot, Message, Variant, Command
 from .mixins import RetrieveUpdateDestroyViewSet
 from .permissions import (IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, IsBotOwnerOrForbidden,
-                          IsCommandOwnerOrForbidden)
+                          IsCommandOwnerOrForbidden, check_is_bot_owner_or_permission_denied)
 
 API_RESPONSE_WITH_VARIANTS = 'with_variants'
 
@@ -277,11 +277,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def create(self, request: Request, bot_id: int) -> Response:
         bot = get_object_or_404(Bot, id=bot_id)
-        if bot.owner != request.user:
-            return Response(
-                {"detail": "You do not have permission to perform this action."},
-                status=status.HTTP_403_FORBIDDEN
-            )
+        check_is_bot_owner_or_permission_denied(request, bot)
         return super().create(request, bot_id)
 
 
@@ -317,11 +313,7 @@ class VariantViewSet(viewsets.ModelViewSet):
 
     def create(self, request: Request, message_id: int) -> Response:
         message = get_object_or_404(Message, id=message_id)
-        if message.bot.owner != request.user:
-            return Response(
-                {"detail": "You do not have permission to perform this action."},
-                status=status.HTTP_403_FORBIDDEN
-            )
+        check_is_bot_owner_or_permission_denied(request, message.bot)
         return super().create(request, message_id)
 
 
@@ -351,11 +343,7 @@ class CommandViewSet(viewsets.ModelViewSet):
 
     def create(self, request: Request, bot_id: int) -> Response:
         bot = get_object_or_404(Bot, id=bot_id)
-        if not IsBotOwnerOrForbidden.has_object_permission(self, request, CommandViewSet, bot):
-            return Response(
-                {"detail": "You do not have permission to perform this action."},
-                status=status.HTTP_403_FORBIDDEN
-            )
+        check_is_bot_owner_or_permission_denied(request, bot)
         return super().create(request, bot_id)
 
 

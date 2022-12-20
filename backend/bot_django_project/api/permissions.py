@@ -1,4 +1,4 @@
-from rest_framework import permissions
+from rest_framework import permissions, exceptions
 from rest_framework.request import Request
 from rest_framework.viewsets import ModelViewSet
 
@@ -51,3 +51,18 @@ class IsCommandOwnerOrForbidden(permissions.BasePermission):
 
     def has_permission(self, request: Request, view: ModelViewSet) -> bool:
         return request.user.is_authenticated
+
+
+def check_is_bot_owner_or_permission_denied(request: Request, bot: Bot) -> None:
+    """
+    Проверка является ли пользователь делающий запрос собственником бота.
+
+    Args:
+        request (Request): запрос
+        bot (Bot): экземпляр бота
+
+    Raises:
+        exceptions.PermissionDenied
+    """
+    if bot.owner != request.user:
+        raise exceptions.PermissionDenied
