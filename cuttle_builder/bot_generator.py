@@ -2,7 +2,7 @@ import typing
 import io
 import os
 
-from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit
+from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit, BotCommand
 from cuttle_builder.bot_gen_exceptions import BotGeneratorException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
@@ -10,6 +10,7 @@ from cuttle_builder.builder.handler_generator.create_state_handler import (creat
                                                                            create_state_callback_handler)
 from cuttle_builder.builder.config_generator.create_config import create_config
 from cuttle_builder.builder.state_generator.create_state import create_state
+from cuttle_builder.builder.commands_generator.generate_commands import generate_commands_code
 from cuttle_builder.APIFileCreator import APIFileCreator
 from typing import List, Optional
 from PIL import Image
@@ -28,6 +29,7 @@ class BotGenerator:
             self,
             messages: List[BotMessage],
             variants: List[BotVariant],
+            commands: List[BotCommand],
             start_message_id: int,
             token: str,
             bot_path: str
@@ -43,6 +45,7 @@ class BotGenerator:
         """
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, BotVariant) for variant in variants)
+        assert all(isinstance(command, BotCommand) for command in commands)
         assert isinstance(start_message_id, int)
         assert isinstance(token, str)
         assert isinstance(bot_path, str)
@@ -52,6 +55,7 @@ class BotGenerator:
         self._messages: List[BotMessage] = messages
 
         self._variants: List[BotVariant] = variants
+        self._commands: List[BotCommand] = commands
         self._start_message_id = start_message_id
         self._states: List[int] = []
         self._file_manager = APIFileCreator()
@@ -330,6 +334,7 @@ class BotGenerator:
         self._is_valid_data()
         self._create_generated_bot_directory()
         self._create_config_file()
+        self._create_on_startup_commands_file()
         for message in self._messages:
             self.create_file_handlers(message)
         self._create_init_handler_files()
@@ -349,3 +354,10 @@ class BotGenerator:
         extend_imports = self._get_imports_sample('config_import')
         config_code = create_config(extend_imports, {'TOKEN': self._token})
         self._file_manager.create_config_file(self._bot_directory, config_code)
+
+    def _create_on_startup_commands_file(self) -> None:
+        """
+        Создает файл с функцией для отображения команд бота.
+        """
+        commands_code = generate_commands_code(self._commands)
+        self._file_manager.create_commands_file(self._bot_directory, commands_code)
