@@ -1,8 +1,8 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import (BotViewSet, MessageViewSet, OneMessageViewSet,
-                    VariantViewSet, OneVariantViewSet)
+from .views import (BotViewSet, MessageViewSet, OneMessageViewSet, VariantViewSet, OneVariantViewSet,
+                    CommandViewSet, OneCommandViewSet)
 
 
 router = routers.DefaultRouter()
@@ -11,6 +11,8 @@ router.register(r'bots/(?P<bot_id>\d+)/messages', MessageViewSet, basename='mess
 router.register(r'message', OneMessageViewSet, basename='one_message')
 router.register(r'messages/(?P<message_id>\d+)/variants', VariantViewSet, basename='variants')
 router.register(r'variant', OneVariantViewSet, basename='one_variant')
+router.register(r'bots/(?P<bot_id>\d+)/commands', CommandViewSet, basename='commands')
+router.register(r'command', OneCommandViewSet, basename='one_command')
 
 
 urlpatterns = [

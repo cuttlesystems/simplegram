@@ -2,7 +2,7 @@
 import typing
 
 from PySide6 import QtGui, QtCore
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QRect, QRectF
 from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget, QDialog, QApplication, QMessageBox
 
@@ -11,6 +11,7 @@ from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonT
 from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.common.model_property import ModelProperty
+from desktop_constructor_app.constructor_app.graphic_scene.message_graphics_item import MessageGraphicsItem
 from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
 from desktop_constructor_app.constructor_app.widgets.message_editor_dialog import MessageEditorDialog
 from desktop_constructor_app.constructor_app.widgets.ui_bot_editor_form import Ui_BotEditorForm
@@ -78,9 +79,12 @@ class BotEditorForm(QWidget):
         self._ui.start_bot_button.clicked.connect(self._on_start_bot)
         self._ui.stop_bot_button.clicked.connect(self._on_stop_bot)
         self._ui.mark_as_start_button.clicked.connect(self._on_mark_as_start_button)
+        self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
 
-        self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant)
-        self._bot_scene.request_change_message.connect(self._on_change_message)
+        # todo: проверить (и продумать) необходимость использования QtCore.Qt.QueuedConnection,
+        #  если это необходимо, использовать в других местах, если нет, то убрать отсюда
+        self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant, QtCore.Qt.QueuedConnection)
+        self._bot_scene.request_change_message.connect(self._on_change_message, QtCore.Qt.QueuedConnection)
         self._bot_scene.request_change_variant.connect(self._on_change_variant)
 
     def _load_bot_scene(self):
@@ -106,6 +110,8 @@ class BotEditorForm(QWidget):
     def _on_add_new_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
         assert isinstance(message, BotMessage)
         assert all(isinstance(variant, BotVariant) for variant in variants)
+        # тут изменение сообщения, чтобы предыдущие правки по сообщению отправились на сервер
+        # (не потерялись изменения)
         self._bot_api.change_message(message)
 
         variant_name = self._generate_unique_variant_name('New bot variant', variants)
@@ -114,9 +120,12 @@ class BotEditorForm(QWidget):
         # todo: этот момент можно оптимизировать и переписать лучше
         updated_message = next(mes for mes in messages if mes.id == message.id)
         updated_variants = self._bot_api.get_variants(updated_message)
+        print('delete message', message)
         self._bot_scene.delete_messages([message])
-        self._bot_scene.add_message(updated_message, updated_variants)
+        graphics_item = self._bot_scene.add_message(updated_message, updated_variants)
         print('add variant for message: ', message.text)
+        print('graphics_item sceneBoundingRect {0}'.format(graphics_item.sceneBoundingRect()))
+        self._bot_scene.update(graphics_item.sceneBoundingRect())
 
     def _on_change_message(self, message: BotMessage, variants: typing.List[BotVariant]):
         editor_dialog = MessageEditorDialog(self)
@@ -145,6 +154,20 @@ class BotEditorForm(QWidget):
             # todo: тут надо гарантировать перерисовку варианта на схеме
 
             self._bot_api.change_variant(variant)
+
+    def _on_delete_variant(self, _checked: bool):
+        deleted_variant: typing.Optional[BotVariant] = None
+        block_with_deleted_variant: typing.Optional[MessageGraphicsItem] = None
+        block_graphics = self._bot_scene.get_selected_blocks_graphics()
+        for block in block_graphics:
+            deleted_variant = block.get_current_variant()
+            if deleted_variant is not None:
+                block_with_deleted_variant = block
+                break
+
+        if deleted_variant is not None:
+            self._bot_api.delete_variant(deleted_variant)
+            block_with_deleted_variant.delete_variant(deleted_variant.id)
 
     def _on_mark_as_start_button(self, _checked: bool):
         selected_messages = self._bot_scene.get_selected_messages()

@@ -2,7 +2,7 @@ import typing
 import io
 import os
 
-from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit
+from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit, BotCommand
 from cuttle_builder.bot_gen_exceptions import BotGeneratorException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
@@ -10,6 +10,7 @@ from cuttle_builder.builder.handler_generator.create_state_handler import (creat
                                                                            create_state_callback_handler)
 from cuttle_builder.builder.config_generator.create_config import create_config
 from cuttle_builder.builder.state_generator.create_state import create_state
+from cuttle_builder.builder.commands_generator.generate_commands import generate_commands_code
 from cuttle_builder.APIFileCreator import APIFileCreator
 from typing import List, Optional
 from PIL import Image
@@ -28,10 +29,10 @@ class BotGenerator:
             self,
             messages: List[BotMessage],
             variants: List[BotVariant],
+            commands: List[BotCommand],
             start_message_id: int,
             token: str,
-            bot_path: str,
-            error_message_id: int = None
+            bot_path: str
     ):
         """
         Класс для создания исходного кода ТГ бота по входному набору сообщений и вариантов
@@ -44,18 +45,24 @@ class BotGenerator:
         """
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, BotVariant) for variant in variants)
+        assert all(isinstance(command, BotCommand) for command in commands)
         assert isinstance(start_message_id, int)
         assert isinstance(token, str)
         assert isinstance(bot_path, str)
 
+
         self._handler_inits: List[HandlerInit] = []
+        self._messages: List[BotMessage] = messages
+
         self._variants: List[BotVariant] = variants
+        self._commands: List[BotCommand] = commands
         self._start_message_id = start_message_id
         self._states: List[int] = []
         self._file_manager = APIFileCreator()
         self._token = token
         self._bot_directory = bot_path
         self._media_directory = bot_path + '/media'
+
         self._error_message_id = error_message_id
         for message in messages:
             self._states.append(message.id)
@@ -73,6 +80,9 @@ class BotGenerator:
 
     def _is_valid_data(self) -> bool:
         if not self._messages:
+            # todo: метод проверки данных не должен удалять директорию (он должен только проверять),
+            #  а это удаление, вероятно, должно быть раньше
+            self._file_manager.delete_dir(self._bot_directory)
             raise BotGeneratorException('No messages in database')
         self._check_token()
         return True
@@ -258,6 +268,7 @@ class BotGenerator:
             )
             self._file_manager.create_file_handler(self._bot_directory, str(message.id), restart_handler_code)
 
+
         if message.id == self._error_message_id:
             # Создание клавиатуры для сообщения.
             keyboard_name = self.create_keyboard(message.id, keyboard_type)
@@ -282,6 +293,7 @@ class BotGenerator:
                 )
                 is_init_created = True
 
+
         # Получение списка вариантов у которых next_message == message.id (принемаемый на вход функцией).
         previous_variants: typing.List[BotVariant] = self._find_previous_variants(message.id)
         for prev_variant in previous_variants:
@@ -291,8 +303,6 @@ class BotGenerator:
                 keyboard_name = self._get_keyboard_name_for_message(message.id)
 
             # Создание хэндлера для команды /prev_variant.text
-            # нужно получить prev_variant.current_message.keyboard_type
-            # prev_variant.current_message_id
             current_message_of_variant = self._get_message_object_by_id(prev_variant.current_message_id)
 
             handler_code = self._create_state_handler(
@@ -317,10 +327,10 @@ class BotGenerator:
             imports_generation_counter += 1
 
     def create_bot(self) -> None:
-        self._file_manager.delete_dir(self._bot_directory)
         self._is_valid_data()
         self._create_generated_bot_directory()
         self._create_config_file()
+        self._create_on_startup_commands_file()
         for message in self._messages:
             self.create_file_handlers(message)
         self._create_init_handler_files()
@@ -340,3 +350,10 @@ class BotGenerator:
         extend_imports = self._get_imports_sample('config_import')
         config_code = create_config(extend_imports, {'TOKEN': self._token})
         self._file_manager.create_config_file(self._bot_directory, config_code)
+
+    def _create_on_startup_commands_file(self) -> None:
+        """
+        Создает файл с функцией для отображения команд бота.
+        """
+        commands_code = generate_commands_code(self._commands)
+        self._file_manager.create_commands_file(self._bot_directory, commands_code)

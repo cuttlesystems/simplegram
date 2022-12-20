@@ -63,3 +63,16 @@ class APIFileCreator(FileManager):
         config_code_file = str(
             Path(bot_directory) / 'data' / 'config.py')
         self.create_file(config_code_file, code)
+
+    def create_commands_file(self, bot_directory: str, code: str) -> None:
+        """
+        Создает файл с кодом функции для отображения команд бота
+
+        Args:
+            bot_directory (str): Корневая директория бота
+            code (str): Подготовленный код(содержимое файла)
+        """
+        path_to_file = str(
+            Path(bot_directory) / 'on_startup_commands.py')
+
+        self.write_file(path_to_file, code)

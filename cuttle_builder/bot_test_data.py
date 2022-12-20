@@ -49,6 +49,7 @@ class BotTestData:
             'video': None,
             'file': None
         }
+
     ]
 
     _VARIANTS_JSON = [
@@ -86,6 +87,7 @@ class BotTestData:
             'text': 'Error to 10',
             'current_id': 1,
             'next_id': 10
+
         }
     ]
 

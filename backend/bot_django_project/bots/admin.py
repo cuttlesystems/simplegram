@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Bot, Message, Variant
+from .models import Bot, Message, Variant, Command
 
 
 class BotAdmin(admin.ModelAdmin):
@@ -16,8 +16,16 @@ class MessageAdmin(admin.ModelAdmin):
 
 class VariantAdmin(admin.ModelAdmin):
     list_display = ['id', 'text', 'current_message', 'next_message', 'display_bot']
+    list_filter = ('current_message', 'next_message')
+
+
+class CommandAdmin(admin.ModelAdmin):
+    list_display = ['id', 'bot', 'command', 'description']
+    list_editable = ['command', 'description']
+    list_filter = ('bot',)
 
 
 admin.site.register(Bot, BotAdmin)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(Variant, VariantAdmin)
+admin.site.register(Command, CommandAdmin)
