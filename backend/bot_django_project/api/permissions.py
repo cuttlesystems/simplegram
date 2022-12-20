@@ -65,4 +65,4 @@ def check_is_bot_owner_or_permission_denied(request: Request, bot: Bot) -> None:
         exceptions.PermissionDenied
     """
     if bot.owner != request.user:
-        raise exceptions.PermissionDenied
+        raise exceptions.PermissionDenied(detail='Permission allowed only for bot owner')
