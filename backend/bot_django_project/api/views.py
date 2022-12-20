@@ -351,7 +351,7 @@ class CommandViewSet(viewsets.ModelViewSet):
 
     def create(self, request: Request, bot_id: int) -> Response:
         bot = get_object_or_404(Bot, id=bot_id)
-        if bot.owner != request.user:
+        if not IsBotOwnerOrForbidden.has_object_permission(self, request, CommandViewSet, bot):
             return Response(
                 {"detail": "You do not have permission to perform this action."},
                 status=status.HTTP_403_FORBIDDEN

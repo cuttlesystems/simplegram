@@ -484,6 +484,8 @@ class BotApiByRequests(IBotApi):
     def _create_command_dict_from_command_obj(self, command_obj: BotCommand) -> dict:
         """Создание payload(body) для api запроса"""
         command_dict = {
+            'id': command_obj.id,
+            'bot': command_obj.bot_id,
             'command': command_obj.command,
             'description': command_obj.description
         }

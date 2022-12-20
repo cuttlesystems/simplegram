@@ -4,8 +4,6 @@ from django.contrib.auth import get_user_model
 from utils.cut_string import cut_string
 from b_logic.data_objects import ButtonTypes
 
-MAX_CHARS = 50
-
 User = get_user_model()
 
 # Вот он класс Bot, он эквивалентен таблице Bot в БД.
@@ -14,7 +12,10 @@ User = get_user_model()
 # В классе Meta определена сортировка по умолчанию, по id.
 # В методе __str__ определено строковое представление объекта Bot.
 # Идем обратно в сериалайзер.
+MAX_CHARS = 50
 
+_MAX_COMMAND_LENGTH = 32
+_MAX_COMMAND_DESCRIPTION_LENGTH = 256
 
 KEYBOARD_TYPES = [
     (ButtonTypes.REPLY.value, 'Reply Keyboard'),
@@ -123,8 +124,8 @@ class Command(models.Model):
         on_delete=models.CASCADE,
         related_name='commands'
     )
-    command = models.CharField(max_length=32)
-    description = models.CharField(max_length=256)
+    command = models.CharField(max_length=_MAX_COMMAND_LENGTH)
+    description = models.CharField(max_length=_MAX_COMMAND_DESCRIPTION_LENGTH)
 
     class Meta:
         ordering = ['id']
