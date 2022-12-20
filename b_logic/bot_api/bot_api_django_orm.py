@@ -4,8 +4,8 @@ from django.conf import settings
 from django.db.models.fields.files import ImageFieldFile
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
-from bots.models import Bot, Message, Variant
+from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes
+from bots.models import Bot, Message, Variant, Command
 
 
 def get_full_path_to_django_image(base_dir: str, path_from_django: Optional[ImageFieldFile]) -> Optional[str]:
@@ -138,6 +138,25 @@ class BotApiByDjangoORM(IBotApi):
     def delete_variant(self, variant: BotVariant) -> None:
         raise NotImplementedError('Метод не определен!')
 
+    def get_commands(self, bot: BotDescription) -> List[BotCommand]:
+        """
+        Получить команды для заданного бота
+
+        Args:
+            bot: бот для которого получаем команды
+
+        Returns:
+            список команд
+        """
+        commands = Command.objects.filter(bot__id=bot.id)
+        commands_list = []
+        for command in commands:
+            commands_list.append(self._create_command_from_data(command))
+        return commands_list
+
+    def create_command(self, bot: BotDescription, command: str, description: str) -> BotCommand:
+        raise NotImplementedError('Метод не определен!')
+
     def generate_bot(self, bot: BotDescription) -> None:
         raise NotImplementedError('generate bot is not implemented')
 
@@ -180,3 +199,12 @@ class BotApiByDjangoORM(IBotApi):
         variant.current_message_id = variant_django.current_message.id
         variant.next_message_id = variant_django.next_message.id if variant_django.next_message else None
         return variant
+
+    def _create_command_from_data(self, command_django: Command) -> BotCommand:
+        """Создает объект класса BotCommand из входящих данных"""
+        command = BotCommand()
+        command.id = command_django.id
+        command.bot_id = command_django.bot.id
+        command.command = command_django.command
+        command.description = command_django.description
+        return command

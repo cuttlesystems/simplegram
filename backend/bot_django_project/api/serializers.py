@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from bots.models import Bot, Message, Variant
+from bots.models import Bot, Message, Variant, Command
 
 
 User = get_user_model()
@@ -113,3 +113,15 @@ class MessageSerializerWithVariants(serializers.ModelSerializer):
             'next_variants'
         )
         read_only_fields = ('bot', 'current_variants', 'next_variants')
+
+
+class CommandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Command
+        fields = (
+            'id',
+            'bot',
+            'command',
+            'description'
+        )
+        read_only_fields = ('bot',)

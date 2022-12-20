@@ -17,10 +17,12 @@ from rest_framework.request import Request
 from rest_framework.decorators import action
 
 from cuttle_builder.bot_generator_db import BotGeneratorDb
-from .serializers import BotSerializer, MessageSerializer, MessageSerializerWithVariants, VariantSerializer
-from bots.models import Bot, Message, Variant
+from .serializers import (BotSerializer, MessageSerializer, MessageSerializerWithVariants,
+                          VariantSerializer, CommandSerializer)
+from bots.models import Bot, Message, Variant, Command
 from .mixins import RetrieveUpdateDestroyViewSet
-from .permissions import IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, IsBotOwnerOrForbidden
+from .permissions import (IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, IsBotOwnerOrForbidden,
+                          IsCommandOwnerOrForbidden, check_is_bot_owner_or_permission_denied)
 
 API_RESPONSE_WITH_VARIANTS = 'with_variants'
 
@@ -275,11 +277,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def create(self, request: Request, bot_id: int) -> Response:
         bot = get_object_or_404(Bot, id=bot_id)
-        if bot.owner != request.user:
-            return Response(
-                {"detail": "You do not have permission to perform this action."},
-                status=status.HTTP_403_FORBIDDEN
-            )
+        check_is_bot_owner_or_permission_denied(request, bot)
         return super().create(request, bot_id)
 
 
@@ -315,11 +313,7 @@ class VariantViewSet(viewsets.ModelViewSet):
 
     def create(self, request: Request, message_id: int) -> Response:
         message = get_object_or_404(Message, id=message_id)
-        if message.bot.owner != request.user:
-            return Response(
-                {"detail": "You do not have permission to perform this action."},
-                status=status.HTTP_403_FORBIDDEN
-            )
+        check_is_bot_owner_or_permission_denied(request, message.bot)
         return super().create(request, message_id)
 
 
@@ -328,3 +322,33 @@ class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
     queryset = Variant.objects.all()
     serializer_class = VariantSerializer
     permission_classes = (IsVariantOwnerOrForbidden,)
+
+
+class CommandViewSet(viewsets.ModelViewSet):
+    """
+    Отображение всех команд бота и
+    CRUD-функционал для экземпляра команды
+    """
+    serializer_class = CommandSerializer
+
+    def get_queryset(self):
+        return Command.objects.filter(
+            bot__owner=self.request.user,
+            bot__id=self.kwargs.get('bot_id'))
+
+    def perform_create(self, serializer: CommandSerializer) -> None:
+        bot_id = self.kwargs.get('bot_id')
+        bot = get_object_or_404(Bot, id=bot_id)
+        serializer.save(bot=bot)
+
+    def create(self, request: Request, bot_id: int) -> Response:
+        bot = get_object_or_404(Bot, id=bot_id)
+        check_is_bot_owner_or_permission_denied(request, bot)
+        return super().create(request, bot_id)
+
+
+class OneCommandViewSet(RetrieveUpdateDestroyViewSet):
+    """Чтение, обновление и удаление для экземпляра команды"""
+    queryset = Command.objects.all()
+    serializer_class = CommandSerializer
+    permission_classes = (IsCommandOwnerOrForbidden,)
