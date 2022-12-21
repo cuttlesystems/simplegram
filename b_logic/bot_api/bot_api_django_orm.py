@@ -173,7 +173,7 @@ class BotApiByDjangoORM(IBotApi):
         bot_description.bot_name = bot_django.name
         bot_description.bot_token = bot_django.token
         bot_description.bot_description = bot_django.description
-        bot_description.start_message_id = bot_django.start_message.id if bot_django.start_message else None
+        bot_description.start_message_id = bot_django.start_message.id if bot_django.start_message is not None else None
         return bot_description
 
     def _create_bot_message_from_data(self, message_django: Message) -> BotMessage:

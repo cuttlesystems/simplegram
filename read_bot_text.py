@@ -10,7 +10,7 @@ if __name__ == '__main__':
     print(bot)
     commands = bot_api.get_commands(bot)
     for command in commands:
-        print(command)
+        print(f'    {command}')
     messages = bot_api.get_messages(bot)
     for message in messages:
         print(f'    Message: id={message.id}, text={message.text}')
