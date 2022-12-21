@@ -6,6 +6,6 @@ COPY ./ ./app
 
 WORKDIR /app/backend/bot_django_project
 
-RUN pip install --upgrade pip && pip install -r ../../requirements.txt --no-cache-dir && python manage.py migrate
+RUN pip install --upgrade pip && pip install -r ../../requirements.txt --no-cache-dir
 
 CMD ["gunicorn", "bot_constructor.wsgi:application", "--bind", "0:8000"]

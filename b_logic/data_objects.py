@@ -45,3 +45,11 @@ class BotVariant:
     text: Optional[str] = None
     current_message_id: Optional[int] = None
     next_message_id: Optional[int] = None
+
+
+@dataclass
+class BotCommand:
+    id: Optional[int] = None
+    bot_id: Optional[int] = None
+    command: Optional[str] = None
+    description: Optional[str] = None

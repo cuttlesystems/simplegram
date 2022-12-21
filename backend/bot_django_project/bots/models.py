@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from utils.cut_string import cut_string
 from b_logic.data_objects import ButtonTypes
 
 User = get_user_model()
@@ -11,7 +12,10 @@ User = get_user_model()
 # В классе Meta определена сортировка по умолчанию, по id.
 # В методе __str__ определено строковое представление объекта Bot.
 # Идем обратно в сериалайзер.
+MAX_CHARS = 50
 
+_MAX_COMMAND_LENGTH = 32
+_MAX_COMMAND_DESCRIPTION_LENGTH = 256
 
 KEYBOARD_TYPES = [
     (ButtonTypes.REPLY.value, 'Reply Keyboard'),
@@ -39,7 +43,8 @@ class Bot(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return f'Bot {self.id}: {self.name}'
+        string = f'Bot {self.id}: {self.name}'
+        return cut_string(string, MAX_CHARS)
 
 
 class Message(models.Model):
@@ -80,7 +85,8 @@ class Message(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return f'Message_id {self.id}: {self.text}'
+        string = f'Message_id {self.id}: {self.text}'
+        return cut_string(string, MAX_CHARS)
 
 
 class Variant(models.Model):
@@ -108,4 +114,22 @@ class Variant(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return f'Variant_id {self.id}: {self.text}'
+        string = f'Variant_id {self.id}: {self.text}'
+        return cut_string(string, MAX_CHARS)
+
+
+class Command(models.Model):
+    bot = models.ForeignKey(
+        Bot,
+        on_delete=models.CASCADE,
+        related_name='commands'
+    )
+    command = models.CharField(max_length=_MAX_COMMAND_LENGTH)
+    description = models.CharField(max_length=_MAX_COMMAND_DESCRIPTION_LENGTH)
+
+    class Meta:
+        ordering = ['id']
+
+    def __str__(self):
+        string = f'Command_id {self.id}: {self.command}'
+        return cut_string(string, MAX_CHARS)
