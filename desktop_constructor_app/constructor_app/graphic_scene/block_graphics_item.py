@@ -1,4 +1,5 @@
 import typing
+from dataclasses import dataclass
 
 import PySide6
 from PySide6 import QtCore, QtGui, QtWidgets
@@ -21,6 +22,16 @@ class BlockGraphicsSignalSender(QObject):
     request_change_variant = Signal(BotVariant)
 
 
+@dataclass(slots=True, frozen=True)
+class BlockColorScheme:
+    message_color = 0xceffff
+    text_color = 0x154545
+    pen_color = 0x137b7b
+
+    variant_background = 0x9edee6
+    selected_variant_background = 0x84d2dc
+
+
 class BlockGraphicsItem(QGraphicsItem):
     """
     Объект графической сцены Блок.
@@ -33,16 +44,10 @@ class BlockGraphicsItem(QGraphicsItem):
     _VARIANT_WIDTH = 150
     _VARIANT_HEIGHT = 50
 
-    _MESSAGE_COLOR = 0xceffff
-    _TEXT_COLOR = 0x154545
-    _PEN_COLOR = 0x137b7b
-
     _BORDER_THICKNESS_NORMAL = 2
     _BORDER_THICKNESS_SELECTED = 3
 
     _ROUND_RADIUS = 30
-    _VARIANT_BACKGROUND = 0x9edee6
-    _SELECTED_VARIANT_BACKGROUND = 0x84d2dc
     _BLOCK_RECT_EXTEND_SPACE = 25
     _MESSAGE_TEXT_BORDER = 25
     _VARIANT_TEXT_BORDER = 5
@@ -51,31 +56,45 @@ class BlockGraphicsItem(QGraphicsItem):
     _VARIANT_ICON_RECT_BORDER = 10
 
     def __init__(self, message: BotMessage, variants: typing.List[BotVariant]):
+        """
+        Конструктор блока. Блок возьмет свои координаты из координат сообщения
+        Args:
+            message: сообщение блока
+            variants: варианты блока
+        """
         super().__init__()
         assert isinstance(message, BotMessage)
         assert all(isinstance(variant, BotVariant) for variant in variants)
 
         self.signal_sender: BlockGraphicsSignalSender = BlockGraphicsSignalSender()
 
-        self._brush = QBrush(QColor(self._MESSAGE_COLOR))
+        self._color_scheme = BlockColorScheme()
 
+        # кисточка (заливка) для рисования сообщений
+        self._message_brush = QBrush(QColor(self._color_scheme.message_color))
+
+        # карандаш (контур) для рисования сообщений и вариантов, если они не выделены
         self._normal_pen = QPen(
-            QColor(self._PEN_COLOR),
+            QColor(self._color_scheme.pen_color),
             self._BORDER_THICKNESS_NORMAL,
             QtCore.Qt.PenStyle.SolidLine)
 
+        # карандаш (контур) для рисования сообщений и вариантов, если они выделены
         self._selected_pen = QPen(
-            QColor(self._PEN_COLOR),
+            QColor(self._color_scheme.pen_color),
             self._BORDER_THICKNESS_SELECTED,
             QtCore.Qt.PenStyle.SolidLine)
 
         for pen in (self._selected_pen, self._normal_pen):
             pen.setJoinStyle(QtCore.Qt.PenJoinStyle.RoundJoin)
 
+        # сообщение блока
         self._message: BotMessage = message
 
-        self._variants = variants
+        # варианты блока
+        self._variants: typing.List[BotVariant] = variants
 
+        # индекс выделенного варианта
         self._current_variant_index: typing.Optional[int] = None
 
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
@@ -262,7 +281,7 @@ class BlockGraphicsItem(QGraphicsItem):
         painter.drawRect(self._variant_rect(index))
 
         if not illusory_variant:
-            painter.setPen(QColor(self._TEXT_COLOR))
+            painter.setPen(QColor(self._color_scheme.text_color))
             painter.drawText(self._variant_text_rect(index), variant.text)
         else:
             # отображается несуществующий вариант, который позволяет добавлять новые варианты
@@ -296,7 +315,7 @@ class BlockGraphicsItem(QGraphicsItem):
         return block_brush
 
     def _setup_message_colors(self, painter: QtGui.QPainter):
-        painter.setBrush(self._brush)
+        painter.setBrush(self._message_brush)
         if self.isSelected():
             painter.setPen(self._selected_pen)
         else:
@@ -314,17 +333,17 @@ class BlockGraphicsItem(QGraphicsItem):
         if not is_illusory_variant:
             # понятие "текущий вариант" имеет смысл только тогда, когда текущий блок выделен
             if self.isSelected() and painted_variant_index == self._current_variant_index:
-                painter.setBrush(QColor(self._SELECTED_VARIANT_BACKGROUND))
+                painter.setBrush(QColor(self._color_scheme.selected_variant_background))
                 painter.setPen(self._selected_pen)
             else:
-                painter.setBrush(QColor(self._VARIANT_BACKGROUND))
+                painter.setBrush(QColor(self._color_scheme.variant_background))
                 painter.setPen(self._normal_pen)
         else:
-            painter.setBrush(QColor(self._VARIANT_BACKGROUND))
+            painter.setBrush(QColor(self._color_scheme.variant_background))
             painter.setPen(QtCore.Qt.PenStyle.NoPen)
 
     def _setup_text_color(self, painter: QtGui.QPainter):
-        painter.setPen(QColor(self._TEXT_COLOR))
+        painter.setPen(QColor(self._color_scheme.text_color))
 
     def _variant_rect(self, variant_index: int) -> QRectF:
         dy = self._VARIANT_HEIGHT + self._VARIANT_DISTANCE

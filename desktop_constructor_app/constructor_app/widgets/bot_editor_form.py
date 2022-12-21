@@ -209,8 +209,10 @@ class BotEditorForm(QWidget):
             self._process_exception(e)
 
     def _process_exception(self, exception: Exception):
-        if isinstance(exception, NotImplementedError):
-            QMessageBox.warning(self, 'Error', str(exception))
+        if not isinstance(exception, NotImplementedError):
+            exception_mes = str(exception)
+            print(exception_mes)
+            QMessageBox.warning(self, 'Error', exception_mes)
         else:
             raise
 
