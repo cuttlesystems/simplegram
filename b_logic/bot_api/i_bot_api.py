@@ -1,7 +1,7 @@
 from typing import List
 from abc import abstractmethod, ABC
 
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes, BotCommand
 
 
 class BotApiException(Exception):
@@ -207,6 +207,34 @@ class IBotApi(ABC):
 
         Args:
             variant: вариант который необходимо удалить
+        """
+        pass
+
+    @abstractmethod
+    def get_commands(self, bot: BotDescription) -> List[BotCommand]:
+        """
+        Получить команды для заданного бота
+
+        Args:
+            bot: бот для которого получаем команды
+
+        Returns:
+            список команд
+        """
+        pass
+
+    @abstractmethod
+    def create_command(self, bot: BotDescription, command: str, description: str) -> BotCommand:
+        """
+        Создание команды.
+
+        Args:
+            bot: бот для которого получаем команды
+            command: имя команды
+            description: краткое описание команды
+
+        Returns:
+            Объект BotCommand
         """
         pass
 

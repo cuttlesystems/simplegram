@@ -49,6 +49,7 @@ class BotTestData:
             'video': None,
             'file': None
         }
+
     ]
 
     _VARIANTS_JSON = [

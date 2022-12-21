@@ -39,6 +39,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="delete_variant_button">
+           <property name="text">
+            <string>Delete variant</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="mark_as_start_button">
            <property name="text">
             <string>Mark as start</string>
