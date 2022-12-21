@@ -57,7 +57,7 @@ class BotGenerator:
         self._commands: List[BotCommand] = commands
         self._start_message_id = start_message_id
         self._states: List[int] = []
-        self._file_manager = APIFileCreator()
+        self._file_manager = APIFileCreator(bot_path)
         self._token = token
         self._bot_directory = bot_path
         self._media_directory = bot_path + '/media'
@@ -151,8 +151,8 @@ class BotGenerator:
                 extended_imports=imports_for_keyboard
             )
 
-        self._file_manager.create_file_keyboard(self._bot_directory, keyboard_name, keyboard_source_code)
-        self._file_manager.create_keyboard_file_init(self._bot_directory, keyboard_name)
+        self._file_manager.create_file_keyboard(keyboard_name, keyboard_source_code)
+        self._file_manager.create_keyboard_file_init(keyboard_name)
         return keyboard_name
 
     def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
@@ -201,10 +201,9 @@ class BotGenerator:
     def _create_init_handler_files(self):
         prepared_handler_inits = self._prepare_init_handlers()
         for handler_init in prepared_handler_inits:
-            self._file_manager.create_handler_file_init(self._bot_directory, handler_init.handler_name)
+            self._file_manager.create_handler_file_init(handler_init.handler_name)
 
     def _prepare_init_handlers(self) -> List[HandlerInit]:
-        error_handler = None
         prepared_handler_inits = []
         for handler_init in self._handler_inits:
             if handler_init.is_error_message:
@@ -252,12 +251,8 @@ class BotGenerator:
                 handler_type=ButtonTypes.REPLY,
                 extended_imports=imports_for_start_handler
             )
-            self._file_manager.create_file_handler(self._bot_directory, str(message.id), start_handler_code)
-            if not is_init_created:
-                self._handler_inits.append(
-                    HandlerInit(handler_name=str(message.id), is_error_message=False)
-                )
-                is_init_created = True
+            self._file_manager.create_file_handler(str(message.id), start_handler_code)
+            is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
 
             imports_generation_counter += 1
             restart_handler_code = self._create_state_handler(
@@ -271,7 +266,7 @@ class BotGenerator:
                 handler_type=ButtonTypes.REPLY,
                 extended_imports=''
             )
-            self._file_manager.create_file_handler(self._bot_directory, str(message.id), restart_handler_code)
+            self._file_manager.create_file_handler(str(message.id), restart_handler_code)
 
 
         if message.id == self._error_message_id:
@@ -291,12 +286,8 @@ class BotGenerator:
                 handler_type=ButtonTypes.REPLY,
                 extended_imports=imports_for_handler
             )
-            self._file_manager.create_file_handler(self._bot_directory, str(message.id), error_handler_code)
-            if not is_init_created:
-                self._handler_inits.append(
-                    HandlerInit(handler_name=str(message.id), is_error_message=True)
-                )
-                is_init_created = True
+            self._file_manager.create_file_handler(str(message.id), error_handler_code)
+            is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
 
         # Получение списка вариантов у которых next_message == message.id (принемаемый на вход функцией).
         previous_variants: typing.List[BotVariant] = self._find_previous_variants(message.id)
@@ -320,15 +311,22 @@ class BotGenerator:
                 handler_type=current_message_of_variant.keyboard_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else ''
             )
-            self._file_manager.create_file_handler(self._bot_directory, str(message.id), handler_code)
-            if not is_init_created:
-                self._handler_inits.append(
-                    HandlerInit(handler_name=str(message.id), is_error_message=False)
-                )
-                is_init_created = True
+            self._file_manager.create_file_handler(str(message.id), handler_code)
+            is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
 
             keyboard_generation_counter += 1
             imports_generation_counter += 1
+
+    def _add_handler_init_by_condition(self, is_init_created: bool, message_id: int) -> bool:
+        assert isinstance(is_init_created, bool)
+        assert isinstance(message_id, int)
+        if not is_init_created:
+            is_error_message = message_id == self._error_message_id
+            self._handler_inits.append(
+                HandlerInit(handler_name=str(message_id), is_error_message=is_error_message)
+            )
+            is_init_created = True
+        return is_init_created
 
     def create_bot(self) -> None:
         self._file_manager.delete_dir(self._bot_directory)
@@ -339,8 +337,8 @@ class BotGenerator:
         for message in self._messages:
             self.create_file_handlers(message)
         self._create_init_handler_files()
-        self._file_manager.create_state_file(self._bot_directory, self._create_state())
-        self._file_manager.create_state_file_init(self._bot_directory)
+        self._file_manager.create_state_file(self._create_state())
+        self._file_manager.create_state_file_init()
 
     def _create_state(self) -> str:
         """generate code of state class
@@ -354,11 +352,11 @@ class BotGenerator:
     def _create_config_file(self):
         extend_imports = self._get_imports_sample('config_import')
         config_code = create_config(extend_imports, {'TOKEN': self._token})
-        self._file_manager.create_config_file(self._bot_directory, config_code)
+        self._file_manager.create_config_file(config_code)
 
     def _create_on_startup_commands_file(self) -> None:
         """
         Создает файл с функцией для отображения команд бота.
         """
         commands_code = generate_commands_code(self._commands)
-        self._file_manager.create_commands_file(self._bot_directory, commands_code)
+        self._file_manager.create_commands_file(commands_code)
