@@ -3,6 +3,12 @@ from typing import Optional
 from enum import Enum
 
 
+@dataclass(slots=True)
+class HandlerInit:
+    handler_name: str
+    is_error_message: bool
+
+
 class ButtonTypes(Enum):
     INLINE = 'IKB'
     REPLY = 'RKB'

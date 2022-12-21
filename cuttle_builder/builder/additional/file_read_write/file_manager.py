@@ -22,7 +22,7 @@ class FileManager:
         """add into directory file, that contains generated code
 
         Args:
-            dir (_type_): directory path
+            directory:
             code (_type_): generated code
         """
 
@@ -35,6 +35,7 @@ class FileManager:
         """add into init files names of new units to register generated code (dir - init directory, code - import of unit)
 
         Args:
+            directory:
             dir (_type_): directory path
             code (_type_): generated code (import insdide init)
         """
@@ -44,7 +45,8 @@ class FileManager:
             file.write(code + file_data)
             # file.close()
 
-    def create_file(self, file_path: str, code: str, init_path: Optional[str] = None, import_code: Optional[str] = None) -> None:
+    def create_file(self, file_path: str, code: str, init_path: Optional[str] = None,
+                    import_code: Optional[str] = None) -> None:
         """create and register new unit of telegram bot
 
         Args:
@@ -52,7 +54,6 @@ class FileManager:
             code (_type_): generated code
             init_path (_type_): init file path
             import_code (_type_): generated code (import inside init)
-            flag (_type_): write new file or rewrite exist file
         """
         self.write_file(file_path, code)
         if init_path is not None and import_code is not None:
@@ -86,7 +87,6 @@ class FileManager:
         """ get template of bot and copy in upper directory with id of bot (doesn't work if call outside of cuttle_builder directory)
 
         Args:
-            bot_id (int): id of bot
             directory (str): directory
         Returns:
             str: directory path
@@ -99,8 +99,8 @@ class FileManager:
     def delete_bot_by_id(self, bot_id: int) -> None:
         """ delete directory created for bot
 
-                Args:
-                    bot_id (int): id of bot
-                """
+        Args:
+            bot_id (int): id of bot
+        """
         directory = self.get_dir(bot_id)
         self.delete_dir(directory)
