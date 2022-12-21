@@ -86,6 +86,8 @@ class APIFileCreator(FileManager):
             bot_directory (str): Корневая директория бота
             code (str): Подготовленный код(содержимое файла)
         """
+        assert isinstance(code, str)
+
         path_to_file = str(
             Path(bot_directory) / 'on_startup_commands.py')
         self.write_file(path_to_file, code)
