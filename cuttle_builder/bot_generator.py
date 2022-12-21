@@ -2,7 +2,6 @@ import typing
 import io
 import os
 
-
 from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit, BotCommand
 from cuttle_builder.bot_gen_exceptions import BotGeneratorException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
@@ -65,7 +64,6 @@ class BotGenerator:
         for message in messages:
             self._states.append(message.id)
         self._messages: List[BotMessage] = messages
-
 
     def _check_token(self):
         left, sep, right = self._token.partition(':')
@@ -202,14 +200,19 @@ class BotGenerator:
         return [item for item in self._variants if item.next_message_id == message_id]
 
     def _create_init_handler_files(self):
+        prepared_handler_inits = self._prepare_init_handlers()
+        for handler_init in prepared_handler_inits:
+            self._file_manager.create_handler_file_init(self._bot_directory, handler_init.handler_name)
+
+    def _prepare_init_handlers(self) -> List[HandlerInit]:
+        error_handler = None
         for handler_init in self._handler_inits:
             if handler_init.is_error_message:
-                self._file_manager.create_handler_file_init(self._bot_directory, handler_init.handler_name)
-                break
-
-        for handler_init in self._handler_inits:
-            if not handler_init.is_error_message:
-                self._file_manager.create_handler_file_init(self._bot_directory, handler_init.handler_name)
+                error_handler = handler_init
+        prepared_handler_inits = self._handler_inits
+        prepared_handler_inits.remove(error_handler)
+        prepared_handler_inits.insert(0, error_handler)
+        return prepared_handler_inits
 
     def create_file_handlers(self, message: BotMessage) -> None:
         keyboard_generation_counter = 0
@@ -292,7 +295,6 @@ class BotGenerator:
                     HandlerInit(handler_name=message.id, is_error_message=True)
                 )
                 is_init_created = True
-
 
         # Получение списка вариантов у которых next_message == message.id (принемаемый на вход функцией).
         previous_variants: typing.List[BotVariant] = self._find_previous_variants(message.id)
