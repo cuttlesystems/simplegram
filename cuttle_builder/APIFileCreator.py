@@ -5,6 +5,7 @@ from cuttle_builder.builder.additional.file_read_write.file_manager import FileM
 
 
 class APIFileCreator(FileManager):
+
     def create_file_keyboard(self, bot_directory: str, keyboard_name: str, keyboard_code: str):
         """create file in specific directory, contains keyboard and register this keyboard in the package
 
@@ -17,13 +18,13 @@ class APIFileCreator(FileManager):
             Path(bot_directory) / 'keyboards' / f'{keyboard_name}.py')
         self.write_file(keyboard_code_file, keyboard_code)
 
-    def create_keyboard_file_init(self, bot_directory: str, keyboard_name: str):
+    def create_keyboard_file_init(self, bot_directory: str, keyboard_name: str) -> None:
         import_code = f'\nfrom .{keyboard_name} import {keyboard_name}'
         keyboard_init_file = str(
             Path(bot_directory) / 'keyboards' / '__init__.py')
         self.write_into_init(keyboard_init_file, import_code)
 
-    def create_file_handler(self, bot_directory: str, name: str, code: str):
+    def create_file_handler(self, bot_directory: str, name: str, code: str) -> None:
         """create file in specific directory, contains handler and register this handler in the package
 
         Args:
@@ -35,7 +36,7 @@ class APIFileCreator(FileManager):
             Path(bot_directory) / 'handlers' / f'get_{name}.py')
         self.write_file(handler_code_file, code)
 
-    def create_handler_file_init(self, bot_directory: str, name: str):
+    def create_handler_file_init(self, bot_directory: str, name: str) -> None:
         import_code = f'from .get_{name} import dp\n'
         handler_init_file = str(
             Path(bot_directory) / 'handlers' / '__init__.py')
@@ -52,13 +53,13 @@ class APIFileCreator(FileManager):
             Path(bot_directory) / 'state' / 'states.py')
         self.write_file(state_code_file, code)
 
-    def create_state_file_init(self, bot_directory: str):
+    def create_state_file_init(self, bot_directory: str) -> None:
         import_code = 'from .states import States'
         state_init_file = str(
             Path(bot_directory) / 'state' / '__init__.py')
         self.write_into_init(state_init_file, import_code)
 
-    def create_config_file(self, bot_directory, code):
+    def create_config_file(self, bot_directory, code) -> None:
         config_code_file = str(
             Path(bot_directory) / 'data' / 'config.py')
         self.create_file(config_code_file, code)
