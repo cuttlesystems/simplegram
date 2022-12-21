@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QGraphicsItem, QGraphicsObject
 from b_logic.data_objects import BotMessage, BotVariant
 
 
-class MessageGraphicsSignalSender(QObject):
+class BlockGraphicsSignalSender(QObject):
     # в списке передаются варианты сообщения
     add_variant_request = Signal(BotMessage, list)
 
@@ -21,10 +21,10 @@ class MessageGraphicsSignalSender(QObject):
     request_change_variant = Signal(BotVariant)
 
 
-class MessageGraphicsItem(QGraphicsItem):
+class BlockGraphicsItem(QGraphicsItem):
     """
     Объект графической сцены Блок.
-    Состоит из сообщений и принадлежащих ему Вариантов
+    Состоит из Сообщений и принадлежащих ему Вариантов
     """
 
     _MSG_WIDTH = 150
@@ -55,7 +55,7 @@ class MessageGraphicsItem(QGraphicsItem):
         assert isinstance(message, BotMessage)
         assert all(isinstance(variant, BotVariant) for variant in variants)
 
-        self.signal_sender: MessageGraphicsSignalSender = MessageGraphicsSignalSender()
+        self.signal_sender: BlockGraphicsSignalSender = BlockGraphicsSignalSender()
 
         self._brush = QBrush(QColor(self._MESSAGE_COLOR))
 
