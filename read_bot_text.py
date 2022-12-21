@@ -8,6 +8,9 @@ if __name__ == '__main__':
     bot_api.authentication(settings.username, settings.password)
     bot = bot_api.get_bot_by_id(settings.bot_id)
     print(bot)
+    commands = bot_api.get_commands(bot)
+    for command in commands:
+        print(f'    {command}')
     messages = bot_api.get_messages(bot)
     for message in messages:
         print(f'    Message: id={message.id}, text={message.text}')
