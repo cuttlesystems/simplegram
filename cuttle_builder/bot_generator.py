@@ -67,7 +67,6 @@ class BotGenerator:
             self._states.append(message.id)
         self._messages: List[BotMessage] = messages
 
-
     def _check_token(self) -> bool:
         left, sep, right = self._token.partition(':')
         if (not sep) or (not left.isdigit()) or (not right):
@@ -206,12 +205,14 @@ class BotGenerator:
 
     def _prepare_init_handlers(self) -> List[HandlerInit]:
         error_handler = None
+        prepared_handler_inits = []
         for handler_init in self._handler_inits:
             if handler_init.is_error_message:
-                error_handler = handler_init
-        prepared_handler_inits = self._handler_inits
-        prepared_handler_inits.remove(error_handler)
-        prepared_handler_inits.insert(0, error_handler)
+                prepared_handler_inits.append(handler_init)
+
+        for handler_init in self._handler_inits:
+            if not handler_init.is_error_message:
+                prepared_handler_inits.append(handler_init)
         return prepared_handler_inits
 
     def create_file_handlers(self, message: BotMessage) -> None:

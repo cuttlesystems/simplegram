@@ -14,11 +14,16 @@ class APIFileCreator(FileManager):
             keyboard_name (str): name of keyboard (message_id + _kb)
             keyboard_code (str): generated code of keyboard
         """
+        assert isinstance(keyboard_name, str)
+        assert isinstance(keyboard_code, str)
+
         keyboard_code_file = str(
             Path(bot_directory) / 'keyboards' / f'{keyboard_name}.py')
         self.write_file(keyboard_code_file, keyboard_code)
 
     def create_keyboard_file_init(self, bot_directory: str, keyboard_name: str) -> None:
+        assert isinstance(keyboard_name, str)
+
         import_code = f'\nfrom .{keyboard_name} import {keyboard_name}'
         keyboard_init_file = str(
             Path(bot_directory) / 'keyboards' / '__init__.py')
@@ -32,11 +37,16 @@ class APIFileCreator(FileManager):
             name (str): name of handler (message_id)
             code (str): generated code of handler
         """
+        assert isinstance(name, str)
+        assert isinstance(code, str)
+
         handler_code_file = str(
             Path(bot_directory) / 'handlers' / f'get_{name}.py')
         self.write_file(handler_code_file, code)
 
     def create_handler_file_init(self, bot_directory: str, name: str) -> None:
+        assert isinstance(name, str)
+
         import_code = f'from .get_{name} import dp\n'
         handler_init_file = str(
             Path(bot_directory) / 'handlers' / '__init__.py')
@@ -49,6 +59,8 @@ class APIFileCreator(FileManager):
             bot_directory (str): name of bot
             code (str): code of state
         """
+        assert isinstance(code, str)
+
         state_code_file = str(
             Path(bot_directory) / 'state' / 'states.py')
         self.write_file(state_code_file, code)
@@ -60,6 +72,8 @@ class APIFileCreator(FileManager):
         self.write_into_init(state_init_file, import_code)
 
     def create_config_file(self, bot_directory, code) -> None:
+        assert isinstance(code, str)
+
         config_code_file = str(
             Path(bot_directory) / 'data' / 'config.py')
         self.create_file(config_code_file, code)
@@ -74,5 +88,4 @@ class APIFileCreator(FileManager):
         """
         path_to_file = str(
             Path(bot_directory) / 'on_startup_commands.py')
-
         self.write_file(path_to_file, code)
