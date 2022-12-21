@@ -32,7 +32,8 @@ class BotGenerator:
             commands: List[BotCommand],
             start_message_id: int,
             token: str,
-            bot_path: str
+            bot_path: str,
+            error_message_id: int = None
     ):
         """
         Класс для создания исходного кода ТГ бота по входному набору сообщений и вариантов
@@ -50,10 +51,8 @@ class BotGenerator:
         assert isinstance(token, str)
         assert isinstance(bot_path, str)
 
-
         self._handler_inits: List[HandlerInit] = []
         self._messages: List[BotMessage] = messages
-
         self._variants: List[BotVariant] = variants
         self._commands: List[BotCommand] = commands
         self._start_message_id = start_message_id
@@ -80,9 +79,6 @@ class BotGenerator:
 
     def _is_valid_data(self) -> bool:
         if not self._messages:
-            # todo: метод проверки данных не должен удалять директорию (он должен только проверять),
-            #  а это удаление, вероятно, должно быть раньше
-            self._file_manager.delete_dir(self._bot_directory)
             raise BotGeneratorException('No messages in database')
         self._check_token()
         return True
@@ -206,6 +202,8 @@ class BotGenerator:
         for handler_init in self._handler_inits:
             if handler_init.is_error_message:
                 self._file_manager.create_handler_file_init(self._bot_directory, handler_init.handler_name)
+                break
+
         for handler_init in self._handler_inits:
             if not handler_init.is_error_message:
                 self._file_manager.create_handler_file_init(self._bot_directory, handler_init.handler_name)
@@ -327,6 +325,7 @@ class BotGenerator:
             imports_generation_counter += 1
 
     def create_bot(self) -> None:
+        self._file_manager.delete_dir(self._bot_directory)
         self._is_valid_data()
         self._create_generated_bot_directory()
         self._create_config_file()

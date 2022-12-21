@@ -6,7 +6,7 @@ from cuttle_builder.builder.additional.file_read_write.file_manager import FileM
 
 class APIFileCreator(FileManager):
 
-    def create_file_keyboard(self, bot_directory: str, keyboard_name: str, keyboard_code: str) -> None:
+    def create_file_keyboard(self, bot_directory: str, keyboard_name: str, keyboard_code: str):
         """create file in specific directory, contains keyboard and register this keyboard in the package
 
         Args:
