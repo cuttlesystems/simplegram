@@ -5,7 +5,6 @@ from cuttle_builder.builder.additional.file_read_write.file_manager import FileM
 
 
 class APIFileCreator(FileManager):
-
     def create_file_keyboard(self, bot_directory: str, keyboard_name: str, keyboard_code: str):
         """create file in specific directory, contains keyboard and register this keyboard in the package
 
@@ -17,7 +16,6 @@ class APIFileCreator(FileManager):
         keyboard_code_file = str(
             Path(bot_directory) / 'keyboards' / f'{keyboard_name}.py')
         self.write_file(keyboard_code_file, keyboard_code)
-        return f'\nfrom .{keyboard_name} import {keyboard_name}'
 
     def create_keyboard_file_init(self, bot_directory: str, keyboard_name: str):
         import_code = f'\nfrom .{keyboard_name} import {keyboard_name}'
@@ -63,5 +61,4 @@ class APIFileCreator(FileManager):
     def create_config_file(self, bot_directory, code):
         config_code_file = str(
             Path(bot_directory) / 'data' / 'config.py')
-
         self.create_file(config_code_file, code)

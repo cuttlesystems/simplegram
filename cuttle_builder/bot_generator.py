@@ -65,7 +65,6 @@ class BotGenerator:
         left, sep, right = self._token.partition(':')
         if (not sep) or (not left.isdigit()) or (not right):
             raise Exception('Token is invalid!')
-
         return True
 
     def _create_generated_bot_directory(self) -> None:
@@ -200,6 +199,8 @@ class BotGenerator:
         for handler_init in self._handler_inits:
             if handler_init.is_error_message:
                 self._file_manager.create_handler_file_init(self._bot_directory, handler_init.handler_name)
+                break
+
         for handler_init in self._handler_inits:
             if not handler_init.is_error_message:
                 self._file_manager.create_handler_file_init(self._bot_directory, handler_init.handler_name)
