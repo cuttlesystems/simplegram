@@ -16,6 +16,7 @@ from bot_constructor.settings import BOTS_DIR
 from rest_framework.request import Request
 from rest_framework.decorators import action
 
+from .utils import check_bot_token_when_generate_bot
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from .serializers import (BotSerializer, MessageSerializer, MessageSerializerWithVariants,
                           VariantSerializer, CommandSerializer)
@@ -184,6 +185,7 @@ class BotViewSet(viewsets.ModelViewSet):
         """
         bot_id = int(bot_id_str)
         bot_django = get_object_or_404(Bot, id=bot_id)
+        check_bot_token_when_generate_bot(bot_django)
         # проверка прав, что пользователь может работать с данным ботом (владелец бота)
         self.check_object_permissions(request, bot_django)
         self._stop_bot_if_it_run(bot_id)

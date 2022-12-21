@@ -30,7 +30,7 @@ class BotGenerator:
             messages: List[BotMessage],
             variants: List[BotVariant],
             commands: List[BotCommand],
-            start_message_id: int,
+            start_message_id: Optional[int],
             token: str,
             bot_path: str,
             error_message_id: int = None
@@ -47,8 +47,8 @@ class BotGenerator:
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, BotVariant) for variant in variants)
         assert all(isinstance(command, BotCommand) for command in commands)
-        assert isinstance(start_message_id, int)
-        assert isinstance(token, str)
+        assert isinstance(start_message_id, Optional[int])
+        assert isinstance(token, Optional[str])
         assert isinstance(bot_path, str)
 
         self._handler_inits: List[HandlerInit] = []
@@ -80,7 +80,7 @@ class BotGenerator:
     def _is_valid_data(self) -> bool:
         if not self._messages:
             raise BotGeneratorException('No messages in database')
-        self._check_token()
+        # self._check_token()
         return True
 
     def _get_variants_of_message(self, message_id: int) -> typing.List[BotVariant]:
