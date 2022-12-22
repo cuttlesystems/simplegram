@@ -4,7 +4,6 @@ from pathlib import Path
 
 from cryptography.fernet import Fernet
 
-from desktop_constructor_app.constructor_app.utils.application_settings import get_application_data_dir
 from desktop_constructor_app.data_objects import Settings
 
 
@@ -42,20 +41,40 @@ class ApplicationSettings:
         if not self._path_to_storage.exists():
             self._path_to_storage.mkdir(exist_ok=True, parents=True)
 
+    def _encrypt(self, password: str):
+        encrypted_password_bytes = self._fernet.encrypt(password.encode('utf-8'))
+        encrypted_password_str = base64.b64encode(encrypted_password_bytes).decode('utf-8')
+        return encrypted_password_str
+
     def _settings_to_dict(self, settings: Settings) -> dict:
         assert isinstance(settings, Settings)
-        encrypted_password = self._fernet.encrypt(settings.password.encode('utf-8'))
+        encrypted_password = self._encrypt(settings.password)
         data = {
             'address': settings.address,
             'name': settings.name,
-            'password': base64.b64encode(encrypted_password).decode('utf-8')}
+            'password': encrypted_password
+        }
         return data
+
+    def _decrypt(self, encrypted_password):
+        encrypted_password_bytes = base64.b64decode(encrypted_password)
+        password = self._fernet.decrypt(encrypted_password_bytes).decode('utf-8')
+        return password
 
     def _dict_to_settings(self, data: dict) -> Settings:
         assert isinstance(data, dict)
-        coded_bytes = base64.b64decode(data['password'])
+        password = self._decrypt(data['password'])
         settings = Settings()
         settings.address = data['address']
         settings.name = data['name']
-        settings.password = self._fernet.decrypt(coded_bytes).decode('utf-8')
+        settings.password = password
         return settings
+
+# if __name__ == '__main__':
+#     app = ApplicationSettings(get_application_data_dir(), b'OCbAwQH4JA9ID-5gJB4nvk4UbNwpHx4wNT5O5VNKcGI=')
+#     app.write_settings(Settings(
+#         name='admin',
+#         password='admin',
+#         address='localhost'
+#     ))
+#     print('start')
