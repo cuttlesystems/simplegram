@@ -10,10 +10,9 @@ from desktop_constructor_app.data_objects import Settings
 
 class ApplicationSettings:
 
-    def __init__(self, path_to_storage, key):
+    def __init__(self, path_to_storage: Path, key: bytes):
         assert isinstance(path_to_storage, Path)
         assert isinstance(key, bytes)
-        print(key)
         self.fernet = Fernet(key)
         self.path_to_storage: Path = path_to_storage
 
@@ -55,7 +54,6 @@ class ApplicationSettings:
     def _dict_to_settings(self, data: dict) -> Settings:
         assert isinstance(data, dict)
         coded_bytes = base64.b64decode(data['password'])
-        print(coded_bytes)
         settings = Settings()
         settings.address = data['address']
         settings.name = data['name']
