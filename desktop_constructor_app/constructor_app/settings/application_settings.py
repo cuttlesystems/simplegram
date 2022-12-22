@@ -13,8 +13,8 @@ class ApplicationSettings:
     def __init__(self, path_to_storage: Path, key: bytes):
         assert isinstance(path_to_storage, Path)
         assert isinstance(key, bytes)
-        self.fernet = Fernet(key)
-        self.path_to_storage: Path = path_to_storage
+        self._fernet = Fernet(key)
+        self._path_to_storage: Path = path_to_storage
 
     def read_settings(self) -> Settings:
         settings_path = self._get_application_settings_path()
@@ -34,17 +34,17 @@ class ApplicationSettings:
             json.dump(data, outfile, indent=4)
 
     def _get_application_settings_path(self) -> Path:
-        settings_path = self.path_to_storage / 'data.json'
+        settings_path = self._path_to_storage / 'data.json'
         return settings_path
 
     def _create_settings_dir_if_not_exist(self) -> None:
         # создаем path_to_storage если не существует
-        if not self.path_to_storage.exists():
-            self.path_to_storage.mkdir(exist_ok=True, parents=True)
+        if not self._path_to_storage.exists():
+            self._path_to_storage.mkdir(exist_ok=True, parents=True)
 
     def _settings_to_dict(self, settings: Settings) -> dict:
         assert isinstance(settings, Settings)
-        encrypted_password = self.fernet.encrypt(settings.password.encode('utf-8'))
+        encrypted_password = self._fernet.encrypt(settings.password.encode('utf-8'))
         data = {
             'address': settings.address,
             'name': settings.name,
@@ -57,5 +57,5 @@ class ApplicationSettings:
         settings = Settings()
         settings.address = data['address']
         settings.name = data['name']
-        settings.password = self.fernet.decrypt(coded_bytes).decode('utf-8')
+        settings.password = self._fernet.decrypt(coded_bytes).decode('utf-8')
         return settings
