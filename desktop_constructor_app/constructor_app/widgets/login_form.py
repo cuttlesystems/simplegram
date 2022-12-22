@@ -14,6 +14,7 @@ from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.settings.application_settings import ApplicationSettings
 from desktop_constructor_app.constructor_app.utils.application_settings import get_application_data_dir
 from desktop_constructor_app.constructor_app.widgets.ui_login_form import Ui_LoginForm
+from desktop_constructor_app.data_objects import Settings
 
 
 class LoginStateEnum(Enum):
@@ -121,6 +122,12 @@ class LoginForm(QWidget):
             self._dialog_state = LoginStateEnum.BOTS
             self.__load_bots_list()
             self._activate_controls()
+            settings = Settings(
+                address=server_addr_edit.text(),
+                name=username_edit.text(),
+                password=password_edit.text()
+            )
+            self.application_settings.write_settings(settings)
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
 
