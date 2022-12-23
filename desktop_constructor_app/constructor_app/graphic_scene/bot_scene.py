@@ -51,15 +51,12 @@ class BotScene(QGraphicsScene):
             self._WORKSPACE_BACKGROUND_LINE_THICKNESS,
             self._WORKSPACE_BACKGROUND_LINE_STYLE
         )
-
         self._background_rect = self.addRect(
             QtCore.QRect(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT),
             pen=self._background_pen,
             brush=self._background_brush
         )
-
         self._message_graphics_list: typing.List[MessageGraphicsItem] = []
-
         self._connect_signals()
 
     def clear_scene(self) -> None:
