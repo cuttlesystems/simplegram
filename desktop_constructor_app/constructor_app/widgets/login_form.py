@@ -40,7 +40,7 @@ class LoginForm(QWidget):
 
     open_bot_signal = Signal(BotDescription)
 
-    KEY = b'OCbAwQH4JA9ID-5gJB4nvk4UbNwpHx4wNT5O5VNKcGI='
+    _KEY = b'OCbAwQH4JA9ID-5gJB4nvk4UbNwpHx4wNT5O5VNKcGI='
 
     def __init__(self, parent: typing.Optional[QWidget], bot_api: IBotApi):
         super().__init__(parent)
@@ -57,8 +57,8 @@ class LoginForm(QWidget):
         else:
             print('Can not load logo')
         settings_path = get_application_data_dir()
-        self.application_settings = ApplicationSettings(settings_path, key=self.KEY)
-        settings = self.application_settings.read_settings()
+        self._application_settings = ApplicationSettings(settings_path, key=self._KEY)
+        settings = self._application_settings.read_settings()
         self._ui.username_edit.setText(settings.name)
         self._ui.password_edit.setText(settings.password)
         self._ui.server_addr_edit.setText(settings.address)
@@ -129,7 +129,7 @@ class LoginForm(QWidget):
                 name=username_edit.text(),
                 password=password_edit.text()
             )
-            self.application_settings.write_settings(settings)
+            self._application_settings.write_settings(settings)
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
 
