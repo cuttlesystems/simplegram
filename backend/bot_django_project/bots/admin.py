@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from utils.git_info import read_info_from_file_about_commit
+from utils.read_git_info_file import read_info_from_file_about_commit
 from .models import Bot, Message, Variant, Command
 
 admin.site.site_header = read_info_from_file_about_commit()
-admin.site.index_title = 'Bot Constructor'
+admin.site.index_title = 'Bot constructor'
 
 
 class BotAdmin(admin.ModelAdmin):
