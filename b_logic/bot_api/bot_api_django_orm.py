@@ -1,7 +1,8 @@
-from io import BufferedIOBase
 from typing import List, Optional
-from django.conf import settings
+from io import BufferedIOBase
+
 from django.db.models.fields.files import ImageFieldFile
+from django.conf import settings
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes
@@ -173,7 +174,7 @@ class BotApiByDjangoORM(IBotApi):
         bot_description.bot_name = bot_django.name
         bot_description.bot_token = bot_django.token
         bot_description.bot_description = bot_django.description
-        bot_description.start_message_id = bot_django.start_message.id
+        bot_description.start_message_id = bot_django.start_message.id if bot_django.start_message is not None else None
         return bot_description
 
     def _create_bot_message_from_data(self, message_django: Message) -> BotMessage:
@@ -185,6 +186,7 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.photo = convert_image_to_bytes(
             get_full_path_to_django_image(settings.MEDIA_ROOT, message_django.photo)
         )
+        # todo: добавить фото файлнэйм
         bot_message.video = message_django.video
         bot_message.file = message_django.file
         bot_message.x = message_django.coordinate_x

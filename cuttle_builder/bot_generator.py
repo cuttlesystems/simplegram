@@ -3,7 +3,7 @@ import io
 import os
 
 from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit, BotCommand
-from cuttle_builder.exceptions.bot_gen_exceptions import BotGeneratorException
+from cuttle_builder.bot_gen_exceptions import NoOneMessageException, TokenException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
 from cuttle_builder.builder.handler_generator.create_state_handler import (create_state_message_handler,
@@ -30,7 +30,7 @@ class BotGenerator:
             messages: List[BotMessage],
             variants: List[BotVariant],
             commands: List[BotCommand],
-            start_message_id: int,
+            start_message_id: Optional[int],
             token: str,
             bot_path: str,
             error_message_id: int = None
@@ -47,8 +47,8 @@ class BotGenerator:
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, BotVariant) for variant in variants)
         assert all(isinstance(command, BotCommand) for command in commands)
-        assert isinstance(start_message_id, int)
-        assert isinstance(token, str)
+        assert isinstance(start_message_id, Optional[int])
+        assert isinstance(token, Optional[str])
         assert isinstance(bot_path, str)
 
         self._handler_inits: List[HandlerInit] = []
@@ -69,7 +69,7 @@ class BotGenerator:
     def _check_token(self) -> bool:
         left, sep, right = self._token.partition(':')
         if (not sep) or (not left.isdigit()) or (not right):
-            raise Exception('Token is invalid!')
+            raise TokenException('Token is invalid!')
         return True
 
     def _create_generated_bot_directory(self) -> None:
@@ -77,8 +77,10 @@ class BotGenerator:
 
     def _is_valid_data(self) -> bool:
         if not self._messages:
-            raise BotGeneratorException('No messages in database')
-        self._check_token()
+            raise NoOneMessageException(
+                'Can\'t generate bot without messages. '
+                'At least one message is required.')
+        # self._check_token()
         return True
 
     def _get_variants_of_message(self, message_id: int) -> typing.List[BotVariant]:

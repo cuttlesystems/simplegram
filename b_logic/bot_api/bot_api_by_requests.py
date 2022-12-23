@@ -2,9 +2,27 @@ import json
 import typing
 from typing import List, Optional
 import requests
+import urllib.request
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes
+
+
+def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
+    """
+    Конвертирует изображение по его url в байт код
+
+    Args:
+        url (Optional[str]): Url изображения
+
+    Returns:
+        Optional[bytes]: Байт код изображения
+    """
+    result = None
+    if url is not None:
+        with urllib.request.urlopen(url) as file:
+            result = file.read()
+    return result
 
 
 class BotApiByRequests(IBotApi):
@@ -162,6 +180,7 @@ class BotApiByRequests(IBotApi):
     def get_messages(self, bot: BotDescription) -> List[BotMessage]:
         """
         Получить все сообщения заданного бота
+
         Args:
             bot: бот, у которого нужно получить сообщения
 
@@ -181,7 +200,9 @@ class BotApiByRequests(IBotApi):
         return messages_list
 
     def create_message(self, bot: BotDescription, text: str,
-                       keyboard_type: ButtonTypes, x: int, y: int) -> BotMessage:
+                       keyboard_type: ButtonTypes, x: int, y: int,
+                       photo: Optional[bytes] = None,
+                       photo_filename: Optional[str] = None) -> BotMessage:
         """
         Создать сообщение
         Args:
@@ -197,13 +218,16 @@ class BotApiByRequests(IBotApi):
         message = BotMessage(
             text=text,
             keyboard_type=keyboard_type,
+            photo=photo,
+            photo_filename=photo_filename,
             x=x,
             y=y
         )
         response = requests.post(
             url=self._suite_url + f'api/bots/{bot.id}/messages/',
             data=self._create_message_dict_from_message_obj(message),
-            headers=self._get_headers()
+            headers=self._get_headers(),
+            files=self._create_upload_files_message_dict_from_message_obj(message)
         )
         if response.status_code != requests.status_codes.codes.created:
             raise BotApiException('Ошибка при создании сообщения: {0}'.format(response.text))
@@ -212,9 +236,10 @@ class BotApiByRequests(IBotApi):
     def change_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
         response = requests.patch(
-            self._suite_url + f'api/message/{message.id}/',
-            self._create_message_dict_from_message_obj(message),
-            headers=self._get_headers()
+            url=self._suite_url + f'api/message/{message.id}/',
+            data=self._create_message_dict_from_message_obj(message),
+            headers=self._get_headers(),
+            files=self._create_upload_files_message_dict_from_message_obj(message)
         )
         if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException(
@@ -331,7 +356,26 @@ class BotApiByRequests(IBotApi):
             raise BotApiException(f'Ошибка при удалении варианта: {response.text}')
 
     def get_commands(self, bot: BotDescription) -> List[BotCommand]:
-        raise NotImplementedError('Метод не определен!')
+        """
+        Получить все команды заданного бота
+
+        Args:
+            bot: бот, у которого нужно получить команды
+
+        Returns:
+            список команд бота
+        """
+        assert isinstance(bot, BotDescription)
+        response = requests.get(
+            self._suite_url + f'api/bots/{bot.id}/commands/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException(f'Ошибка при получении команд бота {response.text}')
+        commands_list: List[BotCommand] = []
+        for command_dict in json.loads(response.text):
+            commands_list.append(self._create_command_from_data(command_dict))
+        return commands_list
 
     def create_command(self, bot: BotDescription, command: str,
                        description: str) -> BotCommand:
@@ -431,7 +475,7 @@ class BotApiByRequests(IBotApi):
 
         # todo: с этими полями надо разобраться, похоже,
         #  там передается url путь, который надо сначала получить
-        bot_message.photo = message_dict['photo']
+        bot_message.photo = convert_image_from_api_response_to_bytes(message_dict['photo'])
         bot_message.video = message_dict['video']
         bot_message.file = message_dict['file']
 
@@ -445,13 +489,19 @@ class BotApiByRequests(IBotApi):
             'id': message.id,
             'text': message.text,
             'keyboard_type': message.keyboard_type.value,
-
-            # todo: добавить работу с фото, видео, файлом
-
             'coordinate_x': message.x,
             'coordinate_y': message.y
         }
         return message_dict
+
+    def _create_upload_files_message_dict_from_message_obj(self, message: BotMessage) -> dict:
+        assert isinstance(message, BotMessage)
+        upload_files_message_dict = {
+            'photo': (message.photo_filename, message.photo),
+            # 'video': (),
+            # 'file': ()
+        }
+        return upload_files_message_dict
 
     def _create_variant_from_data(self, variant_dict: dict) -> BotVariant:
         """Создает объект класса MessageVariant из входящих данных"""
