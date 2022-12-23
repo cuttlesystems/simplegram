@@ -34,12 +34,12 @@ def read_info_from_file_about_commit() -> str:
     Returns:
         str: Данные о коммите.
     """
-    result = 'Информация о коммите не найдена.'
+    result = 'Information about commit not found.'
     filename = str(ROOT_DIR / 'current_commit_info.json')
     if Path(filename).exists():
         with open(filename, 'r') as commit_info:
             commit_dict = json.load(commit_info)
-            result = ('Коммит: ' + commit_dict['commit_hash'] +
-                      ', Автор: ' + commit_dict['commit_author'] +
-                      ', Дата: ' + commit_dict['commit_created_date'])
+            result = ('Commit hash: ' + commit_dict['commit_hash'] +
+                      ', Author: ' + commit_dict['commit_author'] +
+                      ', Commit date: ' + commit_dict['commit_created_date'])
     return result
