@@ -7,18 +7,13 @@ from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
 from b_logic.data_objects import BotMessage, BotVariant
 from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
+from desktop_constructor_app.constructor_app.graphic_scene.colors.scene_color_scheme import SceneColorScheme
 
 
 class BotScene(QGraphicsScene):
     """
     Сцена для отображения редактора бота
     """
-
-    # цвет фона рабочей области
-    _WORKSPACE_BACKGROUND_COLOR = 0xf0ffff
-
-    # цвет линии границы рабочей области
-    _WORKSPACE_BACKGROUND_BORDER_COLOR = 0xc5ecec
 
     # толщина линии границы рабочей области
     _WORKSPACE_BACKGROUND_LINE_THICKNESS = 5
@@ -44,10 +39,12 @@ class BotScene(QGraphicsScene):
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
 
-        self._background_brush = QBrush(QColor(self._WORKSPACE_BACKGROUND_COLOR))
+        self._scene_color_scheme = SceneColorScheme()
+
+        self._background_brush = QBrush(QColor(self._scene_color_scheme.workspace_background_color))
 
         self._background_pen = QPen(
-            QColor(self._WORKSPACE_BACKGROUND_BORDER_COLOR),
+            QColor(self._scene_color_scheme.workspace_background_border_color),
             self._WORKSPACE_BACKGROUND_LINE_THICKNESS,
             self._WORKSPACE_BACKGROUND_LINE_STYLE
         )
