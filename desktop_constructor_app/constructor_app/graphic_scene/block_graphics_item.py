@@ -12,6 +12,11 @@ from desktop_constructor_app.constructor_app.graphic_scene.block_color_scheme im
 
 
 class BlockGraphicsSignalSender(QObject):
+    """
+    Класс для описания сигналов, которые отправляет
+    графический Блок
+    """
+
     # в списке передаются варианты сообщения
     add_variant_request = Signal(BotMessage, list)
 
@@ -28,8 +33,8 @@ class BlockGraphicsItem(QGraphicsItem):
     Состоит из Сообщений и принадлежащих ему Вариантов
     """
 
-    _MSG_WIDTH = 150
-    _MSG_HEIGHT = 100
+    _MESSAGE_WIDTH = 150
+    _MESSAGE_HEIGHT = 100
 
     _VARIANT_WIDTH = 150
     _VARIANT_HEIGHT = 50
@@ -113,6 +118,15 @@ class BlockGraphicsItem(QGraphicsItem):
         return QRectF(x, y, width, height)
 
     def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value: typing.Any) -> typing.Any:
+        """
+        Метод, который позволяет встраиваться в процесс изменения графического элемента (данного блока).
+        Args:
+            change: производимое изменение (перечисление)
+            value: значение, которое меняется
+
+        Returns:
+            значение, полученное от базового класса
+        """
         result = super().itemChange(change, value)
         # синхронизируем позицию графического элемента и координаты сообщения
         if change == QGraphicsItem.ItemPositionChange:
@@ -127,7 +141,14 @@ class BlockGraphicsItem(QGraphicsItem):
             self,
             painter: QtGui.QPainter,
             option: QtWidgets.QStyleOptionGraphicsItem,
-            widget: typing.Optional[QtWidgets.QWidget]):
+            widget: typing.Optional[QtWidgets.QWidget]) -> None:
+        """
+        Метод рисования. В этом методе мы самостоятельно реализуем рисование блока.
+        Args:
+            painter: объект с помощью которого производится рисование
+            option: не используется в данном случае
+            widget: не используется в данном случае
+        """
         assert isinstance(painter, QtGui.QPainter)
         assert isinstance(option, QtWidgets.QStyleOptionGraphicsItem)
         assert isinstance(widget, QtWidgets.QWidget) or widget is None
@@ -147,10 +168,17 @@ class BlockGraphicsItem(QGraphicsItem):
         self._draw_variant(painter, None, illusory_variant_index)
 
     def mousePressEvent(self, event: PySide6.QtWidgets.QGraphicsSceneMouseEvent) -> None:
+        """
+        Метод, вызываемый при клике по блоку
+        Args:
+            event: параметры события
+        """
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
             click_position: QPointF = event.pos()
             # определим какому варианту соответствуют координаты клика
             variant_on_position = self._variant_by_position(click_position)
+            # установим текущий вариант на тот, на который кликнули (если клик произведен по варианту),
+            # либо сбросим текущий вариант, если клик в другом месте
             if variant_on_position is not None:
                 self._current_variant_index = self._variants.index(variant_on_position)
             else:
@@ -160,6 +188,11 @@ class BlockGraphicsItem(QGraphicsItem):
         super().mousePressEvent(event)
 
     def mouseDoubleClickEvent(self, event: QtWidgets.QGraphicsSceneMouseEvent) -> None:
+        """
+        Метод, вызываемый при двойном клике по блоку
+        Args:
+            event: параметры события
+        """
         illusory_variant_index = len(self._variants)
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
             click_position: QPointF = event.pos()
@@ -169,10 +202,13 @@ class BlockGraphicsItem(QGraphicsItem):
 
             variant_on_position = self._variant_by_position(click_position)
 
+            # клик по кнопке добавления нового варианта
             if add_variant_rect.contains(click_position):
                 self.signal_sender.add_variant_request.emit(self._message, self._variants)
+            # клик по сообщению
             elif message_rect.contains(click_position):
                 self.signal_sender.request_change_message.emit(self._message, self._variants)
+            # клик по какому-то определенному варианту
             elif variant_on_position is not None:
                 self.signal_sender.request_change_variant.emit(variant_on_position)
 
@@ -241,7 +277,9 @@ class BlockGraphicsItem(QGraphicsItem):
     def _update_image(self) -> None:
         """
         Перерисовать блок. Нужно вызывать этот метод, когда визуальное отображение блока меняется,
-        чтобы избежать артефактов рисования
+        чтобы избежать артефактов рисования.
+        Еще не вызов этого метода при изменении изображения может в некоторых случаях приводить к
+        падению приложения.
         """
         self.update(self.boundingRect())
 
@@ -253,18 +291,23 @@ class BlockGraphicsItem(QGraphicsItem):
 
         return variant_on_position
 
-    def _draw_block(self, painter: QtGui.QPainter):
+    def _draw_block(self, painter: QtGui.QPainter) -> None:
+        """
+        Метод для рисования только блока
+        Args:
+            painter: объект для рисования
+        """
         painter.setPen(QtCore.Qt.PenStyle.NoPen)
         painter.setBrush(self._get_block_brush())
         painter.drawRoundedRect(self._block_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
 
-    def _draw_message(self, painter: QtGui.QPainter):
+    def _draw_message(self, painter: QtGui.QPainter) -> None:
+        # настроим цвета кисточки и заливки и нарисуем сообщение
         self._setup_message_colors(painter)
-
         painter.drawRoundedRect(self._message_rect(), self._ROUND_RADIUS, self._ROUND_RADIUS)
 
+        # настроим цвет текста и напишем текст сообщения
         self._setup_text_color(painter)
-
         painter.drawText(self._message_text_rect(), self._message.text)
 
     def _draw_variant(self, painter: QtGui.QPainter, variant: typing.Optional[BotVariant], index: int):
@@ -272,13 +315,13 @@ class BlockGraphicsItem(QGraphicsItem):
         assert isinstance(variant, BotVariant) or variant is None
         assert isinstance(index, int)
 
-        illusory_variant = variant is None
+        is_illusory_variant = variant is None
 
-        self._setup_variant_colors(painter, index, illusory_variant)
+        self._setup_variant_colors(painter, index, is_illusory_variant)
 
         painter.drawRect(self._variant_rect(index))
 
-        if not illusory_variant:
+        if not is_illusory_variant:
             painter.setPen(QColor(self._color_scheme.text_color))
             painter.drawText(self._variant_text_rect(index), variant.text)
         else:
@@ -331,9 +374,11 @@ class BlockGraphicsItem(QGraphicsItem):
         if not is_illusory_variant:
             # понятие "текущий вариант" имеет смысл только тогда, когда текущий блок выделен
             if self.isSelected() and painted_variant_index == self._current_variant_index:
+                # настройки рисования для выделенного элемента
                 painter.setBrush(QColor(self._color_scheme.selected_variant_background))
                 painter.setPen(self._selected_pen)
             else:
+                # настройки рисования
                 painter.setBrush(QColor(self._color_scheme.variant_background))
                 painter.setPen(self._normal_pen)
         else:
@@ -347,7 +392,7 @@ class BlockGraphicsItem(QGraphicsItem):
         dy = self._VARIANT_HEIGHT + self._VARIANT_DISTANCE
         return QRectF(
             0,
-            self._MSG_HEIGHT + self._VARIANT_DISTANCE + dy * variant_index,
+            self._MESSAGE_HEIGHT + self._VARIANT_DISTANCE + dy * variant_index,
             self._VARIANT_WIDTH,
             self._VARIANT_HEIGHT)
 
@@ -371,14 +416,14 @@ class BlockGraphicsItem(QGraphicsItem):
         )
 
     def _message_rect(self) -> QRectF:
-        return QRectF(0, 0, self._MSG_WIDTH, self._MSG_HEIGHT)
+        return QRectF(0, 0, self._MESSAGE_WIDTH, self._MESSAGE_HEIGHT)
 
     def _message_text_rect(self) -> QRectF:
         return QRectF(
             self._MESSAGE_TEXT_BORDER,
             self._MESSAGE_TEXT_BORDER,
-            self._MSG_WIDTH - self._MESSAGE_TEXT_BORDER * 2,
-            self._MSG_HEIGHT - self._MESSAGE_TEXT_BORDER * 2
+            self._MESSAGE_WIDTH - self._MESSAGE_TEXT_BORDER * 2,
+            self._MESSAGE_HEIGHT - self._MESSAGE_TEXT_BORDER * 2
         )
 
     def _block_rect(self) -> QRectF:
