@@ -27,11 +27,9 @@ class BotDescription:
 class BotMessage:
     id: Optional[int] = None
     text: Optional[str] = None
-
     keyboard_type: ButtonTypes = ButtonTypes.REPLY
-    # todo: думаю, тут сделать байтовые поля в
-    #  которых хранить байтовое содержимое (надо подумать)
     photo: Optional[bytes] = None
+    photo_filename: Optional[str] = None
     video: Optional[str] = None
     file: Optional[str] = None
 
