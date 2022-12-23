@@ -11,7 +11,10 @@ from b_logic.bot_api.bot_api_by_requests import BotApiException
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
 from desktop_constructor_app.common.utils.name_utils import gen_next_name
+from desktop_constructor_app.constructor_app.settings.application_settings import ApplicationSettings
+from desktop_constructor_app.constructor_app.utils.application_settings import get_application_data_dir
 from desktop_constructor_app.constructor_app.widgets.ui_login_form import Ui_LoginForm
+from desktop_constructor_app.data_objects import Settings
 
 
 class LoginStateEnum(Enum):
@@ -37,6 +40,8 @@ class LoginForm(QWidget):
 
     open_bot_signal = Signal(BotDescription)
 
+    _KEY = b'OCbAwQH4JA9ID-5gJB4nvk4UbNwpHx4wNT5O5VNKcGI='
+
     def __init__(self, parent: typing.Optional[QWidget], bot_api: IBotApi):
         super().__init__(parent)
         self._bot_api = bot_api
@@ -51,6 +56,12 @@ class LoginForm(QWidget):
             self._ui.cuttle_systems_logo_label.setPixmap(logo_pixmap)
         else:
             print('Can not load logo')
+        settings_path = get_application_data_dir()
+        self._application_settings = ApplicationSettings(settings_path, key=self._KEY)
+        settings = self._application_settings.read_settings()
+        self._ui.username_edit.setText(settings.name)
+        self._ui.password_edit.setText(settings.password)
+        self._ui.server_addr_edit.setText(settings.address)
         self._connect_signals()
         self._dialog_state: LoginStateEnum = LoginStateEnum.LOGIN
         self._activate_controls()
@@ -113,6 +124,12 @@ class LoginForm(QWidget):
             self._dialog_state = LoginStateEnum.BOTS
             self.__load_bots_list()
             self._activate_controls()
+            settings = Settings(
+                address=server_addr_edit.text(),
+                name=username_edit.text(),
+                password=password_edit.text()
+            )
+            self._application_settings.write_settings(settings)
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
 
