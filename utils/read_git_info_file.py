@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 
 
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+ROOT_DIR = Path(__file__).resolve().parent.parent
 
 
 def read_info_from_file_about_commit() -> str:
