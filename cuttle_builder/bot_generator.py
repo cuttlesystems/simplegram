@@ -65,7 +65,6 @@ class BotGenerator:
         self._error_message_id = error_message_id
         for message in messages:
             self._states.append(message.id)
-        self._messages: List[BotMessage] = messages
 
     def _check_token(self) -> bool:
         left, sep, right = self._token.partition(':')
@@ -74,7 +73,6 @@ class BotGenerator:
         return True
 
     def _create_generated_bot_directory(self) -> None:
-        print(self._bot_directory)
         self._file_manager.create_bot_directory(self._bot_directory)
 
     def _is_valid_data(self) -> bool:
