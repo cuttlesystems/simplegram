@@ -4,7 +4,6 @@ from typing import Optional
 
 
 def prev_state_code_line(prev_state: Optional[str]) -> str:
-    assert isinstance(prev_state, Optional[str])
     result = ''
     if prev_state == '*':
         result = 'state=\'*\''
@@ -15,7 +14,7 @@ def prev_state_code_line(prev_state: Optional[str]) -> str:
 
 def create_state_message_handler(imports: str, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                                  state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                                 kb: Optional[str]) -> str:
+                                 kb: str) -> str:
     """Подготовка данных для генерации кода меседж хэндлера
 
     Args:
@@ -31,14 +30,7 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
     Returns:
         str: Сгенерированный код
     """
-    assert isinstance(imports, str)
-    assert isinstance(command, str)
-    assert isinstance(prev_state, Optional[str])
-    assert isinstance(text_to_handle, Optional[str])
-    assert isinstance(state_to_set_name, Optional[str])
-    assert isinstance(text_of_answer, str)
-    assert isinstance(image_answer, Optional[str])
-    assert isinstance(kb, Optional[str])
+
     handler_sample_name = 'message_handler_sample.txt'
     list_of_handler_params = [
         command,
@@ -63,7 +55,7 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
 
 def create_state_callback_handler(imports: str, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                                   state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                                  kb: Optional[str]) -> str:
+                                  kb: str) -> str:
     """Подготовка данных для генерации кода колбэк хэндлера
 
     Args:
@@ -80,14 +72,7 @@ def create_state_callback_handler(imports: str, command: str, prev_state: Option
     Returns:
         str: Сгенерированный код
     """
-    assert isinstance(imports, str)
-    assert isinstance(command, str)
-    assert isinstance(prev_state, Optional[str])
-    assert isinstance(text_to_handle, Optional[str])
-    assert isinstance(state_to_set_name, Optional[str])
-    assert isinstance(text_of_answer, str)
-    assert isinstance(image_answer, Optional[str])
-    assert isinstance(kb, Optional[str])
+
     handler_sample_name = 'callback_handler_sample.txt'
     list_of_handler_params = [
         command,

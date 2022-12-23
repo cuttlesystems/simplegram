@@ -6,8 +6,3 @@ class BotGeneratorException(Exception):
 class TokenException(BotGeneratorException):
     def __init__(self, msg: str):
         super().__init__(msg)
-
-
-class NoOneMessageException(BotGeneratorException):
-    def __init__(self, msg: str):
-        super().__init__(msg)

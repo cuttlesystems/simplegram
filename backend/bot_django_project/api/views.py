@@ -18,14 +18,12 @@ from rest_framework.decorators import action
 
 from .utils import check_bot_token_when_generate_bot
 from cuttle_builder.bot_generator_db import BotGeneratorDb
-from cuttle_builder.bot_gen_exceptions import BotGeneratorException
 from .serializers import (BotSerializer, MessageSerializer, MessageSerializerWithVariants,
                           VariantSerializer, CommandSerializer)
 from bots.models import Bot, Message, Variant, Command
 from .mixins import RetrieveUpdateDestroyViewSet
 from .permissions import (IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, IsBotOwnerOrForbidden,
                           IsCommandOwnerOrForbidden, check_is_bot_owner_or_permission_denied)
-from .exceptions import ErrorsFromBotGenerator
 
 API_RESPONSE_WITH_VARIANTS = 'with_variants'
 
@@ -195,10 +193,7 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_obj = bot_api.get_bot_by_id(bot_django.id)
         bot_dir = self._get_bot_dir(bot_django.id)
         generator = BotGeneratorDb(bot_api, bot_obj, str(bot_dir))
-        try:
-            generator.create_bot()
-        except BotGeneratorException as exception:
-            raise ErrorsFromBotGenerator(detail=exception)
+        generator.create_bot()
 
         return Response({"generate_status": f"Бот № {bot_id} - успешно сгенерирован"},
                         status=status.HTTP_200_OK)

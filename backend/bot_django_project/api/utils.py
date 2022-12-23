@@ -1,4 +1,5 @@
-from api.exceptions import InvalidBotTokenWhenGenerateBot
+from .exceptions import InvalidBotTokenWhenGenerateBot
+
 from bots.models import Bot
 
 

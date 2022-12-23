@@ -4,6 +4,7 @@ from rest_framework.validators import UniqueTogetherValidator
 
 from bots.models import Bot, Message, Variant, Command
 
+
 User = get_user_model()
 
 

@@ -8,6 +8,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # разрешаем импорты также с корня репозитория
 sys.path.append(str(BASE_DIR.parent.parent))
 
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-l^#t200))@a#@3^g7vhy4zk(0)pfg-xfecdr+$@41hw*id)(m6'
 # SECRET_KEY = os.getenv('SECRET_KEY')
 
@@ -71,6 +76,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bot_constructor.wsgi.application'
 
+
+# Database
+# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     'default': {

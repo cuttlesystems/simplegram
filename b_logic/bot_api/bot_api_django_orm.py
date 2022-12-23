@@ -1,8 +1,7 @@
-from typing import List, Optional
 from io import BufferedIOBase
-
-from django.db.models.fields.files import ImageFieldFile
+from typing import List, Optional
 from django.conf import settings
+from django.db.models.fields.files import ImageFieldFile
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes
@@ -186,7 +185,6 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.photo = convert_image_to_bytes(
             get_full_path_to_django_image(settings.MEDIA_ROOT, message_django.photo)
         )
-        # todo: добавить фото файлнэйм
         bot_message.video = message_django.video
         bot_message.file = message_django.file
         bot_message.x = message_django.coordinate_x
