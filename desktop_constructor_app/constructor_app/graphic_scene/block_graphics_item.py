@@ -1,14 +1,14 @@
 import typing
-from dataclasses import dataclass
 
 import PySide6
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import QPointF, QRectF, Signal, QResource, QObject
+from PySide6.QtCore import QPointF, QRectF, Signal, QObject
 from PySide6.QtGui import QBrush, QColor, QPen, QLinearGradient
 from PySide6.QtSvg import QSvgRenderer
-from PySide6.QtWidgets import QGraphicsItem, QGraphicsObject
+from PySide6.QtWidgets import QGraphicsItem
 
 from b_logic.data_objects import BotMessage, BotVariant
+from desktop_constructor_app.constructor_app.graphic_scene.block_color_scheme import BlockColorScheme
 
 
 class BlockGraphicsSignalSender(QObject):
@@ -20,16 +20,6 @@ class BlockGraphicsSignalSender(QObject):
     request_change_message = Signal(BotMessage, list)
 
     request_change_variant = Signal(BotVariant)
-
-
-@dataclass(slots=True, frozen=True)
-class BlockColorScheme:
-    message_color = 0xceffff
-    text_color = 0x154545
-    pen_color = 0x137b7b
-
-    variant_background = 0x9edee6
-    selected_variant_background = 0x84d2dc
 
 
 class BlockGraphicsItem(QGraphicsItem):
@@ -101,12 +91,20 @@ class BlockGraphicsItem(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges, True)
 
+        # установим положение блока на сцене исходя из положения сообщения
         self.setPos(QPointF(self._message.x, self._message.y))
 
     def get_message(self) -> BotMessage:
         return self._message
 
     def boundingRect(self) -> QRectF:
+        """
+        Внешняя область фигуры. Используется Qt для рисования. Рисовать блок можно только внутри этих координат.
+        Если область рисования не соответствует области возвращаемой этой функцией,
+        то будут появляться артефакты рисования.
+        Returns:
+            координаты внешней области фигуры
+        """
         rect = self._block_rect()
         x = rect.x() - self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE
         y = rect.y() - self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE
@@ -151,6 +149,7 @@ class BlockGraphicsItem(QGraphicsItem):
     def mousePressEvent(self, event: PySide6.QtWidgets.QGraphicsSceneMouseEvent) -> None:
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
             click_position: QPointF = event.pos()
+            # определим какому варианту соответствуют координаты клика
             variant_on_position = self._variant_by_position(click_position)
             if variant_on_position is not None:
                 self._current_variant_index = self._variants.index(variant_on_position)
@@ -158,7 +157,6 @@ class BlockGraphicsItem(QGraphicsItem):
                 self._current_variant_index = None
             self._update_image()
 
-        print(f'current variant index {self._current_variant_index}')
         super().mousePressEvent(event)
 
     def mouseDoubleClickEvent(self, event: QtWidgets.QGraphicsSceneMouseEvent) -> None:
@@ -384,6 +382,11 @@ class BlockGraphicsItem(QGraphicsItem):
         )
 
     def _block_rect(self) -> QRectF:
+        """
+        Область блока
+        Returns:
+            координаты области блока
+        """
         rect = self._message_rect()
         # обычные варианты + иллюзорный вариант (через который добавляются новые варианты)
         for variant_index in range(len(self._variants) + 1):
