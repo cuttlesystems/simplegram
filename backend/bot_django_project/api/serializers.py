@@ -82,7 +82,7 @@ class VariantSerializer(serializers.ModelSerializer):
             UniqueTogetherValidator(
                 queryset=Variant.objects.all(),
                 fields=('text', 'current_message'),
-                message='Такой вариант для сообщения уже существует.',
+                message='This variant is alredy exists.',
             )
         ]
 

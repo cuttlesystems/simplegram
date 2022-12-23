@@ -15,6 +15,7 @@ from b_logic.bot_runner import BotRunner
 from bot_constructor.settings import BOTS_DIR
 from rest_framework.request import Request
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 
 from .utils import check_bot_token_when_generate_bot
 from cuttle_builder.bot_generator_db import BotGeneratorDb
@@ -320,6 +321,9 @@ class VariantViewSet(viewsets.ModelViewSet):
 
     def create(self, request: Request, message_id: int) -> Response:
         message = get_object_or_404(Message, id=message_id)
+        if Variant.objects.filter(text=request.data.get('text'),
+                                  current_message=message).exists():
+            raise ValidationError(detail={"non_field_errors": "This variant is alredy exists."}, code=400)
         check_is_bot_owner_or_permission_denied(request, message.bot)
         return super().create(request, message_id)
 
