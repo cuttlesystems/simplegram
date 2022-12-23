@@ -136,6 +136,7 @@ dmypy.json
 
 /venv*/
 /app_tests/connection_settings.json
+current_commit_info.json
 
 # static media
 

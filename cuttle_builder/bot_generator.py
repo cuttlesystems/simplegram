@@ -3,7 +3,7 @@ import io
 import os
 
 from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit, BotCommand
-from cuttle_builder.bot_gen_exceptions import BotGeneratorException
+from cuttle_builder.bot_gen_exceptions import NoOneMessageException, TokenException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
 from cuttle_builder.builder.handler_generator.create_state_handler import (create_state_message_handler,
@@ -70,7 +70,7 @@ class BotGenerator:
     def _check_token(self) -> bool:
         left, sep, right = self._token.partition(':')
         if (not sep) or (not left.isdigit()) or (not right):
-            raise Exception('Token is invalid!')
+            raise TokenException('Token is invalid!')
         return True
 
     def _create_generated_bot_directory(self) -> None:
@@ -79,7 +79,9 @@ class BotGenerator:
 
     def _is_valid_data(self) -> bool:
         if not self._messages:
-            raise BotGeneratorException('No messages in database')
+            raise NoOneMessageException(
+                'Can\'t generate bot without messages. '
+                'At least one message is required.')
         # self._check_token()
         return True
 
