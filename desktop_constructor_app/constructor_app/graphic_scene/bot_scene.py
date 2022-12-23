@@ -6,19 +6,14 @@ from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
 from b_logic.data_objects import BotMessage, BotVariant
-from desktop_constructor_app.constructor_app.graphic_scene.message_graphics_item import MessageGraphicsItem
+from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
+from desktop_constructor_app.constructor_app.graphic_scene.colors.scene_color_scheme import SceneColorScheme
 
 
 class BotScene(QGraphicsScene):
     """
     Сцена для отображения редактора бота
     """
-
-    # цвет фона рабочей области
-    _WORKSPACE_BACKGROUND_COLOR = 0xf0ffff
-
-    # цвет линии границы рабочей области
-    _WORKSPACE_BACKGROUND_BORDER_COLOR = 0xc5ecec
 
     # толщина линии границы рабочей области
     _WORKSPACE_BACKGROUND_LINE_THICKNESS = 5
@@ -44,10 +39,12 @@ class BotScene(QGraphicsScene):
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
 
-        self._background_brush = QBrush(QColor(self._WORKSPACE_BACKGROUND_COLOR))
+        self._scene_color_scheme = SceneColorScheme()
+
+        self._background_brush = QBrush(QColor(self._scene_color_scheme.workspace_background_color))
 
         self._background_pen = QPen(
-            QColor(self._WORKSPACE_BACKGROUND_BORDER_COLOR),
+            QColor(self._scene_color_scheme.workspace_background_border_color),
             self._WORKSPACE_BACKGROUND_LINE_THICKNESS,
             self._WORKSPACE_BACKGROUND_LINE_STYLE
         )
@@ -56,7 +53,7 @@ class BotScene(QGraphicsScene):
             pen=self._background_pen,
             brush=self._background_brush
         )
-        self._message_graphics_list: typing.List[MessageGraphicsItem] = []
+        self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
 
     def clear_scene(self) -> None:
@@ -67,7 +64,7 @@ class BotScene(QGraphicsScene):
             self.removeItem(message)
         self._message_graphics_list.clear()
 
-    def add_message(self, message: BotMessage, variants: typing.List[BotVariant]) -> MessageGraphicsItem:
+    def add_message(self, message: BotMessage, variants: typing.List[BotVariant]) -> BlockGraphicsItem:
         """
         Добавить сообщение на сцену
         Args:
@@ -96,8 +93,8 @@ class BotScene(QGraphicsScene):
         """
         result: typing.List[BotMessage] = []
         for item in self.selectedItems():
-            item: MessageGraphicsItem
-            assert isinstance(item, MessageGraphicsItem)
+            item: BlockGraphicsItem
+            assert isinstance(item, BlockGraphicsItem)
             result.append(item.get_message())
 
         return result
@@ -118,7 +115,7 @@ class BotScene(QGraphicsScene):
         # гарантия, что нет одинаковых id
         assert len(deleted_messages_ids_set) == len(deleted_messages_ids)
 
-        removed_graphics_items: typing.List[MessageGraphicsItem] = [
+        removed_graphics_items: typing.List[BlockGraphicsItem] = [
             message_graphics
             for message_graphics in self._message_graphics_list
             if message_graphics.get_message().id in deleted_messages_ids_set
@@ -145,13 +142,13 @@ class BotScene(QGraphicsScene):
     #     assert len(message_graphics_list) == 1
     #     message_graphics = message_graphics_list[0]
 
-    def get_selected_blocks_graphics(self) -> typing.List[MessageGraphicsItem]:
+    def get_selected_blocks_graphics(self) -> typing.List[BlockGraphicsItem]:
         """
         Получить список выделенных блоков (графических элементов сцены)
         Returns:
             список графических элементов сцены
         """
-        selected: typing.List[MessageGraphicsItem] = []
+        selected: typing.List[BlockGraphicsItem] = []
         for item in self._message_graphics_list:
             if item.isSelected():
                 selected.append(item)
@@ -181,14 +178,14 @@ class BotScene(QGraphicsScene):
 
     def _on_selection_changed(self):
         for item in self.items():
-            if isinstance(item, MessageGraphicsItem):
-                item: MessageGraphicsItem
+            if isinstance(item, BlockGraphicsItem):
+                item: BlockGraphicsItem
                 item.setZValue(0.0)
 
         z_selected = 1.0
         for item in self.selectedItems():
-            item: MessageGraphicsItem
-            assert isinstance(item, MessageGraphicsItem)
+            item: BlockGraphicsItem
+            assert isinstance(item, BlockGraphicsItem)
             item.setZValue(z_selected)
             z_selected += 1.0
 
@@ -207,8 +204,8 @@ class BotScene(QGraphicsScene):
         height = rect.height() + by_y * 2
         return QRectF(x, y, width, height)
 
-    def _create_message_graphics(self, message: BotMessage, variants: typing.List[BotVariant]) -> MessageGraphicsItem:
-        message_graphics_item = MessageGraphicsItem(message, variants)
+    def _create_message_graphics(self, message: BotMessage, variants: typing.List[BotVariant]) -> BlockGraphicsItem:
+        message_graphics_item = BlockGraphicsItem(message, variants)
         self.addItem(message_graphics_item)
 
         assert isinstance(message_graphics_item, QGraphicsItem)

@@ -141,7 +141,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise BotApiException('Ошибка при изменении бота')
+            raise BotApiException(f'Ошибка при изменении бота: {response.text}')
 
     def delete_bot(self, id: int) -> None:
         """

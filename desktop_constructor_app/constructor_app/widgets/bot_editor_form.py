@@ -11,7 +11,7 @@ from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonT
 from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.common.model_property import ModelProperty
-from desktop_constructor_app.constructor_app.graphic_scene.message_graphics_item import MessageGraphicsItem
+from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
 from desktop_constructor_app.constructor_app.widgets.message_editor_dialog import MessageEditorDialog
 from desktop_constructor_app.constructor_app.widgets.ui_bot_editor_form import Ui_BotEditorForm
@@ -157,7 +157,7 @@ class BotEditorForm(QWidget):
 
     def _on_delete_variant(self, _checked: bool):
         deleted_variant: typing.Optional[BotVariant] = None
-        block_with_deleted_variant: typing.Optional[MessageGraphicsItem] = None
+        block_with_deleted_variant: typing.Optional[BlockGraphicsItem] = None
         block_graphics = self._bot_scene.get_selected_blocks_graphics()
         for block in block_graphics:
             deleted_variant = block.get_current_variant()
@@ -209,8 +209,10 @@ class BotEditorForm(QWidget):
             self._process_exception(e)
 
     def _process_exception(self, exception: Exception):
-        if isinstance(exception, NotImplementedError):
-            QMessageBox.warning(self, 'Error', str(exception))
+        if not isinstance(exception, NotImplementedError):
+            exception_mes = str(exception)
+            print(exception_mes)
+            QMessageBox.warning(self, 'Error', exception_mes)
         else:
             raise
 
