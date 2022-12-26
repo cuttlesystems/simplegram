@@ -72,15 +72,6 @@ class BotEditorForm(QMainWindow):
         self._ui.graphics_view.centerOn(scene_rect.x(), scene_rect.y())
 
     def _connect_signals(self):
-        self._ui.apply_button.clicked.connect(self._on_apply_button)
-
-        # self._ui.delete_message_button.clicked.connect(self._on_delete_message)
-        # self._ui.generate_bot_button.clicked.connect(self._on_generate_bot)
-        # self._ui.start_bot_button.clicked.connect(self._on_start_bot)
-        # self._ui.stop_bot_button.clicked.connect(self._on_stop_bot)
-        # self._ui.mark_as_start_button.clicked.connect(self._on_mark_as_start_button)
-        # self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
-
         self._ui.action_add_message.triggered.connect(self._on_add_new_message)
         self._ui.action_delete_message.triggered.connect(self._on_delete_message)
         self._ui.action_generate_bot.triggered.connect(self._on_generate_bot)
@@ -88,6 +79,8 @@ class BotEditorForm(QMainWindow):
         self._ui.action_stop_bot.triggered.connect(self._on_stop_bot)
         self._ui.action_mark_start.triggered.connect(self._on_mark_as_start_button)
         self._ui.action_delete_variant.triggered.connect(self._on_delete_variant)
+
+        self._ui.action_manual_save.triggered.connect(self._on_apply_button)
 
         # сигналы, которые испускает сцена подключаем через QtCore.Qt.ConnectionType.QueuedConnection
         # (чтобы завершился обработчик клика)
@@ -205,6 +198,7 @@ class BotEditorForm(QMainWindow):
 
     def _on_generate_bot(self, _checked: bool):
         try:
+            self._save_changes()
             self._bot_api.generate_bot(self._bot)
         except Exception as e:
             self._process_exception(e)

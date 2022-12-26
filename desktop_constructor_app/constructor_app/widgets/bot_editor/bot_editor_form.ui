@@ -24,30 +24,6 @@
       <widget class="QGraphicsView" name="graphics_view"/>
      </widget>
     </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QPushButton" name="apply_button">
-        <property name="text">
-         <string>Apply changes</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -63,9 +39,9 @@
     <property name="title">
      <string>Bot</string>
     </property>
+    <addaction name="action_generate_bot"/>
     <addaction name="action_start_bot"/>
     <addaction name="action_stop_bot"/>
-    <addaction name="action_generate_bot"/>
    </widget>
    <widget class="QMenu" name="menuMessage">
     <property name="title">
@@ -76,7 +52,14 @@
     <addaction name="action_mark_start"/>
     <addaction name="action_delete_variant"/>
    </widget>
+   <widget class="QMenu" name="menuScheme">
+    <property name="title">
+     <string>Scheme</string>
+    </property>
+    <addaction name="action_manual_save"/>
+   </widget>
    <addaction name="menuMessage"/>
+   <addaction name="menuScheme"/>
    <addaction name="menuBit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -114,11 +97,19 @@
    </property>
   </action>
   <action name="action_add_message">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/add_message.svg</normaloff>:/icons/images/add_message.svg</iconset>
+   </property>
    <property name="text">
     <string>Add message</string>
    </property>
   </action>
   <action name="action_delete_message">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/delete_message.svg</normaloff>:/icons/images/delete_message.svg</iconset>
+   </property>
    <property name="text">
     <string>Delete message</string>
    </property>
@@ -129,8 +120,17 @@
    </property>
   </action>
   <action name="action_delete_variant">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/delete_variant.svg</normaloff>:/icons/images/delete_variant.svg</iconset>
+   </property>
    <property name="text">
     <string>Delete variant</string>
+   </property>
+  </action>
+  <action name="action_manual_save">
+   <property name="text">
+    <string>Manual save</string>
    </property>
   </action>
  </widget>
@@ -141,6 +141,8 @@
    <header>desktop_constructor_app.common.properties_view</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../bot_icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
