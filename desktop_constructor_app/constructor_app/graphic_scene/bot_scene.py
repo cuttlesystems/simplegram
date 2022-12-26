@@ -31,7 +31,7 @@ class BotScene(QGraphicsScene):
 
     # пользователь запросил изменение сообщения
     # (в списке передаются варианты сообщения BotVariant)
-    request_change_message = Signal(BotMessage, list)
+    request_change_message = Signal(BlockGraphicsItem, list)
 
     # пользователь запросил изменение варианта
     request_change_variant = Signal(BlockGraphicsItem, BotVariant)
@@ -161,10 +161,10 @@ class BotScene(QGraphicsScene):
     def _on_add_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
         self.request_add_new_variant.emit(message, variants)
 
-    def _on_change_message(self, message: BotMessage, variants: typing.List[BotVariant]):
-        assert isinstance(message, BotMessage)
+    def _on_change_message(self, block: BlockGraphicsItem, variants: typing.List[BotVariant]):
+        assert isinstance(block, BlockGraphicsItem)
         assert all(isinstance(variant, BotVariant) for variant in variants)
-        self.request_change_message.emit(message, variants)
+        self.request_change_message.emit(block, variants)
 
     def _on_change_variant(self, block_graphics_item: BlockGraphicsItem, variant: BotVariant):
         assert isinstance(block_graphics_item, BlockGraphicsItem)

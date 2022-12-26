@@ -83,9 +83,15 @@ class BotEditorForm(QWidget):
 
         # todo: проверить (и продумать) необходимость использования QtCore.Qt.QueuedConnection,
         #  если это необходимо, использовать в других местах, если нет, то убрать отсюда
-        self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant, QtCore.Qt.QueuedConnection)
-        self._bot_scene.request_change_message.connect(self._on_change_message, QtCore.Qt.QueuedConnection)
-        self._bot_scene.request_change_variant.connect(self._on_change_variant, QtCore.Qt.QueuedConnection)
+
+        self._bot_scene.request_add_new_variant.connect(
+            self._on_add_new_variant, QtCore.Qt.ConnectionType.QueuedConnection)
+
+        self._bot_scene.request_change_message.connect(
+            self._on_change_message, QtCore.Qt.ConnectionType.QueuedConnection)
+
+        self._bot_scene.request_change_variant.connect(
+            self._on_change_variant, QtCore.Qt.ConnectionType.QueuedConnection)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -127,9 +133,12 @@ class BotEditorForm(QWidget):
         print('graphics_item sceneBoundingRect {0}'.format(graphics_item.sceneBoundingRect()))
         self._bot_scene.update(graphics_item.sceneBoundingRect())
 
-    def _on_change_message(self, message: BotMessage, variants: typing.List[BotVariant]):
+    def _on_change_message(self, block: BlockGraphicsItem, variants: typing.List[BotVariant]):
+        assert isinstance(block, BlockGraphicsItem)
+        assert all(isinstance(variant, BotVariant) for variant in variants)
+        message = block.get_message()
         editor_dialog = MessageEditorDialog(self)
-        editor_dialog.set_message(message)
+        editor_dialog.set_message(block.get_message())
 
         # todo: тут появляется побочный эффект - после закрытия окна диалога следующий клик пропадает,
         #  надо бы поправить
@@ -139,10 +148,7 @@ class BotEditorForm(QWidget):
             message.keyboard_type = editor_dialog.keyboard_type()
             self._bot_api.change_message(message)
 
-            # todo: отрефакторить, нужно сделать один метод для изменения сообщения
-            # удалим и добавим на сцену обратно, чтобы увидеть изменение
-            self._bot_scene.delete_messages([message])
-            self._bot_scene.add_message(message, variants)
+            block.change_message(message)
 
     def _on_change_variant(self, block_graphics_item: BlockGraphicsItem, variant: BotVariant):
         assert isinstance(block_graphics_item, BlockGraphicsItem)
@@ -152,8 +158,8 @@ class BotEditorForm(QWidget):
         variant_editor_dialog.set_dialog_data(variant, messages)
         if variant_editor_dialog.exec_() == QDialog.DialogCode.Accepted:
             variant = variant_editor_dialog.get_variant()
-            block_graphics_item.change_variant(variant)
             self._bot_api.change_variant(variant)
+            block_graphics_item.change_variant(variant)
 
     def _on_delete_variant(self, _checked: bool):
         deleted_variant: typing.Optional[BotVariant] = None

@@ -22,7 +22,7 @@ class BlockGraphicsSignalSender(QObject):
 
     # пользователь запросил изменение сообщения
     # (в списке передаются варианты сообщения BotVariant)
-    request_change_message = Signal(BotMessage, list)
+    request_change_message = Signal(object, list)
 
     request_change_variant = Signal(object, BotVariant)
 
@@ -207,7 +207,7 @@ class BlockGraphicsItem(QGraphicsItem):
                 self.signal_sender.add_variant_request.emit(self._message, self._variants)
             # клик по сообщению
             elif message_rect.contains(click_position):
-                self.signal_sender.request_change_message.emit(self._message, self._variants)
+                self.signal_sender.request_change_message.emit(self, self._variants)
             # клик по какому-то определенному варианту
             elif variant_on_position is not None:
                 self.signal_sender.request_change_variant.emit(self, variant_on_position)
@@ -248,6 +248,12 @@ class BlockGraphicsItem(QGraphicsItem):
         self.scene().update(big_scene_bounding_rect)
 
         self.update(big_bounding_rect)
+
+    def change_message(self, message: BotMessage):
+        assert isinstance(message, BotMessage)
+        self.prepareGeometryChange()
+        self._message = message
+        self.update(self.boundingRect())
 
     def change_variant(self, variant: BotVariant) -> None:
         assert isinstance(variant, BotVariant)
