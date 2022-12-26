@@ -4,7 +4,7 @@ import typing
 from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPainter, QAction
-from PySide6.QtWidgets import QWidget, QDialog, QMessageBox
+from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
@@ -18,7 +18,7 @@ from desktop_constructor_app.constructor_app.widgets.bot_editor.ui_bot_editor_fo
 from desktop_constructor_app.constructor_app.widgets.bot_editor.variant_editor_dialog import VariantEditorDialog
 
 
-class BotEditorForm(QWidget):
+class BotEditorForm(QMainWindow):
     """
     Окно редактора бота
     """
