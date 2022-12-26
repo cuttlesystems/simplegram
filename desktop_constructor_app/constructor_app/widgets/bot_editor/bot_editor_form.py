@@ -3,7 +3,7 @@ import typing
 
 from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal
-from PySide6.QtGui import QPainter
+from PySide6.QtGui import QPainter, QAction
 from PySide6.QtWidgets import QWidget, QDialog, QMessageBox
 
 from b_logic.bot_api.i_bot_api import IBotApi
@@ -45,6 +45,8 @@ class BotEditorForm(QWidget):
         self._prop_model = BotPropertiesModel()
         self._ui.bot_params_view.setModel(self._prop_model)
 
+        # self._add_message_action = QAction('Add message', self)
+
         self._connect_signals()
 
     def set_bot(self, bot: typing.Optional[BotDescription]):
@@ -73,7 +75,10 @@ class BotEditorForm(QWidget):
 
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
+
         self._ui.add_message_button.clicked.connect(self._on_add_new_message)
+        # self._add_message_action.connect(self._on_add_new_message)
+
         self._ui.delete_message_button.clicked.connect(self._on_delete_message)
         self._ui.generate_bot_button.clicked.connect(self._on_generate_bot)
         self._ui.start_bot_button.clicked.connect(self._on_start_bot)
@@ -81,9 +86,8 @@ class BotEditorForm(QWidget):
         self._ui.mark_as_start_button.clicked.connect(self._on_mark_as_start_button)
         self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
 
-        # todo: проверить (и продумать) необходимость использования QtCore.Qt.QueuedConnection,
-        #  если это необходимо, использовать в других местах, если нет, то убрать отсюда
-
+        # сигналы, которые испускает сцена подключаем через QtCore.Qt.ConnectionType.QueuedConnection
+        # (чтобы завершился обработчик клика)
         self._bot_scene.request_add_new_variant.connect(
             self._on_add_new_variant, QtCore.Qt.ConnectionType.QueuedConnection)
 
