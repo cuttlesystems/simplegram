@@ -1,5 +1,4 @@
 import typing
-from copy import copy
 from typing import Optional
 
 from PySide6 import QtWidgets
@@ -7,7 +6,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QListWidgetItem
 
 from b_logic.data_objects import BotVariant, BotMessage
-from desktop_constructor_app.constructor_app.widgets.ui_variant_editor_dialog import Ui_VariantEditorDialog
+from desktop_constructor_app.constructor_app.widgets.bot_editor.ui_variant_editor_dialog import Ui_VariantEditorDialog
 
 
 class VariantEditorDialog(QDialog):
