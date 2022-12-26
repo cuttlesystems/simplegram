@@ -1,4 +1,3 @@
-# import os
 import sys
 import json
 from pathlib import Path
@@ -6,9 +5,7 @@ from datetime import datetime
 from pytz import timezone
 
 import requests
-# from dotenv import load_dotenv
 
-# load_dotenv()
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +20,6 @@ def get_commit_info_from_github_api() -> dict:
     except IndexError:
         token = None
     headers = {
-        # 'Authorization': os.getenv('GITHUB_TOKEN'),
         'Authorization': token,
         'Accept': 'application/vnd.github+json'
     }
