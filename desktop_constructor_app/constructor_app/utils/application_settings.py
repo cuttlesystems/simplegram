@@ -14,4 +14,6 @@ def get_application_data_dir() -> Path:
     elif current_os == "Windows":
         path = Path(os.getenv('APPDATA'))
         result = path / 'cuttle_systems' / 'bot_constructor'
+    else:
+        raise NotImplementedError(f'Unsupported os: {current_os}')
     return result
