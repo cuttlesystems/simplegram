@@ -15,8 +15,9 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 
 def get_commit_info_from_github_api() -> dict:
     """Временная колхоз версия"""
-    result = dict(error='Information about commit didn\'t found.')
+    result = dict(error='Information about commit not found.')
     url = 'https://api.github.com/repos/cuttlesystems/tg_bot_constructor/commits'
+    print(sys.argv[1])
     try:
         token = sys.argv[1]
     except IndexError:
