@@ -62,6 +62,8 @@ class BotEditorForm(QMainWindow):
 
         self._load_bot_scene()
 
+        self._actual_actions_state()
+
         self._ui.splitter.setSizes([200, 600])
 
         QtCore.QTimer.singleShot(0, self._on_after_set_bot)
@@ -93,6 +95,8 @@ class BotEditorForm(QMainWindow):
         self._bot_scene.request_change_variant.connect(
             self._on_change_variant, QtCore.Qt.ConnectionType.QueuedConnection)
 
+        self._bot_scene.selectionChanged.connect(self._on_selection_changed)
+
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
         bot_messages = self._bot_api.get_messages(self._bot)
@@ -112,6 +116,7 @@ class BotEditorForm(QMainWindow):
         message = self._bot_api.create_message(
             self._bot, 'Текст ботового сообщения', ButtonTypes.REPLY, x=10, y=10)
         self._bot_scene.add_message(message, [])
+        self._actual_actions_state()
 
     def _on_add_new_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
         assert isinstance(message, BotMessage)
@@ -132,6 +137,8 @@ class BotEditorForm(QMainWindow):
         print('add variant for message: ', message.text)
         print('graphics_item sceneBoundingRect {0}'.format(graphics_item.sceneBoundingRect()))
         self._bot_scene.update(graphics_item.sceneBoundingRect())
+
+        self._actual_actions_state()
 
     def _on_change_message(self, block: BlockGraphicsItem, variants: typing.List[BotVariant]):
         assert isinstance(block, BlockGraphicsItem)
@@ -175,6 +182,8 @@ class BotEditorForm(QMainWindow):
             self._bot_api.delete_variant(deleted_variant)
             block_with_deleted_variant.delete_variant(deleted_variant.id)
 
+        self._actual_actions_state()
+
     def _on_mark_as_start_button(self, _checked: bool):
         selected_messages = self._bot_scene.get_selected_messages()
         selected_messages_number = len(selected_messages)
@@ -195,6 +204,8 @@ class BotEditorForm(QMainWindow):
         self._bot_scene.delete_messages(messages_for_delete)
         for message in messages_for_delete:
             self._bot_api.delete_message(message)
+
+        self._actual_actions_state()
 
     def _on_generate_bot(self, _checked: bool):
         try:
@@ -231,6 +242,22 @@ class BotEditorForm(QMainWindow):
         self._upload_bot_scene()
 
         self._bot_api.change_bot(self._bot)
+
+    def _on_selection_changed(self):
+        self._actual_actions_state()
+
+    def _actual_actions_state(self):
+        blocks_graphics = self._bot_scene.get_selected_blocks_graphics()
+        selected_blocks = len(blocks_graphics)
+        is_selected_blocks = selected_blocks > 0
+        one_selected_block = selected_blocks == 1
+        selected_variant = False
+        if one_selected_block:
+            selected_variant = blocks_graphics[0].get_current_variant() is not None
+
+        self._ui.action_delete_message.setEnabled(is_selected_blocks)
+        self._ui.action_delete_variant.setEnabled(selected_variant)
+        self._ui.action_mark_start.setEnabled(one_selected_block)
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         self._save_changes()
