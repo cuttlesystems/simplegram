@@ -125,8 +125,75 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuBit">
+    <property name="title">
+     <string>Bot</string>
+    </property>
+    <addaction name="action_start_bot"/>
+    <addaction name="action_stop_bot"/>
+    <addaction name="action_generate_bot"/>
+   </widget>
+   <widget class="QMenu" name="menuMessage">
+    <property name="title">
+     <string>Block</string>
+    </property>
+    <addaction name="actionAdd_message"/>
+    <addaction name="actionDelete_message"/>
+    <addaction name="actionMark_as_start"/>
+    <addaction name="actionDelete_variant"/>
+   </widget>
+   <addaction name="menuBit"/>
+   <addaction name="menuMessage"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_start_bot"/>
+   <addaction name="action_stop_bot"/>
+  </widget>
+  <action name="action_generate_bot">
+   <property name="text">
+    <string>Generate bot</string>
+   </property>
+  </action>
+  <action name="action_start_bot">
+   <property name="text">
+    <string>Start bot</string>
+   </property>
+  </action>
+  <action name="action_stop_bot">
+   <property name="text">
+    <string>Stop bot</string>
+   </property>
+  </action>
+  <action name="actionAdd_message">
+   <property name="text">
+    <string>Add message</string>
+   </property>
+  </action>
+  <action name="actionDelete_message">
+   <property name="text">
+    <string>Delete message</string>
+   </property>
+  </action>
+  <action name="actionMark_as_start">
+   <property name="text">
+    <string>Mark as start</string>
+   </property>
+  </action>
+  <action name="actionDelete_variant">
+   <property name="text">
+    <string>Delete variant</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

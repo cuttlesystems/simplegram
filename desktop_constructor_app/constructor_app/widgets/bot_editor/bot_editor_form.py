@@ -86,6 +86,9 @@ class BotEditorForm(QMainWindow):
         self._ui.mark_as_start_button.clicked.connect(self._on_mark_as_start_button)
         self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
 
+        self._ui.action_start_bot.triggered.connect(self._on_start_bot)
+        self._ui.action_stop_bot.triggered.connect(self._on_stop_bot)
+
         # сигналы, которые испускает сцена подключаем через QtCore.Qt.ConnectionType.QueuedConnection
         # (чтобы завершился обработчик клика)
         self._bot_scene.request_add_new_variant.connect(
