@@ -1,4 +1,5 @@
 import typing
+from copy import copy
 from typing import Optional
 
 from PySide6 import QtWidgets
@@ -20,7 +21,7 @@ class VariantEditorDialog(QDialog):
 
         self._variant: typing.Optional[BotVariant] = None
 
-    def set_dialog_data(self, variant: BotVariant, messages: typing.List[BotMessage]):
+    def set_dialog_data(self, variant: BotVariant, messages: typing.List[BotMessage]) -> None:
         assert isinstance(variant, BotVariant)
         assert all(isinstance(message, BotMessage) for message in messages)
         self._variant = variant
@@ -39,13 +40,20 @@ class VariantEditorDialog(QDialog):
             if message.id == variant.next_message_id:
                 self._ui.next_message_select_list_widget.setCurrentItem(item)
 
-    def apply_variant_changes(self):
-        self._variant.text = self._ui.variant_text_edit.text()
+    def get_variant(self) -> BotVariant:
+        variant = copy(self._variant)
+        variant.text = self._ui.variant_text_edit.text()
+        selected_message = self._get_current_message()
+        if selected_message is not None:
+            variant.next_message_id = selected_message.id
+        else:
+            variant.next_message_id = None
+        return variant
 
-        self._variant.next_message_id = None
+    def _get_current_message(self) -> Optional[BotMessage]:
+        current_message = None
         current_item = self._ui.next_message_select_list_widget.currentItem()
         if current_item is not None:
             assert isinstance(current_item, QListWidgetItem)
             current_message = current_item.data(self._DATA_ROLE)
-            assert isinstance(current_message, BotMessage)
-            self._variant.next_message_id = current_message.id
+        return current_message

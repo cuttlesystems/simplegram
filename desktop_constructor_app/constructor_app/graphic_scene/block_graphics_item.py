@@ -24,7 +24,7 @@ class BlockGraphicsSignalSender(QObject):
     # (в списке передаются варианты сообщения BotVariant)
     request_change_message = Signal(BotMessage, list)
 
-    request_change_variant = Signal(BotVariant)
+    request_change_variant = Signal(object, BotVariant)
 
 
 class BlockGraphicsItem(QGraphicsItem):
@@ -210,7 +210,7 @@ class BlockGraphicsItem(QGraphicsItem):
                 self.signal_sender.request_change_message.emit(self._message, self._variants)
             # клик по какому-то определенному варианту
             elif variant_on_position is not None:
-                self.signal_sender.request_change_variant.emit(variant_on_position)
+                self.signal_sender.request_change_variant.emit(self, variant_on_position)
 
         super().mouseDoubleClickEvent(event)
 
@@ -249,17 +249,34 @@ class BlockGraphicsItem(QGraphicsItem):
 
         self.update(big_bounding_rect)
 
+    def change_variant(self, variant: BotVariant) -> None:
+        assert isinstance(variant, BotVariant)
+        internal_variant = self._find_variant_object(variant.id)
+        self.prepareGeometryChange()
+        if internal_variant is not None:
+            # todo: класс для копирования вариантов
+            internal_variant.text = variant.text
+            internal_variant.current_message_id = variant.current_message_id
+            internal_variant.next_message_id = variant.next_message_id
+        else:
+            print('Can not find variant')
+        self.update(self.boundingRect())
+
     def _remove_variant_from_list(self, variant_id: int) -> None:
+        variant = self._find_variant_object(variant_id)
+        if variant is not None:
+            self._variants.remove(variant)
+        else:
+            print('Try remove not exists variant')
+
+    def _find_variant_object(self, variant_id: int) -> typing.Optional[BotVariant]:
         assert isinstance(variant_id, int)
         searched_var: typing.Optional[BotVariant] = None
         for variant in self._variants:
             if variant.id == variant_id:
                 searched_var = variant
                 break
-        if searched_var is not None:
-            self._variants.remove(searched_var)
-        else:
-            print('Try remove not exists variant')
+        return searched_var
 
     def _fix_current_variant_index(self) -> None:
         """

@@ -85,7 +85,7 @@ class BotEditorForm(QWidget):
         #  если это необходимо, использовать в других местах, если нет, то убрать отсюда
         self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant, QtCore.Qt.QueuedConnection)
         self._bot_scene.request_change_message.connect(self._on_change_message, QtCore.Qt.QueuedConnection)
-        self._bot_scene.request_change_variant.connect(self._on_change_variant)
+        self._bot_scene.request_change_variant.connect(self._on_change_variant, QtCore.Qt.QueuedConnection)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -144,15 +144,15 @@ class BotEditorForm(QWidget):
             self._bot_scene.delete_messages([message])
             self._bot_scene.add_message(message, variants)
 
-    def _on_change_variant(self, variant: BotVariant):
+    def _on_change_variant(self, block_graphics_item: BlockGraphicsItem, variant: BotVariant):
+        assert isinstance(block_graphics_item, BlockGraphicsItem)
+        assert isinstance(variant, BotVariant)
         variant_editor_dialog = VariantEditorDialog(self)
         messages = self._bot_scene.get_all_messages()
         variant_editor_dialog.set_dialog_data(variant, messages)
         if variant_editor_dialog.exec_() == QDialog.DialogCode.Accepted:
-            variant_editor_dialog.apply_variant_changes()
-
-            # todo: тут надо гарантировать перерисовку варианта на схеме
-
+            variant = variant_editor_dialog.get_variant()
+            block_graphics_item.change_variant(variant)
             self._bot_api.change_variant(variant)
 
     def _on_delete_variant(self, _checked: bool):
