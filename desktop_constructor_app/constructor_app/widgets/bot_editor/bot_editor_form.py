@@ -45,8 +45,6 @@ class BotEditorForm(QMainWindow):
         self._prop_model = BotPropertiesModel()
         self._ui.bot_params_view.setModel(self._prop_model)
 
-        # self._add_message_action = QAction('Add message', self)
-
         self._connect_signals()
 
     def set_bot(self, bot: typing.Optional[BotDescription]):
@@ -76,18 +74,20 @@ class BotEditorForm(QMainWindow):
     def _connect_signals(self):
         self._ui.apply_button.clicked.connect(self._on_apply_button)
 
-        self._ui.add_message_button.clicked.connect(self._on_add_new_message)
-        # self._add_message_action.connect(self._on_add_new_message)
+        # self._ui.delete_message_button.clicked.connect(self._on_delete_message)
+        # self._ui.generate_bot_button.clicked.connect(self._on_generate_bot)
+        # self._ui.start_bot_button.clicked.connect(self._on_start_bot)
+        # self._ui.stop_bot_button.clicked.connect(self._on_stop_bot)
+        # self._ui.mark_as_start_button.clicked.connect(self._on_mark_as_start_button)
+        # self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
 
-        self._ui.delete_message_button.clicked.connect(self._on_delete_message)
-        self._ui.generate_bot_button.clicked.connect(self._on_generate_bot)
-        self._ui.start_bot_button.clicked.connect(self._on_start_bot)
-        self._ui.stop_bot_button.clicked.connect(self._on_stop_bot)
-        self._ui.mark_as_start_button.clicked.connect(self._on_mark_as_start_button)
-        self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
-
+        self._ui.action_add_message.triggered.connect(self._on_add_new_message)
+        self._ui.action_delete_message.triggered.connect(self._on_delete_message)
+        self._ui.action_generate_bot.triggered.connect(self._on_generate_bot)
         self._ui.action_start_bot.triggered.connect(self._on_start_bot)
         self._ui.action_stop_bot.triggered.connect(self._on_stop_bot)
+        self._ui.action_mark_start.triggered.connect(self._on_mark_as_start_button)
+        self._ui.action_delete_variant.triggered.connect(self._on_delete_variant)
 
         # сигналы, которые испускает сцена подключаем через QtCore.Qt.ConnectionType.QueuedConnection
         # (чтобы завершился обработчик клика)
