@@ -48,6 +48,11 @@ rm -rf ./$(unzip -Z -1 ./"$GH_REPO-$GH_BRANCH.zip" | head -1)
 
 echo "Распаковка загруженного из репозитория архива выполнена с заменой файлов"
 echo ""
+
+# python script 'get_commit_info_from_github_api.py' call from deploy script
+python3 ~/$GH_REPO'/utils/get_commit_info_from_github_api.py' 'Bearer '$MY_TOKEN_CREATED_ON_GITHUB
+#echo '"'./$GH_REPO/utils/get_commit_info_from_github_api.py'"' '"'Bearer $MY_TOKEN_CREATED_ON_GITHUB'"'
+
 if [ -d "$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME ] && [ -f "$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME/infra/.env ]
         then
 		cp ./"$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME/infra/.env ./"$GH_REPO"/infra/
