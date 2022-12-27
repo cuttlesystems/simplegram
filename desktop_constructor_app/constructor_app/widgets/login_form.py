@@ -40,6 +40,8 @@ class LoginForm(QWidget):
 
     open_bot_signal = Signal(BotDescription)
 
+    sign_up_signal = Signal()
+
     _KEY = b'OCbAwQH4JA9ID-5gJB4nvk4UbNwpHx4wNT5O5VNKcGI='
 
     def __init__(self, parent: typing.Optional[QWidget], bot_api: IBotApi):
@@ -74,6 +76,7 @@ class LoginForm(QWidget):
         self._ui.change_user_button.clicked.connect(self._on_change_user_click)
         self._ui.bot_list_widget.currentItemChanged.connect(self._on_current_bot_changed)
         self._ui.update_bot_list_button.clicked.connect(self._on_update_bot_list)
+        self._ui.sign_up_button.clicked.connect(self._on_sign_up)
 
     def _activate_controls(self):
         self._ui.server_addr_edit.setEnabled(False)
@@ -108,6 +111,7 @@ class LoginForm(QWidget):
             for bot in bots:
                 bot_item = QListWidgetItem(bot.bot_name)
                 bot_item.setData(self._LIST_DATA_ROLE, bot)
+                assert bot == bot_item.data(self._LIST_DATA_ROLE)
                 bot_items.append(bot_item)
                 self._ui.bot_list_widget.addItem(bot_item)
         except BotApiException as error:
@@ -189,3 +193,6 @@ class LoginForm(QWidget):
     def __get_unique_bot_name(self, base_name: str) -> str:
         used_names = [bot.bot_name for bot in self.__get_all_bots()]
         return gen_next_name(base_name, used_names)
+
+    def _on_sign_up(self, checked: bool):
+        self.sign_up_signal.emit()

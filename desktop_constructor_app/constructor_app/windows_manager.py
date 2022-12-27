@@ -14,6 +14,7 @@ class WindowsManager(QObject):
         self._bot_editor_form = BotEditorForm(None, bot_api)
 
         self._login_form.open_bot_signal.connect(self._on_open_bot)
+        self._login_form.sign_up_signal.connect(self._on_login_form_sign_up)
         self._bot_editor_form.close_bot.connect(self._on_close_bot)
 
         self._login_form.show()
@@ -32,3 +33,7 @@ class WindowsManager(QObject):
         self._bot_editor_form.hide()
         self._login_form.login_to_server()
         self._login_form.show()
+
+    def _on_login_form_sign_up(self):
+        print('sign up')
+
