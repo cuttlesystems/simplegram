@@ -95,7 +95,7 @@ class BotEditorForm(QMainWindow):
         self._bot_scene.request_change_variant.connect(
             self._on_change_variant, QtCore.Qt.ConnectionType.QueuedConnection)
 
-        self._bot_scene.selectionChanged.connect(self._on_selection_changed)
+        self._bot_scene.selection_changed.connect(self._on_selection_changed)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()

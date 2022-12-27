@@ -36,6 +36,8 @@ class BotScene(QGraphicsScene):
     # пользователь запросил изменение варианта
     request_change_variant = Signal(BlockGraphicsItem, BotVariant)
 
+    selection_changed = Signal()
+
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
 
@@ -82,6 +84,7 @@ class BotScene(QGraphicsScene):
         message_graphics.signal_sender.add_variant_request.connect(self._on_add_variant)
         message_graphics.signal_sender.request_change_message.connect(self._on_change_message)
         message_graphics.signal_sender.request_change_variant.connect(self._on_change_variant)
+        message_graphics.signal_sender.selected_item_changed.connect(self._on_selection_changed)
 
         return message_graphics
 
@@ -169,6 +172,7 @@ class BotScene(QGraphicsScene):
         return result
 
     def _on_selection_changed(self):
+        # сделаем, чтобы выделяемые объекты всегда находились поверх остальных
         for item in self.items():
             if isinstance(item, BlockGraphicsItem):
                 item: BlockGraphicsItem
@@ -180,6 +184,8 @@ class BotScene(QGraphicsScene):
             assert isinstance(item, BlockGraphicsItem)
             item.setZValue(z_selected)
             z_selected += 1.0
+
+        self.selection_changed.emit()
 
     def _on_item_changed(self, region: typing.List[QRectF]):
         assert all(isinstance(r, QRectF) for r in region)

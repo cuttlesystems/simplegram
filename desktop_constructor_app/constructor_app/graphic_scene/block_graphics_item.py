@@ -26,6 +26,8 @@ class BlockGraphicsSignalSender(QObject):
 
     request_change_variant = Signal(object, BotVariant)
 
+    selected_item_changed = Signal()
+
 
 class BlockGraphicsItem(QGraphicsItem):
     """
@@ -184,6 +186,7 @@ class BlockGraphicsItem(QGraphicsItem):
             else:
                 self._current_variant_index = None
             self._update_image()
+            self.signal_sender.selected_item_changed.emit()
 
         super().mousePressEvent(event)
 
