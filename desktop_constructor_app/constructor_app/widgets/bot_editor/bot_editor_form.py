@@ -247,10 +247,15 @@ class BotEditorForm(QMainWindow):
         self._actual_actions_state()
 
     def _actual_actions_state(self):
+        """
+        Перевести действия в актуальное состояние в зависимости от текущих выделенных элементов.
+        Часть элементов меню и кнопок на панели инструментов станет активной или неактивной,
+        в зависимости от текущего состояния сцены (что выделено или не выделено)
+        """
         blocks_graphics = self._bot_scene.get_selected_blocks_graphics()
-        selected_blocks = len(blocks_graphics)
-        is_selected_blocks = selected_blocks > 0
-        one_selected_block = selected_blocks == 1
+        selected_blocks_number = len(blocks_graphics)
+        is_selected_blocks = selected_blocks_number > 0
+        one_selected_block = selected_blocks_number == 1
         selected_variant = False
         if one_selected_block:
             selected_variant = blocks_graphics[0].get_current_variant() is not None

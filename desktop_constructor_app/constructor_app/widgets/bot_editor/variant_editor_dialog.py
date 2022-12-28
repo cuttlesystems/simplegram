@@ -22,6 +22,14 @@ class VariantEditorDialog(QDialog):
         self._variant: typing.Optional[BotVariant] = None
 
     def set_dialog_data(self, variant: BotVariant, messages: typing.List[BotMessage]) -> None:
+        """
+        Установить вариант и сообщения для отображения в диалоговом окне.
+        В диалоге можно будет менять данные варианта.
+        Список сообщений нужен для выбора следующего сообщения варианта
+        Args:
+            variant: объект варианта для изменения
+            messages: список сообщений для выбора следующего сообщения
+        """
         assert isinstance(variant, BotVariant)
         assert all(isinstance(message, BotMessage) for message in messages)
         self._variant = variant
@@ -41,6 +49,14 @@ class VariantEditorDialog(QDialog):
                 self._ui.next_message_select_list_widget.setCurrentItem(item)
 
     def get_variant(self) -> BotVariant:
+        """
+        Получить вариант с учетом его изменений в диалоговом окне
+        Returns:
+            объект варианта
+        """
+        assert self._variant is not None
+        # копируем объект исходного варианта, чтобы избежать побочных эффектов в вызывающем коде,
+        # когда будем модифицировать его свойства
         variant = copy(self._variant)
         variant.text = self._ui.variant_text_edit.text()
         selected_message = self._get_current_message()
