@@ -76,6 +76,7 @@ class BotEditorForm(QMainWindow):
 
     def _connect_signals(self):
         self._ui.action_add_message.triggered.connect(self._on_add_new_message)
+        self._ui.action_add_variant.triggered.connect(self._on_action_add_variant)
         self._ui.action_delete_message.triggered.connect(self._on_delete_message)
         self._ui.action_generate_bot.triggered.connect(self._on_generate_bot)
         self._ui.action_start_bot.triggered.connect(self._on_start_bot)
@@ -88,7 +89,7 @@ class BotEditorForm(QMainWindow):
         # сигналы, которые испускает сцена подключаем через QtCore.Qt.ConnectionType.QueuedConnection
         # (чтобы завершился обработчик клика)
         self._bot_scene.request_add_new_variant.connect(
-            self._on_add_new_variant, QtCore.Qt.ConnectionType.QueuedConnection)
+            self._on_bot_scene_add_new_variant, QtCore.Qt.ConnectionType.QueuedConnection)
 
         self._bot_scene.request_change_message.connect(
             self._on_change_message, QtCore.Qt.ConnectionType.QueuedConnection)
@@ -119,10 +120,7 @@ class BotEditorForm(QMainWindow):
         self._bot_scene.add_message(message, [])
         self._actual_actions_state()
 
-    def _on_add_new_variant(self, _message: BotMessage, _variants: typing.List[BotVariant]):
-        # assert isinstance(message, BotMessage)
-        # assert all(isinstance(variant, BotVariant) for variant in variants)
-
+    def _add_variant(self):
         selected_blocks = self._bot_scene.get_selected_blocks_graphics()
         if len(selected_blocks) == 1:
             selected_block = selected_blocks[0]
@@ -153,6 +151,12 @@ class BotEditorForm(QMainWindow):
             )
 
         self._actual_actions_state()
+
+    def _on_action_add_variant(self, _toggled: bool):
+        self._add_variant()
+
+    def _on_bot_scene_add_new_variant(self, _message: BotMessage, _variants: typing.List[BotVariant]):
+        self._add_variant()
 
     def _on_change_message(self, block: BlockGraphicsItem, variants: typing.List[BotVariant]):
         assert isinstance(block, BlockGraphicsItem)
@@ -277,6 +281,7 @@ class BotEditorForm(QMainWindow):
         self._ui.action_delete_message.setEnabled(is_selected_blocks)
         self._ui.action_delete_variant.setEnabled(selected_variant)
         self._ui.action_mark_start.setEnabled(one_selected_block)
+        self._ui.action_add_variant.setEnabled(one_selected_block)
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         self._save_changes()
