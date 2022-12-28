@@ -2,9 +2,9 @@
 import typing
 
 from PySide6 import QtGui, QtCore
-from PySide6.QtCore import Signal, QRect, QRectF
-from PySide6.QtGui import QPainter
-from PySide6.QtWidgets import QWidget, QDialog, QApplication, QMessageBox
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QPainter, QAction
+from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
@@ -13,12 +13,12 @@ from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotS
 from desktop_constructor_app.common.model_property import ModelProperty
 from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
-from desktop_constructor_app.constructor_app.widgets.message_editor_dialog import MessageEditorDialog
-from desktop_constructor_app.constructor_app.widgets.ui_bot_editor_form import Ui_BotEditorForm
-from desktop_constructor_app.constructor_app.widgets.variant_editor_dialog import VariantEditorDialog
+from desktop_constructor_app.constructor_app.widgets.bot_editor.message_editor_dialog import MessageEditorDialog
+from desktop_constructor_app.constructor_app.widgets.bot_editor.ui_bot_editor_form import Ui_BotEditorForm
+from desktop_constructor_app.constructor_app.widgets.bot_editor.variant_editor_dialog import VariantEditorDialog
 
 
-class BotEditorForm(QWidget):
+class BotEditorForm(QMainWindow):
     """
     Окно редактора бота
     """
@@ -62,6 +62,8 @@ class BotEditorForm(QWidget):
 
         self._load_bot_scene()
 
+        self._actual_actions_state()
+
         self._ui.splitter.setSizes([200, 600])
 
         QtCore.QTimer.singleShot(0, self._on_after_set_bot)
@@ -72,20 +74,28 @@ class BotEditorForm(QWidget):
         self._ui.graphics_view.centerOn(scene_rect.x(), scene_rect.y())
 
     def _connect_signals(self):
-        self._ui.apply_button.clicked.connect(self._on_apply_button)
-        self._ui.add_message_button.clicked.connect(self._on_add_new_message)
-        self._ui.delete_message_button.clicked.connect(self._on_delete_message)
-        self._ui.generate_bot_button.clicked.connect(self._on_generate_bot)
-        self._ui.start_bot_button.clicked.connect(self._on_start_bot)
-        self._ui.stop_bot_button.clicked.connect(self._on_stop_bot)
-        self._ui.mark_as_start_button.clicked.connect(self._on_mark_as_start_button)
-        self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
+        self._ui.action_add_message.triggered.connect(self._on_add_new_message)
+        self._ui.action_delete_message.triggered.connect(self._on_delete_message)
+        self._ui.action_generate_bot.triggered.connect(self._on_generate_bot)
+        self._ui.action_start_bot.triggered.connect(self._on_start_bot)
+        self._ui.action_stop_bot.triggered.connect(self._on_stop_bot)
+        self._ui.action_mark_start.triggered.connect(self._on_mark_as_start_button)
+        self._ui.action_delete_variant.triggered.connect(self._on_delete_variant)
 
-        # todo: проверить (и продумать) необходимость использования QtCore.Qt.QueuedConnection,
-        #  если это необходимо, использовать в других местах, если нет, то убрать отсюда
-        self._bot_scene.request_add_new_variant.connect(self._on_add_new_variant, QtCore.Qt.QueuedConnection)
-        self._bot_scene.request_change_message.connect(self._on_change_message, QtCore.Qt.QueuedConnection)
-        self._bot_scene.request_change_variant.connect(self._on_change_variant)
+        self._ui.action_manual_save.triggered.connect(self._on_apply_button)
+
+        # сигналы, которые испускает сцена подключаем через QtCore.Qt.ConnectionType.QueuedConnection
+        # (чтобы завершился обработчик клика)
+        self._bot_scene.request_add_new_variant.connect(
+            self._on_add_new_variant, QtCore.Qt.ConnectionType.QueuedConnection)
+
+        self._bot_scene.request_change_message.connect(
+            self._on_change_message, QtCore.Qt.ConnectionType.QueuedConnection)
+
+        self._bot_scene.request_change_variant.connect(
+            self._on_change_variant, QtCore.Qt.ConnectionType.QueuedConnection)
+
+        self._bot_scene.selection_changed.connect(self._on_selection_changed)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -106,6 +116,7 @@ class BotEditorForm(QWidget):
         message = self._bot_api.create_message(
             self._bot, 'Текст ботового сообщения', ButtonTypes.REPLY, x=10, y=10)
         self._bot_scene.add_message(message, [])
+        self._actual_actions_state()
 
     def _on_add_new_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
         assert isinstance(message, BotMessage)
@@ -127,9 +138,14 @@ class BotEditorForm(QWidget):
         print('graphics_item sceneBoundingRect {0}'.format(graphics_item.sceneBoundingRect()))
         self._bot_scene.update(graphics_item.sceneBoundingRect())
 
-    def _on_change_message(self, message: BotMessage, variants: typing.List[BotVariant]):
+        self._actual_actions_state()
+
+    def _on_change_message(self, block: BlockGraphicsItem, variants: typing.List[BotVariant]):
+        assert isinstance(block, BlockGraphicsItem)
+        assert all(isinstance(variant, BotVariant) for variant in variants)
+        message = block.get_message()
         editor_dialog = MessageEditorDialog(self)
-        editor_dialog.set_message(message)
+        editor_dialog.set_message(block.get_message())
 
         # todo: тут появляется побочный эффект - после закрытия окна диалога следующий клик пропадает,
         #  надо бы поправить
@@ -139,21 +155,18 @@ class BotEditorForm(QWidget):
             message.keyboard_type = editor_dialog.keyboard_type()
             self._bot_api.change_message(message)
 
-            # todo: отрефакторить, нужно сделать один метод для изменения сообщения
-            # удалим и добавим на сцену обратно, чтобы увидеть изменение
-            self._bot_scene.delete_messages([message])
-            self._bot_scene.add_message(message, variants)
+            block.change_message(message)
 
-    def _on_change_variant(self, variant: BotVariant):
+    def _on_change_variant(self, block_graphics_item: BlockGraphicsItem, variant: BotVariant):
+        assert isinstance(block_graphics_item, BlockGraphicsItem)
+        assert isinstance(variant, BotVariant)
         variant_editor_dialog = VariantEditorDialog(self)
         messages = self._bot_scene.get_all_messages()
         variant_editor_dialog.set_dialog_data(variant, messages)
         if variant_editor_dialog.exec_() == QDialog.DialogCode.Accepted:
-            variant_editor_dialog.apply_variant_changes()
-
-            # todo: тут надо гарантировать перерисовку варианта на схеме
-
+            variant = variant_editor_dialog.get_variant()
             self._bot_api.change_variant(variant)
+            block_graphics_item.change_variant(variant)
 
     def _on_delete_variant(self, _checked: bool):
         deleted_variant: typing.Optional[BotVariant] = None
@@ -168,6 +181,8 @@ class BotEditorForm(QWidget):
         if deleted_variant is not None:
             self._bot_api.delete_variant(deleted_variant)
             block_with_deleted_variant.delete_variant(deleted_variant.id)
+
+        self._actual_actions_state()
 
     def _on_mark_as_start_button(self, _checked: bool):
         selected_messages = self._bot_scene.get_selected_messages()
@@ -190,8 +205,11 @@ class BotEditorForm(QWidget):
         for message in messages_for_delete:
             self._bot_api.delete_message(message)
 
+        self._actual_actions_state()
+
     def _on_generate_bot(self, _checked: bool):
         try:
+            self._save_changes()
             self._bot_api.generate_bot(self._bot)
         except Exception as e:
             self._process_exception(e)
@@ -224,6 +242,27 @@ class BotEditorForm(QWidget):
         self._upload_bot_scene()
 
         self._bot_api.change_bot(self._bot)
+
+    def _on_selection_changed(self):
+        self._actual_actions_state()
+
+    def _actual_actions_state(self):
+        """
+        Перевести действия в актуальное состояние в зависимости от текущих выделенных элементов.
+        Часть элементов меню и кнопок на панели инструментов станет активной или неактивной,
+        в зависимости от текущего состояния сцены (что выделено или не выделено)
+        """
+        blocks_graphics = self._bot_scene.get_selected_blocks_graphics()
+        selected_blocks_number = len(blocks_graphics)
+        is_selected_blocks = selected_blocks_number > 0
+        one_selected_block = selected_blocks_number == 1
+        selected_variant = False
+        if one_selected_block:
+            selected_variant = blocks_graphics[0].get_current_variant() is not None
+
+        self._ui.action_delete_message.setEnabled(is_selected_blocks)
+        self._ui.action_delete_variant.setEnabled(selected_variant)
+        self._ui.action_mark_start.setEnabled(one_selected_block)
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         self._save_changes()

@@ -2,5 +2,8 @@
     <qresource prefix="/icons">
         <file>images/add_variant.svg</file>
         <file>images/cuttle_systems_logo.png</file>
+        <file>images/add_message.svg</file>
+        <file>images/delete_message.svg</file>
+        <file>images/delete_variant.svg</file>
     </qresource>
 </RCC>

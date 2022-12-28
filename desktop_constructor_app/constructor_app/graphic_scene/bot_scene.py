@@ -31,10 +31,12 @@ class BotScene(QGraphicsScene):
 
     # пользователь запросил изменение сообщения
     # (в списке передаются варианты сообщения BotVariant)
-    request_change_message = Signal(BotMessage, list)
+    request_change_message = Signal(BlockGraphicsItem, list)
 
     # пользователь запросил изменение варианта
-    request_change_variant = Signal(BotVariant)
+    request_change_variant = Signal(BlockGraphicsItem, BotVariant)
+
+    selection_changed = Signal()
 
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
@@ -82,6 +84,7 @@ class BotScene(QGraphicsScene):
         message_graphics.signal_sender.add_variant_request.connect(self._on_add_variant)
         message_graphics.signal_sender.request_change_message.connect(self._on_change_message)
         message_graphics.signal_sender.request_change_variant.connect(self._on_change_variant)
+        message_graphics.signal_sender.selected_item_changed.connect(self._on_selection_changed)
 
         return message_graphics
 
@@ -133,15 +136,6 @@ class BotScene(QGraphicsScene):
         """
         return [message_graphics.get_message() for message_graphics in self._message_graphics_list]
 
-    # def change_variant(self, message: BotMessage, variant: BotVariant):
-    #     message_graphics_list = [
-    #         message_graphics for message_graphics in self._message_graphics_list
-    #         if message_graphics.get_message().id == message.id
-    #     ]
-    #     # todo: рассмотреть случай когда это не так (не найдено)
-    #     assert len(message_graphics_list) == 1
-    #     message_graphics = message_graphics_list[0]
-
     def get_selected_blocks_graphics(self) -> typing.List[BlockGraphicsItem]:
         """
         Получить список выделенных блоков (графических элементов сцены)
@@ -161,14 +155,15 @@ class BotScene(QGraphicsScene):
     def _on_add_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
         self.request_add_new_variant.emit(message, variants)
 
-    def _on_change_message(self, message: BotMessage, variants: typing.List[BotVariant]):
-        assert isinstance(message, BotMessage)
+    def _on_change_message(self, block: BlockGraphicsItem, variants: typing.List[BotVariant]):
+        assert isinstance(block, BlockGraphicsItem)
         assert all(isinstance(variant, BotVariant) for variant in variants)
-        self.request_change_message.emit(message, variants)
+        self.request_change_message.emit(block, variants)
 
-    def _on_change_variant(self, variant: BotVariant):
+    def _on_change_variant(self, block_graphics_item: BlockGraphicsItem, variant: BotVariant):
+        assert isinstance(block_graphics_item, BlockGraphicsItem)
         assert isinstance(variant, BotVariant)
-        self.request_change_variant.emit(variant)
+        self.request_change_variant.emit(block_graphics_item, variant)
 
     def _get_work_field_rect(self) -> QRectF:
         result = QRectF(0, 0, self._MIN_WORKSPACE_WIDTH, self._MIN_WORKSPACE_HEIGHT)
@@ -177,6 +172,7 @@ class BotScene(QGraphicsScene):
         return result
 
     def _on_selection_changed(self):
+        # сделаем, чтобы выделяемые объекты всегда находились поверх остальных
         for item in self.items():
             if isinstance(item, BlockGraphicsItem):
                 item: BlockGraphicsItem
@@ -188,6 +184,8 @@ class BotScene(QGraphicsScene):
             assert isinstance(item, BlockGraphicsItem)
             item.setZValue(z_selected)
             z_selected += 1.0
+
+        self.selection_changed.emit()
 
     def _on_item_changed(self, region: typing.List[QRectF]):
         assert all(isinstance(r, QRectF) for r in region)
