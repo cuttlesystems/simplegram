@@ -2,12 +2,13 @@
 import typing
 
 from PySide6 import QtGui, QtCore
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QCoreApplication
 from PySide6.QtGui import QPainter, QAction
 from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
+from desktop_constructor_app.common.localisation import tran
 from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.common.model_property import ModelProperty
@@ -118,25 +119,38 @@ class BotEditorForm(QMainWindow):
         self._bot_scene.add_message(message, [])
         self._actual_actions_state()
 
-    def _on_add_new_variant(self, message: BotMessage, variants: typing.List[BotVariant]):
-        assert isinstance(message, BotMessage)
-        assert all(isinstance(variant, BotVariant) for variant in variants)
-        # тут изменение сообщения, чтобы предыдущие правки по сообщению отправились на сервер
-        # (не потерялись изменения)
-        self._bot_api.change_message(message)
+    def _on_add_new_variant(self, _message: BotMessage, _variants: typing.List[BotVariant]):
+        # assert isinstance(message, BotMessage)
+        # assert all(isinstance(variant, BotVariant) for variant in variants)
 
-        variant_name = self._generate_unique_variant_name('New bot variant', variants)
-        self._bot_api.create_variant(message, variant_name)
-        messages = self._bot_api.get_messages(self._bot)
-        # todo: этот момент можно оптимизировать и переписать лучше
-        updated_message = next(mes for mes in messages if mes.id == message.id)
-        updated_variants = self._bot_api.get_variants(updated_message)
-        print('delete message', message)
-        self._bot_scene.delete_messages([message])
-        graphics_item = self._bot_scene.add_message(updated_message, updated_variants)
-        print('add variant for message: ', message.text)
-        print('graphics_item sceneBoundingRect {0}'.format(graphics_item.sceneBoundingRect()))
-        self._bot_scene.update(graphics_item.sceneBoundingRect())
+        selected_blocks = self._bot_scene.get_selected_blocks_graphics()
+        if len(selected_blocks) == 1:
+            selected_block = selected_blocks[0]
+            variants = selected_block.get_variants()
+            message = selected_block.get_message()
+
+            # тут изменение сообщения, чтобы предыдущие правки по сообщению отправились на сервер
+            # (не потерялись изменения)
+            self._bot_api.change_message(message)
+
+            variant_name = self._generate_unique_variant_name('New bot variant', variants)
+            self._bot_api.create_variant(message, variant_name)
+            messages = self._bot_api.get_messages(self._bot)
+            # todo: этот момент можно оптимизировать и переписать лучше
+            updated_message = next(mes for mes in messages if mes.id == message.id)
+            updated_variants = self._bot_api.get_variants(updated_message)
+            print('delete message', message)
+            self._bot_scene.delete_messages([message])
+            graphics_item = self._bot_scene.add_message(updated_message, updated_variants)
+            print('add variant for message: ', message.text)
+            print('graphics_item sceneBoundingRect {0}'.format(graphics_item.sceneBoundingRect()))
+            self._bot_scene.update(graphics_item.sceneBoundingRect())
+        else:
+            QMessageBox.warning(
+                self,
+                self._tr('Error'),
+                self._tr('Please select only one block for add variant')
+            )
 
         self._actual_actions_state()
 
@@ -267,3 +281,6 @@ class BotEditorForm(QMainWindow):
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         self._save_changes()
         self.close_bot.emit()
+
+    def _tr(self, text: str):
+        return tran('BotEditorForm', text)

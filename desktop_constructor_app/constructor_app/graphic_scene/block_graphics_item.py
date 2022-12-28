@@ -234,6 +234,9 @@ class BlockGraphicsItem(QGraphicsItem):
             variant = self._variants[self._current_variant_index]
         return variant
 
+    def get_variants(self) -> typing.List[BotVariant]:
+        return self._variants
+
     def delete_variant(self, variant_id: int) -> None:
         """
         Удаляет из блока вариант с указанным индексом
