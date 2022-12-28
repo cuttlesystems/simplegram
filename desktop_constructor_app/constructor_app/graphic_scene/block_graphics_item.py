@@ -18,14 +18,18 @@ class BlockGraphicsSignalSender(QObject):
     """
 
     # в списке передаются варианты сообщения
+    # Параметры: (объект сообщения, список вариантов сообщения)
     add_variant_request = Signal(BotMessage, list)
 
     # пользователь запросил изменение сообщения
-    # (в списке передаются варианты сообщения BotVariant)
+    # Параметры: (объект блока, в списке передаются варианты сообщения BotVariant)
     request_change_message = Signal(object, list)
 
+    # пользователь запросил изменение варианта
+    # Параметры: (объект блока, объект варианта)
     request_change_variant = Signal(object, BotVariant)
 
+    # поменялся (мог поменяться) выделенный объект блока
     selected_item_changed = Signal()
 
 
@@ -252,18 +256,28 @@ class BlockGraphicsItem(QGraphicsItem):
 
         self.update(big_bounding_rect)
 
-    def change_message(self, message: BotMessage):
+    def change_message(self, message: BotMessage) -> None:
+        """
+        Вызывается, если поменялось сообщение, связанное с блоком
+        Args:
+            message: новое измененное сообщение
+        """
         assert isinstance(message, BotMessage)
         self.prepareGeometryChange()
         self._message = message
         self.update(self.boundingRect())
 
     def change_variant(self, variant: BotVariant) -> None:
+        """
+        Изменить данные заданного варианта. По id сопоставит вариант и заменит его
+        Args:
+            variant: вариант, который изменился
+        """
         assert isinstance(variant, BotVariant)
         internal_variant = self._find_variant_object(variant.id)
         self.prepareGeometryChange()
         if internal_variant is not None:
-            # todo: класс для копирования вариантов
+            # todo: класс для копирования вариантов (или переделать другим способом)
             internal_variant.text = variant.text
             internal_variant.current_message_id = variant.current_message_id
             internal_variant.next_message_id = variant.next_message_id
