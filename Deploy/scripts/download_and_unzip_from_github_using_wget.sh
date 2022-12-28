@@ -27,8 +27,8 @@ fi
 echo 'B_ENGINE=django.db.backends.postgresql
 DB_NAME=bot_constructor
 POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-DB_HOST=172.17.0.1
+POSTGRES_PASSWORD=zarFad-huqdit-qavry0
+DB_HOST=172.21.0.1
 DB_PORT=5432' > ./$GH_REPO/infra/.env
 echo ""
 # директория с версиями файлов до последних изменений
