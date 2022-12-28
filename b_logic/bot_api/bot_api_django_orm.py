@@ -49,6 +49,9 @@ class BotApiByDjangoORM(IBotApi):
     def set_suite(self, suite_url: str):
         raise NotImplementedError('Метод не определен!')
 
+    def sign_up(self, username: str, email: str, password: str):
+        raise NotImplementedError('Метод не определен!')
+
     def authentication(self, username: str, password: str) -> None:
         raise NotImplementedError('Метод не определен!')
 

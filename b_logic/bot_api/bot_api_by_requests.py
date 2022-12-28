@@ -40,6 +40,29 @@ class BotApiByRequests(IBotApi):
         assert isinstance(suite_url, str)
         self._suite_url = suite_url
 
+    def sign_up(self, username: str, email: str, password: str) -> None:
+        """
+        Регистрация нового пользователя.
+
+        Args:
+            username: Имя
+            email: Электронная почта
+            password: Пароль
+        """
+        try:
+            response = requests.post(
+                self._suite_url + 'api/users/',
+                {
+                    'username': username,
+                    'email': email,
+                    'password': password
+                }
+            )
+            if response.status_code != requests.status_codes.codes.created:
+                raise BotApiException('Sign up error {0}'.format(response.text))
+        except requests.exceptions.ConnectionError as connection_error:
+            raise BotApiException(f'Connection error: {connection_error}')
+
     def authentication(self, username: str, password: str) -> None:
         """
         Провести аутентификацию пользователя и запомнить токен авторизации для
