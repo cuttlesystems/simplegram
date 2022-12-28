@@ -122,27 +122,21 @@ class BotEditorForm(QMainWindow):
 
     def _add_variant(self):
         selected_blocks = self._bot_scene.get_selected_blocks_graphics()
+        # добавление варианта возможно только тогда, когда выбран один блок
         if len(selected_blocks) == 1:
             selected_block = selected_blocks[0]
-            variants = selected_block.get_variants()
+            # получим сообщение и варианты выбранного блока
             message = selected_block.get_message()
+            variants = selected_block.get_variants()
 
-            # тут изменение сообщения, чтобы предыдущие правки по сообщению отправились на сервер
-            # (не потерялись изменения)
-            self._bot_api.change_message(message)
+            # сгенерируем уникальное имя для нового варианта
+            variant_name = self._generate_unique_variant_name(self._tr('New bot variant'), variants)
 
-            variant_name = self._generate_unique_variant_name('New bot variant', variants)
-            self._bot_api.create_variant(message, variant_name)
-            messages = self._bot_api.get_messages(self._bot)
-            # todo: этот момент можно оптимизировать и переписать лучше
-            updated_message = next(mes for mes in messages if mes.id == message.id)
-            updated_variants = self._bot_api.get_variants(updated_message)
-            print('delete message', message)
-            self._bot_scene.delete_messages([message])
-            graphics_item = self._bot_scene.add_message(updated_message, updated_variants)
-            print('add variant for message: ', message.text)
-            print('graphics_item sceneBoundingRect {0}'.format(graphics_item.sceneBoundingRect()))
-            self._bot_scene.update(graphics_item.sceneBoundingRect())
+            # создадим вариант на сервере
+            variant = self._bot_api.create_variant(message, variant_name)
+
+            # добавим созданный вариант в графический блок сцены
+            selected_block.add_variant(variant)
         else:
             QMessageBox.warning(
                 self,
@@ -287,5 +281,5 @@ class BotEditorForm(QMainWindow):
         self._save_changes()
         self.close_bot.emit()
 
-    def _tr(self, text: str):
+    def _tr(self, text: str) -> str:
         return tran('BotEditorForm', text)

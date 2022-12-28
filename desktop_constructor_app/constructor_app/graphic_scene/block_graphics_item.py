@@ -270,6 +270,12 @@ class BlockGraphicsItem(QGraphicsItem):
         self._message = message
         self.update(self.boundingRect())
 
+    def add_variant(self, variant: BotVariant):
+        assert isinstance(variant, BotVariant)
+        self.prepareGeometryChange()
+        self._variants.append(variant)
+        self._update_image()
+
     def change_variant(self, variant: BotVariant) -> None:
         """
         Изменить данные заданного варианта. По id сопоставит вариант и заменит его
@@ -325,6 +331,7 @@ class BlockGraphicsItem(QGraphicsItem):
         падению приложения.
         """
         self.update(self.boundingRect())
+        self.scene().update(self.sceneBoundingRect())
 
     def _variant_by_position(self, position: QPointF) -> typing.Optional[BotVariant]:
         variant_on_position: typing.Optional[BotVariant] = None
