@@ -196,14 +196,17 @@ class BotEditorForm(QMainWindow):
 
         self._actual_actions_state()
 
-    def _on_mark_as_start_button(self, _checked: bool):
+    def _on_mark_as_start_button(self, _checked: bool) -> None:
         selected_messages = self._bot_scene.get_selected_messages()
         selected_messages_number = len(selected_messages)
         if selected_messages_number == 1:
             selected_message = selected_messages[0]
             self._bot_api.set_bot_start_message(self._bot, selected_message)
         else:
-            QMessageBox.warning(self, 'Error', 'Select only one message to set is as start message')
+            QMessageBox.warning(
+                self,
+                self._tr('Error'),
+                self._tr('Select only one message to set is as start message'))
 
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
         assert isinstance(variant_name, str)
@@ -247,13 +250,19 @@ class BotEditorForm(QMainWindow):
             raise
 
     def _save_changes(self):
+        # освежим объект бота с сервера
+        self._bot = self._bot_api.get_bot_by_id(self._bot.id)
+
+        # запишем текущие поля из интерфейса пользователя в объект бота
         self._bot.bot_name = self._prop_model.get_name()
         self._bot.bot_token = self._prop_model.get_token()
         self._bot.bot_description = self._prop_model.get_description()
 
-        self._upload_bot_scene()
-
+        # отправим актуальный объект бота обратно на сервер
         self._bot_api.change_bot(self._bot)
+
+        # отправляем все объекты сообщений на сервер
+        self._upload_bot_scene()
 
     def _on_selection_changed(self):
         self._actual_actions_state()
