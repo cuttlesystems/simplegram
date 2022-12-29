@@ -67,7 +67,7 @@
 <u>Например</u>, чтобы добавить библиотеку *'os'*, в командной строке следует написать команду:
 
 ```
-pyinstaller --onefile --add-data "netflix_titles.csv;." — hidden-import "os" simple1.py
+pyinstaller --onefile --hidden-import "os" simple1.py
 ```
 
 
