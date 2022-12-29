@@ -4,11 +4,13 @@
 
 [Документация по проекту](./Docs/Index.md)
 
-[Правила работы с git](./Docs/git_description.md)
+[Правила работы с *git*](./Docs/git_description.md)
 
 [Данные для тестирования телеграмм бота](./Docs/telegabot_info.md)
 
-[Инструкция по осуществлению deploy'я обновлённого docker-контейнера](./Docs/deploy_from_ubuntu.md)
+[Инструкция по осуществлению *deploy'я* обновлённого *docker*-контейнера](./Docs/deploy_from_ubuntu.md)
+
+[Инструкция по созданию исполняемого файла (*Win, Linux*) с помощью утилиты *PyInstaller*](./Docs/create_executable_file.md)
 
 ### Организация разработки
 
