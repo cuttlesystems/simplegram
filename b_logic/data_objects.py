@@ -20,7 +20,17 @@ class BotDescription:
     bot_name: Optional[str] = None
     bot_token: Optional[str] = None
     bot_description: Optional[str] = None
-    start_message_id: Optional[int] = None
+
+    _start_message_id: Optional[int] = None
+
+    @property
+    def start_message_id(self) -> Optional[int]:
+        return self._start_message_id
+
+    @start_message_id.setter
+    def start_message_id(self, value: Optional[int]):
+        assert isinstance(value, Optional[int])
+        self._start_message_id = value
 
 
 @dataclass

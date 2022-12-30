@@ -43,16 +43,6 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>В боте есть что доделать, из показанного функционала. Привести код в порядок и сделать, чтобы это работало хорошо.</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

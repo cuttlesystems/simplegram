@@ -234,6 +234,14 @@ class BlockGraphicsItem(QGraphicsItem):
             variant = self._variants[self._current_variant_index]
         return variant
 
+    def get_variants(self) -> typing.List[BotVariant]:
+        """
+        Получить варианты, относящиеся к данному блоку (к сообщению данного блока)
+        Returns:
+            список объектов вариантов
+        """
+        return self._variants
+
     def delete_variant(self, variant_id: int) -> None:
         """
         Удаляет из блока вариант с указанным индексом
@@ -266,6 +274,18 @@ class BlockGraphicsItem(QGraphicsItem):
         self.prepareGeometryChange()
         self._message = message
         self.update(self.boundingRect())
+
+    def add_variant(self, variant: BotVariant) -> None:
+        """
+        Добавить вариант в данный блок. Происходит визуальное добавление
+        нового варианта на графический блок.
+        Args:
+            variant: объект добавляемого варианта
+        """
+        assert isinstance(variant, BotVariant)
+        self.prepareGeometryChange()
+        self._variants.append(variant)
+        self._update_image()
 
     def change_variant(self, variant: BotVariant) -> None:
         """
@@ -322,6 +342,7 @@ class BlockGraphicsItem(QGraphicsItem):
         падению приложения.
         """
         self.update(self.boundingRect())
+        self.scene().update(self.sceneBoundingRect())
 
     def _variant_by_position(self, position: QPointF) -> typing.Optional[BotVariant]:
         variant_on_position: typing.Optional[BotVariant] = None
