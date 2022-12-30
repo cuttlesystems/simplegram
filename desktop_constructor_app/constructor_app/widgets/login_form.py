@@ -39,8 +39,7 @@ class LoginForm(QWidget):
     _LOGO_HEIGHT = 150
 
     open_bot_signal = Signal(BotDescription)
-
-    sign_up_signal = Signal()
+    sign_up_signal = Signal(str)
 
     _KEY = b'OCbAwQH4JA9ID-5gJB4nvk4UbNwpHx4wNT5O5VNKcGI='
 
@@ -111,7 +110,6 @@ class LoginForm(QWidget):
             for bot in bots:
                 bot_item = QListWidgetItem(bot.bot_name)
                 bot_item.setData(self._LIST_DATA_ROLE, bot)
-                assert bot == bot_item.data(self._LIST_DATA_ROLE)
                 bot_items.append(bot_item)
                 self._ui.bot_list_widget.addItem(bot_item)
         except BotApiException as error:
@@ -195,4 +193,4 @@ class LoginForm(QWidget):
         return gen_next_name(base_name, used_names)
 
     def _on_sign_up(self, checked: bool):
-        self.sign_up_signal.emit()
+        self.sign_up_signal.emit(self._ui.server_addr_edit.text())

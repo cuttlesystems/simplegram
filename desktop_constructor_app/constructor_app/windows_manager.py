@@ -20,6 +20,7 @@ class WindowsManager(QObject):
         self._bot_editor_form.close_bot.connect(self._on_close_bot)
         self._sign_up_form.sign_up_success_signal.connect(self._on_success_sign_up)
         self._sign_up_form.sign_up_close_signal.connect(self._on_close_sign_up)
+        self._sign_up_form.sign_up_server_address_error_signal.connect(self._on_server_address_error)
 
         self._login_form.show()
 
@@ -38,9 +39,10 @@ class WindowsManager(QObject):
         self._login_form.login_to_server()
         self._login_form.show()
 
-    def _on_login_form_sign_up(self):
+    def _on_login_form_sign_up(self, server_addr):
         print('sign up')
         self._login_form.hide()
+        self._sign_up_form.server_addr = server_addr
         self._sign_up_form.show()
 
     def _on_success_sign_up(self):
@@ -50,4 +52,9 @@ class WindowsManager(QObject):
 
     def _on_close_sign_up(self):
         print('closed sign up')
+        self._login_form.show()
+
+    def _on_server_address_error(self):
+        print('fill in server address')
+        self._sign_up_form.hide()
         self._login_form.show()
