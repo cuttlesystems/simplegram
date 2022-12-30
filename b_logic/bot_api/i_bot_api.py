@@ -20,6 +20,18 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
+    def sign_up(self, username: str, email: str, password: str) -> None:
+        """
+        Регистрация нового пользователя.
+
+        Args:
+            username: Имя
+            email: Электронная почта
+            password: Пароль
+        """
+        pass
+
+    @abstractmethod
     def authentication(self, username: str, password: str) -> None:
         """
         Провести аутентификацию пользователя и запомнить токен авторизации для
