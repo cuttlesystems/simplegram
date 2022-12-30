@@ -235,6 +235,11 @@ class BlockGraphicsItem(QGraphicsItem):
         return variant
 
     def get_variants(self) -> typing.List[BotVariant]:
+        """
+        Получить варианты, относящиеся к данному блоку (к сообщению данного блока)
+        Returns:
+            список объектов вариантов
+        """
         return self._variants
 
     def delete_variant(self, variant_id: int) -> None:
@@ -270,7 +275,13 @@ class BlockGraphicsItem(QGraphicsItem):
         self._message = message
         self.update(self.boundingRect())
 
-    def add_variant(self, variant: BotVariant):
+    def add_variant(self, variant: BotVariant) -> None:
+        """
+        Добавить вариант в данный блок. Происходит визуальное добавление
+        нового варианта на графический блок.
+        Args:
+            variant: объект добавляемого варианта
+        """
         assert isinstance(variant, BotVariant)
         self.prepareGeometryChange()
         self._variants.append(variant)
