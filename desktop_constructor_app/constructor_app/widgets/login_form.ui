@@ -114,7 +114,11 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QListWidget" name="bot_list_widget"/>
+      <widget class="QListWidget" name="bot_list_widget">
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">

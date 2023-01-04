@@ -36,7 +36,6 @@ class SignUpForm(QWidget):
         email: QLineEdit = self._ui.email_line_edit
         password: QLineEdit = self._ui.password_line_edit
         confirm_password: QLineEdit = self._ui.confirm_password_line_edit
-        print(f'Server_addr is: {self.server_addr}')
         if password.text() == confirm_password.text():
             try:
                 if not self.server_addr:
@@ -57,7 +56,7 @@ class SignUpForm(QWidget):
                 QMessageBox.warning(self, 'Server address error', str(exception))
                 self.sign_up_server_address_error_signal.emit()
         else:
-            QMessageBox.warning(self, 'Password error', 'Passwords don\'t match')
+            QMessageBox.warning(self, 'Password error', 'Passwords did not match')
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.sign_up_close_signal.emit()
