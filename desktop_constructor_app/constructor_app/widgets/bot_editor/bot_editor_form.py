@@ -4,7 +4,7 @@ import typing
 from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal, QCoreApplication
 from PySide6.QtGui import QPainter, QAction
-from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow
+from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
@@ -45,6 +45,11 @@ class BotEditorForm(QMainWindow):
 
         self._prop_model = BotPropertiesModel()
         self._ui.bot_params_view.setModel(self._prop_model)
+
+        self._context_menu = QMenu(self)
+        self._context_menu.addAction(self._ui.action_add_message)
+
+        self._bot_scene.setup_menu(self._context_menu)
 
         self._connect_signals()
 

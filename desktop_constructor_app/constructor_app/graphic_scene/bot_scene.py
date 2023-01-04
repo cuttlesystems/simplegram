@@ -3,7 +3,7 @@ import typing
 from PySide6 import QtCore
 from PySide6.QtCore import QRectF, Signal
 from PySide6.QtGui import QBrush, QColor, QPen
-from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
+from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem, QMenu
 
 from b_logic.data_objects import BotMessage, BotVariant
 from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
@@ -55,6 +55,9 @@ class BotScene(QGraphicsScene):
             pen=self._background_pen,
             brush=self._background_brush
         )
+
+        self._context_menu: typing.Optional[QMenu] = None
+
         self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
 
@@ -147,6 +150,10 @@ class BotScene(QGraphicsScene):
             if item.isSelected():
                 selected.append(item)
         return selected
+
+    def setup_menu(self, context_menu: QMenu) -> None:
+        assert isinstance(context_menu, QMenu)
+        self._context_menu = context_menu
 
     def _connect_signals(self):
         self.changed.connect(self._on_item_changed)
