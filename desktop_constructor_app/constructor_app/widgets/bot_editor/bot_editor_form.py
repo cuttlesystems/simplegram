@@ -46,14 +46,10 @@ class BotEditorForm(QMainWindow):
         self._prop_model = BotPropertiesModel()
         self._ui.bot_params_view.setModel(self._prop_model)
 
-        self._context_menu = QMenu(self)
-        # self._action_add_message_context: QAction = QAction(
-        #     icon=self._ui.action_add_message.icon(),
-        #     text=self._ui.action_add_message.text(),
-        #     parent=self._context_menu)
-        self._context_menu.addAction(self._ui.action_add_message)
+        self._context_menu_empty = QMenu(self)
+        self._context_menu_empty.addAction(self._ui.action_add_message)
 
-        self._ui.graphics_view.setup_menu(self._context_menu)
+        self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
 
         self._connect_signals()
 
