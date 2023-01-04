@@ -9,6 +9,10 @@ from PySide6.QtWidgets import QGraphicsItem
 
 from b_logic.data_objects import BotMessage, BotVariant
 from desktop_constructor_app.constructor_app.graphic_scene.colors.block_color_scheme import BlockColorScheme
+from utils.cut_string import cut_string
+
+MAX_MESSAGE_CHARS = 25
+MAX_VARIANT_CHARS = 25
 
 
 class BlockGraphicsSignalSender(QObject):
@@ -369,7 +373,7 @@ class BlockGraphicsItem(QGraphicsItem):
 
         # настроим цвет текста и напишем текст сообщения
         self._setup_text_color(painter)
-        painter.drawText(self._message_text_rect(), self._message.text)
+        painter.drawText(self._message_text_rect(), cut_string(self._message.text, MAX_MESSAGE_CHARS))
 
     def _draw_variant(self, painter: QtGui.QPainter, variant: typing.Optional[BotVariant], index: int):
         assert isinstance(painter, QtGui.QPainter)
@@ -384,7 +388,7 @@ class BlockGraphicsItem(QGraphicsItem):
 
         if not is_illusory_variant:
             painter.setPen(QColor(self._color_scheme.text_color))
-            painter.drawText(self._variant_text_rect(index), variant.text)
+            painter.drawText(self._variant_text_rect(index), cut_string(variant.text, MAX_VARIANT_CHARS))
         else:
             # отображается несуществующий вариант, который позволяет добавлять новые варианты
             add_variant_icon_render = QSvgRenderer(':/icons/images/add_variant.svg')
