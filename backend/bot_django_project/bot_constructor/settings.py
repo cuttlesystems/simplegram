@@ -121,8 +121,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-#MEDIA_URL = '/media/'
-MEDIA_URL = f'https://{DOMAIN_HOST}/media/'
+MEDIA_URL_NOT_DOMAINED = '/media/'
+MEDIA_URL_DOMAINED = f'https://{DOMAIN_HOST}{MEDIA_URL_NOT_DOMAINED}'
+MEDIA_URL = MEDIA_URL_DOMAINED
 
 # путь с данными, которые не относятся к исходникам (сгенерированные боты, изображения, видео)
 DATA_FILES_ROOT = os.path.join(BASE_DIR, 'data_files')
