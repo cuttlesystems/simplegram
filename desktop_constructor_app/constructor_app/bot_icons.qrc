@@ -5,5 +5,9 @@
         <file>images/add_message.svg</file>
         <file>images/delete_message.svg</file>
         <file>images/delete_variant.svg</file>
+        <file>images/first_message.svg</file>
+        <file>images/generate.svg</file>
+        <file>images/start_bot.svg</file>
+        <file>images/stop_bot.svg</file>
     </qresource>
 </RCC>
