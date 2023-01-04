@@ -2,7 +2,7 @@
 import typing
 
 from PySide6 import QtGui, QtCore
-from PySide6.QtCore import Signal, QCoreApplication
+from PySide6.QtCore import Signal, QCoreApplication, QRect, QRectF, QPoint, QPointF
 from PySide6.QtGui import QPainter, QAction
 from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
@@ -47,6 +47,10 @@ class BotEditorForm(QMainWindow):
         self._ui.bot_params_view.setModel(self._prop_model)
 
         self._context_menu = QMenu(self)
+        # self._action_add_message_context: QAction = QAction(
+        #     icon=self._ui.action_add_message.icon(),
+        #     text=self._ui.action_add_message.text(),
+        #     parent=self._context_menu)
         self._context_menu.addAction(self._ui.action_add_message)
 
         self._ui.graphics_view.setup_menu(self._context_menu)
@@ -120,8 +124,18 @@ class BotEditorForm(QMainWindow):
         self._save_changes()
 
     def _on_add_new_message(self, _checked: bool):
+        position = self._ui.graphics_view.get_context_menu_position()
+        # действие вызвано не через контекстное меню
+        if position is None:
+            actual_position = self._ui.graphics_view.mapToScene(self._ui.graphics_view.get_central_point())
+        else:
+            actual_position = self._ui.graphics_view.mapToScene(position)
+        self._add_new_message(actual_position)
+
+    def _add_new_message(self, position: QPointF):
+        assert isinstance(position, QPointF)
         message = self._bot_api.create_message(
-            self._bot, 'Текст ботового сообщения', ButtonTypes.REPLY, x=10, y=10)
+            self._bot, 'Текст ботового сообщения', ButtonTypes.REPLY, x=position.x(), y=position.y())
         self._bot_scene.add_message(message, [])
         self._actual_actions_state()
 
