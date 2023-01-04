@@ -195,4 +195,8 @@ class LoginForm(QWidget):
         return gen_next_name(base_name, used_names)
 
     def _on_sign_up(self, checked: bool):
-        self.sign_up_signal.emit(self._ui.server_addr_edit.text())
+        if not self._ui.server_addr_edit.text():
+            QMessageBox.warning(self, 'Server address error', 'Please fill in the server address field. '
+                                                              'For example: https://ramasuchka.kz/')
+        else:
+            self.sign_up_signal.emit(self._ui.server_addr_edit.text())
