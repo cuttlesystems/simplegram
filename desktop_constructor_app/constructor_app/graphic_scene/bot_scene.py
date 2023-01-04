@@ -56,8 +56,6 @@ class BotScene(QGraphicsScene):
             brush=self._background_brush
         )
 
-        self._context_menu: typing.Optional[QMenu] = None
-
         self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
 
@@ -150,10 +148,6 @@ class BotScene(QGraphicsScene):
             if item.isSelected():
                 selected.append(item)
         return selected
-
-    def setup_menu(self, context_menu: QMenu) -> None:
-        assert isinstance(context_menu, QMenu)
-        self._context_menu = context_menu
 
     def _connect_signals(self):
         self.changed.connect(self._on_item_changed)

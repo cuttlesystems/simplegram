@@ -49,7 +49,7 @@ class BotEditorForm(QMainWindow):
         self._context_menu = QMenu(self)
         self._context_menu.addAction(self._ui.action_add_message)
 
-        self._bot_scene.setup_menu(self._context_menu)
+        self._ui.graphics_view.setup_menu(self._context_menu)
 
         self._connect_signals()
 
