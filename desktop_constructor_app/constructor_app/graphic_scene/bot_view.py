@@ -51,6 +51,12 @@ class BotView(QGraphicsView):
             assert isinstance(bot_scene, BotScene)
             scene_item = bot_scene.itemAt(scene_pos, QTransform())
             if isinstance(scene_item, BlockGraphicsItem):
+                bot_scene.clearSelection()
+                # for item in bot_scene.selectedItems():
+                #     item.setSelected(False)
+
+                if not scene_item.isSelected():
+                    scene_item.setSelected(True)
                 if self._context_menu_block is not None:
                     self._context_menu_block.exec(event.globalPos())
             else:

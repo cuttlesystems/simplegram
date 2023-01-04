@@ -51,6 +51,15 @@ class BotEditorForm(QMainWindow):
 
         self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
 
+        self._context_menu_block = QMenu(self)
+        self._context_menu_block.addAction(self._ui.action_delete_message)
+        self._context_menu_block.addAction(self._ui.action_mark_start)
+        self._context_menu_block.addSeparator()
+        self._context_menu_block.addAction(self._ui.action_add_variant)
+        self._context_menu_block.addAction(self._ui.action_delete_variant)
+
+        self._ui.graphics_view.setup_block_menu(self._context_menu_block)
+
         self._connect_signals()
 
     def set_bot(self, bot: typing.Optional[BotDescription]):
