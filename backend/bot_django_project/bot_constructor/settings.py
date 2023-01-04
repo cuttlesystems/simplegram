@@ -12,8 +12,7 @@ SECRET_KEY = 'django-insecure-l^#t200))@a#@3^g7vhy4zk(0)pfg-xfecdr+$@41hw*id)(m6
 # SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG = False
+DEBUG = True
 
 DOMAIN_HOST = 'ramasuchka.kz'
 
@@ -123,9 +122,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL_NOT_DOMAINED = '/media/'
-#MEDIA_URL_DOMAINED = f'https://{DOMAIN_HOST}{MEDIA_URL_NOT_DOMAINED}'
-# Testing 'http' instead of 'https'
-MEDIA_URL_DOMAINED = f'http://{DOMAIN_HOST}{MEDIA_URL_NOT_DOMAINED}'
+MEDIA_URL_DOMAINED = f'https://{DOMAIN_HOST}{MEDIA_URL_NOT_DOMAINED}'
 MEDIA_URL = MEDIA_URL_DOMAINED
 
 # путь с данными, которые не относятся к исходникам (сгенерированные боты, изображения, видео)
