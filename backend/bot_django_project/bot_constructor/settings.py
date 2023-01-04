@@ -14,16 +14,20 @@ SECRET_KEY = 'django-insecure-l^#t200))@a#@3^g7vhy4zk(0)pfg-xfecdr+$@41hw*id)(m6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+DOMAIN_HOST = 'ramasuchka.kz'
+
 ALLOWED_HOSTS = ['*']
 
 # FIX admin CSRF token issue
 # CSRF_TRUSTED_ORIGINS=['https://*.YOUR_DOMAIN.COM']
 ##  CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*'] doesn't effect so the 'CSRF_TRUSTED_ORIGINS' value is assigned directly as 'http://*.domain.com'
 
+
+
 #if DEBUG == True:
 #    CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
 #if not DEBUG == True:
-CSRF_TRUSTED_ORIGINS = ['http://*.ramasuchka.kz', 'https://*.ramasuchka.kz']
+CSRF_TRUSTED_ORIGINS = [f'http://*.{DOMAIN_HOST}', f'https://*.{DOMAIN_HOST}']
 
 # Application definition
 
@@ -117,7 +121,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-MEDIA_URL = '/media/'
+#MEDIA_URL = '/media/'
+MEDIA_URL = f'https://{DOMAIN_HOST}/media/'
 
 # путь с данными, которые не относятся к исходникам (сгенерированные боты, изображения, видео)
 DATA_FILES_ROOT = os.path.join(BASE_DIR, 'data_files')
