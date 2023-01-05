@@ -32,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>1017</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBit">
@@ -94,16 +94,28 @@
    <addaction name="action_stop_bot"/>
   </widget>
   <action name="action_generate_bot">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/generate.svg</normaloff>:/icons/images/generate.svg</iconset>
+   </property>
    <property name="text">
     <string>Generate bot</string>
    </property>
   </action>
   <action name="action_start_bot">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/start_bot.svg</normaloff>:/icons/images/start_bot.svg</iconset>
+   </property>
    <property name="text">
     <string>Start bot</string>
    </property>
   </action>
   <action name="action_stop_bot">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/stop_bot.svg</normaloff>:/icons/images/stop_bot.svg</iconset>
+   </property>
    <property name="text">
     <string>Stop bot</string>
    </property>
@@ -127,6 +139,10 @@
    </property>
   </action>
   <action name="action_mark_start">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/first_message.svg</normaloff>:/icons/images/first_message.svg</iconset>
+   </property>
    <property name="text">
     <string>Mark as start</string>
    </property>
@@ -146,6 +162,10 @@
    </property>
   </action>
   <action name="action_add_variant">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/add_variant.svg</normaloff>:/icons/images/add_variant.svg</iconset>
+   </property>
    <property name="text">
     <string>Add variant</string>
    </property>
