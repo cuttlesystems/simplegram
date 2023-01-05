@@ -2,9 +2,9 @@
 import typing
 
 from PySide6 import QtGui, QtCore
-from PySide6.QtCore import Signal, QCoreApplication
+from PySide6.QtCore import Signal, QCoreApplication, QRect, QRectF, QPoint, QPointF
 from PySide6.QtGui import QPainter, QAction
-from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow
+from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
@@ -45,6 +45,8 @@ class BotEditorForm(QMainWindow):
 
         self._prop_model = BotPropertiesModel()
         self._ui.bot_params_view.setModel(self._prop_model)
+
+        self._prepare_and_setup_context_menu()
 
         self._connect_signals()
 
@@ -99,6 +101,25 @@ class BotEditorForm(QMainWindow):
 
         self._bot_scene.selection_changed.connect(self._on_selection_changed)
 
+    def _prepare_and_setup_context_menu(self) -> None:
+        """
+        Создать, подготовить и установить контекстное меню для блока и пустой области
+        """
+        self._context_menu_block = QMenu(self)
+
+        self._context_menu_block.addAction(self._ui.action_delete_message)
+        self._context_menu_block.addAction(self._ui.action_mark_start)
+        self._context_menu_block.addSeparator()
+        self._context_menu_block.addAction(self._ui.action_add_variant)
+        self._context_menu_block.addAction(self._ui.action_delete_variant)
+
+        self._ui.graphics_view.setup_block_menu(self._context_menu_block)
+
+        self._context_menu_empty = QMenu(self)
+        self._context_menu_empty.addAction(self._ui.action_add_message)
+
+        self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
+
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
         bot_messages = self._bot_api.get_messages(self._bot)
@@ -114,9 +135,21 @@ class BotEditorForm(QMainWindow):
     def _on_apply_button(self, _checked: bool):
         self._save_changes()
 
-    def _on_add_new_message(self, _checked: bool):
+    def _on_add_new_message(self, _checked: bool) -> None:
+        position = self._ui.graphics_view.get_context_menu_position()
+        # действие вызвано не через контекстное меню
+        if position is None:
+            # координаты нового сообщения: по центру видимой области редактора
+            actual_position = self._ui.graphics_view.mapToScene(self._ui.graphics_view.get_central_point())
+        else:
+            # координаты нового сообщения: где было показано контекстное меню
+            actual_position = self._ui.graphics_view.mapToScene(position)
+        self._add_new_message(actual_position)
+
+    def _add_new_message(self, position: QPointF) -> None:
+        assert isinstance(position, QPointF)
         message = self._bot_api.create_message(
-            self._bot, 'Текст ботового сообщения', ButtonTypes.REPLY, x=10, y=10)
+            self._bot, 'Текст ботового сообщения', ButtonTypes.REPLY, x=position.x(), y=position.y())
         self._bot_scene.add_message(message, [])
         self._actual_actions_state()
 

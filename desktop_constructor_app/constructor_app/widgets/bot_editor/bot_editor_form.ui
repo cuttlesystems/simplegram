@@ -21,7 +21,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="PropertiesView" name="bot_params_view"/>
-      <widget class="QGraphicsView" name="graphics_view"/>
+      <widget class="BotView" name="graphics_view"/>
      </widget>
     </item>
    </layout>
@@ -176,6 +176,11 @@
    <class>PropertiesView</class>
    <extends>QTreeView</extends>
    <header>desktop_constructor_app.common.properties_view</header>
+  </customwidget>
+  <customwidget>
+   <class>BotView</class>
+   <extends>QGraphicsView</extends>
+   <header>desktop_constructor_app.constructor_app.graphic_scene.bot_view</header>
   </customwidget>
  </customwidgets>
  <resources>

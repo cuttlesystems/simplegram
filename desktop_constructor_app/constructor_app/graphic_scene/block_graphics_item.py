@@ -182,7 +182,7 @@ class BlockGraphicsItem(QGraphicsItem):
         Args:
             event: параметры события
         """
-        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+        if event.button() in (QtCore.Qt.MouseButton.LeftButton, QtCore.Qt.MouseButton.RightButton):
             click_position: QPointF = event.pos()
             # определим какому варианту соответствуют координаты клика
             variant_on_position = self._variant_by_position(click_position)

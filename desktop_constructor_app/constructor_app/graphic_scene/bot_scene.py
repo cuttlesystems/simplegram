@@ -55,6 +55,7 @@ class BotScene(QGraphicsScene):
             pen=self._background_pen,
             brush=self._background_brush
         )
+
         self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
 
