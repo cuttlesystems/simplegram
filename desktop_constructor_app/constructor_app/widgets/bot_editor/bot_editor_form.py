@@ -135,16 +135,18 @@ class BotEditorForm(QMainWindow):
     def _on_apply_button(self, _checked: bool):
         self._save_changes()
 
-    def _on_add_new_message(self, _checked: bool):
+    def _on_add_new_message(self, _checked: bool) -> None:
         position = self._ui.graphics_view.get_context_menu_position()
         # действие вызвано не через контекстное меню
         if position is None:
+            # координаты нового сообщения: по центру видимой области редактора
             actual_position = self._ui.graphics_view.mapToScene(self._ui.graphics_view.get_central_point())
         else:
+            # координаты нового сообщения: где было показано контекстное меню
             actual_position = self._ui.graphics_view.mapToScene(position)
         self._add_new_message(actual_position)
 
-    def _add_new_message(self, position: QPointF):
+    def _add_new_message(self, position: QPointF) -> None:
         assert isinstance(position, QPointF)
         message = self._bot_api.create_message(
             self._bot, 'Текст ботового сообщения', ButtonTypes.REPLY, x=position.x(), y=position.y())
