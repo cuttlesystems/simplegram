@@ -3,7 +3,7 @@ import typing
 from PySide6 import QtCore
 from PySide6.QtCore import QRectF, Signal
 from PySide6.QtGui import QBrush, QColor, QPen
-from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem, QMenu
+from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
 from b_logic.data_objects import BotMessage, BotVariant
 from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem

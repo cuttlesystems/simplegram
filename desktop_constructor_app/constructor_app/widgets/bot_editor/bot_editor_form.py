@@ -46,19 +46,7 @@ class BotEditorForm(QMainWindow):
         self._prop_model = BotPropertiesModel()
         self._ui.bot_params_view.setModel(self._prop_model)
 
-        self._context_menu_empty = QMenu(self)
-        self._context_menu_empty.addAction(self._ui.action_add_message)
-
-        self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
-
-        self._context_menu_block = QMenu(self)
-        self._context_menu_block.addAction(self._ui.action_delete_message)
-        self._context_menu_block.addAction(self._ui.action_mark_start)
-        self._context_menu_block.addSeparator()
-        self._context_menu_block.addAction(self._ui.action_add_variant)
-        self._context_menu_block.addAction(self._ui.action_delete_variant)
-
-        self._ui.graphics_view.setup_block_menu(self._context_menu_block)
+        self._prepare_and_setup_context_menu()
 
         self._connect_signals()
 
@@ -112,6 +100,25 @@ class BotEditorForm(QMainWindow):
             self._on_change_variant, QtCore.Qt.ConnectionType.QueuedConnection)
 
         self._bot_scene.selection_changed.connect(self._on_selection_changed)
+
+    def _prepare_and_setup_context_menu(self) -> None:
+        """
+        Создать, подготовить и установить контекстное меню для блока и пустой области
+        """
+        self._context_menu_block = QMenu(self)
+
+        self._context_menu_block.addAction(self._ui.action_delete_message)
+        self._context_menu_block.addAction(self._ui.action_mark_start)
+        self._context_menu_block.addSeparator()
+        self._context_menu_block.addAction(self._ui.action_add_variant)
+        self._context_menu_block.addAction(self._ui.action_delete_variant)
+
+        self._ui.graphics_view.setup_block_menu(self._context_menu_block)
+
+        self._context_menu_empty = QMenu(self)
+        self._context_menu_empty.addAction(self._ui.action_add_message)
+
+        self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
