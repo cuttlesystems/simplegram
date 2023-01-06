@@ -84,17 +84,17 @@
     <message>
         <location filename="../widgets/login_form.ui" line="25"/>
         <source>Server connection string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сервер қосылым жолы</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="39"/>
         <source>Username</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Қолданушының аты</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="49"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Құпия сөз</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="67"/>
