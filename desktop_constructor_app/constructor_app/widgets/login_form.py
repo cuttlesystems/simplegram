@@ -11,10 +11,10 @@ from b_logic.bot_api.bot_api_by_requests import BotApiException
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
 from desktop_constructor_app.common.utils.name_utils import gen_next_name
-from desktop_constructor_app.constructor_app.settings.application_settings import ApplicationSettings
-from desktop_constructor_app.constructor_app.utils.application_settings import get_application_data_dir
+from desktop_constructor_app.constructor_app.settings.login_settings_manager import LoginSettingsManager
+from desktop_constructor_app.constructor_app.settings.get_application_data_dir import get_application_data_dir
 from desktop_constructor_app.constructor_app.widgets.ui_login_form import Ui_LoginForm
-from desktop_constructor_app.data_objects import Settings
+from desktop_constructor_app.constructor_app.settings.login_settings import LoginSettings
 
 
 class LoginStateEnum(Enum):
@@ -58,7 +58,7 @@ class LoginForm(QWidget):
         else:
             print('Can not load logo')
         settings_path = get_application_data_dir()
-        self._application_settings = ApplicationSettings(settings_path, key=self._KEY)
+        self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
         settings = self._application_settings.read_settings()
         self._ui.username_edit.setText(settings.name)
         self._ui.password_edit.setText(settings.password)
@@ -134,7 +134,7 @@ class LoginForm(QWidget):
             self._dialog_state = LoginStateEnum.BOTS
             self.__load_bots_list()
             self._activate_controls()
-            settings = Settings(
+            settings = LoginSettings(
                 address=server_addr_edit.text(),
                 name=username_edit.text(),
                 password=password_edit.text()

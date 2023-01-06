@@ -4,28 +4,27 @@ from pathlib import Path
 
 from cryptography.fernet import Fernet
 
-from desktop_constructor_app.data_objects import Settings
+from desktop_constructor_app.constructor_app.settings.login_settings import LoginSettings
 
 
-class ApplicationSettings:
-
+class LoginSettingsManager:
     def __init__(self, path_to_storage: Path, key: bytes):
         assert isinstance(path_to_storage, Path)
         assert isinstance(key, bytes)
         self._fernet = Fernet(key)
         self._path_to_storage: Path = path_to_storage
 
-    def read_settings(self) -> Settings:
+    def read_settings(self) -> LoginSettings:
         settings_path = self._get_application_settings_path()
-        settings = Settings()
+        settings = LoginSettings()
         if settings_path.exists():
             with open(settings_path) as file:
                 data = json.load(file)
                 settings = self._dict_to_settings(data)
         return settings
 
-    def write_settings(self, settings: Settings) -> None:
-        assert isinstance(settings, Settings)
+    def write_settings(self, settings: LoginSettings) -> None:
+        assert isinstance(settings, LoginSettings)
         self._create_settings_dir_if_not_exist()
         settings_path = self._get_application_settings_path()
         data = self._settings_to_dict(settings)
@@ -33,7 +32,7 @@ class ApplicationSettings:
             json.dump(data, outfile, indent=4)
 
     def _get_application_settings_path(self) -> Path:
-        settings_path = self._path_to_storage / 'data.json'
+        settings_path = self._path_to_storage / 'login_form_settings.json'
         return settings_path
 
     def _create_settings_dir_if_not_exist(self) -> None:
@@ -46,8 +45,8 @@ class ApplicationSettings:
         encrypted_password_str = base64.b64encode(encrypted_password_bytes).decode('utf-8')
         return encrypted_password_str
 
-    def _settings_to_dict(self, settings: Settings) -> dict:
-        assert isinstance(settings, Settings)
+    def _settings_to_dict(self, settings: LoginSettings) -> dict:
+        assert isinstance(settings, LoginSettings)
         encrypted_password = self._encrypt(settings.password)
         data = {
             'address': settings.address,
@@ -61,20 +60,12 @@ class ApplicationSettings:
         password = self._fernet.decrypt(encrypted_password_bytes).decode('utf-8')
         return password
 
-    def _dict_to_settings(self, data: dict) -> Settings:
+    def _dict_to_settings(self, data: dict) -> LoginSettings:
         assert isinstance(data, dict)
         password = self._decrypt(data['password'])
-        settings = Settings()
+        settings = LoginSettings()
         settings.address = data['address']
         settings.name = data['name']
         settings.password = password
         return settings
 
-# if __name__ == '__main__':
-#     app = ApplicationSettings(get_application_data_dir(), b'OCbAwQH4JA9ID-5gJB4nvk4UbNwpHx4wNT5O5VNKcGI=')
-#     app.write_settings(Settings(
-#         name='admin',
-#         password='admin',
-#         address='localhost'
-#     ))
-#     print('start')
