@@ -5,6 +5,7 @@ from PySide6.QtCore import QTranslator
 from PySide6.QtWidgets import QApplication
 import desktop_constructor_app.constructor_app.rc_bot_icons
 from desktop_constructor_app.constructor_app.utils.application_style import print_available_styles
+from desktop_constructor_app.constructor_app.utils.language_manager import LanguageManager
 from desktop_constructor_app.constructor_app.windows_manager import WindowsManager
 
 
@@ -12,10 +13,9 @@ if __name__ == "__main__":
     print_available_styles()
 
     app = QApplication(sys.argv)
-    translator = QTranslator()
-    translator.load(
-        str(Path('desktop_constructor_app') / 'constructor_app' / 'translations' / 'bot_constructor_ru_RU.qm'))
-    app.installTranslator(translator)
+    language_manager = LanguageManager()
+    language_manager.check()
+    language_manager.configure_language_by_settings(app)
 
     # ссылаемся на модуль, чтобы он не удалился при автоматическом рефакторинге
     _rc_module = desktop_constructor_app.constructor_app.rc_bot_icons
