@@ -1,8 +1,10 @@
+import typing
 from pathlib import Path
 
 from PySide6.QtCore import QTranslator
 from PySide6.QtWidgets import QApplication
 
+from desktop_constructor_app.constructor_app.settings.get_application_data_dir import get_application_executable_dir
 from desktop_constructor_app.constructor_app.settings.language_settings_manager import LanguageSettingsManager
 from desktop_constructor_app.constructor_app.settings.languages_enum import LanguagesEnum
 
@@ -15,6 +17,10 @@ class LanguageManager:
     def __init__(self):
         self._languages = [language for language in LanguagesEnum]
 
+        # важно, чтобы объект переводчика хранился в классе, чтобы время жизни переменной переводчика
+        # было: все время работы приложения
+        self._translator: typing.Optional[QTranslator] = None
+
     def check(self):
         files = [self._get_language_file(language) for language in self._languages]
         for file in files:
@@ -25,14 +31,14 @@ class LanguageManager:
         assert isinstance(app, QApplication)
         settings_manager = LanguageSettingsManager()
         language_settings = settings_manager.read_settings()
-        translator = QTranslator()
-        translator.load(str(self._get_language_file(language_settings.language)))
-        app.installTranslator(translator)
+        self._translator = QTranslator()
+        self._translator.load(str(self._get_language_file(language_settings.language)))
+        app.installTranslator(self._translator)
 
     def _get_language_file(self, language: LanguagesEnum) -> Path:
         assert isinstance(language, LanguagesEnum)
         language_code = language.value
         return (
-            Path('desktop_constructor_app') /
+            get_application_executable_dir() / 'desktop_constructor_app' /
             'constructor_app' / 'translations' / f'bot_constructor_{language_code}.qm'
         )

@@ -17,3 +17,7 @@ def get_application_data_dir() -> Path:
     else:
         raise NotImplementedError(f'Unsupported os: {current_os}')
     return result
+
+
+def get_application_executable_dir() -> Path:
+    return Path(__file__).parent.parent.parent.parent

@@ -11,6 +11,7 @@ if __name__ == "__main__":
     print_available_styles()
 
     app = QApplication(sys.argv)
+
     language_manager = LanguageManager()
     language_manager.check()
     language_manager.configure_language_by_settings(app)

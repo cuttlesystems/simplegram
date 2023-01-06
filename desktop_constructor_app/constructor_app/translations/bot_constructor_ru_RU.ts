@@ -119,7 +119,7 @@
     <message>
         <location filename="../widgets/login_form.ui" line="101"/>
         <source>Sign Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Зарегистрироваться</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="110"/>
