@@ -14,7 +14,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     translator = QTranslator()
     translator.load(
-        str(Path('desktop_constructor_app') / 'constructor_app' / 'translations' / 'bot_constructor_ru.qm'))
+        str(Path('desktop_constructor_app') / 'constructor_app' / 'translations' / 'bot_constructor_ru_RU.qm'))
     app.installTranslator(translator)
 
     # ссылаемся на модуль, чтобы он не удалился при автоматическом рефакторинге
