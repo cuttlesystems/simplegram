@@ -3,7 +3,7 @@ import io
 import os
 
 from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit, BotCommand
-from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException
+from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
 from cuttle_builder.builder.handler_generator.create_state_handler import (create_state_message_handler,
@@ -80,6 +80,11 @@ class BotGenerator:
             raise NoOneMessageException(
                 'Can\'t generate bot without messages. '
                 'At least one message is required.')
+        if not self._start_message_id:
+            raise NoStartMessageException(
+                'Can\'t generate bot without start message. '
+                'Set start message is required.'
+            )
         # self._check_token()
         return True
 
