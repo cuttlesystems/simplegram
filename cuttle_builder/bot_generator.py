@@ -3,7 +3,7 @@ import io
 import os
 
 from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit, BotCommand
-from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException
+from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
 from cuttle_builder.builder.handler_generator.create_state_handler import (create_state_message_handler,
@@ -75,11 +75,16 @@ class BotGenerator:
     def _create_generated_bot_directory(self) -> None:
         self._file_manager.create_bot_directory(self._bot_directory)
 
-    def _is_valid_data(self) -> bool:
+    def _check_valid_data(self) -> bool:
         if not self._messages:
             raise NoOneMessageException(
                 'Can\'t generate bot without messages. '
                 'At least one message is required.')
+        if self._start_message_id is None:
+            raise NoStartMessageException(
+                'Can\'t generate bot without start message. '
+                'Set start message is required.'
+            )
         # self._check_token()
         return True
 
@@ -334,7 +339,7 @@ class BotGenerator:
 
     def create_bot(self) -> None:
         self._file_manager.delete_dir(self._bot_directory)
-        self._is_valid_data()
+        self._check_valid_data()
         self._create_generated_bot_directory()
         self._create_config_file()
         self._create_on_startup_commands_file()
