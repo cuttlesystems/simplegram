@@ -136,6 +136,9 @@
         <source>Sign Up</source>
         <translation>Зарегистрироваться</translation>
     </message>
+</context>
+<context>
+    <name>LoginForm.manual</name>
     <message>
         <source>Error</source>
         <translation>Ошибка</translation>

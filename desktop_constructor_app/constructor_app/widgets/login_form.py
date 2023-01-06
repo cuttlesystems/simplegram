@@ -219,4 +219,4 @@ class LoginForm(QWidget):
             self.sign_up_signal.emit(self._ui.server_addr_edit.text())
 
     def _tr(self, mes: str) -> str:
-        return tran('LoginForm', mes)
+        return tran('LoginForm.manual', mes)
