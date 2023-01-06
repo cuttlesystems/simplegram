@@ -79,62 +79,74 @@
     <message>
         <location filename="../widgets/login_form.ui" line="17"/>
         <source>Connection to Cuttle Systems Bot Constructor</source>
-        <translation type="unfinished">Подключение к конструктору ботов Cuttle Systems</translation>
+        <translation>Подключение к конструктору ботов Cuttle Systems</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="25"/>
         <source>Server connection string</source>
-        <translation type="unfinished">Строка подключения к серверу</translation>
+        <translation>Строка подключения к серверу</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="39"/>
         <source>Username</source>
-        <translation type="unfinished">Логин</translation>
+        <translation>Логин</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="49"/>
         <source>Password</source>
-        <translation type="unfinished">Пароль</translation>
+        <translation>Пароль</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="67"/>
         <source>Connect</source>
-        <translation type="unfinished">Подключиться</translation>
+        <translation>Подключиться</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="74"/>
         <source>Refresh list</source>
-        <translation type="unfinished">Обновить список</translation>
+        <translation>Обновить список</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="81"/>
         <source>Change user</source>
-        <translation type="unfinished">Сменить пользователя</translation>
+        <translation>Сменить пользователя</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="110"/>
         <source>Bots list</source>
-        <translation type="unfinished">Список ботов</translation>
+        <translation>Список ботов</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="170"/>
         <source>Open bot</source>
-        <translation type="unfinished">Открыть бота</translation>
+        <translation>Открыть бота</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="177"/>
         <source>Create bot</source>
-        <translation type="unfinished">Создать бота</translation>
+        <translation>Создать бота</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="184"/>
         <source>Remove bot</source>
-        <translation type="unfinished">Удалить бота</translation>
+        <translation>Удалить бота</translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="101"/>
         <source>Sign Up</source>
-        <translation type="unfinished">Зарегистрироваться</translation>
+        <translation>Зарегистрироваться</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
+        <source>Server address error</source>
+        <translation>Адрес сервера ошибочный</translation>
+    </message>
+    <message>
+        <source>Please fill in the server address field. For example: https://ramasuchka.kz/</source>
+        <translation>Пожалуйста, заполните поле с адресом сервера. Например: https://ramasuchka.kz/</translation>
     </message>
 </context>
 <context>

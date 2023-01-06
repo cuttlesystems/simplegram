@@ -10,6 +10,7 @@ from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 from b_logic.bot_api.bot_api_by_requests import BotApiException
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
+from desktop_constructor_app.common.localisation import tran
 from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.settings.login_settings_manager import LoginSettingsManager
 from desktop_constructor_app.constructor_app.settings.get_application_data_dir import get_application_data_dir
@@ -146,7 +147,7 @@ class LoginForm(QWidget):
             )
             self._application_settings.write_settings(settings)
         except BotApiException as bot_api_exception:
-            QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
+            QMessageBox.critical(self, self.tr('Error'), str(bot_api_exception))
 
     def _on_load_bots_click(self, _checked: bool):
         self.login_to_server()
@@ -205,9 +206,17 @@ class LoginForm(QWidget):
         used_names = [bot.bot_name for bot in self.__get_all_bots()]
         return gen_next_name(base_name, used_names)
 
-    def _on_sign_up(self, checked: bool):
+    def _on_sign_up(self, _checked: bool):
         if not self._ui.server_addr_edit.text():
-            QMessageBox.warning(self, 'Server address error', 'Please fill in the server address field. '
-                                                              'For example: https://ramasuchka.kz/')
+            QMessageBox.warning(
+                self,
+                self._tr('Server address error'),
+                self._tr(
+                    'Please fill in the server address field. '
+                    'For example: https://ramasuchka.kz/')
+            )
         else:
             self.sign_up_signal.emit(self._ui.server_addr_edit.text())
+
+    def _tr(self, mes: str) -> str:
+        return tran('LoginForm', mes)
