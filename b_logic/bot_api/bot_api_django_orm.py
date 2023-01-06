@@ -13,7 +13,7 @@ def get_full_path_to_django_image(base_dir: str, path_from_django: Optional[Imag
     """Получение полного пути к медиа файлу
 
     Args:
-        base_dir (str): Кореневая директория для медиа файлов
+        base_dir (str): Корневая директория для медиа файлов
         path_from_django (Optional[ImageFieldFile]): Данные из бд в Django формате
 
     Returns:
@@ -104,8 +104,8 @@ class BotApiByDjangoORM(IBotApi):
             messages_list.append(self._create_bot_message_from_data(message))
         return messages_list
 
-    def create_message(self, bot: BotDescription,
-                       text: str, x: int, y: int) -> BotMessage:
+    def create_message(self, bot: BotDescription, text: str,
+                       keyboard_type: ButtonTypes, x: int, y: int) -> BotMessage:
         raise NotImplementedError('Метод не определен!')
 
     def change_message(self, message: BotMessage) -> None:
@@ -168,6 +168,9 @@ class BotApiByDjangoORM(IBotApi):
         raise NotImplementedError('is not implemented')
 
     def stop_bot(self, bot: BotDescription) -> None:
+        raise NotImplementedError('is not implemented')
+
+    def get_running_bots_info(self) -> List[int]:
         raise NotImplementedError('is not implemented')
 
     def _create_bot_obj_from_data(self, bot_django: Bot) -> BotDescription:

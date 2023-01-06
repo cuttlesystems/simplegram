@@ -4,7 +4,7 @@ from enum import Enum
 
 from PySide6 import QtCore
 from PySide6.QtCore import Signal
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPixmap, QBrush, QColor
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
 from b_logic.bot_api.bot_api_by_requests import BotApiException
@@ -109,8 +109,14 @@ class LoginForm(QWidget):
             bots = self._bot_api.get_bots()
             bot_items = []
             self._ui.bot_list_widget.clear()
+
+            running_bots = self._bot_api.get_running_bots_info()
+            running_bot_background_color = self.palette().linkVisited()
             for bot in bots:
                 bot_item = QListWidgetItem(bot.bot_name)
+                if bot.id in running_bots:
+                    bot_item.setBackground(running_bot_background_color)
+                    bot_item.setText(f'{bot.bot_name} --> running')
                 bot_item.setData(self._LIST_DATA_ROLE, bot)
                 bot_items.append(bot_item)
                 self._ui.bot_list_widget.addItem(bot_item)

@@ -260,6 +260,35 @@ class BotViewSet(viewsets.ModelViewSet):
             result_dict['bot_id'] = bot_info.bot_id
         return JsonResponse(result_dict, status=requests.codes.ok)
 
+    @action(
+        methods=['GET'],
+        detail=False,
+        url_path='get_all_starting_bots'
+    )
+    def get_all_starting_bots(self, request: rest_framework.request.Request) -> Response:
+        """
+        Получает данные о запущенных ботах пользователя, который делает запрос.
+        запрос: {your server address}/api/bots/get_all_starting_bots/
+
+        Args:
+            request: объект запроса.
+
+        Returns:
+            Апи ответ содержащий список id, запущенных ботов.
+        """
+        user_bots_from_db = Bot.objects.filter(owner=request.user)
+        user_bots_id_list = [bot.id for bot in user_bots_from_db]
+
+        bot_processes_manager = BotProcessesManagerSingle()
+        all_running_bots = bot_processes_manager.get_all_processes_info()
+        all_running_bots_id_list = [bot.bot_id for bot in all_running_bots.values()]
+
+        all_running_user_bots = set(user_bots_id_list).intersection(set(all_running_bots_id_list))
+        return Response(
+            data=list(all_running_user_bots),
+            status=requests.codes.ok
+        )
+
 
 class MessageViewSet(viewsets.ModelViewSet):
     """

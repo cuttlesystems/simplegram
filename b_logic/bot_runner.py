@@ -31,7 +31,7 @@ class BotRunner:
                 only_name = process_name
             only_name = only_name.lower()
             if only_name in ['python', 'python3']:
-                print('kill bot')
+                print(f'kill bot with pid: {process_id}')
                 process.kill()
                 result = True
             else:

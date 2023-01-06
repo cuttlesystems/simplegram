@@ -29,6 +29,9 @@ class BotProcessesManagerSingle(metaclass=SingletonBase):
     def get_process_info(self, bot_id: int) -> Optional[BotProcessInfo]:
         return self._processes.get(bot_id)
 
+    def get_all_processes_info(self) -> Dict[int, BotProcessInfo]:
+        return self._processes
+
     def remove(self, bot_id: int) -> None:
         assert bot_id in self._processes
         del self._processes[bot_id]
