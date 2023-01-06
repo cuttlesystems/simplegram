@@ -109,13 +109,14 @@ class LoginForm(QWidget):
             bots = self._bot_api.get_bots()
             bot_items = []
             self._ui.bot_list_widget.clear()
-            started_bot_background_color = QBrush(QColor(129, 235, 157))
-            started_bots = self._bot_api.get_running_bots_info()
-            # started_bot_background_color = self.palette().highlight().color()
+
+            running_bots = self._bot_api.get_running_bots_info()
+            running_bot_background_color = self.palette().linkVisited()
             for bot in bots:
                 bot_item = QListWidgetItem(bot.bot_name)
-                if bot.id in started_bots:
-                    bot_item.setBackground(started_bot_background_color)
+                if bot.id in running_bots:
+                    bot_item.setBackground(running_bot_background_color)
+                    bot_item.setText(f'{bot.bot_name} --> running')
                 bot_item.setData(self._LIST_DATA_ROLE, bot)
                 bot_items.append(bot_item)
                 self._ui.bot_list_widget.addItem(bot_item)

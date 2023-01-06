@@ -92,9 +92,7 @@ class IBotApi(ABC):
         """
         Изменить бота
         Args:
-            bot_name: название бота
-            bot_token: токен бота
-            bot_description: описание бота
+            bot: описание бота
         """
         pass
 
@@ -139,6 +137,7 @@ class IBotApi(ABC):
         Args:
             bot: объект бота, для которого создается сообщение
             text: тест сообщения
+            keyboard_type: тип клавиатуры (inline or reply)
             x: координата по x
             y: координата по y
 
@@ -273,9 +272,18 @@ class IBotApi(ABC):
     @abstractmethod
     def stop_bot(self, bot: BotDescription) -> None:
         """
-        Остановка запущеного бота.
+        Остановка запущенного бота.
 
         Args:
             bot (BotDescription): Бот которого необходимо остановить.
+        """
+        pass
+
+    @abstractmethod
+    def get_running_bots_info(self) -> List[int]:
+        """
+        Получает данные о запущенных ботах пользователя.
+
+        Returns: Список id запущенных ботов.
         """
         pass

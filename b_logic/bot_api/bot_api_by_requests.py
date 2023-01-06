@@ -457,7 +457,7 @@ class BotApiByRequests(IBotApi):
             raise BotApiException(
                 'Ошибка при остановке бота: {0}'.format(response.text))
 
-    def get_running_bots_info(self):
+    def get_running_bots_info(self) -> List[int]:
         response = requests.get(
             url=self._suite_url + f'api/bots/get_all_starting_bots/',
             headers=self._get_headers()
