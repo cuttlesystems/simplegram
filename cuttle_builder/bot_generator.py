@@ -96,7 +96,11 @@ class BotGenerator:
 
     def _get_keyboard_name_for_message(self, message_id: int) -> str:
         assert isinstance(message_id, int)
-        return f'keyboard_for_message_id_{message_id}'
+        keyboard_name = f'keyboard_for_message_id_{message_id}'
+        variants = self._get_variants_of_message(message_id)
+        if len(variants) == 0:
+            keyboard_name = None
+        return keyboard_name
 
     def _get_handler_name_for_message(self, message_id: int) -> str:
         assert isinstance(message_id, int)
