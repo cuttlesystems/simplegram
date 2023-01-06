@@ -1,18 +1,14 @@
-from enum import Enum
 from pathlib import Path
 
 from PySide6.QtCore import QTranslator
 from PySide6.QtWidgets import QApplication
 
+from desktop_constructor_app.constructor_app.settings.language_settings_manager import LanguageSettingsManager
+from desktop_constructor_app.constructor_app.settings.languages_enum import LanguagesEnum
+
 
 class LanguageException(Exception):
     pass
-
-
-class LanguagesEnum(Enum):
-    ENGLISH = 'en_US'
-    KAZAKH = 'kk_KZ'
-    RUSSIAN = 'ru_RU'
 
 
 class LanguageManager:
@@ -27,8 +23,10 @@ class LanguageManager:
 
     def configure_language_by_settings(self, app: QApplication):
         assert isinstance(app, QApplication)
+        settings_manager = LanguageSettingsManager()
+        language_settings = settings_manager.read_settings()
         translator = QTranslator()
-        translator.load(str(self._get_language_file(LanguagesEnum.RUSSIAN)))
+        translator.load(str(self._get_language_file(language_settings.language)))
         app.installTranslator(translator)
 
     def _get_language_file(self, language: LanguagesEnum) -> Path:

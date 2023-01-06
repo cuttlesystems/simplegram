@@ -3,7 +3,7 @@ from pathlib import Path
 
 from desktop_constructor_app.constructor_app.settings.get_application_data_dir import get_application_data_dir
 from desktop_constructor_app.constructor_app.settings.language_settings import LanguageSettings
-from desktop_constructor_app.constructor_app.utils.language_manager import LanguagesEnum
+from desktop_constructor_app.constructor_app.settings.languages_enum import LanguagesEnum
 
 
 class LanguageSettingsManager:

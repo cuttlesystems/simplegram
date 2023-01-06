@@ -1,11 +1,9 @@
 import sys
-from pathlib import Path
 
-from PySide6.QtCore import QTranslator
 from PySide6.QtWidgets import QApplication
 import desktop_constructor_app.constructor_app.rc_bot_icons
 from desktop_constructor_app.constructor_app.utils.application_style import print_available_styles
-from desktop_constructor_app.constructor_app.utils.language_manager import LanguageManager
+from desktop_constructor_app.constructor_app.settings.language_manager import LanguageManager
 from desktop_constructor_app.constructor_app.windows_manager import WindowsManager
 
 
