@@ -1,1 +1,0 @@
-..\venv\Scripts\pyside6-lupdate . -ts bot_constructor_ru.ts
