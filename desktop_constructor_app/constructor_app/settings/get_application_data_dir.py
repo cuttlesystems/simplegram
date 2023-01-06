@@ -20,4 +20,6 @@ def get_application_data_dir() -> Path:
 
 
 def get_application_executable_dir() -> Path:
+    # todo: это для случая исполняемого файла скорее всего не будет работать,
+    #  нужно будет проверить и рассмотреть этот случай
     return Path(__file__).parent.parent.parent.parent

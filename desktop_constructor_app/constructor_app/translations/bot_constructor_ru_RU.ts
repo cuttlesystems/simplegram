@@ -185,7 +185,7 @@
     <message>
         <location filename="../widgets/sign_up_form.ui" line="48"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пароль</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="55"/>
@@ -200,7 +200,7 @@
     <message>
         <location filename="../widgets/sign_up_form.ui" line="69"/>
         <source>Username</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Логин</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="76"/>
