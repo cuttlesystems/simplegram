@@ -127,7 +127,7 @@ class LoginForm(QWidget):
                 bot_items.append(bot_item)
                 self._ui.bot_list_widget.addItem(bot_item)
         except BotApiException as error:
-            QMessageBox.warning(self, 'Ошибка', str(error))
+            QMessageBox.warning(self, self._tr('Error'), str(error))
 
     def login_to_server(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
@@ -147,7 +147,7 @@ class LoginForm(QWidget):
             )
             self._application_settings.write_settings(settings)
         except BotApiException as bot_api_exception:
-            QMessageBox.critical(self, self.tr('Error'), str(bot_api_exception))
+            QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
 
     def _on_load_bots_click(self, _checked: bool):
         self.login_to_server()
