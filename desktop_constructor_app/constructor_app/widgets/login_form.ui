@@ -14,7 +14,7 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>Подключение к конструктору ботов Cuttle Systems</string>
+   <string>Connection to Cuttle Systems Bot Constructor</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -22,21 +22,21 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Строка подключения к серверу&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>Server connection string</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="server_addr_edit">
        <property name="text">
-        <string>https://ramasuchka.kz/</string>
+        <string/>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Имя пользователя</string>
+        <string>Username</string>
        </property>
       </widget>
      </item>
@@ -46,7 +46,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Пароль</string>
+        <string>Password</string>
        </property>
       </widget>
      </item>
@@ -64,21 +64,21 @@
      <item>
       <widget class="QPushButton" name="load_bots">
        <property name="text">
-        <string>Подключиться</string>
+        <string>Connect</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="update_bot_list_button">
        <property name="text">
-        <string>Обновить список</string>
+        <string>Refresh list</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="change_user_button">
        <property name="text">
-        <string>Сменить пользователя</string>
+        <string>Change user</string>
        </property>
       </widget>
      </item>
@@ -107,7 +107,7 @@
    <item>
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Список ботов</string>
+      <string>Bots list</string>
      </property>
     </widget>
    </item>
@@ -167,21 +167,21 @@
      <item>
       <widget class="QPushButton" name="open_bot_button">
        <property name="text">
-        <string>Открыть бота</string>
+        <string>Open bot</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="create_bot_button">
        <property name="text">
-        <string>Создать бота</string>
+        <string>Create bot</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="delete_bot_button">
        <property name="text">
-        <string>Удалить бота</string>
+        <string>Remove bot</string>
        </property>
       </widget>
      </item>

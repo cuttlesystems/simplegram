@@ -78,67 +78,62 @@
     <name>LoginForm</name>
     <message>
         <location filename="../widgets/login_form.ui" line="17"/>
-        <source>Подключение к конструктору ботов Cuttle Systems</source>
+        <source>Connection to Cuttle Systems Bot Constructor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="25"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Строка подключения к серверу&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/login_form.ui" line="32"/>
-        <source>https://ramasuchka.kz/</source>
+        <source>Server connection string</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="39"/>
-        <source>Имя пользователя</source>
+        <source>Username</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="49"/>
-        <source>Пароль</source>
+        <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="67"/>
-        <source>Подключиться</source>
+        <source>Connect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="74"/>
-        <source>Обновить список</source>
+        <source>Refresh list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="81"/>
-        <source>Сменить пользователя</source>
+        <source>Change user</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/login_form.ui" line="110"/>
+        <source>Bots list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/login_form.ui" line="170"/>
+        <source>Open bot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/login_form.ui" line="177"/>
+        <source>Create bot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/login_form.ui" line="184"/>
+        <source>Remove bot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/login_form.ui" line="101"/>
         <source>Sign Up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/login_form.ui" line="110"/>
-        <source>Список ботов</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/login_form.ui" line="170"/>
-        <source>Открыть бота</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/login_form.ui" line="177"/>
-        <source>Создать бота</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/login_form.ui" line="184"/>
-        <source>Удалить бота</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
