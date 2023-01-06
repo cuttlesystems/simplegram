@@ -3,7 +3,7 @@ import typing
 from enum import Enum
 
 from PySide6 import QtCore
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QCoreApplication
 from PySide6.QtGui import QPixmap, QBrush, QColor
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
