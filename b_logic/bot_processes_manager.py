@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
+
+from b_logic.bot_runner import BotRunner
 from utils.singlethon import SingletonBase
 
 
 @dataclass
 class BotProcessInfo:
     bot_id: int
-    process_id: int
+    bot_runner: BotRunner
 
 
 class BotProcessesManagerSingle(metaclass=SingletonBase):
@@ -18,11 +20,12 @@ class BotProcessesManagerSingle(metaclass=SingletonBase):
     def __init__(self):
         self._processes: Dict[int, BotProcessInfo] = {}
 
-    def register(self, bot_id: int, process_id: int) -> None:
+    def register(self, bot_id: int, bot_runner: BotRunner) -> None:
         assert bot_id not in self._processes
+        assert isinstance(bot_runner, BotRunner)
         process_info = BotProcessInfo(
             bot_id=bot_id,
-            process_id=process_id
+            bot_runner=bot_runner
         )
         self._processes[bot_id] = process_info
 

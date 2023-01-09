@@ -13,6 +13,11 @@ class BotRunner:
         assert isinstance(bot_directory, Path) or bot_directory is None
         self._bot_directory = bot_directory
         self._stdout_thread: Optional[Thread] = None
+        self._process_id: Optional[int] = None
+
+    @property
+    def process_id(self) -> Optional[int]:
+        return self._process_id
 
     def start(self) -> Optional[int]:
         result = None
@@ -27,31 +32,35 @@ class BotRunner:
                     # bufsize=1,
                     # universal_newlines=True
                 )
+                self._process_id = bot_process.pid
                 self._stdout_thread = Thread(target=self._reader, args=[bot_process.stdout])
                 self._stdout_thread.start()
-                result = bot_process.pid
+                result = self._process_id
         return result
 
-    def stop(self, process_id: int) -> bool:
+    def stop(self) -> bool:
         result = False
-        try:
-            process = psutil.Process(process_id)
-            print(process.name(), process.cmdline())
-            process_name = process.name()
-            if '.' in process_name:
-                only_name = process_name.split('.')[0]
-            else:
-                only_name = process_name
-            only_name = only_name.lower()
-            if only_name in ['python', 'python3']:
-                print(f'kill bot with pid: {process_id}')
-                process.kill()
-                self._stop_pipe()
-                result = True
-            else:
-                print('Invalid process id. It is not a python process')
-        except psutil.NoSuchProcess:
-            print('Can not found process')
+        if self._process_id is not None:
+            try:
+                process = psutil.Process(self._process_id)
+                print(process.name(), process.cmdline())
+                process_name = process.name()
+                if '.' in process_name:
+                    only_name = process_name.split('.')[0]
+                else:
+                    only_name = process_name
+                only_name = only_name.lower()
+                if only_name in ['python', 'python3']:
+                    print(f'kill bot with pid: {self._process_id}')
+                    process.kill()
+                    self._stop_pipe()
+                    result = True
+                else:
+                    print('Invalid process id. It is not a python process')
+            except psutil.NoSuchProcess:
+                print('Can not found process')
+        else:
+            print('This bot is not started')
         return result
 
     def _stop_pipe(self):
