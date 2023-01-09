@@ -15,5 +15,9 @@
         <source>Please fill in the server address field. For example: https://ramasuchka.kz/</source>
         <translation>Пожалуйста, заполните поле с адресом сервера. Например: https://ramasuchka.kz/</translation>
     </message>
+    <message>
+        <source>Bot creation error: {0}</source>
+        <translation>Ошибка создания бота: {0}</translation>
+    </message>    
 </context>
 </TS>
