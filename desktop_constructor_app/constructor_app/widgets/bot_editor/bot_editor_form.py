@@ -2,21 +2,21 @@
 import typing
 
 from PySide6 import QtGui, QtCore
-from PySide6.QtCore import Signal, QCoreApplication, QRect, QRectF, QPoint, QPointF
-from PySide6.QtGui import QPainter, QAction
+from PySide6.QtCore import Signal, QPointF
+from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
 from desktop_constructor_app.common.localisation import tran
-from desktop_constructor_app.common.utils.name_utils import gen_next_name
-from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.common.model_property import ModelProperty
+from desktop_constructor_app.common.utils.name_utils import gen_next_name
 from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
-from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
+from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
 from desktop_constructor_app.constructor_app.widgets.bot_editor.message_editor_dialog import MessageEditorDialog
 from desktop_constructor_app.constructor_app.widgets.bot_editor.ui_bot_editor_form import Ui_BotEditorForm
 from desktop_constructor_app.constructor_app.widgets.bot_editor.variant_editor_dialog import VariantEditorDialog
+from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
 
 
 class BotEditorForm(QMainWindow):

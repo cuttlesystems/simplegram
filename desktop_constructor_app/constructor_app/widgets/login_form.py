@@ -3,18 +3,19 @@ import typing
 from enum import Enum
 
 from PySide6 import QtCore
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QCoreApplication
 from PySide6.QtGui import QPixmap, QBrush, QColor
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
 from b_logic.bot_api.bot_api_by_requests import BotApiException
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
+from desktop_constructor_app.common.localisation import tran
 from desktop_constructor_app.common.utils.name_utils import gen_next_name
-from desktop_constructor_app.constructor_app.settings.application_settings import ApplicationSettings
-from desktop_constructor_app.constructor_app.utils.application_settings import get_application_data_dir
+from desktop_constructor_app.constructor_app.settings.login_settings_manager import LoginSettingsManager
+from desktop_constructor_app.constructor_app.settings.get_application_data_dir import get_application_data_dir
 from desktop_constructor_app.constructor_app.widgets.ui_login_form import Ui_LoginForm
-from desktop_constructor_app.data_objects import Settings
+from desktop_constructor_app.constructor_app.settings.login_settings import LoginSettings
 
 
 class LoginStateEnum(Enum):
@@ -58,7 +59,7 @@ class LoginForm(QWidget):
         else:
             print('Can not load logo')
         settings_path = get_application_data_dir()
-        self._application_settings = ApplicationSettings(settings_path, key=self._KEY)
+        self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
         settings = self._application_settings.read_settings()
         self._ui.username_edit.setText(settings.name)
         self._ui.password_edit.setText(settings.password)
@@ -110,7 +111,12 @@ class LoginForm(QWidget):
             bot_items = []
             self._ui.bot_list_widget.clear()
 
-            running_bots = self._bot_api.get_running_bots_info()
+            # todo: этот try-except временный, пока не добавили get_running_bots_info на сервер, потом убрать
+            try:
+                running_bots = self._bot_api.get_running_bots_info()
+            except BotApiException as exception:
+                print(f'Can not get running bots info: {exception}')
+                running_bots = []
             running_bot_background_color = self.palette().linkVisited()
             for bot in bots:
                 bot_item = QListWidgetItem(bot.bot_name)
@@ -121,7 +127,7 @@ class LoginForm(QWidget):
                 bot_items.append(bot_item)
                 self._ui.bot_list_widget.addItem(bot_item)
         except BotApiException as error:
-            QMessageBox.warning(self, 'Ошибка', str(error))
+            QMessageBox.warning(self, self._tr('Error'), str(error))
 
     def login_to_server(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
@@ -134,14 +140,14 @@ class LoginForm(QWidget):
             self._dialog_state = LoginStateEnum.BOTS
             self.__load_bots_list()
             self._activate_controls()
-            settings = Settings(
+            settings = LoginSettings(
                 address=server_addr_edit.text(),
                 name=username_edit.text(),
                 password=password_edit.text()
             )
             self._application_settings.write_settings(settings)
         except BotApiException as bot_api_exception:
-            QMessageBox.critical(self, 'Ошибка', str(bot_api_exception))
+            QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
 
     def _on_load_bots_click(self, _checked: bool):
         self.login_to_server()
@@ -171,7 +177,7 @@ class LoginForm(QWidget):
             bot = self._bot_api.create_bot(
                 self.__get_unique_bot_name('Новый Cuttle Systems бот'), '', '')
         except BotApiException as error:
-            QMessageBox.warning(self, 'Ошибка', f'Не удалось создать бота {error}')
+            QMessageBox.warning(self, self._tr('Error'), self._tr('Bot creation error: {0}').format(error))
         # теперь обновим список ботов, чтобы увидеть нового созданного бота в списке
         self.__load_bots_list()
 
@@ -200,9 +206,17 @@ class LoginForm(QWidget):
         used_names = [bot.bot_name for bot in self.__get_all_bots()]
         return gen_next_name(base_name, used_names)
 
-    def _on_sign_up(self, checked: bool):
+    def _on_sign_up(self, _checked: bool):
         if not self._ui.server_addr_edit.text():
-            QMessageBox.warning(self, 'Server address error', 'Please fill in the server address field. '
-                                                              'For example: https://ramasuchka.kz/')
+            QMessageBox.warning(
+                self,
+                self._tr('Server address error'),
+                self._tr(
+                    'Please fill in the server address field. '
+                    'For example: https://ramasuchka.kz/')
+            )
         else:
             self.sign_up_signal.emit(self._ui.server_addr_edit.text())
+
+    def _tr(self, mes: str) -> str:
+        return tran('LoginForm.manual', mes)
