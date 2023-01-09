@@ -14,6 +14,10 @@
     <message>
         <source>Please fill in the server address field. For example: https://ramasuchka.kz/</source>
         <translation>Please fill in the server address field. For example: https://ramasuchka.kz/</translation>
-    </message>
+    </message>   
+    <message>
+        <source>Bot creation error: {0}</source>
+        <translation>Bot creation error: {0}</translation>
+    </message>        
 </context>
 </TS>
