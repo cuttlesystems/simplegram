@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Optional
 from pathlib import Path
 import platform
@@ -19,7 +20,14 @@ def get_application_data_dir() -> Path:
     return result
 
 
+def is_run_from_source() -> bool:
+    return not getattr(sys, 'frozen', False)
+
+
 def get_application_executable_dir() -> Path:
-    # todo: это для случая исполняемого файла скорее всего не будет работать,
-    #  нужно будет проверить и рассмотреть этот случай
-    return Path(__file__).parent.parent.parent.parent
+    if is_run_from_source():
+        path = Path(__file__).parent.parent.parent.parent
+    else:
+        path = Path(sys.executable).parent
+
+    return path
