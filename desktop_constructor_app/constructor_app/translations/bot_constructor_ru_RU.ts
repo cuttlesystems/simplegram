@@ -138,21 +138,6 @@
     </message>
 </context>
 <context>
-    <name>LoginForm.manual</name>
-    <message>
-        <source>Error</source>
-        <translation>Ошибка</translation>
-    </message>
-    <message>
-        <source>Server address error</source>
-        <translation>Адрес сервера ошибочный</translation>
-    </message>
-    <message>
-        <source>Please fill in the server address field. For example: https://ramasuchka.kz/</source>
-        <translation>Пожалуйста, заполните поле с адресом сервера. Например: https://ramasuchka.kz/</translation>
-    </message>
-</context>
-<context>
     <name>MessageEditorDialog</name>
     <message>
         <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="14"/>
