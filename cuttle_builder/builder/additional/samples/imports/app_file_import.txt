@@ -1,0 +1,5 @@
+import logging.handlers
+from loader import dp
+from aiogram import executor
+from handlers import dp
+from on_startup_commands import set_default_commands

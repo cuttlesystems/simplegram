@@ -1,6 +1,7 @@
 import shutil
 from pathlib import Path
 import os
+import logging.handlers
 
 import requests
 import rest_framework.request
@@ -29,6 +30,19 @@ from .permissions import (IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, 
 from .exceptions import ErrorsFromBotGenerator
 
 API_RESPONSE_WITH_VARIANTS = 'with_variants'
+
+logger_format = '%(asctime)s - %(name)s:%(lineno)s - %(levelname)s - %(message)s'
+rotating_file_handler = logging.handlers.RotatingFileHandler(filename='log/django_logs.log', mode='a', maxBytes=5000000, backupCount=5)
+logging.basicConfig(level=logging.DEBUG, format=logger_format, handlers=[rotating_file_handler])
+logging.info('Start logging')
+
+# logger = logging.getLogger(__name__)
+# logger_format = '%(asctime)s - %(name)s:%(lineno)s - %(levelname)s - %(message)s'
+# logger.setLevel(logging.DEBUG)
+# rotating_file_handler = logging.handlers.RotatingFileHandler(filename='log/django_logs.log', mode='a', maxBytes=5000000, backupCount=5)
+# rotating_file_handler.setFormatter(logging.Formatter(logger_format))
+# rotating_file_handler.setLevel(logging.DEBUG)
+# logger.addHandler(rotating_file_handler)
 
 
 class BotViewSet(viewsets.ModelViewSet):
@@ -116,6 +130,7 @@ class BotViewSet(viewsets.ModelViewSet):
                 },
                 status=requests.codes.ok
             )
+            logging.info(f'Bot {bot_id} started. Process id: {process_id}')
         else:
             result = JsonResponse(
                 {
@@ -123,7 +138,7 @@ class BotViewSet(viewsets.ModelViewSet):
                 },
                 status=requests.codes.method_not_allowed
             )
-
+            logging.error('Bot start error')
         return result
 
     @action(

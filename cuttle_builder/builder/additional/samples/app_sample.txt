@@ -1,0 +1,15 @@
+{imports}
+
+logger_format = '%(asctime)s - %(name)s:%(lineno)s - %(levelname)s - %(message)s'
+rotating_file_handler = logging.handlers.RotatingFileHandler(
+    filename='{logs_directory}.log',
+    mode='a',
+    maxBytes=5000000,
+    backupCount=5
+)
+logging.basicConfig(level=logging.WARNING, format=logger_format, handlers=[rotating_file_handler])
+
+if __name__ == '__main__':
+    executor.start_polling(dp,
+                           skip_updates=True,
+                           on_startup=set_default_commands)
