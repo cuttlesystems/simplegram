@@ -1,7 +1,7 @@
 import subprocess
 import sys
 import time
-from io import TextIOWrapper, BufferedReader
+from io import TextIOWrapper, BufferedReader, FileIO
 from pathlib import Path
 from threading import Thread
 from typing import Optional
@@ -13,6 +13,7 @@ class BotRunner:
         assert isinstance(bot_directory, Path) or bot_directory is None
         self._bot_directory = bot_directory
         self._stdout_thread: Optional[Thread] = None
+        self._stderr_thread: Optional[Thread] = None
         self._process_id: Optional[int] = None
 
     @property
@@ -29,12 +30,15 @@ class BotRunner:
                     [sys.executable, bot_py_executable],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
-                    # bufsize=1,
+                    bufsize=0,
                     # universal_newlines=True
                 )
                 self._process_id = bot_process.pid
-                self._stdout_thread = Thread(target=self._reader, args=[bot_process.stdout])
+                self._stderr_thread = Thread(target=self._reader_stderr, args=[bot_process.stderr])
+                self._stdout_thread = Thread(target=self._reader_stdout, args=[bot_process.stdout])
+
                 self._stdout_thread.start()
+                self._stderr_thread.start()
                 result = self._process_id
         return result
 
@@ -67,14 +71,27 @@ class BotRunner:
         if self._stdout_thread is not None:
             self._stdout_thread.join()
             self._stdout_thread = None
+        if self._stderr_thread is not None:
+            self._stderr_thread.join()
+            self._stderr_thread = None
 
-    def _reader(self, pipe: BufferedReader):
-        assert isinstance(pipe, BufferedReader)
-        print('reader start')
+    def _reader_stdout(self, pipe: FileIO):
+        # assert isinstance(pipe, FileIO)
+        print('reader stdout start: ', type(pipe))
         with pipe:
             for line in iter(pipe.readline, b''):
-                print(line)
+                print('out: ', line)
                 # time.sleep(0.5)
                 # queue.put((pipe, line))
-        print('reader end')
+        print('reader stdout end')
+
+    def _reader_stderr(self, pipe: FileIO):
+        # assert isinstance(pipe, FileIO)
+        print('reader stderr start: ', type(pipe))
+        with pipe:
+            for line in iter(pipe.readline, b''):
+                print('err: ', line)
+                # time.sleep(0.5)
+                # queue.put((pipe, line))
+        print('reader stderr end')
 
