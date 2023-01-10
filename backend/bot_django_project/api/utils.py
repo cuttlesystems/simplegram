@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from api.exceptions import InvalidBotTokenWhenGenerateBot
 from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from b_logic.bot_runner import BotRunner
@@ -40,3 +42,14 @@ def stop_all_running_bots_before_autoreload(sender, **kwargs) -> None:
 # Сигнал file_changed испускается при обнаружении изменений в коде на запущенном сервере
 # После сигнала file_changed следует перезагрузка сервера
 file_changed.connect(stop_all_running_bots_before_autoreload)
+
+
+def create_dir_if_it_doesnt_exist(directory: Path) -> None:
+    """
+    Создает директорию если её не существует
+
+    Args:
+        directory (Path): путь к директории
+
+    """
+    directory.mkdir(exist_ok=True)
