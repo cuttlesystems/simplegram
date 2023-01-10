@@ -29,7 +29,10 @@ DB_NAME=bot_constructor
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=zarFad-huqdit-qavry0
 DB_HOST=172.21.0.1
-DB_PORT=5432' > ./$GH_REPO/infra/.env
+DB_PORT=5432
+
+DOMAIN_HOST=ramasuchka.kz
+HOST_PROTOCOL=https' > ./$GH_REPO/infra/.env
 echo ""
 # директория с версиями файлов до последних изменений
 #LAST_WORKING_BOT_DIR=
