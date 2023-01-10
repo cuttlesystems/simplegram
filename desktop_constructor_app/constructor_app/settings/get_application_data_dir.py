@@ -9,7 +9,7 @@ def get_application_data_dir() -> Path:
     path: Optional[Path] = None
     result: Optional[Path] = None
     current_os = platform.system()
-    if current_os == "Linux":
+    if current_os == "Linux" or current_os == 'Darwin':
         path = Path.home()
         result = path / '.cuttle_systems' / 'bot_constructor'
     elif current_os == "Windows":
