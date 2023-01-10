@@ -10,6 +10,8 @@ import psutil
 
 
 class BotRunner:
+    _MAX_LOG_LEN_LINES = 300
+
     def __init__(self, bot_directory: Optional[Path]):
         assert isinstance(bot_directory, Path) or bot_directory is None
         self._bot_directory = bot_directory
@@ -87,6 +89,16 @@ class BotRunner:
             self._stderr_thread.join()
             self._stderr_thread = None
 
+    def _add_stdout_line(self, line: str):
+        self._bot_stdout_log.append(line)
+        if len(self._bot_stdout_log) > self._MAX_LOG_LEN_LINES:
+            self._bot_stdout_log = self._bot_stderr_log[-self._MAX_LOG_LEN_LINES:]
+
+    def _add_stderr_line(self, line: str):
+        self._bot_stderr_log.append(line)
+        if len(self._bot_stderr_log) > self._MAX_LOG_LEN_LINES:
+            self._bot_stderr_log = self._bot_stderr_log[-self._MAX_LOG_LEN_LINES:]
+
     def _reader_stdout(self, pipe: TextIOWrapper):
         assert isinstance(pipe, TextIOWrapper)
         print('reader stdout start: ', type(pipe))
@@ -97,7 +109,7 @@ class BotRunner:
             while line != '':
                 line = pipe.readline()
                 if line != '':
-                    self._bot_stdout_log.append(line)
+                    self._add_stdout_line(line)
                     print('bot out: ', line.rstrip())
 
         print('reader stdout end')
@@ -113,7 +125,7 @@ class BotRunner:
             while line != '':
                 line = pipe.readline()
                 if line != '':
-                    self._bot_stderr_log.append(line)
+                    self._add_stderr_line(line)
                     print('bot err: ', line.rstrip())
 
         print('reader stderr end')

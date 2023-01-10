@@ -256,8 +256,35 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_info = bot_processes_manager.get_process_info(bot_id)
         if bot_info is not None:
             result_dict['is_started'] = True
-            result_dict['process_id'] = bot_info.process_id
+            result_dict['process_id'] = bot_info.bot_runner.process_id
             result_dict['bot_id'] = bot_info.bot_id
+        return JsonResponse(result_dict, status=requests.codes.ok)
+
+    @action(
+        methods=['GET'],
+        detail=True,
+        url_path='logs'
+    )
+    def logs(self, request: rest_framework.request.Request, bot_id_str: str) -> JsonResponse:
+        bot_id = int(bot_id_str)
+        bot_django = get_object_or_404(Bot, id=bot_id)
+
+        # проверка прав, что пользователь может работать с данным ботом (владелец бота)
+        self.check_object_permissions(request, bot_django)
+
+        stdout_log = []
+        stderr_log = []
+        bot_processes_manager = BotProcessesManagerSingle()
+        bot_info = bot_processes_manager.get_process_info(bot_id)
+        if bot_info is not None:
+            stderr_log = bot_info.bot_runner.get_bot_stderr()
+            stdout_log = bot_info.bot_runner.get_bot_stdout()
+
+        result_dict = {
+            'bot_id': bot_id,
+            'stderr': stderr_log,
+            'stdout': stdout_log
+        }
         return JsonResponse(result_dict, status=requests.codes.ok)
 
     @action(
