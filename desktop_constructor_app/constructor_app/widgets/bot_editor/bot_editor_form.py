@@ -148,8 +148,10 @@ class BotEditorForm(QMainWindow):
 
     def _add_new_message(self, position: QPointF) -> None:
         assert isinstance(position, QPointF)
+        messages = self._bot_api.get_messages(self._bot)
+        message_name = self._generate_unique_message_name(self._tr('New bot message'), messages)
         message = self._bot_api.create_message(
-            self._bot, 'Текст ботового сообщения', ButtonTypes.REPLY, x=position.x(), y=position.y())
+            self._bot, message_name, ButtonTypes.REPLY, x=position.x(), y=position.y())
         self._bot_scene.add_message(message, [])
         self._actual_actions_state()
 
@@ -246,6 +248,12 @@ class BotEditorForm(QMainWindow):
         assert all(isinstance(variant, BotVariant) for variant in variants)
         names = [variant.text for variant in variants]
         return gen_next_name(variant_name, names)
+
+    def _generate_unique_message_name(self, message_name: str, messages: typing.List[BotMessage]):
+        assert isinstance(message_name, str)
+        assert all(isinstance(message, BotMessage) for message in messages)
+        names = [message.text for message in messages]
+        return gen_next_name(message_name, names)
 
     def _on_delete_message(self, _checked: bool):
         messages_for_delete = self._bot_scene.get_selected_messages()
