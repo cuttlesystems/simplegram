@@ -1,4 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
+from pathlib import Path
 
 
 block_cipher = None
@@ -11,7 +12,10 @@ a = Analysis(
 #	'D:\\CuttleSystems\\hidden_hello_world_project\\hidden_hello_world\\abc_bca'
     ],
     binaries=[],
-    datas=[('desktop_constructor_app\\constructor_app\\translations\\*.qm', 'desktop_constructor_app\\constructor_app\\translations')],
+    datas=[(
+        Path('desktop_constructor_app') / 'constructor_app' / 'translations' / '*.qm',
+        Path('desktop_constructor_app') / 'constructor_app' / 'translations'
+    )],
     hiddenimports=['desktop_constructor_app'],
     hookspath=[],
     hooksconfig={},
