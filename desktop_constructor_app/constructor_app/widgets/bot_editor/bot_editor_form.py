@@ -155,7 +155,7 @@ class BotEditorForm(QMainWindow):
         self._bot_scene.add_message(message, [])
         self._actual_actions_state()
 
-    def _add_variant(self):
+    def _add_variant(self) -> None:
         selected_blocks = self._bot_scene.get_selected_blocks_graphics()
         # добавление варианта возможно только тогда, когда выбран один блок
         if len(selected_blocks) == 1:
@@ -249,7 +249,7 @@ class BotEditorForm(QMainWindow):
         names = [variant.text for variant in variants]
         return gen_next_name(variant_name, names)
 
-    def _generate_unique_message_name(self, message_name: str, messages: typing.List[BotMessage]):
+    def _generate_unique_message_name(self, message_name: str, messages: typing.List[BotMessage]) -> str:
         assert isinstance(message_name, str)
         assert all(isinstance(message, BotMessage) for message in messages)
         names = [message.text for message in messages]
