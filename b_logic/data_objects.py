@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Optional, List
 from enum import Enum
 
 
@@ -61,3 +61,9 @@ class BotCommand:
     bot_id: Optional[int] = None
     command: Optional[str] = None
     description: Optional[str] = None
+
+
+@dataclass
+class BotLogs:
+    stdout_lines: List[str] = field(default_factory=lambda: [])
+    stderr_lines: List[str] = field(default_factory=lambda: [])

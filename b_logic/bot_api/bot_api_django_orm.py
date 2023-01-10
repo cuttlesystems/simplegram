@@ -5,7 +5,7 @@ from django.db.models.fields.files import ImageFieldFile
 from django.conf import settings
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes
+from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes, BotLogs
 from bots.models import Bot, Message, Variant, Command
 
 
@@ -171,6 +171,9 @@ class BotApiByDjangoORM(IBotApi):
         raise NotImplementedError('is not implemented')
 
     def get_running_bots_info(self) -> List[int]:
+        raise NotImplementedError('is not implemented')
+
+    def get_bot_logs(self, bot: BotDescription) -> BotLogs:
         raise NotImplementedError('is not implemented')
 
     def _create_bot_obj_from_data(self, bot_django: Bot) -> BotDescription:

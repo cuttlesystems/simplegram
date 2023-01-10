@@ -1,7 +1,7 @@
 from typing import List
 from abc import abstractmethod, ABC
 
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes, BotCommand
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes, BotCommand, BotLogs
 
 
 class BotApiException(Exception):
@@ -285,5 +285,17 @@ class IBotApi(ABC):
         Получает данные о запущенных ботах пользователя.
 
         Returns: Список id запущенных ботов.
+        """
+        pass
+
+    @abstractmethod
+    def get_bot_logs(self, bot: BotDescription) -> BotLogs:
+        """
+        Получить логи бота (stdout, stderr)
+        Args:
+            bot: бот у которого получаем логи
+
+        Returns:
+            объект с логами бота
         """
         pass

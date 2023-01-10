@@ -5,7 +5,7 @@ import requests
 import urllib.request
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes
+from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes, BotLogs
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
@@ -467,6 +467,20 @@ class BotApiByRequests(IBotApi):
                 'Error occurred when getting running bots info: {0}'.format(response.text))
 
         return json.loads(response.text)
+
+    def get_bot_logs(self, bot: BotDescription) -> BotLogs:
+        assert isinstance(bot, BotDescription)
+        response = requests.get(
+            self._suite_url + f'api/bots/{bot.id}/logs/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException(f'Error when receiving bot logs: {response.text}')
+        response_dict = json.loads(response.text)
+        logs = BotLogs()
+        logs.stderr_lines = response_dict['stderr']
+        logs.stdout_lines = response_dict['stdout']
+        return logs
 
     def _get_headers(self) -> typing.Dict[str, str]:
         """
