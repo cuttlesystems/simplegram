@@ -31,18 +31,7 @@ from .exceptions import ErrorsFromBotGenerator
 
 API_RESPONSE_WITH_VARIANTS = 'with_variants'
 
-logger_format = '%(asctime)s - %(name)s:%(lineno)s - %(levelname)s - %(message)s'
-rotating_file_handler = logging.handlers.RotatingFileHandler(filename='log/django_logs.log', mode='a', maxBytes=5000000, backupCount=5)
-logging.basicConfig(level=logging.DEBUG, format=logger_format, handlers=[rotating_file_handler])
-logging.info('Start logging')
-
-# logger = logging.getLogger(__name__)
-# logger_format = '%(asctime)s - %(name)s:%(lineno)s - %(levelname)s - %(message)s'
-# logger.setLevel(logging.DEBUG)
-# rotating_file_handler = logging.handlers.RotatingFileHandler(filename='log/django_logs.log', mode='a', maxBytes=5000000, backupCount=5)
-# rotating_file_handler.setFormatter(logging.Formatter(logger_format))
-# rotating_file_handler.setLevel(logging.DEBUG)
-# logger.addHandler(rotating_file_handler)
+logger = logging.getLogger('django')
 
 
 class BotViewSet(viewsets.ModelViewSet):
@@ -108,6 +97,7 @@ class BotViewSet(viewsets.ModelViewSet):
         Returns:
             результат запуска бота
         """
+        # raise Exception('ex')
         bot_id = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id)
         self.check_object_permissions(request, bot)
@@ -130,7 +120,7 @@ class BotViewSet(viewsets.ModelViewSet):
                 },
                 status=requests.codes.ok
             )
-            logging.info(f'Bot {bot_id} started. Process id: {process_id}')
+            logger.info(f'Bot {bot_id} started. Process id: {process_id}')
         else:
             result = JsonResponse(
                 {
@@ -138,7 +128,7 @@ class BotViewSet(viewsets.ModelViewSet):
                 },
                 status=requests.codes.method_not_allowed
             )
-            logging.error('Bot start error')
+            logger.error('Bot start error')
         return result
 
     @action(
@@ -194,7 +184,7 @@ class BotViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path='generate'
     )
-    def generate_bot(self, request: rest_framework.request.Request, bot_id_str: str) -> None:
+    def generate_bot(self, request: rest_framework.request.Request, bot_id_str: str) -> Response:
         """
         Сгенерировать исходный код бота
         Args:

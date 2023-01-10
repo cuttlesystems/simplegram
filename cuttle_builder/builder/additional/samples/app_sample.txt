@@ -7,7 +7,7 @@ rotating_file_handler = logging.handlers.RotatingFileHandler(
     maxBytes=5000000,
     backupCount=5
 )
-logging.basicConfig(level=logging.WARNING, format=logger_format, handlers=[rotating_file_handler])
+logging.basicConfig(level=logging.INFO, format=logger_format, handlers=[rotating_file_handler])
 
 if __name__ == '__main__':
     executor.start_polling(dp,
