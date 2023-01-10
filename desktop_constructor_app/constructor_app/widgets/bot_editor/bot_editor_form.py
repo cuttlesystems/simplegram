@@ -67,6 +67,9 @@ class BotEditorForm(QMainWindow):
 
         self._actual_actions_state()
 
+        self._ui.stdout_textedit.clear()
+        self._ui.stderr_textedit.clear()
+
         self._ui.splitter.setSizes([200, 600])
 
         QtCore.QTimer.singleShot(0, self._on_after_set_bot)
@@ -87,6 +90,7 @@ class BotEditorForm(QMainWindow):
         self._ui.action_delete_variant.triggered.connect(self._on_delete_variant)
 
         self._ui.action_manual_save.triggered.connect(self._on_apply_button)
+        self._ui.action_read_logs.triggered.connect(self._on_read_bot_logs)
 
         # сигналы, которые испускает сцена подключаем через QtCore.Qt.ConnectionType.QueuedConnection
         # (чтобы завершился обработчик клика)
@@ -132,8 +136,15 @@ class BotEditorForm(QMainWindow):
         for message in scene_messages:
             self._bot_api.change_message(message)
 
-    def _on_apply_button(self, _checked: bool):
+    def _on_apply_button(self, _checked: bool) -> None:
         self._save_changes()
+
+    def _on_read_bot_logs(self, _checked: bool) -> None:
+        bot_logs = self._bot_api.get_bot_logs(self._bot)
+        stderr_text = ''.join(bot_logs.stderr_lines)
+        stdout_text = ''.join(bot_logs.stdout_lines)
+        self._ui.stdout_textedit.setText(stdout_text)
+        self._ui.stderr_textedit.setText(stderr_text)
 
     def _on_add_new_message(self, _checked: bool) -> None:
         position = self._ui.graphics_view.get_context_menu_position()

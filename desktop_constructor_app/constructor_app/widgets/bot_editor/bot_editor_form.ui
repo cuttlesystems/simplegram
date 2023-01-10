@@ -6,21 +6,76 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1017</width>
-    <height>563</height>
+    <width>1174</width>
+    <height>657</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Bot Editor</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QSplitter" name="splitter">
+     <widget class="QSplitter" name="splitter_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="PropertiesView" name="bot_params_view"/>
+      <widget class="QSplitter" name="splitter">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="PropertiesView" name="bot_params_view"/>
+       <widget class="QWidget" name="">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Bot stdout output</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="stdout_textedit">
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOn</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOn</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Bot stderr output</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="stderr_textedit">
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOn</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOn</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
       <widget class="BotView" name="graphics_view"/>
      </widget>
     </item>
@@ -31,8 +86,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1017</width>
-     <height>22</height>
+     <width>1174</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBit">
@@ -42,6 +97,7 @@
     <addaction name="action_generate_bot"/>
     <addaction name="action_start_bot"/>
     <addaction name="action_stop_bot"/>
+    <addaction name="action_read_logs"/>
    </widget>
    <widget class="QMenu" name="menuMessage">
     <property name="title">
@@ -92,6 +148,7 @@
    <addaction name="action_generate_bot"/>
    <addaction name="action_start_bot"/>
    <addaction name="action_stop_bot"/>
+   <addaction name="action_read_logs"/>
   </widget>
   <action name="action_generate_bot">
    <property name="icon">
@@ -168,6 +225,11 @@
    </property>
    <property name="text">
     <string>Add variant</string>
+   </property>
+  </action>
+  <action name="action_read_logs">
+   <property name="text">
+    <string>Read logs</string>
    </property>
   </action>
  </widget>

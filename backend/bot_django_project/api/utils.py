@@ -33,9 +33,8 @@ def stop_all_running_bots_before_autoreload(sender, **kwargs) -> None:
     process_manager = BotProcessesManagerSingle()
     all_running_processes = process_manager.get_all_processes_info()
     if len(all_running_processes) > 0:
-        runner = BotRunner(None)
         for process in all_running_processes.values():
-            runner.stop(process.process_id)
+            process.bot_runner.stop()
 
 
 # Сигнал file_changed испускается при обнаружении изменений в коде на запущенном сервере
