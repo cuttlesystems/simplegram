@@ -2,7 +2,7 @@
 
 logger_format = '%(asctime)s - %(name)s:%(lineno)s - %(levelname)s - %(message)s'
 rotating_file_handler = logging.handlers.RotatingFileHandler(
-    filename='{logs_directory}.log',
+    filename='{logs_directory}',
     mode='a',
     maxBytes=5000000,
     backupCount=5

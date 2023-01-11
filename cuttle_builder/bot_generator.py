@@ -33,6 +33,7 @@ class BotGenerator:
             commands: List[BotCommand],
             bot: BotDescription,
             bot_path: str,
+            bot_logs_path: str,
             error_message_id: int = None
     ):
         """
@@ -42,12 +43,14 @@ class BotGenerator:
             variants: список вариантов
             bot: экземпляр BotDescription
             bot_path: путь куда будут помещены исходники бота
+            bot_logs_path: путь к файлу с логами бота
         """
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, BotVariant) for variant in variants)
         assert all(isinstance(command, BotCommand) for command in commands)
         assert isinstance(bot, BotDescription)
         assert isinstance(bot_path, str)
+        assert isinstance(bot_logs_path, str)
 
         self._handler_inits: List[HandlerInit] = []
         self._messages: List[BotMessage] = messages
@@ -58,7 +61,7 @@ class BotGenerator:
         self._file_manager = APIFileCreator(bot_path)
         self._token = bot.bot_token
         self._bot_directory = bot_path
-        self._logs_directory = bot_path.replace('generated_bots', 'bot_logs')
+        self._logs_directory = bot_logs_path
         self._media_directory = bot_path + '/media'
 
         self._error_message_id = error_message_id
@@ -79,6 +82,11 @@ class BotGenerator:
             raise NoOneMessageException(
                 'Can\'t generate bot without messages. '
                 'At least one message is required.')
+        if self._start_message_id is None:
+            raise NoStartMessageException(
+                'Can\'t generate bot without start message. '
+                'Set start message is required.'
+            )
 
     def _get_variants_of_message(self, message_id: int) -> typing.List[BotVariant]:
         """generate list of variants, names of buttons in keyboard
