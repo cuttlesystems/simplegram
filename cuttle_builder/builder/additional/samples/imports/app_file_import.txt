@@ -1,3 +1,4 @@
+import sys
 import logging.handlers
 from loader import dp
 from aiogram import executor

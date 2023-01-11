@@ -1,7 +1,6 @@
 import shutil
 from pathlib import Path
 import os
-import logging.handlers
 
 import requests
 import rest_framework.request
@@ -13,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from b_logic.bot_api.bot_api_django_orm import BotApiByDjangoORM
 from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from b_logic.bot_runner import BotRunner
+from bot_constructor.log_configs import logger_django
 from bot_constructor.settings import BOTS_DIR, BOTS_LOG_DIR
 from rest_framework.request import Request
 from rest_framework.decorators import action
@@ -30,8 +30,6 @@ from .permissions import (IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, 
 from .exceptions import ErrorsFromBotGenerator
 
 API_RESPONSE_WITH_VARIANTS = 'with_variants'
-
-logger = logging.getLogger('django')
 
 
 class BotViewSet(viewsets.ModelViewSet):
@@ -120,7 +118,7 @@ class BotViewSet(viewsets.ModelViewSet):
                 },
                 status=requests.codes.ok
             )
-            logger.info(f'Bot {bot_id} started. Process id: {process_id}')
+            logger_django.info_logging(f'Bot {bot_id} started. Process id: {process_id}')
         else:
             result = JsonResponse(
                 {
@@ -128,7 +126,7 @@ class BotViewSet(viewsets.ModelViewSet):
                 },
                 status=requests.codes.method_not_allowed
             )
-            logger.error('Bot start error')
+            logger_django.error_logging('Bot start error')
         return result
 
     @action(

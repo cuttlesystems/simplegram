@@ -1,10 +1,8 @@
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
+from bot_constructor.log_configs import logger_django
 from cuttle_builder.bot_generator import BotGenerator
 from bot_constructor.settings import BOTS_LOG_DIR
-import logging
-
-logger = logging.getLogger('django')
 
 
 class BotGeneratorDb(BotGenerator):
@@ -36,5 +34,5 @@ class BotGeneratorDb(BotGenerator):
         """
         assert isinstance(bot, BotDescription)
         bot_log_path = BOTS_LOG_DIR / f'bot_{bot.id}.log'
-        logger.info(f'Bot logs path: {bot_log_path}')
+        logger_django.info_logging(f'Bot logs path: {bot_log_path}')
         return str(bot_log_path)
