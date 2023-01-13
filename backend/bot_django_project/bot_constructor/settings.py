@@ -1,8 +1,8 @@
 from pathlib import Path
 import os
 import sys
+from bot_constructor.log_configs import LocalTimeFormatter
 
-PROJECT_ROOT_DIR_NAME = 'tg_bot_constructor'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -161,6 +161,7 @@ LOGGING = {
 
     'formatters': {
         'main_format': {
+            # '()': LocalTimeFormatter,
             'format': '{asctime} - {levelname} - {message}',
             'style': '{',
         }

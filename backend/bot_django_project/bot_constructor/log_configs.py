@@ -1,6 +1,7 @@
 import inspect
 import logging.handlers
-from .settings import PROJECT_ROOT_DIR_NAME
+from utils.get_root_dir import get_project_root_dir
+import pytz
 
 # Настройки логеров определены в settings.py в переменной LOGGING (dict) по ключу 'loggers'
 _LOGGER_DJANGO = logging.getLogger('django')
@@ -44,7 +45,7 @@ class BackendLogger:
 
     def _remove_home_dirs_from_path(self, path: str) -> str:
         """
-        Возвращает путь начиная с корневой директории проекта.
+        Обрезает часть пути находящегося выше корневой директории.
 
         Args:
             path: Полный путь к файлу
@@ -52,12 +53,16 @@ class BackendLogger:
         Returns: Путь к файлу начиная с корневой директории.
         """
         assert isinstance(path, str)
-        path_list = path.split('/')
-        try:
-            index = path_list.index(PROJECT_ROOT_DIR_NAME)
-        except ValueError:
-            index = 0
-        return '/'.join(path_list[index:])
+        root_path = get_project_root_dir()
+        part_of_path_before_root_dir = str(root_path.parent)
+        return path.replace(part_of_path_before_root_dir, '', 1)
 
 
 logger_django = BackendLogger(_LOGGER_DJANGO)
+
+
+class LocalTimeFormatter(logging.Formatter):
+    def formatTime(self, record, datefmt=None):
+        tz = pytz.timezone('Asia/Almaty')
+        local_time = pytz.utc.localize(record.created, is_dst=None).astimezone(tz)
+        return local_time.strftime('%Y-%m-%d %H:%M:%S %Z')

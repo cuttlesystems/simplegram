@@ -6,8 +6,7 @@ from pytz import timezone
 
 import requests
 
-
-ROOT_DIR = Path(__file__).resolve().parent.parent
+from utils.get_root_dir import get_project_root_dir
 
 
 def get_commit_info_from_github_api() -> dict:
@@ -60,4 +59,4 @@ def create_json_file_with_commit_data(directory: Path, commit_data: dict) -> Non
 
 if __name__ == '__main__':
     commit_data_dict = get_commit_info_from_github_api()
-    create_json_file_with_commit_data(directory=ROOT_DIR, commit_data=commit_data_dict)
+    create_json_file_with_commit_data(directory=get_project_root_dir(), commit_data=commit_data_dict)
