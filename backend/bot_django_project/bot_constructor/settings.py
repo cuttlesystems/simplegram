@@ -133,6 +133,9 @@ MEDIA_ROOT = os.path.join(DATA_FILES_ROOT, 'media')
 
 # путь, где лежат созданные пользователем боты
 BOTS_DIR = Path(DATA_FILES_ROOT) / 'generated_bots'
+BOTS_LOG_DIR = Path(DATA_FILES_ROOT) / 'bot_logs'
+PROJECT_LOG_DIR = Path(DATA_FILES_ROOT) / 'project_logs'
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -143,4 +146,42 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+}
+
+
+def check_project_log_dir_exists_and_add_filename(filename: str) -> Path:
+    PROJECT_LOG_DIR.mkdir(exist_ok=True)
+    return Path(PROJECT_LOG_DIR) / filename
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'main_format': {
+            'format': '{asctime} - {levelname} - {message}',
+            'style': '{',
+        }
+    },
+
+    'handlers': {
+        'console_handler': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'main_format',
+        },
+        'file_handler': {
+            'class': 'logging.FileHandler',
+            'filename': check_project_log_dir_exists_and_add_filename('main_logs.log'),
+            'formatter': 'main_format',
+        },
+    },
+
+    'loggers': {
+        'django': {
+            'handlers': ['console_handler', 'file_handler'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
 }

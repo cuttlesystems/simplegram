@@ -1,8 +1,7 @@
 from pathlib import Path
 import json
 
-
-ROOT_DIR = Path(__file__).resolve().parent.parent
+from utils.get_root_dir import get_project_root_dir
 
 
 def read_info_from_file_about_commit() -> str:
@@ -13,7 +12,7 @@ def read_info_from_file_about_commit() -> str:
         str: Данные о коммите.
     """
     result = 'Information about commit not found.'
-    filename = str(ROOT_DIR / 'current_commit_info.json')
+    filename = str(get_project_root_dir() / 'current_commit_info.json')
     if Path(filename).exists():
         with open(filename, 'r') as commit_info:
             commit_dict = json.load(commit_info)

@@ -2,7 +2,7 @@ import typing
 import io
 import os
 
-from b_logic.data_objects import BotMessage, BotVariant, ButtonTypes, HandlerInit, BotCommand
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes, HandlerInit, BotCommand
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
@@ -11,6 +11,7 @@ from cuttle_builder.builder.handler_generator.create_state_handler import (creat
 from cuttle_builder.builder.config_generator.create_config import create_config
 from cuttle_builder.builder.state_generator.create_state import create_state
 from cuttle_builder.builder.commands_generator.generate_commands import generate_commands_code
+from cuttle_builder.builder.app_file_generator.generate_app_file import generate_app_file_code
 from cuttle_builder.APIFileCreator import APIFileCreator
 from typing import List, Optional
 from PIL import Image
@@ -30,9 +31,9 @@ class BotGenerator:
             messages: List[BotMessage],
             variants: List[BotVariant],
             commands: List[BotCommand],
-            start_message_id: Optional[int],
-            token: str,
+            bot: BotDescription,
             bot_path: str,
+            bot_logs_path: str,
             error_message_id: int = None
     ):
         """
@@ -40,26 +41,27 @@ class BotGenerator:
         Args:
             messages: список сообщений
             variants: список вариантов
-            start_message_id: идентификатор начального сообщения, с которого начинается бот
-            token: токен телеграм бота
+            bot: экземпляр BotDescription
             bot_path: путь куда будут помещены исходники бота
+            bot_logs_path: путь к файлу с логами бота
         """
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, BotVariant) for variant in variants)
         assert all(isinstance(command, BotCommand) for command in commands)
-        assert isinstance(start_message_id, Optional[int])
-        assert isinstance(token, Optional[str])
+        assert isinstance(bot, BotDescription)
         assert isinstance(bot_path, str)
+        assert isinstance(bot_logs_path, str)
 
         self._handler_inits: List[HandlerInit] = []
         self._messages: List[BotMessage] = messages
         self._variants: List[BotVariant] = variants
         self._commands: List[BotCommand] = commands
-        self._start_message_id = start_message_id
+        self._start_message_id = bot.start_message_id
         self._states: List[int] = []
         self._file_manager = APIFileCreator(bot_path)
-        self._token = token
+        self._token = bot.bot_token
         self._bot_directory = bot_path
+        self._logs_directory = bot_logs_path
         self._media_directory = bot_path + '/media'
 
         self._error_message_id = error_message_id
@@ -75,7 +77,7 @@ class BotGenerator:
     def _create_generated_bot_directory(self) -> None:
         self._file_manager.create_bot_directory(self._bot_directory)
 
-    def _check_valid_data(self) -> bool:
+    def _check_valid_data(self) -> None:
         if not self._messages:
             raise NoOneMessageException(
                 'Can\'t generate bot without messages. '
@@ -85,8 +87,6 @@ class BotGenerator:
                 'Can\'t generate bot without start message. '
                 'Set start message is required.'
             )
-        # self._check_token()
-        return True
 
     def _get_variants_of_message(self, message_id: int) -> typing.List[BotVariant]:
         """generate list of variants, names of buttons in keyboard
@@ -277,7 +277,6 @@ class BotGenerator:
             )
             self._file_manager.create_file_handler(str(message.id), restart_handler_code)
 
-
         if message.id == self._error_message_id:
             # Создание клавиатуры для сообщения.
             keyboard_name = self.create_keyboard(message.id, keyboard_type)
@@ -342,6 +341,7 @@ class BotGenerator:
         self._check_valid_data()
         self._create_generated_bot_directory()
         self._create_config_file()
+        self._create_app_file()
         self._create_on_startup_commands_file()
         for message in self._messages:
             self.create_file_handlers(message)
@@ -369,3 +369,9 @@ class BotGenerator:
         """
         commands_code = generate_commands_code(self._commands)
         self._file_manager.create_commands_file(commands_code)
+
+    def _create_app_file(self) -> None:
+        """Генерирует код app файла (исполняемый файл бота)."""
+        extend_imports = self._get_imports_sample('app_file_import')
+        app_file_code = generate_app_file_code(extend_imports, self._logs_directory)
+        self._file_manager.create_app_file(app_file_code)
