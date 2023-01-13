@@ -1,8 +1,17 @@
+from rest_framework.exceptions import ValidationError
+from rest_framework.request import Request
+
 from api.exceptions import InvalidBotTokenWhenGenerateBot
 from b_logic.bot_processes_manager import BotProcessesManagerSingle
-from b_logic.bot_runner import BotRunner
-from bots.models import Bot
+from bots.models import Bot, Variant
 from django.utils.autoreload import file_changed
+
+
+def check_variant_fields_request(request: Request):
+    assert isinstance(request, Request)
+    variant_text = request.data.get('text')
+    if len(variant_text) > Variant.text.field.max_length:
+        raise ValidationError(detail={"text": ["Field too long"]}, code=400)
 
 
 def check_bot_token_when_generate_bot(bot: Bot) -> None:
