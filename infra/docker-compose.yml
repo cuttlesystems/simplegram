@@ -13,8 +13,9 @@ services:
 #      - ../data_files:/app/backend/bot_django_project/data_files
       - ../data_files/media:/app/backend/bot_django_project/data_files/media
       - ../data_files/generated_bots:/app/backend/bot_django_project/data_files/generated_bots
-# mount directories with bot_logs
+# mount directories with 'bot_logs' and 'project_logs'
       - ../data_files/bot_logs:/app/backend/bot_django_project/data_files/bot_logs
+      - ../data_files/project_logs:/app/backend/bot_django_project/data_files/project_logs
 
       - ../data_files/static_value:/app/backend/bot_django_project/static/
     env_file:
