@@ -6,7 +6,7 @@ from PySide6.QtCore import Signal, QPointF
 from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
-from b_logic.bot_api.i_bot_api import IBotApi
+from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
 from desktop_constructor_app.common.localisation import tran
 from desktop_constructor_app.common.model_property import ModelProperty
@@ -222,9 +222,16 @@ class BotEditorForm(QMainWindow):
         messages = self._bot_scene.get_all_messages()
         variant_editor_dialog.set_dialog_data(variant, messages)
         if variant_editor_dialog.exec_() == QDialog.DialogCode.Accepted:
-            variant = variant_editor_dialog.get_variant()
-            self._bot_api.change_variant(variant)
-            block_graphics_item.change_variant(variant)
+            try:
+                variant = variant_editor_dialog.get_variant()
+                self._bot_api.change_variant(variant)
+                block_graphics_item.change_variant(variant)
+            except BotApiException as exception:
+                QMessageBox.warning(
+                    self,
+                    self._tr('Error'),
+                    self._tr('Variant changing error: {0}').format(str(exception))
+                )
 
     def _on_delete_variant(self, _checked: bool):
         deleted_variant: typing.Optional[BotVariant] = None
@@ -343,4 +350,4 @@ class BotEditorForm(QMainWindow):
         self.close_bot.emit()
 
     def _tr(self, text: str) -> str:
-        return tran('BotEditorForm', text)
+        return tran('BotEditorForm.manual', text)

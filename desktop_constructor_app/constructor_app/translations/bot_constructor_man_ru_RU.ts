@@ -20,4 +20,19 @@
         <translation>Ошибка создания бота: {0}</translation>
     </message>    
 </context>
+<context>
+    <name>BotEditorForm.manual</name>
+    <message>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
+        <source>Variant changing error: {0}</source>
+        <translation>Ошибка изменения варианта: {0}</translation>
+    </message>
+    <message>
+        <source>Select only one message to set is as start message</source>
+        <translation>Выберите только одно сообщнеие для того чтобы установить его как стартовое</translation>
+    </message>  
+</context>
 </TS>
