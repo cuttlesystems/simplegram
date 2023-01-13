@@ -17,5 +17,5 @@ def generate_app_file_code(imports: str, logs_directory: str) -> str:
     app_file_sample = (
         CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'app_sample.txt')
     code = read_file(app_file_sample)
-    code = code.format(imports=imports, logs_directory=logs_directory)
+    code = code.format(imports=imports, logs_directory=repr(logs_directory))
     return code
