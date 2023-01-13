@@ -4,14 +4,14 @@ import json
 
 from git import Repo
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
+from utils.get_root_dir import get_project_root_dir
 
 
 def create_file_with_info_about_last_commit() -> None:
     """
     Создает файл с информацией о коммите в корне проекта
     """
-    repo = Repo(ROOT_DIR)
+    repo = Repo(get_project_root_dir())
     latest_commit = repo.head.commit
 
     hash = str(latest_commit)[:7]
@@ -19,7 +19,7 @@ def create_file_with_info_about_last_commit() -> None:
     created_date = str(datetime.fromtimestamp(latest_commit.committed_date))
     commit_dict = dict(commit_hash=hash, commit_author=author, commit_created_date=created_date)
 
-    filename = str(ROOT_DIR / 'current_commit_info.json')
+    filename = str(get_project_root_dir() / 'current_commit_info.json')
     with open(filename, 'w') as file:
         json.dump(
             obj=commit_dict,
@@ -35,7 +35,7 @@ def read_info_from_file_about_commit() -> str:
         str: Данные о коммите.
     """
     result = 'Information about commit not found.'
-    filename = str(ROOT_DIR / 'current_commit_info.json')
+    filename = str(get_project_root_dir() / 'current_commit_info.json')
     if Path(filename).exists():
         with open(filename, 'r') as commit_info:
             commit_dict = json.load(commit_info)
