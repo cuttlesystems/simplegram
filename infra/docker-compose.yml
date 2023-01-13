@@ -13,6 +13,8 @@ services:
 #      - ../data_files:/app/backend/bot_django_project/data_files
       - ../data_files/media:/app/backend/bot_django_project/data_files/media
       - ../data_files/generated_bots:/app/backend/bot_django_project/data_files/generated_bots
+# mount directories with bot_logs
+      - ../data_files/bot_logs:/app/backend/bot_django_project/data_files/bot_logs
 
       - ../data_files/static_value:/app/backend/bot_django_project/static/
     env_file:
@@ -61,9 +63,11 @@ services:
       - ./data/certbot/www:/var/www/certbot
 
 
-volumes:
-  static_value:
-  media_value:
+# объявление volumes', доступ к которым необходим из каждого запущенного в общей сети контейнера
+# в данный момент нет таких - поэтому закомменчено
+#volumes:
+#  static_value:
+#  media_value:
 
 networks:
   cuttle_net:
