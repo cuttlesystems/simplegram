@@ -18,7 +18,7 @@ from rest_framework.request import Request
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
-from .utils import check_bot_token_when_generate_bot, check_variant_fields_request
+from .utils import check_variant_fields_request
 from .utils import check_bot_token_when_generate_bot, create_dir_if_it_doesnt_exist
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from cuttle_builder.exceptions.bot_gen_exceptions import BotGeneratorException
