@@ -1,7 +1,7 @@
 import inspect
 import logging.handlers
+
 from utils.get_root_dir import get_project_root_dir
-import pytz
 
 # Настройки логеров определены в settings.py в переменной LOGGING (dict) по ключу 'loggers'
 _LOGGER_DJANGO = logging.getLogger('django')
@@ -59,10 +59,3 @@ class BackendLogger:
 
 
 logger_django = BackendLogger(_LOGGER_DJANGO)
-
-
-class LocalTimeFormatter(logging.Formatter):
-    def formatTime(self, record, datefmt=None):
-        tz = pytz.timezone('Asia/Almaty')
-        local_time = pytz.utc.localize(record.created, is_dst=None).astimezone(tz)
-        return local_time.strftime('%Y-%m-%d %H:%M:%S %Z')
