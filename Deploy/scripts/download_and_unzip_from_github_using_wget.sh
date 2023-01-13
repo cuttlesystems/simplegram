@@ -33,8 +33,11 @@ echo "zip-архив загружен"
 echo ""
 unzip -q -o ./"$GH_REPO-$GH_BRANCH.zip"
 
-if [ ! -d "$DIR" ]
+if [ -d "$DIR" ]
         then
+                echo "Ошибка при выполнении скрипта разворота: директория '"$GH_REPO"' уже существует. Скрипт остановлен."
+                exit -1
+        else
                 mkdir -p ./$GH_REPO/infra
                 echo "Выполнено создание директории '"$GH_REPO"' с актуальным на момент запуска скрипта содержимым"
 fi
@@ -65,7 +68,7 @@ echo ""
 
 # python script 'get_commit_info_from_github_api.py' call from deploy script
 #python3 ~/$GH_REPO'/utils/get_commit_info_from_github_api.py' 'Bearer '$MY_TOKEN_CREATED_ON_GITHUB
-python3 ~/$GH_REPO'/get_commit_info_from_github_api.py' 'Bearer '$MY_TOKEN_CREATED_ON_GITHUB
+python3 ./$GH_REPO'/get_commit_info_from_github_api.py' 'Bearer '$MY_TOKEN_CREATED_ON_GITHUB
 #echo '"'./$GH_REPO/utils/get_commit_info_from_github_api.py'"' '"'Bearer $MY_TOKEN_CREATED_ON_GITHUB'"'
 
 if [ -d "$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME ] && [ -f "$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME/infra/.env ]
