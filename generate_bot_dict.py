@@ -8,9 +8,8 @@ if __name__ == '__main__':
         test_data.messages,
         test_data.variants,
         test_data.commands,
-        test_data.start_message_id,
-        test_data.token,
+        test_data.bot,
         test_data.bot_directory,
-        test_data.error_message_id
+        test_data.bot_logs_directory
     )
     bot_generator.create_bot()
