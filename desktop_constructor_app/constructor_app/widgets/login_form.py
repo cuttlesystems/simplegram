@@ -4,7 +4,7 @@ from enum import Enum
 
 from PySide6 import QtCore
 from PySide6.QtCore import Signal, QCoreApplication
-from PySide6.QtGui import QPixmap, QBrush, QColor
+from PySide6.QtGui import QPixmap, QBrush, QColor, Qt
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
 from b_logic.bot_api.bot_api_by_requests import BotApiException
@@ -58,6 +58,7 @@ class LoginForm(QWidget):
             self._ui.cuttle_systems_logo_label.setPixmap(logo_pixmap)
         else:
             print('Can not load logo')
+
         settings_path = get_application_data_dir()
         self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
         settings = self._application_settings.read_settings()
@@ -67,6 +68,9 @@ class LoginForm(QWidget):
         self._connect_signals()
         self._dialog_state: LoginStateEnum = LoginStateEnum.LOGIN
         self._activate_controls()
+
+    def _save_settings(self, settings: LoginSettings) -> None:
+        self._application_settings.write_settings(settings)
 
     def _connect_signals(self):
         self._ui.load_bots.clicked.connect(self._on_load_bots_click)
@@ -140,12 +144,14 @@ class LoginForm(QWidget):
             self._dialog_state = LoginStateEnum.BOTS
             self.__load_bots_list()
             self._activate_controls()
-            settings = LoginSettings(
-                address=server_addr_edit.text(),
-                name=username_edit.text(),
-                password=password_edit.text()
-            )
-            self._application_settings.write_settings(settings)
+
+            if self._ui.save_my_account.checkState() == Qt.CheckState.Checked:
+                settings = LoginSettings(
+                    address=server_addr_edit.text(),
+                    name=username_edit.text(),
+                    password=password_edit.text()
+                )
+                self._save_settings(settings)
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
 
