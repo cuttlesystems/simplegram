@@ -70,6 +70,7 @@ class LoginForm(QWidget):
         self._activate_controls()
 
     def _save_settings(self, settings: LoginSettings) -> None:
+        assert isinstance(settings, LoginSettings)
         self._application_settings.write_settings(settings)
 
     def _connect_signals(self):
