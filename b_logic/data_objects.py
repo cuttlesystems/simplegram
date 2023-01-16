@@ -14,7 +14,7 @@ class ButtonTypes(Enum):
     REPLY = 'RKB'
 
 
-@dataclass
+@dataclass(slots=True)
 class BotDescription:
     id: Optional[int] = None
     bot_name: Optional[str] = None
@@ -33,7 +33,7 @@ class BotDescription:
         self._start_message_id = value
 
 
-@dataclass
+@dataclass(slots=True)
 class BotMessage:
     id: Optional[int] = None
     text: Optional[str] = None
@@ -47,7 +47,7 @@ class BotMessage:
     y: Optional[int] = None
 
 
-@dataclass
+@dataclass(slots=True)
 class BotVariant:
     id: Optional[int] = None
     text: Optional[str] = None
@@ -55,7 +55,7 @@ class BotVariant:
     next_message_id: Optional[int] = None
 
 
-@dataclass
+@dataclass(slots=True)
 class BotCommand:
     id: Optional[int] = None
     bot_id: Optional[int] = None
@@ -63,7 +63,7 @@ class BotCommand:
     description: Optional[str] = None
 
 
-@dataclass
+@dataclass(slots=True)
 class BotLogs:
     stdout_lines: List[str] = field(default_factory=lambda: [])
     stderr_lines: List[str] = field(default_factory=lambda: [])
