@@ -18,6 +18,7 @@ class FileManager:
         with open(directory, 'r') as file:
             return file.read().split('\n')
 
+    # TODO: сделать метод для записи в файл в режиме 'w'
     def write_file(self, directory: str, code: str) -> None:
         """add into directory file, that contains generated code
 

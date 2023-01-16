@@ -5,7 +5,7 @@ from PySide6.QtCore import QRectF, Signal
 from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
-from b_logic.data_objects import BotMessage, BotVariant
+from b_logic.data_objects import BotMessage, BotVariant, BotDescription
 from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from desktop_constructor_app.constructor_app.graphic_scene.colors.scene_color_scheme import SceneColorScheme
 
@@ -40,6 +40,8 @@ class BotScene(QGraphicsScene):
 
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
+
+        self.bot: BotDescription = None
 
         self._scene_color_scheme = SceneColorScheme()
 
@@ -204,7 +206,7 @@ class BotScene(QGraphicsScene):
         return QRectF(x, y, width, height)
 
     def _create_message_graphics(self, message: BotMessage, variants: typing.List[BotVariant]) -> BlockGraphicsItem:
-        message_graphics_item = BlockGraphicsItem(message, variants)
+        message_graphics_item = BlockGraphicsItem(message, variants, self.bot.start_message_id)
         self.addItem(message_graphics_item)
 
         assert isinstance(message_graphics_item, QGraphicsItem)

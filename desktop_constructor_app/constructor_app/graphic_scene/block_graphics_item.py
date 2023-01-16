@@ -7,7 +7,7 @@ from PySide6.QtGui import QBrush, QColor, QPen, QLinearGradient
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import QGraphicsItem
 
-from b_logic.data_objects import BotMessage, BotVariant
+from b_logic.data_objects import BotMessage, BotVariant, BotDescription
 from desktop_constructor_app.constructor_app.graphic_scene.colors.block_color_scheme import BlockColorScheme
 from utils.cut_string import cut_string
 
@@ -59,7 +59,7 @@ class BlockGraphicsItem(QGraphicsItem):
     _VARIANT_DISTANCE = 25
     _VARIANT_ICON_RECT_BORDER = 10
 
-    def __init__(self, message: BotMessage, variants: typing.List[BotVariant]):
+    def __init__(self, message: BotMessage, variants: typing.List[BotVariant], start_message_id: int = None):
         """
         Конструктор блока. Блок возьмет свои координаты из координат сообщения
         Args:
@@ -76,6 +76,9 @@ class BlockGraphicsItem(QGraphicsItem):
 
         # кисточка (заливка) для рисования сообщений
         self._message_brush = QBrush(QColor(self._color_scheme.message_color))
+
+        # кисточка (заливка) для первого сообщения
+        self._start_message_brush = QBrush(QColor(self._color_scheme.start_message_color))
 
         # карандаш (контур) для рисования сообщений и вариантов, если они не выделены
         self._normal_pen = QPen(
@@ -95,6 +98,9 @@ class BlockGraphicsItem(QGraphicsItem):
         # сообщение блока
         self._message: BotMessage = message
 
+        # id стартового сообщения
+        self._start_message_id = start_message_id
+
         # варианты блока
         self._variants: typing.List[BotVariant] = variants
 
@@ -107,6 +113,19 @@ class BlockGraphicsItem(QGraphicsItem):
 
         # установим положение блока на сцене исходя из положения сообщения
         self.setPos(QPointF(self._message.x, self._message.y))
+
+    def _is_message_started(self) -> bool:
+        """
+        Определяет, является ли сообщение стартовым.
+
+        Returns:
+            Boolean, является ли сообщение стартовым.
+        """
+        return self._message.id == self._start_message_id
+
+    def set_started_state(self, started: bool):
+        pass
+        # todo: перерисовка
 
     def get_message(self) -> BotMessage:
         return self._message
@@ -420,7 +439,11 @@ class BlockGraphicsItem(QGraphicsItem):
         return block_brush
 
     def _setup_message_colors(self, painter: QtGui.QPainter):
-        painter.setBrush(self._message_brush)
+        if self._is_message_started():
+            painter.setBrush(self._start_message_brush)
+        else:
+            painter.setBrush(self._message_brush)
+
         if self.isSelected():
             painter.setPen(self._selected_pen)
         else:
