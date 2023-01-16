@@ -98,6 +98,9 @@ class Message(models.Model):
         null=True,
         blank=True
     )
+    variable = models.TextField(
+        null=True
+    )
 
     class Meta:
         ordering = ['id']

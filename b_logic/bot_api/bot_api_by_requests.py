@@ -532,6 +532,8 @@ class BotApiByRequests(IBotApi):
         bot_message.y = message_dict['coordinate_y']
 
         bot_message.message_type = MessageTypeEnum(message_dict['message_type'])
+        bot_message.next_message_id = message_dict['next_message']
+        bot_message.variable = message_dict['variable']
         return bot_message
 
     def _create_message_dict_from_message_obj(self, message: BotMessage) -> dict:
@@ -542,7 +544,9 @@ class BotApiByRequests(IBotApi):
             'keyboard_type': message.keyboard_type.value,
             'coordinate_x': message.x,
             'coordinate_y': message.y,
-            'message_type': message.message_type.value
+            'message_type': message.message_type.value,
+            'next_message': message.next_message_id,
+            'variable': message.variable
         }
         return message_dict
 

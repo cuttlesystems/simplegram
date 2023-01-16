@@ -202,6 +202,8 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.x = message_django.coordinate_x
         bot_message.y = message_django.coordinate_y
         bot_message.message_type = MessageTypeEnum(message_django.message_type)
+        bot_message.next_message_id = message_django.next_message
+        bot_message.variable = message_django.variable
         return bot_message
 
     def _create_variant_from_data(self, variant_django: Variant) -> BotVariant:

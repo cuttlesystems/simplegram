@@ -49,6 +49,8 @@ class BotMessage:
     video: Optional[str] = None
     file: Optional[str] = None
     message_type: MessageTypeEnum = MessageTypeEnum.VARIANTS
+    next_message_id: Optional[int] = None
+    variable: Optional[str] = None
 
     x: Optional[int] = None
     y: Optional[int] = None
