@@ -5,7 +5,7 @@ import requests
 import urllib.request
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes, BotLogs
+from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
@@ -223,7 +223,7 @@ class BotApiByRequests(IBotApi):
         return messages_list
 
     def create_message(self, bot: BotDescription, text: str,
-                       keyboard_type: ButtonTypes, x: int, y: int,
+                       keyboard_type: ButtonTypesEnum, x: int, y: int,
                        photo: Optional[bytes] = None,
                        photo_filename: Optional[str] = None) -> BotMessage:
         """
@@ -519,7 +519,7 @@ class BotApiByRequests(IBotApi):
         bot_message = BotMessage()
         bot_message.id = message_dict['id']
         bot_message.text = message_dict['text']
-        bot_message.keyboard_type = ButtonTypes(message_dict['keyboard_type'])
+        bot_message.keyboard_type = ButtonTypesEnum(message_dict['keyboard_type'])
 
         # todo: с этими полями надо разобраться, похоже,
         #  там передается url путь, который надо сначала получить

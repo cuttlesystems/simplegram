@@ -7,7 +7,7 @@ from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum
 from desktop_constructor_app.common.localisation import tran
 from desktop_constructor_app.common.model_property import ModelProperty
 from desktop_constructor_app.common.utils.name_utils import gen_next_name
@@ -162,7 +162,7 @@ class BotEditorForm(QMainWindow):
         messages = self._bot_api.get_messages(self._bot)
         message_name = self._generate_unique_message_name(self._tr('New bot message'), messages)
         message = self._bot_api.create_message(
-            self._bot, message_name, ButtonTypes.REPLY, x=position.x(), y=position.y())
+            self._bot, message_name, ButtonTypesEnum.REPLY, x=position.x(), y=position.y())
         self._bot_scene.add_message(message, [])
         self._actual_actions_state()
 

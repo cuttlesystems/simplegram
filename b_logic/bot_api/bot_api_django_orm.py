@@ -5,7 +5,7 @@ from django.db.models.fields.files import ImageFieldFile
 from django.conf import settings
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes, BotLogs
+from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs
 from bots.models import Bot, Message, Variant, Command
 
 
@@ -105,7 +105,7 @@ class BotApiByDjangoORM(IBotApi):
         return messages_list
 
     def create_message(self, bot: BotDescription, text: str,
-                       keyboard_type: ButtonTypes, x: int, y: int) -> BotMessage:
+                       keyboard_type: ButtonTypesEnum, x: int, y: int) -> BotMessage:
         raise NotImplementedError('Метод не определен!')
 
     def change_message(self, message: BotMessage) -> None:
@@ -191,7 +191,7 @@ class BotApiByDjangoORM(IBotApi):
         bot_message = BotMessage()
         bot_message.id = message_django.id
         bot_message.text = message_django.text
-        bot_message.keyboard_type = ButtonTypes(message_django.keyboard_type)
+        bot_message.keyboard_type = ButtonTypesEnum(message_django.keyboard_type)
         bot_message.photo = convert_image_to_bytes(
             get_full_path_to_django_image(settings.MEDIA_ROOT, message_django.photo)
         )

@@ -9,9 +9,15 @@ class HandlerInit:
     is_error_message: bool
 
 
-class ButtonTypes(Enum):
+class ButtonTypesEnum(Enum):
     INLINE = 'IKB'
     REPLY = 'RKB'
+
+
+class MessageTypeEnum(Enum):
+    VARIANTS = 'variants'
+    ANY_INPUT = 'any_input'
+    GOTO = 'goto'
 
 
 @dataclass(slots=True)
@@ -37,11 +43,12 @@ class BotDescription:
 class BotMessage:
     id: Optional[int] = None
     text: Optional[str] = None
-    keyboard_type: ButtonTypes = ButtonTypes.REPLY
+    keyboard_type: ButtonTypesEnum = ButtonTypesEnum.REPLY
     photo: Optional[bytes] = None
     photo_filename: Optional[str] = None
     video: Optional[str] = None
     file: Optional[str] = None
+    message_type: MessageTypeEnum = MessageTypeEnum.VARIANTS
 
     x: Optional[int] = None
     y: Optional[int] = None

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 from utils.cut_string import cut_string
-from b_logic.data_objects import ButtonTypes
+from b_logic.data_objects import ButtonTypesEnum, MessageTypeEnum
 
 User = get_user_model()
 
@@ -18,15 +18,21 @@ _MAX_COMMAND_LENGTH = 32
 _MAX_COMMAND_DESCRIPTION_LENGTH = 256
 
 KEYBOARD_TYPES = [
-    (ButtonTypes.REPLY.value, 'Reply Keyboard'),
-    (ButtonTypes.INLINE.value, 'Inline Keyboard'),
+    (ButtonTypesEnum.REPLY.value, 'Reply Keyboard'),
+    (ButtonTypesEnum.INLINE.value, 'Inline Keyboard'),
 ]
+
+
+class MessageTypesDjango(models.TextChoices):
+    VARIANTS = MessageTypeEnum.VARIANTS.value
+    ANY_INPUT = MessageTypeEnum.ANY_INPUT.value
+    GOTO = MessageTypeEnum.GOTO.value
 
 
 class Bot(models.Model):
     name = models.CharField(max_length=200)
     token = models.CharField(max_length=100, null=True)
-    description = models.TextField('Описание бота', null=True)
+    description = models.TextField('Bot description', null=True)
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -75,10 +81,15 @@ class Message(models.Model):
         related_name='messages'
     )
     coordinate_x = models.IntegerField(
-        'Координата по оси x'
+        'Coordinate by x axis'
     )
     coordinate_y = models.IntegerField(
-        'Координата по оси y'
+        'Coordinate by y axis'
+    )
+    message_type = models.CharField(
+        max_length=20,
+        choices=MessageTypesDjango.choices,
+        default=MessageTypesDjango.VARIANTS
     )
 
     class Meta:
