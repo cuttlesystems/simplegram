@@ -145,14 +145,14 @@ class LoginForm(QWidget):
             self._dialog_state = LoginStateEnum.BOTS
             self.__load_bots_list()
             self._activate_controls()
-
+            settings = LoginSettings(
+                address=server_addr_edit.text(),
+                name=username_edit.text(),
+                password=None
+            )
             if self._ui.save_my_account.checkState() == Qt.CheckState.Checked:
-                settings = LoginSettings(
-                    address=server_addr_edit.text(),
-                    name=username_edit.text(),
-                    password=password_edit.text()
-                )
-                self._save_settings(settings)
+                settings.password = password_edit.text()
+            self._save_settings(settings)
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
 
