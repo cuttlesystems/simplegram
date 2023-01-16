@@ -212,7 +212,16 @@ class BotScene(QGraphicsScene):
         assert isinstance(message_graphics_item, QGraphicsItem)
         return message_graphics_item
 
-    def get_block_by_message_id(self, message_id: int) -> BlockGraphicsItem:
+    def get_block_by_message_id(self, message_id: int) -> typing.Optional[BlockGraphicsItem]:
+        """
+        Получает блок по идентификатору сообщения.
+
+        Args:
+            message_id: Ид сообщения
+
+        Returns:
+            Искомый блок.
+        """
         for block in self._message_graphics_list:
             if block.get_message().id == message_id:
                 return block

@@ -48,6 +48,9 @@ class BlockGraphicsItem(QGraphicsItem):
     _VARIANT_WIDTH = 150
     _VARIANT_HEIGHT = 50
 
+    _START_MESSAGE_TITLE_WIDTH = 150
+    _START_MESSAGE_TITLE_HEIGHT = 20
+
     _BORDER_THICKNESS_NORMAL = 2
     _BORDER_THICKNESS_SELECTED = 3
 
@@ -58,6 +61,8 @@ class BlockGraphicsItem(QGraphicsItem):
     _BOUNDING_RECT_SPARE_PAINTING_DISTANCE = 2
     _VARIANT_DISTANCE = 25
     _VARIANT_ICON_RECT_BORDER = 10
+    _START_MESSAGE_TITLE_BORDER_X = 25
+    _START_MESSAGE_TITLE_BORDER_Y = -20
 
     def __init__(self, message: BotMessage, variants: typing.List[BotVariant], start_message_id: int = None):
         """
@@ -394,7 +399,7 @@ class BlockGraphicsItem(QGraphicsItem):
         painter.drawText(self._message_text_rect(), cut_string(self._message.text, self._MAX_MESSAGE_CHARS))
 
         if self._is_message_started():
-            painter.drawText(self._start_message_block_rect(), 'Start message')
+            painter.drawText(self._start_message_title_block_rect(), 'Start message')
 
     def _draw_variant(self, painter: QtGui.QPainter, variant: typing.Optional[BotVariant], index: int):
         assert isinstance(painter, QtGui.QPainter)
@@ -533,10 +538,10 @@ class BlockGraphicsItem(QGraphicsItem):
         height = rect.height() + 2 * self._BLOCK_RECT_EXTEND_SPACE
         return QRectF(x, y, width, height)
 
-    def _start_message_block_rect(self) -> QRectF:
+    def _start_message_title_block_rect(self) -> QRectF:
         return QRectF(
-            self._MESSAGE_TEXT_BORDER,
-            self._MESSAGE_TEXT_BORDER - 45,
-            self._MESSAGE_WIDTH,
-            20,
+            self._START_MESSAGE_TITLE_BORDER_X,
+            self._START_MESSAGE_TITLE_BORDER_Y,
+            self._START_MESSAGE_TITLE_WIDTH,
+            self._START_MESSAGE_TITLE_HEIGHT,
         )
