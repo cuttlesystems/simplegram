@@ -97,10 +97,12 @@ class LoginForm(QWidget):
         self._ui.delete_bot_button.setEnabled(False)
         self._ui.update_bot_list_button.setEnabled(False)
         self._ui.sign_up_button.setEnabled(False)
+        self._ui.save_my_password.setEnabled(False)
         if self._dialog_state == LoginStateEnum.LOGIN:
             self._ui.server_addr_edit.setEnabled(True)
             self._ui.username_edit.setEnabled(True)
             self._ui.password_edit.setEnabled(True)
+            self._ui.save_my_password.setEnabled(True)
             self._ui.load_bots.setEnabled(True)
             self._ui.sign_up_button.setEnabled(True)
         elif self._dialog_state == LoginStateEnum.BOTS:
