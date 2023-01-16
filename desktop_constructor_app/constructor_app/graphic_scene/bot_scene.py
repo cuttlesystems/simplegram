@@ -41,7 +41,7 @@ class BotScene(QGraphicsScene):
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
 
-        self.bot: BotDescription = None
+        self.bot: typing.Optional[BotDescription] = None
 
         self._scene_color_scheme = SceneColorScheme()
 

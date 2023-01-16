@@ -393,6 +393,9 @@ class BlockGraphicsItem(QGraphicsItem):
         self._setup_text_color(painter)
         painter.drawText(self._message_text_rect(), cut_string(self._message.text, self._MAX_MESSAGE_CHARS))
 
+        if self._is_message_started():
+            painter.drawText(self._start_message_block_rect(), 'Start message')
+
     def _draw_variant(self, painter: QtGui.QPainter, variant: typing.Optional[BotVariant], index: int):
         assert isinstance(painter, QtGui.QPainter)
         assert isinstance(variant, BotVariant) or variant is None
@@ -529,3 +532,11 @@ class BlockGraphicsItem(QGraphicsItem):
         width = rect.width() + 2 * self._BLOCK_RECT_EXTEND_SPACE
         height = rect.height() + 2 * self._BLOCK_RECT_EXTEND_SPACE
         return QRectF(x, y, width, height)
+
+    def _start_message_block_rect(self) -> QRectF:
+        return QRectF(
+            self._MESSAGE_TEXT_BORDER,
+            self._MESSAGE_TEXT_BORDER - 45,
+            self._MESSAGE_WIDTH,
+            20,
+        )

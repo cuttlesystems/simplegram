@@ -164,4 +164,6 @@ class BotTestData:
 
     @property
     def bot_logs_directory(self) -> str:
-        return str(Path(__file__).parent.parent / 'bot_logs_test' / f'bot_{self._bot.id}.log')
+        bot_logs_test_directory = Path(__file__).parent.parent / 'bot_logs_test'
+        bot_logs_test_directory.mkdir(exist_ok=True)
+        return str(bot_logs_test_directory / f'bot_{self._bot.id}.log')

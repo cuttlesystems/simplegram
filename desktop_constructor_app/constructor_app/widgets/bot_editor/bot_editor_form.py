@@ -259,7 +259,19 @@ class BotEditorForm(QMainWindow):
 
             updated_bot_info = self._bot_api.get_bot_by_id(self._bot.id)
             self._bot_scene.bot = updated_bot_info
+            sel_mes_id = selected_message.id
+
+            selected_block = self._bot_scene.get_selected_blocks_graphics()
+            selected_mes_id = selected_block[0].get_message().id
+            print(f'Блоков выделено: {len(selected_block)}')
+            print(f'Блоков выделено: {selected_block[0].get_message().text}')
             self._load_bot_scene()
+            # blocks = self._bot_scene.get_all_blocks()
+            # for block in blocks:
+            #     block.setSelected(block.id == sel_mes_id)
+            # selected_block = self._bot_scene.get_selected_blocks_graphics()
+            # selected_block[0].setSelected(True)
+            self._actual_actions_state()
         else:
             QMessageBox.warning(
                 self,
