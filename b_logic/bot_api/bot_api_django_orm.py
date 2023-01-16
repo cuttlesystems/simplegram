@@ -202,7 +202,13 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.x = message_django.coordinate_x
         bot_message.y = message_django.coordinate_y
         bot_message.message_type = MessageTypeEnum(message_django.message_type)
-        bot_message.next_message_id = message_django.next_message
+
+        bot_message.next_message_id = (
+            message_django.next_message.id
+            if message_django.next_message is not None
+            else None
+        )
+
         bot_message.variable = message_django.variable
         return bot_message
 
@@ -212,7 +218,11 @@ class BotApiByDjangoORM(IBotApi):
         variant.id = variant_django.id
         variant.text = variant_django.text
         variant.current_message_id = variant_django.current_message.id
-        variant.next_message_id = variant_django.next_message.id if variant_django.next_message else None
+        variant.next_message_id = (
+            variant_django.next_message.id
+            if variant_django.next_message is not None
+            else None
+        )
         return variant
 
     def _create_command_from_data(self, command_django: Command) -> BotCommand:
