@@ -256,6 +256,10 @@ class BotEditorForm(QMainWindow):
         if selected_messages_number == 1:
             selected_message = selected_messages[0]
             self._bot_api.set_bot_start_message(self._bot, selected_message)
+
+            updated_bot_info = self._bot_api.get_bot_by_id(self._bot.id)
+            self._bot_scene.bot = updated_bot_info
+            self._load_bot_scene()
         else:
             QMessageBox.warning(
                 self,
