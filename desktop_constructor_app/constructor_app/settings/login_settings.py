@@ -7,3 +7,5 @@ class LoginSettings:
     name: Optional[str] = None
     password: Optional[str] = None
     address: Optional[str] = None
+    save_password: bool = True
+
