@@ -14,7 +14,7 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>Connection to Cuttle Systems Bot Constructor</string>
+   <string>Connection to Cuttle Systems Simple Gram</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>

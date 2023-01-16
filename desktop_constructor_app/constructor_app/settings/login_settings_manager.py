@@ -70,11 +70,11 @@ class LoginSettingsManager:
 
     def _dict_to_settings(self, data: dict) -> LoginSettings:
         assert isinstance(data, dict)
-        password = self._decrypt(data['password']) if data['password'] is not None else None
+        password = self._decrypt(data['password'])
         settings = LoginSettings()
         settings.address = data['address']
         settings.name = data['name']
         settings.password = password
-        settings.save_password = data['save_password']
+        settings.save_password = data.get('save_password', True)
         return settings
 

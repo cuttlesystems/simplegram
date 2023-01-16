@@ -2,7 +2,7 @@ import typing
 import io
 import os
 
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypes, HandlerInit, BotCommand
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
@@ -137,22 +137,22 @@ class BotGenerator:
         assert os.path.exists(full_path)
         return full_path
 
-    def create_keyboard(self, message_id: int, keyboard_type: ButtonTypes) -> typing.Optional[str]:
-        assert isinstance(keyboard_type, ButtonTypes)
+    def create_keyboard(self, message_id: int, keyboard_type: ButtonTypesEnum) -> typing.Optional[str]:
+        assert isinstance(keyboard_type, ButtonTypesEnum)
         variants = self._get_variants_of_message(message_id)
         if len(variants) == 0:
             return None
         keyboard_name = self._get_keyboard_name_for_message(message_id)
 
         # imports and keyboard
-        if keyboard_type == ButtonTypes.REPLY:
+        if keyboard_type == ButtonTypesEnum.REPLY:
             imports_for_keyboard = self._get_imports_sample('reply_keyboard_import')
             keyboard_source_code = create_reply_keyboard(
                 keyboard_variable_name_without_suffix=keyboard_name,
                 buttons=variants,
                 extended_imports=imports_for_keyboard
             )
-        elif keyboard_type == ButtonTypes.INLINE:
+        elif keyboard_type == ButtonTypesEnum.INLINE:
             imports_for_keyboard = self._get_imports_sample('inline_keyboard_import')
             keyboard_source_code = create_inline_keyboard(
                 keyboard_variable_name_without_suffix=keyboard_name,
@@ -166,7 +166,7 @@ class BotGenerator:
 
     def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                               state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                              kb: str, handler_type: ButtonTypes, extended_imports: str = '') -> str:
+                              kb: str, handler_type: ButtonTypesEnum, extended_imports: str = '') -> str:
         """Подготовка данных и выбор генерируемого хэндлера в зависимости от типа клавиатуры
 
         Args:
@@ -177,21 +177,21 @@ class BotGenerator:
             text_of_answer (str): text of answer
             image_answer (Optional[str]): path to image file in bot directory
             kb (str): keyboard of answer
-            handler_type (ButtonTypes): type of handler (inline or reply)
+            handler_type (ButtonTypesEnum): type of handler (inline or reply)
             extended_imports: __
 
         Returns:
             str: generated code for handler with state and handled text
         """
-        assert isinstance(handler_type, ButtonTypes)
+        assert isinstance(handler_type, ButtonTypesEnum)
 
         import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
         extended_imports += '\n' + import_keyboard
         full_command = f'Command(\'{command}\')' if command != '' else command
-        if handler_type == ButtonTypes.REPLY:
+        if handler_type == ButtonTypesEnum.REPLY:
             return create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                 state_to_set_name, text_of_answer, image_answer, kb)
-        elif handler_type == ButtonTypes.INLINE:
+        elif handler_type == ButtonTypesEnum.INLINE:
             return create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                  state_to_set_name, text_of_answer, image_answer, kb)
 
@@ -257,7 +257,7 @@ class BotGenerator:
                 text_of_answer=message.text,
                 image_answer=image,
                 kb=keyboard_name,
-                handler_type=ButtonTypes.REPLY,
+                handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_start_handler
             )
             self._file_manager.create_file_handler(str(message.id), start_handler_code)
@@ -272,7 +272,7 @@ class BotGenerator:
                 text_of_answer=message.text,
                 image_answer=image,
                 kb=keyboard_name,
-                handler_type=ButtonTypes.REPLY,
+                handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=''
             )
             self._file_manager.create_file_handler(str(message.id), restart_handler_code)
@@ -291,7 +291,7 @@ class BotGenerator:
                 text_of_answer=message.text,
                 image_answer=image,
                 kb=keyboard_name,
-                handler_type=ButtonTypes.REPLY,
+                handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_handler
             )
             self._file_manager.create_file_handler(str(message.id), error_handler_code)
