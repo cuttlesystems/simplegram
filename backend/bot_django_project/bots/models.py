@@ -91,6 +91,13 @@ class Message(models.Model):
         choices=MessageTypesDjango.choices,
         default=MessageTypesDjango.VARIANTS
     )
+    next_message = models.ForeignKey(
+        'Message',
+        on_delete=models.SET_NULL,
+        related_name='next_messages',
+        null=True,
+        blank=True
+    )
 
     class Meta:
         ordering = ['id']

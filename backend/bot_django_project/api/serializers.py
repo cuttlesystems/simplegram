@@ -59,6 +59,8 @@ class MessageSerializer(serializers.ModelSerializer):
             'bot',
             'coordinate_x',
             'coordinate_y',
+            'message_type',
+            'next_message'
         )
         read_only_fields = ('bot',)
 

@@ -5,7 +5,8 @@ from django.db.models.fields.files import ImageFieldFile
 from django.conf import settings
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs
+from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
+    MessageTypeEnum
 from bots.models import Bot, Message, Variant, Command
 
 
@@ -200,6 +201,7 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.file = message_django.file
         bot_message.x = message_django.coordinate_x
         bot_message.y = message_django.coordinate_y
+        bot_message.message_type = MessageTypeEnum(message_django.message_type)
         return bot_message
 
     def _create_variant_from_data(self, variant_django: Variant) -> BotVariant:

@@ -5,7 +5,8 @@ import requests
 import urllib.request
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs
+from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
+    MessageTypeEnum
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
@@ -529,6 +530,8 @@ class BotApiByRequests(IBotApi):
 
         bot_message.x = message_dict['coordinate_x']
         bot_message.y = message_dict['coordinate_y']
+
+        bot_message.message_type = MessageTypeEnum(message_dict['message_type'])
         return bot_message
 
     def _create_message_dict_from_message_obj(self, message: BotMessage) -> dict:
@@ -538,7 +541,8 @@ class BotApiByRequests(IBotApi):
             'text': message.text,
             'keyboard_type': message.keyboard_type.value,
             'coordinate_x': message.x,
-            'coordinate_y': message.y
+            'coordinate_y': message.y,
+            'message_type': message.message_type.value
         }
         return message_dict
 
