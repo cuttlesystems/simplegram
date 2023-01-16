@@ -11,7 +11,7 @@ from django.utils.autoreload import file_changed
 
 def check_variant_fields_request(request: Request):
     assert isinstance(request, Request)
-    variant_text = request.data.get('text')
+    variant_text = request.data['text']
     if len(variant_text) > Variant.text.field.max_length:
         raise ValidationError(detail={"text": ["Field too long"]}, code=400)
 

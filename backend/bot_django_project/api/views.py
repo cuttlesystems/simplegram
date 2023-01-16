@@ -371,18 +371,18 @@ class VariantViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Variant.objects.filter(
             current_message__bot__owner=self.request.user,
-            current_message__id=self.kwargs.get('message_id')
+            current_message__id=self.kwargs['message_id']
         )
 
     def perform_create(self, serializer: VariantSerializer) -> None:
-        message_id = self.kwargs.get('message_id')
+        message_id = self.kwargs['message_id']
         message = get_object_or_404(Message, id=message_id)
         serializer.save(current_message=message)
 
     def create(self, request: Request, message_id: int) -> Response:
         message = get_object_or_404(Message, id=message_id)
         check_variant_fields_request(request)
-        if Variant.objects.filter(text=request.data.get('text'),
+        if Variant.objects.filter(text=request.data['text'],
                                   current_message=message).exists():
             raise ValidationError(detail={"non_field_errors": "This variant is alredy exists."}, code=400)
         check_is_bot_owner_or_permission_denied(request, message.bot)
@@ -410,10 +410,10 @@ class CommandViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Command.objects.filter(
             bot__owner=self.request.user,
-            bot__id=self.kwargs.get('bot_id'))
+            bot__id=self.kwargs['bot_id'])
 
     def perform_create(self, serializer: CommandSerializer) -> None:
-        bot_id = self.kwargs.get('bot_id')
+        bot_id = self.kwargs['bot_id']
         bot = get_object_or_404(Bot, id=bot_id)
         serializer.save(bot=bot)
 
