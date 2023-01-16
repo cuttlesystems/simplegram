@@ -62,6 +62,8 @@ class LoginForm(QWidget):
         settings_path = get_application_data_dir()
         self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
         settings = self._application_settings.read_settings()
+        state = Qt.CheckState.Checked if settings.save_password else Qt.CheckState.Unchecked
+        self._ui.save_my_account.setCheckState(state)
         self._ui.username_edit.setText(settings.name)
         self._ui.password_edit.setText(settings.password)
         self._ui.server_addr_edit.setText(settings.address)
@@ -148,10 +150,13 @@ class LoginForm(QWidget):
             settings = LoginSettings(
                 address=server_addr_edit.text(),
                 name=username_edit.text(),
-                password=None
+                password=None,
+                save_password=True
             )
             if self._ui.save_my_account.checkState() == Qt.CheckState.Checked:
                 settings.password = password_edit.text()
+            else:
+                settings.save_password = False
             self._save_settings(settings)
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))

@@ -55,13 +55,17 @@ class LoginSettingsManager:
         data = {
             'address': settings.address,
             'name': settings.name,
-            'password': encrypted_password
+            'password': encrypted_password,
+            'save_password': settings.save_password
         }
         return data
 
-    def _decrypt(self, encrypted_password):
-        encrypted_password_bytes = base64.b64decode(encrypted_password)
-        password = self._fernet.decrypt(encrypted_password_bytes).decode('utf-8')
+    def _decrypt(self, encrypted_password: Optional[str]) -> str:
+        if encrypted_password is not None:
+            encrypted_password_bytes = base64.b64decode(encrypted_password)
+            password = self._fernet.decrypt(encrypted_password_bytes).decode('utf-8')
+        else:
+            password = None
         return password
 
     def _dict_to_settings(self, data: dict) -> LoginSettings:
@@ -71,5 +75,6 @@ class LoginSettingsManager:
         settings.address = data['address']
         settings.name = data['name']
         settings.password = password
+        settings.save_password = data['save_password']
         return settings
 
