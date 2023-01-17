@@ -13,7 +13,7 @@ def generate_commands_code(commands: list[BotCommand]) -> str:
     Returns:
         str: Сгенерированный код
     """
-    list_of_commands = []
+    list_of_commands = ['types.BotCommand("start", "Start bot")']
     for command in commands:
         list_of_commands.append(
             f'types.BotCommand("{command.command}", "{command.description}")'

@@ -91,7 +91,7 @@ class BotViewSet(viewsets.ModelViewSet):
         """
         Запустить бота. Если бот уже был запущен, то он будет перезапущен
         Args:
-            request: данные HTTP запроса
+            request:   HTTP запроса
             bot_id_str: идентификатор бота, который хотим запустить
 
         Returns:
