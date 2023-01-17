@@ -134,7 +134,6 @@ MEDIA_ROOT = os.path.join(DATA_FILES_ROOT, 'media')
 
 # путь, где лежат созданные пользователем боты
 BOTS_DIR = Path(DATA_FILES_ROOT) / 'generated_bots'
-BOTS_LOG_DIR = Path(DATA_FILES_ROOT) / 'bot_logs'
 PROJECT_LOG_DIR = Path(DATA_FILES_ROOT) / 'project_logs'
 
 
@@ -151,7 +150,7 @@ REST_FRAMEWORK = {
 
 
 def check_project_log_dir_exists_and_add_filename(filename: str) -> Path:
-    PROJECT_LOG_DIR.mkdir(exist_ok=True)
+    PROJECT_LOG_DIR.mkdir(exist_ok=True, parents=True)
     return Path(PROJECT_LOG_DIR) / filename
 
 

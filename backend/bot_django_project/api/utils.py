@@ -1,8 +1,6 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 
-from pathlib import Path
-
 from api.exceptions import InvalidBotTokenWhenGenerateBot
 from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from bots.models import Bot, Variant
@@ -53,12 +51,3 @@ def stop_all_running_bots_before_autoreload(sender, **kwargs) -> None:
 file_changed.connect(stop_all_running_bots_before_autoreload)
 
 
-def create_dir_if_it_doesnt_exist(directory: Path) -> None:
-    """
-    Создает директорию если её не существует
-
-    Args:
-        directory (Path): путь к директории
-
-    """
-    directory.mkdir(exist_ok=True)

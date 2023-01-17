@@ -1,8 +1,10 @@
 import typing
 import io
 import os
+from pathlib import Path
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand
+from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
@@ -33,7 +35,6 @@ class BotGenerator:
             commands: List[BotCommand],
             bot: BotDescription,
             bot_path: str,
-            bot_logs_path: str,
             error_message_id: int = None
     ):
         """
@@ -50,7 +51,6 @@ class BotGenerator:
         assert all(isinstance(command, BotCommand) for command in commands)
         assert isinstance(bot, BotDescription)
         assert isinstance(bot_path, str)
-        assert isinstance(bot_logs_path, str)
 
         self._handler_inits: List[HandlerInit] = []
         self._messages: List[BotMessage] = messages
@@ -61,12 +61,41 @@ class BotGenerator:
         self._file_manager = APIFileCreator(bot_path)
         self._token = bot.bot_token
         self._bot_directory = bot_path
-        self._logs_directory = bot_logs_path
+        self._logs_file_path = self._get_bot_logs_file_path(bot, bot_path)
         self._media_directory = bot_path + '/media'
 
         self._error_message_id = error_message_id
         for message in messages:
             self._states.append(message.id)
+
+    def _get_bot_logs_file_path(self, bot: BotDescription, bot_dir: str) -> str:
+        """
+        Получает полный путь к файлу для хранения логов бота.
+
+        Args:
+            bot (BotDescription): экземпляр BotDescription
+
+        Returns (str): Полный путь к файлу логов бота.
+
+        """
+        assert isinstance(bot, BotDescription)
+
+        directory = Path(self._get_bot_logs_dir(bot, bot_dir))
+        return str(directory / f'bot_{bot.id}.log')
+
+    def _get_bot_logs_dir(self, bot: BotDescription, bot_dir: str) -> str:
+        """
+        Получает полный путь к файлу для хранения логов бота.
+
+        Args:
+            bot (BotDescription): экземпляр BotDescription
+
+        Returns (str): Полный путь к файлу логов бота.
+
+        """
+        assert isinstance(bot, BotDescription)
+        bot_log_path = Path(bot_dir).parent / 'bot_logs'
+        return str(bot_log_path)
 
     def _check_token(self) -> bool:
         left, sep, right = self._token.partition(':')
@@ -331,6 +360,7 @@ class BotGenerator:
         self._create_config_file()
         self._create_app_file()
         self._create_on_startup_commands_file()
+        self._create_log_dir_if_it_doesnt_exist()
         for message in self._messages:
             self.create_file_handlers(message)
         self._create_init_handler_files()
@@ -358,8 +388,12 @@ class BotGenerator:
         commands_code = generate_commands_code(self._commands)
         self._file_manager.create_commands_file(commands_code)
 
+    def _create_log_dir_if_it_doesnt_exist(self):
+        create_dir_if_it_doesnt_exist(Path(self._logs_file_path).parent)
+
     def _create_app_file(self) -> None:
         """Генерирует код app файла (исполняемый файл бота)."""
         extend_imports = self._get_imports_sample('app_file_import')
-        app_file_code = generate_app_file_code(extend_imports, self._logs_directory)
+
+        app_file_code = generate_app_file_code(extend_imports, self._logs_file_path)
         self._file_manager.create_app_file(app_file_code)
