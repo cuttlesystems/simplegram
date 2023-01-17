@@ -1,22 +1,22 @@
 # tg_bot_constructor
 
-[Вступительное слово к проекту](./Docs/draft_introductory_remarks_to_the_StartUp.md)
+[Вступительное слово к проекту](./docs/draft_introductory_remarks_to_the_StartUp.md)
 
-[Документация по проекту](./Docs/Index.md)
+[Документация по проекту](./docs/Index.md)
 
-[Правила работы с *git*](./Docs/git_description.md)
+[Правила работы с *git*](./docs/git_description.md)
 
-[Данные для тестирования телеграмм бота](./Docs/telegabot_info.md)
+[Данные для тестирования телеграмм бота](./docs/telegabot_info.md)
 
-[Инструкция по осуществлению *deploy'я* обновлённого *docker*-контейнера](./Docs/deploy_from_ubuntu.md)
+[Инструкция по осуществлению *deploy'я* обновлённого *docker*-контейнера](./docs/deploy_from_ubuntu.md)
 
-[Инструкция по созданию исполняемого файла (*Win, Linux*) с помощью утилиты *PyInstaller*](./Docs/create_executable_file.md)
+[Инструкция по созданию исполняемого файла (*Win, Linux*) с помощью утилиты *PyInstaller*](./docs/create_executable_file.md)
 
 ### Организация разработки
 
-[Проведение собеседования](./Docs/interview.md)
+[Проведение собеседования](./docs/interview.md)
 
-[Дисциплина труда](./Docs/working_time.md)
+[Дисциплина труда](./docs/working_time.md)
 
 ## Как запустить проект локально(dev-режим):
 
