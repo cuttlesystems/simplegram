@@ -3,22 +3,21 @@
 from django.db import migrations, models
 
 
-def update_field_length(apps, schema_editor):
-    Variant = apps.get_model("bots", "Variant")
-    for obj in Variant.objects.all():
-        if len(obj.text) > 120:
-            obj.text = obj.text[:120]
-            obj.save()
-
-
 class Migration(migrations.Migration):
+    @staticmethod
+    def _update_field_length(apps, schema_editor):
+        Variant = apps.get_model("bots", "Variant")
+        for obj in Variant.objects.all():
+            if len(obj.text) > 120:
+                obj.text = obj.text[:120]
+                obj.save()
 
     dependencies = [
         ('bots', '0012_message_variable'),
     ]
 
     operations = [
-        migrations.RunPython(update_field_length),
+        migrations.RunPython(_update_field_length),
         migrations.AlterField(
             model_name='variant',
             name='text',
@@ -26,3 +25,4 @@ class Migration(migrations.Migration):
         ),
 
     ]
+
