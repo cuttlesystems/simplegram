@@ -64,7 +64,7 @@ class BlockGraphicsItem(QGraphicsItem):
     _START_MESSAGE_TITLE_BORDER_X = 25
     _START_MESSAGE_TITLE_BORDER_Y = -20
 
-    def __init__(self, message: BotMessage, variants: typing.List[BotVariant], start_message_id: int = None):
+    def __init__(self, message: BotMessage, variants: typing.List[BotVariant], is_start_message: bool):
         """
         Конструктор блока. Блок возьмет свои координаты из координат сообщения
         Args:
@@ -74,6 +74,7 @@ class BlockGraphicsItem(QGraphicsItem):
         super().__init__()
         assert isinstance(message, BotMessage)
         assert all(isinstance(variant, BotVariant) for variant in variants)
+        assert isinstance(is_start_message, bool)
 
         self.signal_sender: BlockGraphicsSignalSender = BlockGraphicsSignalSender()
 
@@ -104,7 +105,7 @@ class BlockGraphicsItem(QGraphicsItem):
         self._message: BotMessage = message
 
         # id стартового сообщения
-        self._start_message_id = start_message_id
+        self._is_start_message = is_start_message
 
         # варианты блока
         self._variants: typing.List[BotVariant] = variants
@@ -118,19 +119,6 @@ class BlockGraphicsItem(QGraphicsItem):
 
         # установим положение блока на сцене исходя из положения сообщения
         self.setPos(QPointF(self._message.x, self._message.y))
-
-    def _is_message_started(self) -> bool:
-        """
-        Определяет, является ли сообщение стартовым.
-
-        Returns:
-            Boolean, является ли сообщение стартовым.
-        """
-        return self._message.id == self._start_message_id
-
-    def set_started_state(self, started: bool):
-        pass
-        # todo: перерисовка
 
     def get_message(self) -> BotMessage:
         return self._message
@@ -398,7 +386,7 @@ class BlockGraphicsItem(QGraphicsItem):
         self._setup_text_color(painter)
         painter.drawText(self._message_text_rect(), cut_string(self._message.text, self._MAX_MESSAGE_CHARS))
 
-        if self._is_message_started():
+        if self._is_start_message:
             painter.drawText(self._start_message_title_block_rect(), 'Start message')
 
     def _draw_variant(self, painter: QtGui.QPainter, variant: typing.Optional[BotVariant], index: int):
@@ -447,7 +435,7 @@ class BlockGraphicsItem(QGraphicsItem):
         return block_brush
 
     def _setup_message_colors(self, painter: QtGui.QPainter):
-        if self._is_message_started():
+        if self._is_start_message:
             painter.setBrush(self._start_message_brush)
         else:
             painter.setBrush(self._message_brush)

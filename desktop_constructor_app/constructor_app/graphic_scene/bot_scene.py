@@ -41,7 +41,7 @@ class BotScene(QGraphicsScene):
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
 
-        self.bot: typing.Optional[BotDescription] = None
+        self._bot: typing.Optional[BotDescription] = None
 
         self._scene_color_scheme = SceneColorScheme()
 
@@ -206,7 +206,8 @@ class BotScene(QGraphicsScene):
         return QRectF(x, y, width, height)
 
     def _create_message_graphics(self, message: BotMessage, variants: typing.List[BotVariant]) -> BlockGraphicsItem:
-        message_graphics_item = BlockGraphicsItem(message, variants, self.bot.start_message_id)
+        is_start_message: bool = (message.id == self._bot.start_message_id)
+        message_graphics_item = BlockGraphicsItem(message, variants, is_start_message)
         self.addItem(message_graphics_item)
 
         assert isinstance(message_graphics_item, QGraphicsItem)
