@@ -7,7 +7,7 @@ from PySide6.QtGui import QBrush, QColor, QPen, QLinearGradient
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import QGraphicsItem
 
-from b_logic.data_objects import BotMessage, BotVariant
+from b_logic.data_objects import BotMessage, BotVariant, BotDescription
 from desktop_constructor_app.constructor_app.graphic_scene.colors.block_color_scheme import BlockColorScheme
 from utils.cut_string import cut_string
 
@@ -48,6 +48,9 @@ class BlockGraphicsItem(QGraphicsItem):
     _VARIANT_WIDTH = 150
     _VARIANT_HEIGHT = 50
 
+    _START_MESSAGE_TITLE_WIDTH = 150
+    _START_MESSAGE_TITLE_HEIGHT = 20
+
     _BORDER_THICKNESS_NORMAL = 2
     _BORDER_THICKNESS_SELECTED = 3
 
@@ -58,8 +61,10 @@ class BlockGraphicsItem(QGraphicsItem):
     _BOUNDING_RECT_SPARE_PAINTING_DISTANCE = 2
     _VARIANT_DISTANCE = 25
     _VARIANT_ICON_RECT_BORDER = 10
+    _START_MESSAGE_TITLE_BORDER_X = 25
+    _START_MESSAGE_TITLE_BORDER_Y = -20
 
-    def __init__(self, message: BotMessage, variants: typing.List[BotVariant]):
+    def __init__(self, message: BotMessage, variants: typing.List[BotVariant], is_start_message: bool):
         """
         Конструктор блока. Блок возьмет свои координаты из координат сообщения
         Args:
@@ -69,6 +74,7 @@ class BlockGraphicsItem(QGraphicsItem):
         super().__init__()
         assert isinstance(message, BotMessage)
         assert all(isinstance(variant, BotVariant) for variant in variants)
+        assert isinstance(is_start_message, bool)
 
         self.signal_sender: BlockGraphicsSignalSender = BlockGraphicsSignalSender()
 
@@ -76,6 +82,9 @@ class BlockGraphicsItem(QGraphicsItem):
 
         # кисточка (заливка) для рисования сообщений
         self._message_brush = QBrush(QColor(self._color_scheme.message_color))
+
+        # кисточка (заливка) для первого сообщения
+        self._start_message_brush = QBrush(QColor(self._color_scheme.start_message_color))
 
         # карандаш (контур) для рисования сообщений и вариантов, если они не выделены
         self._normal_pen = QPen(
@@ -94,6 +103,9 @@ class BlockGraphicsItem(QGraphicsItem):
 
         # сообщение блока
         self._message: BotMessage = message
+
+        # id стартового сообщения
+        self._is_start_message = is_start_message
 
         # варианты блока
         self._variants: typing.List[BotVariant] = variants
@@ -374,6 +386,9 @@ class BlockGraphicsItem(QGraphicsItem):
         self._setup_text_color(painter)
         painter.drawText(self._message_text_rect(), cut_string(self._message.text, self._MAX_MESSAGE_CHARS))
 
+        if self._is_start_message:
+            painter.drawText(self._start_message_title_block_rect(), 'Start message')
+
     def _draw_variant(self, painter: QtGui.QPainter, variant: typing.Optional[BotVariant], index: int):
         assert isinstance(painter, QtGui.QPainter)
         assert isinstance(variant, BotVariant) or variant is None
@@ -420,7 +435,11 @@ class BlockGraphicsItem(QGraphicsItem):
         return block_brush
 
     def _setup_message_colors(self, painter: QtGui.QPainter):
-        painter.setBrush(self._message_brush)
+        if self._is_start_message:
+            painter.setBrush(self._start_message_brush)
+        else:
+            painter.setBrush(self._message_brush)
+
         if self.isSelected():
             painter.setPen(self._selected_pen)
         else:
@@ -506,3 +525,11 @@ class BlockGraphicsItem(QGraphicsItem):
         width = rect.width() + 2 * self._BLOCK_RECT_EXTEND_SPACE
         height = rect.height() + 2 * self._BLOCK_RECT_EXTEND_SPACE
         return QRectF(x, y, width, height)
+
+    def _start_message_title_block_rect(self) -> QRectF:
+        return QRectF(
+            self._START_MESSAGE_TITLE_BORDER_X,
+            self._START_MESSAGE_TITLE_BORDER_Y,
+            self._START_MESSAGE_TITLE_WIDTH,
+            self._START_MESSAGE_TITLE_HEIGHT,
+        )

@@ -10,6 +10,9 @@ class BlockColorScheme:
     # цвет фона сообщения
     message_color = 0xceffff
 
+    # цвет первого сообщения
+    start_message_color = 0xe49ae6
+
     # цвет текста
     text_color = 0x154545
 

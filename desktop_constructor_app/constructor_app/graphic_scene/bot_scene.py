@@ -5,7 +5,7 @@ from PySide6.QtCore import QRectF, Signal
 from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
-from b_logic.data_objects import BotMessage, BotVariant
+from b_logic.data_objects import BotMessage, BotVariant, BotDescription
 from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from desktop_constructor_app.constructor_app.graphic_scene.colors.scene_color_scheme import SceneColorScheme
 
@@ -41,6 +41,8 @@ class BotScene(QGraphicsScene):
     def __init__(self, parent: QtCore.QObject):
         super().__init__(parent=parent)
 
+        self._bot: typing.Optional[BotDescription] = None
+
         self._scene_color_scheme = SceneColorScheme()
 
         self._background_brush = QBrush(QColor(self._scene_color_scheme.workspace_background_color))
@@ -58,6 +60,13 @@ class BotScene(QGraphicsScene):
 
         self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
+
+    def get_bot(self):
+        return self._bot
+
+    def set_bot(self, value: BotDescription):
+        assert isinstance(value, BotDescription)
+        self._bot = value
 
     def clear_scene(self) -> None:
         """
@@ -204,8 +213,23 @@ class BotScene(QGraphicsScene):
         return QRectF(x, y, width, height)
 
     def _create_message_graphics(self, message: BotMessage, variants: typing.List[BotVariant]) -> BlockGraphicsItem:
-        message_graphics_item = BlockGraphicsItem(message, variants)
+        is_start_message: bool = (message.id == self._bot.start_message_id)
+        message_graphics_item = BlockGraphicsItem(message, variants, is_start_message)
         self.addItem(message_graphics_item)
 
         assert isinstance(message_graphics_item, QGraphicsItem)
         return message_graphics_item
+
+    def get_block_by_message_id(self, message_id: int) -> typing.Optional[BlockGraphicsItem]:
+        """
+        Получает блок по идентификатору сообщения.
+
+        Args:
+            message_id: Ид сообщения
+
+        Returns:
+            Искомый блок.
+        """
+        for block in self._message_graphics_list:
+            if block.get_message().id == message_id:
+                return block

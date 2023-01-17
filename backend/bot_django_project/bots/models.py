@@ -111,7 +111,7 @@ class Message(models.Model):
 
 
 class Variant(models.Model):
-    text = models.CharField(max_length=200)
+    text = models.CharField(max_length=120)
     current_message = models.ForeignKey(
         Message,
         on_delete=models.CASCADE,
