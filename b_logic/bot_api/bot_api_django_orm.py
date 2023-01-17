@@ -90,6 +90,10 @@ class BotApiByDjangoORM(IBotApi):
                               start_message: BotMessage) -> None:
         raise NotImplementedError('Метод не определен!')
 
+    def set_bot_error_message(self, bot: BotDescription,
+                              error_message: BotMessage) -> None:
+        raise NotImplementedError('Метод не определен!')
+
     def get_messages(self, bot: BotDescription) -> List[BotMessage]:
         """
         Получить все сообщения заданного бота
@@ -185,6 +189,7 @@ class BotApiByDjangoORM(IBotApi):
         bot_description.bot_token = bot_django.token
         bot_description.bot_description = bot_django.description
         bot_description.start_message_id = bot_django.start_message.id if bot_django.start_message is not None else None
+        bot_description.error_message_id = bot_django.error_message.id if bot_django.error_message is not None else None
         return bot_description
 
     def _create_bot_message_from_data(self, message_django: Message) -> BotMessage:
