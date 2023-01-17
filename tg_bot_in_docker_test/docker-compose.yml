@@ -1,5 +1,0 @@
-version: '2'
-services:
-  bot:
-    build: .
-    image: shamil/tg_bot_in_docker_test

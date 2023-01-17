@@ -14,7 +14,6 @@ class BotGeneratorDb(BotGenerator):
         commands = bot_api.get_commands(bot)
         messages = bot_api.get_messages(bot)
 
-        bot_logs_file_path = self._get_bot_logs_file_path(bot, bot_dir)
         # соберем варианты, принадлежащие всем сообщениям в один список
         all_variants = []
         for mes in messages:

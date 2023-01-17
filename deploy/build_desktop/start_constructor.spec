@@ -6,10 +6,9 @@ block_cipher = None
 
 
 a = Analysis(
-    ['start_constructor.py'],
+    [Path('..') / '..' / 'start_constructor.py'],
     pathex=[
-	'.', 
-#	'D:\\CuttleSystems\\hidden_hello_world_project\\hidden_hello_world\\abc_bca'
+	'.',
     ],
     binaries=[],
     datas=[(
