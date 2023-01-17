@@ -1,0 +1,18 @@
+{imports}
+
+logger_format = '%(asctime)s - %(name)s:%(lineno)s - %(levelname)s - %(message)s'
+rotating_file_handler = logging.handlers.RotatingFileHandler(
+    filename={logs_directory},
+    mode='a',
+    maxBytes=5000000,
+    backupCount=5
+)
+stream_handler = logging.StreamHandler(stream=sys.stdout)
+logging.basicConfig(level=logging.INFO, format=logger_format, handlers=[rotating_file_handler, stream_handler])
+
+if __name__ == '__main__':
+    logging.info('Bot started')
+    sys.stdout.flush()
+    executor.start_polling(dp,
+                           skip_updates=True,
+                           on_startup=set_default_commands)

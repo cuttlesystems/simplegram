@@ -9,12 +9,18 @@ class HandlerInit:
     is_error_message: bool
 
 
-class ButtonTypes(Enum):
+class ButtonTypesEnum(Enum):
     INLINE = 'IKB'
     REPLY = 'RKB'
 
 
-@dataclass
+class MessageTypeEnum(Enum):
+    VARIANTS = 'variants'
+    ANY_INPUT = 'any_input'
+    GOTO = 'goto'
+
+
+@dataclass(slots=True)
 class BotDescription:
     id: Optional[int] = None
     bot_name: Optional[str] = None
@@ -33,21 +39,24 @@ class BotDescription:
         self._start_message_id = value
 
 
-@dataclass
+@dataclass(slots=True)
 class BotMessage:
     id: Optional[int] = None
     text: Optional[str] = None
-    keyboard_type: ButtonTypes = ButtonTypes.REPLY
+    keyboard_type: ButtonTypesEnum = ButtonTypesEnum.REPLY
     photo: Optional[bytes] = None
     photo_filename: Optional[str] = None
     video: Optional[str] = None
     file: Optional[str] = None
+    message_type: MessageTypeEnum = MessageTypeEnum.VARIANTS
+    next_message_id: Optional[int] = None
+    variable: Optional[str] = None
 
     x: Optional[int] = None
     y: Optional[int] = None
 
 
-@dataclass
+@dataclass(slots=True)
 class BotVariant:
     id: Optional[int] = None
     text: Optional[str] = None
@@ -55,7 +64,7 @@ class BotVariant:
     next_message_id: Optional[int] = None
 
 
-@dataclass
+@dataclass(slots=True)
 class BotCommand:
     id: Optional[int] = None
     bot_id: Optional[int] = None
@@ -63,7 +72,7 @@ class BotCommand:
     description: Optional[str] = None
 
 
-@dataclass
+@dataclass(slots=True)
 class BotLogs:
     stdout_lines: List[str] = field(default_factory=lambda: [])
     stderr_lines: List[str] = field(default_factory=lambda: [])

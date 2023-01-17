@@ -1,8 +1,19 @@
+from rest_framework.exceptions import ValidationError
+from rest_framework.request import Request
+
+from pathlib import Path
+
 from api.exceptions import InvalidBotTokenWhenGenerateBot
 from b_logic.bot_processes_manager import BotProcessesManagerSingle
-from b_logic.bot_runner import BotRunner
-from bots.models import Bot
+from bots.models import Bot, Variant
 from django.utils.autoreload import file_changed
+
+
+def check_variant_fields_request(request: Request):
+    assert isinstance(request, Request)
+    variant_text = request.data['text']
+    if len(variant_text) > Variant.text.field.max_length:
+        raise ValidationError(detail={"text": ["Field too long"]}, code=400)
 
 
 def check_bot_token_when_generate_bot(bot: Bot) -> None:
@@ -40,3 +51,14 @@ def stop_all_running_bots_before_autoreload(sender, **kwargs) -> None:
 # Сигнал file_changed испускается при обнаружении изменений в коде на запущенном сервере
 # После сигнала file_changed следует перезагрузка сервера
 file_changed.connect(stop_all_running_bots_before_autoreload)
+
+
+def create_dir_if_it_doesnt_exist(directory: Path) -> None:
+    """
+    Создает директорию если её не существует
+
+    Args:
+        directory (Path): путь к директории
+
+    """
+    directory.mkdir(exist_ok=True)

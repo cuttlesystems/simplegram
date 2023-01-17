@@ -91,3 +91,16 @@ class APIFileCreator(FileManager):
         path_to_file = str(
             Path(self._bot_directory) / 'on_startup_commands.py')
         self.write_file(path_to_file, code)
+
+    def create_app_file(self, code: str) -> None:
+        """
+        Создает app файл (исполняемый файл).
+
+        Args:
+            code (str): Подготовленный код(содержимое файла)
+        """
+        assert isinstance(code, str)
+
+        path_to_file = str(
+            Path(self._bot_directory) / 'app.py')
+        self.write_file(path_to_file, code)

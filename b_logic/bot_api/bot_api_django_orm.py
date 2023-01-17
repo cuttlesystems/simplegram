@@ -5,7 +5,8 @@ from django.db.models.fields.files import ImageFieldFile
 from django.conf import settings
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypes, BotLogs
+from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
+    MessageTypeEnum
 from bots.models import Bot, Message, Variant, Command
 
 
@@ -105,7 +106,7 @@ class BotApiByDjangoORM(IBotApi):
         return messages_list
 
     def create_message(self, bot: BotDescription, text: str,
-                       keyboard_type: ButtonTypes, x: int, y: int) -> BotMessage:
+                       keyboard_type: ButtonTypesEnum, x: int, y: int) -> BotMessage:
         raise NotImplementedError('Метод не определен!')
 
     def change_message(self, message: BotMessage) -> None:
@@ -191,7 +192,7 @@ class BotApiByDjangoORM(IBotApi):
         bot_message = BotMessage()
         bot_message.id = message_django.id
         bot_message.text = message_django.text
-        bot_message.keyboard_type = ButtonTypes(message_django.keyboard_type)
+        bot_message.keyboard_type = ButtonTypesEnum(message_django.keyboard_type)
         bot_message.photo = convert_image_to_bytes(
             get_full_path_to_django_image(settings.MEDIA_ROOT, message_django.photo)
         )
@@ -200,6 +201,15 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.file = message_django.file
         bot_message.x = message_django.coordinate_x
         bot_message.y = message_django.coordinate_y
+        bot_message.message_type = MessageTypeEnum(message_django.message_type)
+
+        bot_message.next_message_id = (
+            message_django.next_message.id
+            if message_django.next_message is not None
+            else None
+        )
+
+        bot_message.variable = message_django.variable
         return bot_message
 
     def _create_variant_from_data(self, variant_django: Variant) -> BotVariant:
@@ -208,7 +218,11 @@ class BotApiByDjangoORM(IBotApi):
         variant.id = variant_django.id
         variant.text = variant_django.text
         variant.current_message_id = variant_django.current_message.id
-        variant.next_message_id = variant_django.next_message.id if variant_django.next_message else None
+        variant.next_message_id = (
+            variant_django.next_message.id
+            if variant_django.next_message is not None
+            else None
+        )
         return variant
 
     def _create_command_from_data(self, command_django: Command) -> BotCommand:

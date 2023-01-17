@@ -1,6 +1,7 @@
 import base64
 import json
 from pathlib import Path
+from typing import Optional
 
 from cryptography.fernet import Fernet
 
@@ -40,9 +41,12 @@ class LoginSettingsManager:
         if not self._path_to_storage.exists():
             self._path_to_storage.mkdir(exist_ok=True, parents=True)
 
-    def _encrypt(self, password: str):
-        encrypted_password_bytes = self._fernet.encrypt(password.encode('utf-8'))
-        encrypted_password_str = base64.b64encode(encrypted_password_bytes).decode('utf-8')
+    def _encrypt(self, password: Optional[str]) -> str:
+        if password is not None:
+            encrypted_password_bytes = self._fernet.encrypt(password.encode('utf-8'))
+            encrypted_password_str = base64.b64encode(encrypted_password_bytes).decode('utf-8')
+        else:
+            encrypted_password_str = None
         return encrypted_password_str
 
     def _settings_to_dict(self, settings: LoginSettings) -> dict:
@@ -51,13 +55,17 @@ class LoginSettingsManager:
         data = {
             'address': settings.address,
             'name': settings.name,
-            'password': encrypted_password
+            'password': encrypted_password,
+            'save_password': settings.save_password
         }
         return data
 
-    def _decrypt(self, encrypted_password):
-        encrypted_password_bytes = base64.b64decode(encrypted_password)
-        password = self._fernet.decrypt(encrypted_password_bytes).decode('utf-8')
+    def _decrypt(self, encrypted_password: Optional[str]) -> str:
+        if encrypted_password is not None:
+            encrypted_password_bytes = base64.b64decode(encrypted_password)
+            password = self._fernet.decrypt(encrypted_password_bytes).decode('utf-8')
+        else:
+            password = None
         return password
 
     def _dict_to_settings(self, data: dict) -> LoginSettings:
@@ -67,5 +75,6 @@ class LoginSettingsManager:
         settings.address = data['address']
         settings.name = data['name']
         settings.password = password
+        settings.save_password = data.get('save_password', True)
         return settings
 

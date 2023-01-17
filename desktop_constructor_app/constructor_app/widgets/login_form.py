@@ -62,6 +62,8 @@ class LoginForm(QWidget):
         settings_path = get_application_data_dir()
         self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
         settings = self._application_settings.read_settings()
+        state = Qt.CheckState.Checked if settings.save_password else Qt.CheckState.Unchecked
+        self._ui.save_my_password.setCheckState(state)
         self._ui.username_edit.setText(settings.name)
         self._ui.password_edit.setText(settings.password)
         self._ui.server_addr_edit.setText(settings.address)
@@ -95,10 +97,12 @@ class LoginForm(QWidget):
         self._ui.delete_bot_button.setEnabled(False)
         self._ui.update_bot_list_button.setEnabled(False)
         self._ui.sign_up_button.setEnabled(False)
+        self._ui.save_my_password.setEnabled(False)
         if self._dialog_state == LoginStateEnum.LOGIN:
             self._ui.server_addr_edit.setEnabled(True)
             self._ui.username_edit.setEnabled(True)
             self._ui.password_edit.setEnabled(True)
+            self._ui.save_my_password.setEnabled(True)
             self._ui.load_bots.setEnabled(True)
             self._ui.sign_up_button.setEnabled(True)
         elif self._dialog_state == LoginStateEnum.BOTS:
@@ -145,14 +149,17 @@ class LoginForm(QWidget):
             self._dialog_state = LoginStateEnum.BOTS
             self.__load_bots_list()
             self._activate_controls()
-
-            if self._ui.save_my_account.checkState() == Qt.CheckState.Checked:
-                settings = LoginSettings(
-                    address=server_addr_edit.text(),
-                    name=username_edit.text(),
-                    password=password_edit.text()
-                )
-                self._save_settings(settings)
+            settings = LoginSettings(
+                address=server_addr_edit.text(),
+                name=username_edit.text(),
+                password=None,
+                save_password=True
+            )
+            if self._ui.save_my_password.checkState() == Qt.CheckState.Checked:
+                settings.password = password_edit.text()
+            else:
+                settings.save_password = False
+            self._save_settings(settings)
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
 

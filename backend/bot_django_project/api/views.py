@@ -12,12 +12,14 @@ from django.shortcuts import get_object_or_404
 from b_logic.bot_api.bot_api_django_orm import BotApiByDjangoORM
 from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from b_logic.bot_runner import BotRunner
-from bot_constructor.settings import BOTS_DIR
+from bot_constructor.log_configs import logger_django
+from bot_constructor.settings import BOTS_DIR, BOTS_LOG_DIR
 from rest_framework.request import Request
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
-from .utils import check_bot_token_when_generate_bot
+from .utils import check_variant_fields_request
+from .utils import check_bot_token_when_generate_bot, create_dir_if_it_doesnt_exist
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from cuttle_builder.exceptions.bot_gen_exceptions import BotGeneratorException
 from .serializers import (BotSerializer, MessageSerializer, MessageSerializerWithVariants,
@@ -94,6 +96,7 @@ class BotViewSet(viewsets.ModelViewSet):
         Returns:
             результат запуска бота
         """
+        create_dir_if_it_doesnt_exist(BOTS_LOG_DIR)
         bot_id = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id)
         self.check_object_permissions(request, bot)
@@ -116,6 +119,7 @@ class BotViewSet(viewsets.ModelViewSet):
                 },
                 status=requests.codes.ok
             )
+            logger_django.info_logging(f'Bot {bot_id} started. Process id: {process_id}')
         else:
             result = JsonResponse(
                 {
@@ -123,7 +127,7 @@ class BotViewSet(viewsets.ModelViewSet):
                 },
                 status=requests.codes.method_not_allowed
             )
-
+            logger_django.error_logging('Bot start error')
         return result
 
     @action(
@@ -179,7 +183,7 @@ class BotViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path='generate'
     )
-    def generate_bot(self, request: rest_framework.request.Request, bot_id_str: str) -> None:
+    def generate_bot(self, request: rest_framework.request.Request, bot_id_str: str) -> Response:
         """
         Сгенерировать исходный код бота
         Args:
@@ -367,17 +371,18 @@ class VariantViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Variant.objects.filter(
             current_message__bot__owner=self.request.user,
-            current_message__id=self.kwargs.get('message_id')
+            current_message__id=self.kwargs['message_id']
         )
 
     def perform_create(self, serializer: VariantSerializer) -> None:
-        message_id = self.kwargs.get('message_id')
+        message_id = self.kwargs['message_id']
         message = get_object_or_404(Message, id=message_id)
         serializer.save(current_message=message)
 
     def create(self, request: Request, message_id: int) -> Response:
         message = get_object_or_404(Message, id=message_id)
-        if Variant.objects.filter(text=request.data.get('text'),
+        check_variant_fields_request(request)
+        if Variant.objects.filter(text=request.data['text'],
                                   current_message=message).exists():
             raise ValidationError(detail={"non_field_errors": "This variant is alredy exists."}, code=400)
         check_is_bot_owner_or_permission_denied(request, message.bot)
@@ -390,6 +395,10 @@ class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
     serializer_class = VariantSerializer
     permission_classes = (IsVariantOwnerOrForbidden,)
 
+    def update(self, request: Request, pk: str, partial: bool):
+        check_variant_fields_request(request)
+        return super().update(request, pk=pk, partial=partial)
+
 
 class CommandViewSet(viewsets.ModelViewSet):
     """
@@ -401,10 +410,10 @@ class CommandViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Command.objects.filter(
             bot__owner=self.request.user,
-            bot__id=self.kwargs.get('bot_id'))
+            bot__id=self.kwargs['bot_id'])
 
     def perform_create(self, serializer: CommandSerializer) -> None:
-        bot_id = self.kwargs.get('bot_id')
+        bot_id = self.kwargs['bot_id']
         bot = get_object_or_404(Bot, id=bot_id)
         serializer.save(bot=bot)
 
