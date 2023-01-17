@@ -389,7 +389,6 @@ class BotGenerator:
         self._file_manager.create_commands_file(commands_code)
 
     def _create_log_dir_if_it_doesnt_exist(self):
-        print(self._logs_file_path)
         create_dir_if_it_doesnt_exist(Path(self._logs_file_path).parent)
 
     def _create_app_file(self) -> None:
