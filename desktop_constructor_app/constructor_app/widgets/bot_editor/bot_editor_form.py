@@ -53,7 +53,7 @@ class BotEditorForm(QMainWindow):
     def set_bot(self, bot: typing.Optional[BotDescription]):
         assert isinstance(bot, BotDescription) or bot is None
         self._bot = bot
-        self._bot_scene._bot = bot
+        self._bot_scene.set_bot(bot)
 
         if bot is not None:
             self._prop_model.set_name(bot.bot_name)
@@ -258,7 +258,8 @@ class BotEditorForm(QMainWindow):
             self._bot_api.set_bot_start_message(self._bot, selected_message)
 
             updated_bot_info = self._bot_api.get_bot_by_id(self._bot.id)
-            self._bot_scene._bot = updated_bot_info
+            self._bot_scene.set_bot(updated_bot_info)
+            self._bot = updated_bot_info
             self._load_bot_scene()
             selected_block = self._bot_scene.get_block_by_message_id(selected_message.id)
             if selected_block is not None:
