@@ -21,33 +21,4 @@ class BotGeneratorDb(BotGenerator):
             message_variants = bot_api.get_variants(mes)
             all_variants.extend(message_variants)
         print(bot.start_message_id)
-        super().__init__(messages, all_variants, commands, bot, bot_dir, bot_logs_file_path)
-
-    def _get_bot_logs_file_path(self, bot: BotDescription, bot_dir: str) -> str:
-        """
-        Получает полный путь к файлу для хранения логов бота.
-
-        Args:
-            bot (BotDescription): экземпляр BotDescription
-
-        Returns (str): Полный путь к файлу логов бота.
-
-        """
-        assert isinstance(bot, BotDescription)
-
-        directory = Path(self._get_bot_logs_dir(bot, bot_dir))
-        return str(directory / f'bot_{bot.id}.log')
-
-    def _get_bot_logs_dir(self, bot: BotDescription, bot_dir: str) -> str:
-        """
-        Получает полный путь к файлу для хранения логов бота.
-
-        Args:
-            bot (BotDescription): экземпляр BotDescription
-
-        Returns (str): Полный путь к файлу логов бота.
-
-        """
-        assert isinstance(bot, BotDescription)
-        bot_log_path = Path(bot_dir).parent / 'bot_logs'
-        return str(bot_log_path)
+        super().__init__(messages, all_variants, commands, bot, bot_dir)
