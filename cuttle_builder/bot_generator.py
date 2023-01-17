@@ -251,7 +251,7 @@ class BotGenerator:
                                                                      'Command'
             start_handler_code = self._create_state_handler(
                 command='start',
-                prev_state=None,
+                prev_state='*',
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=message.text,
@@ -264,18 +264,6 @@ class BotGenerator:
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
 
             imports_generation_counter += 1
-            restart_handler_code = self._create_state_handler(
-                command='restart',
-                prev_state='*',
-                text_to_handle='',
-                state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=message.text,
-                image_answer=image,
-                kb=keyboard_name,
-                handler_type=ButtonTypesEnum.REPLY,
-                extended_imports=''
-            )
-            self._file_manager.create_file_handler(str(message.id), restart_handler_code)
 
         if message.id == self._error_message_id:
             # Создание клавиатуры для сообщения.

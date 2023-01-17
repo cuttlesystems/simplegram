@@ -94,11 +94,7 @@ class BotTestData:
         {
             'command': 'start',
             'description': 'start bot',
-        },
-        {
-            'command': 'restart',
-            'description': 'restart bot',
-        },
+        }
     ]
 
     _START_MESSAGE_ID = 10
