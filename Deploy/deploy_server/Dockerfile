@@ -2,7 +2,7 @@ FROM python:3.10-slim
 
 RUN mkdir /app
 
-COPY ./ ./app
+COPY ../.. ./app
 
 WORKDIR /app/backend/bot_django_project
 
