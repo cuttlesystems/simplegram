@@ -1,8 +1,10 @@
 import typing
 import io
 import os
+from pathlib import Path
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand
+from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 from cuttle_builder.builder.keyboard_generator.create_keyboard import create_reply_keyboard, create_inline_keyboard
@@ -61,7 +63,7 @@ class BotGenerator:
         self._file_manager = APIFileCreator(bot_path)
         self._token = bot.bot_token
         self._bot_directory = bot_path
-        self._logs_directory = bot_logs_path
+        self._logs_file_path = bot_logs_path
         self._media_directory = bot_path + '/media'
 
         self._error_message_id = error_message_id
@@ -331,6 +333,7 @@ class BotGenerator:
         self._create_config_file()
         self._create_app_file()
         self._create_on_startup_commands_file()
+        self._create_log_dir_if_it_doesnt_exist()
         for message in self._messages:
             self.create_file_handlers(message)
         self._create_init_handler_files()
@@ -358,8 +361,13 @@ class BotGenerator:
         commands_code = generate_commands_code(self._commands)
         self._file_manager.create_commands_file(commands_code)
 
+    def _create_log_dir_if_it_doesnt_exist(self):
+        print(self._logs_file_path)
+        create_dir_if_it_doesnt_exist(Path(self._logs_file_path).parent)
+
     def _create_app_file(self) -> None:
         """Генерирует код app файла (исполняемый файл бота)."""
         extend_imports = self._get_imports_sample('app_file_import')
-        app_file_code = generate_app_file_code(extend_imports, self._logs_directory)
+
+        app_file_code = generate_app_file_code(extend_imports, self._logs_file_path)
         self._file_manager.create_app_file(app_file_code)
