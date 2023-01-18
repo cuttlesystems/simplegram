@@ -88,6 +88,7 @@ class BotEditorForm(QMainWindow):
         self._ui.action_start_bot.triggered.connect(self._on_start_bot)
         self._ui.action_stop_bot.triggered.connect(self._on_stop_bot)
         self._ui.action_mark_start.triggered.connect(self._on_mark_as_start_button)
+        self._ui.action_mark_error.triggered.connect(self._on_mark_as_error_button)
         self._ui.action_delete_variant.triggered.connect(self._on_delete_variant)
 
         self._ui.action_manual_save.triggered.connect(self._on_apply_button)
@@ -273,6 +274,29 @@ class BotEditorForm(QMainWindow):
                 self,
                 self._tr('Error'),
                 self._tr('Select only one message to set is as start message'))
+
+    def _on_mark_as_error_button(self, _checked: bool) -> None:
+        selected_messages = self._bot_scene.get_selected_messages()
+        selected_messages_number = len(selected_messages)
+        if selected_messages_number == 1:
+            selected_message = selected_messages[0]
+            self._bot_api.set_bot_error_message(self._bot, selected_message)
+
+            updated_bot_info = self._bot_api.get_bot_by_id(self._bot.id)
+            self._bot_scene.set_bot(updated_bot_info)
+            self._bot = updated_bot_info
+            self._upload_bot_scene()
+
+            self._load_bot_scene()
+            selected_block = self._bot_scene.get_block_by_message_id(selected_message.id)
+            if selected_block is not None:
+                selected_block.setSelected(True)
+            self._actual_actions_state()
+        else:
+            QMessageBox.warning(
+                self,
+                self._tr('Error'),
+                self._tr('Select only one message to set is as error message'))
 
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
         assert isinstance(variant_name, str)
