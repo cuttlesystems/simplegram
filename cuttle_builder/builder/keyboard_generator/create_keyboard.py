@@ -22,13 +22,13 @@ def generate_reply_keyboard_code(buttons: typing.List[BotVariant], buttons_in_ro
     row = []
     for button in buttons:
         if button_counter < buttons_in_row:
-            row.append(f'KeyboardButton(text="{button.text}")')
+            row.append(f'KeyboardButton(text={repr(button.text)})')
             button_counter += 1
         else:
             all_buttons_content += ('.add(\n\t' + ', '.join(row) + '\n)')
             button_counter = 0
             row = []
-            row.append(f'KeyboardButton(text="{button.text}")')
+            row.append(f'KeyboardButton(text={repr(button.text)})')
     all_buttons_content += ('.add(\n\t' + ', '.join(row) + '\n)')
     return all_buttons_content
 
@@ -53,7 +53,7 @@ def create_inline_keyboard(keyboard_variable_name_without_suffix: str, buttons: 
         imports=extended_imports,
         keyboard_name=keyboard_variable_name_without_suffix,
         all_buttons=',\n\t'.join([
-            f'InlineKeyboardButton(text="{button.text}", callback_data="{button.text}")'
+            f'InlineKeyboardButton(text={repr(button.text)}, callback_data={repr(button.text)})'
             for button in buttons
         ])
     )
