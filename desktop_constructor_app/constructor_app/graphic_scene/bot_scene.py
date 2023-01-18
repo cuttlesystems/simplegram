@@ -214,7 +214,8 @@ class BotScene(QGraphicsScene):
 
     def _create_message_graphics(self, message: BotMessage, variants: typing.List[BotVariant]) -> BlockGraphicsItem:
         is_start_message: bool = (message.id == self._bot.start_message_id)
-        message_graphics_item = BlockGraphicsItem(message, variants, is_start_message)
+        is_error_message: bool = (message.id == self._bot.error_message_id)
+        message_graphics_item = BlockGraphicsItem(message, variants, is_start_message, is_error_message)
         self.addItem(message_graphics_item)
 
         assert isinstance(message_graphics_item, QGraphicsItem)

@@ -13,6 +13,12 @@ class BlockColorScheme:
     # цвет первого сообщения
     start_message_color = 0xe49ae6
 
+    # цвет ошибочного сообщения
+    error_message_color = 0xed645a
+
+    # цвет, если сообщение и стартовое, и ошибочное
+    start_and_error_message_color = 0xedc360
+
     # цвет текста
     text_color = 0x154545
 

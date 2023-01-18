@@ -48,8 +48,11 @@ class BlockGraphicsItem(QGraphicsItem):
     _VARIANT_WIDTH = 150
     _VARIANT_HEIGHT = 50
 
-    _START_MESSAGE_TITLE_WIDTH = 150
+    _START_MESSAGE_TITLE_WIDTH = _MESSAGE_WIDTH
     _START_MESSAGE_TITLE_HEIGHT = 20
+
+    _ERROR_MESSAGE_TITLE_WIDTH = _MESSAGE_WIDTH
+    _ERROR_MESSAGE_TITLE_HEIGHT = 20
 
     _BORDER_THICKNESS_NORMAL = 2
     _BORDER_THICKNESS_SELECTED = 3
@@ -61,10 +64,12 @@ class BlockGraphicsItem(QGraphicsItem):
     _BOUNDING_RECT_SPARE_PAINTING_DISTANCE = 2
     _VARIANT_DISTANCE = 25
     _VARIANT_ICON_RECT_BORDER = 10
-    _START_MESSAGE_TITLE_BORDER_X = 25
+    _START_MESSAGE_TITLE_BORDER_X = _MESSAGE_TEXT_BORDER
     _START_MESSAGE_TITLE_BORDER_Y = -20
+    _ERROR_MESSAGE_TITLE_BORDER_X = _MESSAGE_TEXT_BORDER
+    _ERROR_MESSAGE_TITLE_BORDER_Y = 100
 
-    def __init__(self, message: BotMessage, variants: typing.List[BotVariant], is_start_message: bool):
+    def __init__(self, message: BotMessage, variants: typing.List[BotVariant], is_start_message: bool, is_error_message: bool):
         """
         Конструктор блока. Блок возьмет свои координаты из координат сообщения
         Args:
@@ -75,6 +80,7 @@ class BlockGraphicsItem(QGraphicsItem):
         assert isinstance(message, BotMessage)
         assert all(isinstance(variant, BotVariant) for variant in variants)
         assert isinstance(is_start_message, bool)
+        assert isinstance(is_error_message, bool)
 
         self.signal_sender: BlockGraphicsSignalSender = BlockGraphicsSignalSender()
 
@@ -85,6 +91,12 @@ class BlockGraphicsItem(QGraphicsItem):
 
         # кисточка (заливка) для первого сообщения
         self._start_message_brush = QBrush(QColor(self._color_scheme.start_message_color))
+
+        # кисточка (заливка) для первого сообщения
+        self._error_message_brush = QBrush(QColor(self._color_scheme.error_message_color))
+
+        # кисточка (заливка), если сообщение и стартовое и ошибочное
+        self._start_and_error_message_brush = QBrush(QColor(self._color_scheme.start_and_error_message_color))
 
         # карандаш (контур) для рисования сообщений и вариантов, если они не выделены
         self._normal_pen = QPen(
@@ -104,8 +116,11 @@ class BlockGraphicsItem(QGraphicsItem):
         # сообщение блока
         self._message: BotMessage = message
 
-        # id стартового сообщения
+        # признак стартового сообщения
         self._is_start_message = is_start_message
+
+        # признак ошибочного сообщения
+        self._is_error_message = is_error_message
 
         # варианты блока
         self._variants: typing.List[BotVariant] = variants
@@ -388,6 +403,8 @@ class BlockGraphicsItem(QGraphicsItem):
 
         if self._is_start_message:
             painter.drawText(self._start_message_title_block_rect(), 'Start message')
+        if self._is_error_message:
+            painter.drawText(self._error_message_title_block_rect(), 'Error message')
 
     def _draw_variant(self, painter: QtGui.QPainter, variant: typing.Optional[BotVariant], index: int):
         assert isinstance(painter, QtGui.QPainter)
@@ -435,8 +452,12 @@ class BlockGraphicsItem(QGraphicsItem):
         return block_brush
 
     def _setup_message_colors(self, painter: QtGui.QPainter):
-        if self._is_start_message:
+        if self._is_start_message and self._is_error_message:
+            painter.setBrush(self._start_and_error_message_brush)
+        elif self._is_start_message:
             painter.setBrush(self._start_message_brush)
+        elif self._is_error_message:
+            painter.setBrush(self._error_message_brush)
         else:
             painter.setBrush(self._message_brush)
 
@@ -532,4 +553,12 @@ class BlockGraphicsItem(QGraphicsItem):
             self._START_MESSAGE_TITLE_BORDER_Y,
             self._START_MESSAGE_TITLE_WIDTH,
             self._START_MESSAGE_TITLE_HEIGHT,
+        )
+
+    def _error_message_title_block_rect(self) -> QRectF:
+        return QRectF(
+            self._ERROR_MESSAGE_TITLE_BORDER_X,
+            self._ERROR_MESSAGE_TITLE_BORDER_Y,
+            self._ERROR_MESSAGE_TITLE_WIDTH,
+            self._ERROR_MESSAGE_TITLE_HEIGHT,
         )
