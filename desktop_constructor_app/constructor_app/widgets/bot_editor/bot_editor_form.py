@@ -133,6 +133,7 @@ class BotEditorForm(QMainWindow):
             self._bot_scene.add_message(message, variants)
 
     def _upload_bot_scene(self):
+        """Сохраняет изменения по всем сообщениям бота, в БД."""
         scene_messages = self._bot_scene.get_all_messages()
         for message in scene_messages:
             self._bot_api.change_message(message)
@@ -260,6 +261,8 @@ class BotEditorForm(QMainWindow):
             updated_bot_info = self._bot_api.get_bot_by_id(self._bot.id)
             self._bot_scene.set_bot(updated_bot_info)
             self._bot = updated_bot_info
+            self._upload_bot_scene()
+
             self._load_bot_scene()
             selected_block = self._bot_scene.get_block_by_message_id(selected_message.id)
             if selected_block is not None:

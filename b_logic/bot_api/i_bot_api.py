@@ -118,6 +118,19 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
+    def set_bot_error_message(self, bot: BotDescription,
+                              error_message: BotMessage) -> None:
+        """
+        Установить ошибочное сообщение для бота.
+
+        Args:
+            bot: объект бота
+            error_message: объект сообщения, которое будет установлено в
+            качестве ошибочного
+        """
+        pass
+
+    @abstractmethod
     def get_messages(self, bot: BotDescription) -> List[BotMessage]:
         """
         Получить все сообщения заданного бота

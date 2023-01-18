@@ -64,7 +64,7 @@ class BotGenerator:
         self._logs_file_path = self._get_bot_logs_file_path(bot, bot_path)
         self._media_directory = bot_path + '/media'
 
-        self._error_message_id = error_message_id
+        self._error_message_id = bot.error_message_id
         for message in messages:
             self._states.append(message.id)
 

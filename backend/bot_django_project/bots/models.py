@@ -44,6 +44,12 @@ class Bot(models.Model):
         related_name='first_message_bot',
         null=True
     )
+    error_message = models.ForeignKey(
+        'Message',
+        on_delete=models.SET_NULL,
+        related_name='error_message_bot',
+        null=True
+    )
 
     class Meta:
         ordering = ['id']

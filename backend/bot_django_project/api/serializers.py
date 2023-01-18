@@ -34,7 +34,8 @@ class BotSerializer(serializers.ModelSerializer):
             'token',
             'description',
             'owner',
-            'start_message'
+            'start_message',
+            'error_message'
         )
 
     validators = [

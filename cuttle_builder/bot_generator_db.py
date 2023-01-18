@@ -20,4 +20,9 @@ class BotGeneratorDb(BotGenerator):
             message_variants = bot_api.get_variants(mes)
             all_variants.extend(message_variants)
         print(bot.start_message_id)
-        super().__init__(messages, all_variants, commands, bot, bot_dir)
+        super().__init__(
+            messages=messages,
+            variants=all_variants,
+            commands=commands,
+            bot=bot,
+            bot_path=bot_dir)

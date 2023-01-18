@@ -26,8 +26,8 @@ class BotDescription:
     bot_name: Optional[str] = None
     bot_token: Optional[str] = None
     bot_description: Optional[str] = None
-
     _start_message_id: Optional[int] = None
+    _error_message_id: Optional[int] = None
 
     @property
     def start_message_id(self) -> Optional[int]:
@@ -37,6 +37,15 @@ class BotDescription:
     def start_message_id(self, value: Optional[int]):
         assert isinstance(value, Optional[int])
         self._start_message_id = value
+
+    @property
+    def error_message_id(self) -> Optional[int]:
+        return self._error_message_id
+
+    @error_message_id.setter
+    def error_message_id(self, value: Optional[int]):
+        assert isinstance(value, Optional[int])
+        self._error_message_id = value
 
 
 @dataclass(slots=True)

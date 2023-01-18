@@ -201,6 +201,28 @@ class BotApiByRequests(IBotApi):
             raise BotApiException('Ошибка при установке стартового сообщения бота: {0}'.format(
                 response.text))
 
+    def set_bot_error_message(self, bot: BotDescription, error_message: BotMessage) -> None:
+        """
+        Установить ошибочное сообщение для бота.
+
+        Args:
+            bot: объект бота
+            error_message: объект сообщения, которое будет установлено в
+            качестве ошибочного
+        """
+        assert isinstance(bot, BotDescription)
+        assert isinstance(error_message, BotMessage)
+        response = requests.patch(
+            self._suite_url + f'api/bots/{bot.id}/',
+            {
+                'error_message': error_message.id
+            },
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException('Ошибка при установке ошибочного сообщения бота: {0}'.format(
+                response.text))
+
     def get_messages(self, bot: BotDescription) -> List[BotMessage]:
         """
         Получить все сообщения заданного бота
@@ -502,7 +524,8 @@ class BotApiByRequests(IBotApi):
             'name': bot_obj.bot_name,
             'token': bot_obj.bot_token,
             'description': bot_obj.bot_description,
-            'start_message': bot_obj.start_message_id
+            'start_message': bot_obj.start_message_id,
+            'error_message': bot_obj.error_message_id
         }
 
     def _create_bot_obj_from_data(self, bot_dict: dict) -> BotDescription:
@@ -513,6 +536,7 @@ class BotApiByRequests(IBotApi):
         bot_description.bot_token = bot_dict['token']
         bot_description.bot_description = bot_dict['description']
         bot_description.start_message_id = bot_dict['start_message']
+        bot_description.error_message_id = bot_dict['error_message']
         return bot_description
 
     def _create_bot_message_from_data(self, message_dict: dict) -> BotMessage:
