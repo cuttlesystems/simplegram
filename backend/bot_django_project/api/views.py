@@ -97,7 +97,6 @@ class BotViewSet(viewsets.ModelViewSet):
         Returns:
             результат запуска бота
         """
-        # create_dir_if_it_doesnt_exist(BOTS_LOG_DIR)
         bot_id = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id)
         self.check_object_permissions(request, bot)
