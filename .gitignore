@@ -124,7 +124,7 @@ dmypy.json
 
 # файлы настройки среды PyCharm
 .idea/
-
+/cuttle_builder/bot/.DS_Store
 /bot_*/
 /backend/bot_django_project/data_files
 
