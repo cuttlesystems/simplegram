@@ -99,7 +99,8 @@ class Message(models.Model):
         blank=True
     )
     variable = models.TextField(
-        null=True
+        null=True,
+        blank=True
     )
 
     class Meta:

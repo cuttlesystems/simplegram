@@ -236,6 +236,18 @@ class BotGenerator:
         """
         return [item for item in self._variants if item.next_message_id == message_id]
 
+    def _find_previous_messages(self, message_id: int) -> typing.List[BotMessage]:
+        """Получает список собщении у которых next_message == message.id (принемаемый
+        на вход функцией)
+
+        Args:
+            message_id (int): id of current message
+
+        Returns:
+            typing.List[dict]: list of all previous messages for concrete message
+        """
+        return [item for item in self._messages if item.next_message_id == message_id]
+
     def _create_init_handler_files(self):
         prepared_handler_inits = self._prepare_init_handlers()
         for handler_init in prepared_handler_inits:
@@ -341,6 +353,8 @@ class BotGenerator:
 
             keyboard_generation_counter += 1
             imports_generation_counter += 1
+
+        previous_messages: List[BotMessage] = self._find_previous_messages(message.id)
 
     def _add_handler_init_by_condition(self, is_init_created: bool, message_id: int) -> bool:
         assert isinstance(is_init_created, bool)
