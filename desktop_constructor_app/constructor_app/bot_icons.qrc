@@ -9,5 +9,7 @@
         <file>images/generate.svg</file>
         <file>images/start_bot.svg</file>
         <file>images/stop_bot.svg</file>
+        <file>images/logs.svg</file>
+        <file>images/error_message.svg</file>
     </qresource>
 </RCC>
