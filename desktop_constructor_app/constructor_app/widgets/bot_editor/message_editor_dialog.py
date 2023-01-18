@@ -4,7 +4,7 @@ from PySide6 import QtWidgets
 from PySide6.QtWidgets import QDialog
 
 from b_logic.data_objects import BotMessage, ButtonTypesEnum
-from desktop_constructor_app.constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
+from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
 
 
 class MessageEditorDialog(QDialog):

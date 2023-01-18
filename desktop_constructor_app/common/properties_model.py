@@ -5,7 +5,7 @@ from PySide6 import QtCore
 from PySide6.QtCore import QAbstractTableModel, QModelIndex
 from PySide6.QtGui import Qt
 
-from desktop_constructor_app.common.model_property import ModelProperty
+from common.model_property import ModelProperty
 
 
 class PropertiesModel(QAbstractTableModel):

@@ -8,7 +8,7 @@ from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import QGraphicsItem
 
 from b_logic.data_objects import BotMessage, BotVariant, BotDescription
-from desktop_constructor_app.constructor_app.graphic_scene.colors.block_color_scheme import BlockColorScheme
+from constructor_app.graphic_scene.colors.block_color_scheme import BlockColorScheme
 from utils.cut_string import cut_string
 
 

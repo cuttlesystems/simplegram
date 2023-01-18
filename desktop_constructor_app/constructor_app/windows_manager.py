@@ -2,9 +2,9 @@ from PySide6.QtCore import QObject
 
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from b_logic.data_objects import BotDescription
-from desktop_constructor_app.constructor_app.widgets.bot_editor.bot_editor_form import BotEditorForm
-from desktop_constructor_app.constructor_app.widgets.login_form import LoginForm
-from desktop_constructor_app.constructor_app.widgets.sign_up_form import SignUpForm
+from constructor_app.widgets.bot_editor.bot_editor_form import BotEditorForm
+from constructor_app.widgets.login_form import LoginForm
+from constructor_app.widgets.sign_up_form import SignUpForm
 
 
 class WindowsManager(QObject):

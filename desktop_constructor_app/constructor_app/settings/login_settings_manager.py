@@ -5,7 +5,7 @@ from typing import Optional
 
 from cryptography.fernet import Fernet
 
-from desktop_constructor_app.constructor_app.settings.login_settings import LoginSettings
+from constructor_app.settings.login_settings import LoginSettings
 
 
 class LoginSettingsManager:

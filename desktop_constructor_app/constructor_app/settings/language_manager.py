@@ -4,9 +4,9 @@ from pathlib import Path
 from PySide6.QtCore import QTranslator
 from PySide6.QtWidgets import QApplication
 
-from desktop_constructor_app.constructor_app.settings.get_application_data_dir import get_application_executable_dir
-from desktop_constructor_app.constructor_app.settings.language_settings_manager import LanguageSettingsManager
-from desktop_constructor_app.constructor_app.settings.languages_enum import LanguagesEnum
+from constructor_app.settings.get_application_data_dir import get_application_executable_dir
+from constructor_app.settings.language_settings_manager import LanguageSettingsManager
+from constructor_app.settings.languages_enum import LanguagesEnum
 
 
 class LanguageException(Exception):

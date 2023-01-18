@@ -1,5 +1,5 @@
-from desktop_constructor_app.common.model_property import ModelProperty
-from desktop_constructor_app.common.properties_model import PropertiesModel
+from common.model_property import ModelProperty
+from common.properties_model import PropertiesModel
 
 
 class BotPropertiesModel(PropertiesModel):

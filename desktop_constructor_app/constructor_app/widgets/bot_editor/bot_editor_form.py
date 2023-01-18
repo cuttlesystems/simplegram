@@ -8,15 +8,15 @@ from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum
-from desktop_constructor_app.common.localisation import tran
-from desktop_constructor_app.common.model_property import ModelProperty
-from desktop_constructor_app.common.utils.name_utils import gen_next_name
-from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
-from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
-from desktop_constructor_app.constructor_app.widgets.bot_editor.message_editor_dialog import MessageEditorDialog
-from desktop_constructor_app.constructor_app.widgets.bot_editor.ui_bot_editor_form import Ui_BotEditorForm
-from desktop_constructor_app.constructor_app.widgets.bot_editor.variant_editor_dialog import VariantEditorDialog
-from desktop_constructor_app.constructor_app.widgets.bot_properties_model import BotPropertiesModel
+from common.localisation import tran
+from common.model_property import ModelProperty
+from common.utils.name_utils import gen_next_name
+from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
+from constructor_app.graphic_scene.bot_scene import BotScene
+from constructor_app.widgets.bot_editor.message_editor_dialog import MessageEditorDialog
+from constructor_app.widgets.bot_editor.ui_bot_editor_form import Ui_BotEditorForm
+from constructor_app.widgets.bot_editor.variant_editor_dialog import VariantEditorDialog
+from constructor_app.widgets.bot_properties_model import BotPropertiesModel
 
 
 class BotEditorForm(QMainWindow):

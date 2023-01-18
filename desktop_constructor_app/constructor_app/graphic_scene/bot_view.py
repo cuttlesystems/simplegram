@@ -6,8 +6,8 @@ from PySide6.QtCore import QPointF, QPoint
 from PySide6.QtGui import QTransform
 from PySide6.QtWidgets import QGraphicsView, QMenu, QGraphicsScene
 
-from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
-from desktop_constructor_app.constructor_app.graphic_scene.bot_scene import BotScene
+from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
+from constructor_app.graphic_scene.bot_scene import BotScene
 
 
 class BotView(QGraphicsView):

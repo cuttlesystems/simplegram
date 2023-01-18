@@ -17,10 +17,6 @@ coreschema==0.0.4
 cryptography==38.0.1
 defusedxml==0.7.1
 dill==0.3.6
-Django==4.1.2
-django-templated-mail==1.1.1
-djangorestframework==3.14.0
-djangorestframework-simplejwt==4.8.0
 djoser==2.1.0
 docopt==0.6.2
 docstring-to-markdown==0.10

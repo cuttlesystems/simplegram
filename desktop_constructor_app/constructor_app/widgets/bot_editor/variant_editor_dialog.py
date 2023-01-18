@@ -7,7 +7,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QListWidgetItem
 
 from b_logic.data_objects import BotVariant, BotMessage
-from desktop_constructor_app.constructor_app.widgets.bot_editor.ui_variant_editor_dialog import Ui_VariantEditorDialog
+from constructor_app.widgets.bot_editor.ui_variant_editor_dialog import Ui_VariantEditorDialog
 
 
 class VariantEditorDialog(QDialog):

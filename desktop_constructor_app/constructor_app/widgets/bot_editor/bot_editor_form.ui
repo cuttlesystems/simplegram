@@ -256,12 +256,12 @@
   <customwidget>
    <class>PropertiesView</class>
    <extends>QTreeView</extends>
-   <header>desktop_constructor_app.common.properties_view</header>
+   <header>common.properties_view</header>
   </customwidget>
   <customwidget>
    <class>BotView</class>
    <extends>QGraphicsView</extends>
-   <header>desktop_constructor_app.constructor_app.graphic_scene.bot_view</header>
+   <header>constructor_app.graphic_scene.bot_view</header>
   </customwidget>
  </customwidgets>
  <resources>

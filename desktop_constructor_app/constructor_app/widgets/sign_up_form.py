@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem, 
 
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from b_logic.bot_api.i_bot_api import BotApiException
-from desktop_constructor_app.constructor_app.widgets.ui_sign_up_form import Ui_SignUpForm
+from constructor_app.widgets.ui_sign_up_form import Ui_SignUpForm
 
 
 class EmptyServerAddressException(Exception):

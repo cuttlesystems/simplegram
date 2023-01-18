@@ -6,8 +6,8 @@ from PySide6.QtGui import QBrush, QColor, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 
 from b_logic.data_objects import BotMessage, BotVariant, BotDescription
-from desktop_constructor_app.constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
-from desktop_constructor_app.constructor_app.graphic_scene.colors.scene_color_scheme import SceneColorScheme
+from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
+from constructor_app.graphic_scene.colors.scene_color_scheme import SceneColorScheme
 
 
 class BotScene(QGraphicsScene):

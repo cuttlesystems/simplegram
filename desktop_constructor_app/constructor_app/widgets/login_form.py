@@ -10,12 +10,12 @@ from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 from b_logic.bot_api.bot_api_by_requests import BotApiException
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
-from desktop_constructor_app.common.localisation import tran
-from desktop_constructor_app.common.utils.name_utils import gen_next_name
-from desktop_constructor_app.constructor_app.settings.login_settings_manager import LoginSettingsManager
-from desktop_constructor_app.constructor_app.settings.get_application_data_dir import get_application_data_dir
-from desktop_constructor_app.constructor_app.widgets.ui_login_form import Ui_LoginForm
-from desktop_constructor_app.constructor_app.settings.login_settings import LoginSettings
+from common.localisation import tran
+from common.utils.name_utils import gen_next_name
+from constructor_app.settings.login_settings_manager import LoginSettingsManager
+from constructor_app.settings.get_application_data_dir import get_application_data_dir
+from constructor_app.widgets.ui_login_form import Ui_LoginForm
+from constructor_app.settings.login_settings import LoginSettings
 
 
 class LoginStateEnum(Enum):
