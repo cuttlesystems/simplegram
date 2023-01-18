@@ -20,8 +20,21 @@ if [ -d "$DIR" ]
 #        cp -r ./"$GH_REPO" ./"$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME
         echo "Выполнено переименование директории '"$GH_REPO"' с прежними версиями файлов в директорию '$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME"'"
 	else
-		mkdir -p ./$GH_REPO/infra
+		mkdir -p ./$GH_REPO/deploy/deploy_server/infra
 fi
+
+## To Do: убрать лишнее
+#echo 'DB_ENGINE=django.db.backends.postgresql
+#DB_NAME=bot_constructor
+#POSTGRES_USER=postgres
+#POSTGRES_PASSWORD=zarFad-huqdit-qavry0
+#DB_HOST=172.21.0.1
+#DB_PORT=5432
+#DOMAIN_HOST=ramasuchka.kz
+#HOST_PROTOCOL=https' > ./$GH_REPO/infra/.env
+#echo ""
+#echo ".env-файл создан"
+#echo ""
 
 echo ""
 # директория с версиями файлов до последних изменений
@@ -38,22 +51,21 @@ if [ -d "$DIR" ]
                 echo "Ошибка при выполнении скрипта разворота: директория '"$GH_REPO"' уже существует. Скрипт остановлен."
                 exit -1
         else
-                mkdir -p ./$GH_REPO/infra
+				mkdir -p ./$GH_REPO/deploy/deploy_server/infra
                 echo "Выполнено создание директории '"$GH_REPO"' с актуальным на момент запуска скрипта содержимым"
 fi
 
 # To Do: убрать лишнее
-echo 'B_ENGINE=django.db.backends.postgresql
+echo 'DB_ENGINE=django.db.backends.postgresql
 DB_NAME=bot_constructor
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=zarFad-huqdit-qavry0
 DB_HOST=172.21.0.1
 DB_PORT=5432
-
 DOMAIN_HOST=ramasuchka.kz
-HOST_PROTOCOL=https' > ./$GH_REPO/infra/.env
+HOST_PROTOCOL=https' > ./$GH_REPO/deploy/deploy_server/infra/.env
 echo ""
-echo ".env-файл создан"
+echo "'.env-файл' создан в директории '$GH_REPO/deploy/deploy_server/infra/'"
 echo ""
 
 #mv -f ./$(unzip -Z -1 ./"$GH_REPO-$GH_BRANCH.zip" | head -1) ~/$GH_REPO
@@ -71,18 +83,18 @@ echo ""
 python3 ./$GH_REPO'/get_commit_info_from_github_api.py' 'Bearer '$MY_TOKEN_CREATED_ON_GITHUB
 #echo '"'./$GH_REPO/utils/get_commit_info_from_github_api.py'"' '"'Bearer $MY_TOKEN_CREATED_ON_GITHUB'"'
 
-if [ -d "$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME ] && [ -f "$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME/infra/.env ]
-        then
-		cp ./"$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME/infra/.env ./"$GH_REPO"/infra/
-		echo "Копирование ранее созданного файла '.env' из директории с прежними версиями файлов '$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME"' в обновлённую директорию '"$GH_REPO"'"
+if [ -d "$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME ] && [ -f "$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME/deploy/deploy_server/infra/.env ]
+    then
+		cp ./"$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME/deploy/deploy_server/infra/.env ./"$GH_REPO"/deploy/deploy_server/infra/
+		echo "Копирование ранее созданного файла '.env' из директории с прежними версиями файлов '$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME"' в обновлённую директорию '"$GH_REPO"' по пути '$GH_REPO/deploy/deploy_server/infra/'"
 		echo ""
 	else
                 echo "В директории с прежними версиями файлов '$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME"' не существует файла '.env', поэтому он не может быть скопирован в директорию '"$GH_REPO"' с обновлёнными файлами"
 fi
-if [ ! -f "$GH_REPO"/infra/.env ]
+if [ ! -f "$GH_REPO"/deploy/deploy_server/infra/.env ]
         then
-                echo "В директории '$GH_REPO/infra/' не существует файла '.env'"
-                echo "Создайте файл '.env' в директории '$GH_REPO/infra/'"
+            echo "В директории '$GH_REPO/deploy/deploy_server/infra/' не существует файла '.env'"
+            echo "Создайте файл '.env' в директории '$GH_REPO/deploy/deploy_server/infra/'"
 fi
 rm ./"$GH_REPO-$GH_BRANCH.zip"
 echo ""
