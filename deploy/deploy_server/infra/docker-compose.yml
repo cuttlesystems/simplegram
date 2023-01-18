@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   web:
-    build: ../
+    build: ../../../
     restart: always
     volumes:
 # removed as unnecessary after location changed
@@ -11,13 +11,13 @@ services:
 # mount directories with generated bots and media separately
 #  and 'static_value' location changed
 #      - ../data_files:/app/backend/bot_django_project/data_files
-      - ../data_files/media:/app/backend/bot_django_project/data_files/media
-      - ../data_files/generated_bots:/app/backend/bot_django_project/data_files/generated_bots
+      - ../../../data_files/media:/app/backend/bot_django_project/data_files/media
+      - ../../../data_files/generated_bots:/app/backend/bot_django_project/data_files/generated_bots
 # mount directories with 'bot_logs' and 'project_logs'
-      - ../data_files/bot_logs:/app/backend/bot_django_project/data_files/bot_logs
-      - ../data_files/project_logs:/app/backend/bot_django_project/data_files/project_logs
+      - ../../../data_files/bot_logs:/app/backend/bot_django_project/data_files/bot_logs
+      - ../../../data_files/project_logs:/app/backend/bot_django_project/data_files/project_logs
 
-      - ../data_files/static_value:/app/backend/bot_django_project/static/
+      - ../../../data_files/static_value:/app/backend/bot_django_project/static/
     env_file:
       - ./.env
     networks:
@@ -31,13 +31,13 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./infra/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 #      - static_value:/var/html/static/
-      - ../data_files/static_value:/var/html/static/
+      - ../../../data_files/static_value:/var/html/static/
 #      - media_value:/var/html/media/
-      - ../data_files/media:/var/html/media/
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ../../../data_files/media:/var/html/media/
+      - ../../../data/certbot/conf:/etc/letsencrypt
+      - ../../../data/certbot/www:/var/www/certbot
 
 # добавляем секцию 'command', которая перезагружает nginx каждые 6 часов,
 # чтобы подгрузить новые сертификаты, если они изменились
@@ -60,8 +60,8 @@ services:
       cuttle_net:
         ipv4_address: 172.21.0.4
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ../../../data/certbot/conf:/etc/letsencrypt
+      - ../../../data/certbot/www:/var/www/certbot
 
 
 # объявление volumes', доступ к которым необходим из каждого запущенного в общей сети контейнера
