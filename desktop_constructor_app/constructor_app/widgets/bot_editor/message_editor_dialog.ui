@@ -42,14 +42,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioButton_2">
+       <widget class="QRadioButton" name="message_any_input_radio">
         <property name="text">
          <string>Message with any input</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioButton_3">
+       <widget class="QRadioButton" name="message_jump_radio">
         <property name="text">
          <string>Message with jump</string>
         </property>
@@ -104,7 +104,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="variable_name_line_edit"/>
      </item>
     </layout>
    </item>
