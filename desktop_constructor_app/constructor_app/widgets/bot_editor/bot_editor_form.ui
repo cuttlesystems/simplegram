@@ -105,12 +105,12 @@
     </property>
     <addaction name="action_add_message"/>
     <addaction name="action_delete_message"/>
-    <addaction name="action_mark_start"/>
-    <addaction name="action_mark_error"/>
     <addaction name="separator"/>
     <addaction name="action_add_variant"/>
     <addaction name="action_delete_variant"/>
     <addaction name="separator"/>
+    <addaction name="action_mark_start"/>
+    <addaction name="action_mark_error"/>
    </widget>
    <widget class="QMenu" name="menuScheme">
     <property name="title">
@@ -146,11 +146,12 @@
    <addaction name="action_delete_variant"/>
    <addaction name="separator"/>
    <addaction name="action_mark_start"/>
+   <addaction name="action_mark_error"/>
+   <addaction name="separator"/>
    <addaction name="action_generate_bot"/>
    <addaction name="action_start_bot"/>
    <addaction name="action_stop_bot"/>
    <addaction name="action_read_logs"/>
-   <addaction name="action_mark_error"/>
   </widget>
   <action name="action_generate_bot">
    <property name="icon">

@@ -380,6 +380,7 @@ class BotEditorForm(QMainWindow):
         self._ui.action_delete_message.setEnabled(is_selected_blocks)
         self._ui.action_delete_variant.setEnabled(selected_variant)
         self._ui.action_mark_start.setEnabled(one_selected_block)
+        self._ui.action_mark_error.setEnabled(one_selected_block)
         self._ui.action_add_variant.setEnabled(one_selected_block)
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
