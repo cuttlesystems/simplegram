@@ -2,7 +2,7 @@ from pathlib import Path
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
-from backend.bot_django_project.bot_constructor.log_configs import logger_django
+from bot_constructor.log_configs import logger_django
 from cuttle_builder.bot_generator import BotGenerator
 
 

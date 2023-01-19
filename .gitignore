@@ -126,7 +126,7 @@ dmypy.json
 .idea/
 **/.DS_Store
 /bot_*/
-/backend/bot_django_project/data_files
+/server_simple_gram/backend/bot_django_project/data_files
 
 /venv*/
 /app_tests/connection_settings.json
