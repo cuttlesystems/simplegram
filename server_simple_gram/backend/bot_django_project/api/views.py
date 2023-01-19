@@ -20,7 +20,6 @@ from rest_framework.exceptions import ValidationError
 
 from .utils import check_variant_fields_request
 from .utils import check_bot_token_when_generate_bot
-from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from cuttle_builder.exceptions.bot_gen_exceptions import BotGeneratorException
 from .serializers import (BotSerializer, MessageSerializer, MessageSerializerWithVariants,
