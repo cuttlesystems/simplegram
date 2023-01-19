@@ -7,12 +7,12 @@ block_cipher = None
 # define the function to get the 'start_constructor.spec'-file path
 # D:\Git Repos\tg_bot_constructor\deploy\build_desktop
 def spec_file_dir() -> Path:
-	return Path(SPECPATH)
+    return Path(SPECPATH)
 
 # define the function to get the project_directory path
 # D:\Git Repos\tg_bot_constructor
 def application_project_dir() -> Path:
-	return spec_file_dir() / Path('..') / '..'
+    return spec_file_dir() / Path('..') / '..'
 
 
 a = Analysis(
