@@ -18,9 +18,7 @@ from rest_framework.request import Request
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
-from .utils import check_variant_fields_request
 from .utils import check_bot_token_when_generate_bot
-from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from cuttle_builder.exceptions.bot_gen_exceptions import BotGeneratorException
 from .serializers import (BotSerializer, MessageSerializer, MessageSerializerWithVariants,
@@ -381,7 +379,6 @@ class VariantViewSet(viewsets.ModelViewSet):
 
     def create(self, request: Request, message_id: int) -> Response:
         message = get_object_or_404(Message, id=message_id)
-        check_variant_fields_request(request)
         if Variant.objects.filter(text=request.data['text'],
                                   current_message=message).exists():
             raise ValidationError(detail={"non_field_errors": "This variant is alredy exists."}, code=400)
@@ -394,10 +391,6 @@ class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
     queryset = Variant.objects.all()
     serializer_class = VariantSerializer
     permission_classes = (IsVariantOwnerOrForbidden,)
-
-    def update(self, request: Request, pk: str, partial: bool):
-        check_variant_fields_request(request)
-        return super().update(request, pk=pk, partial=partial)
 
 
 class CommandViewSet(viewsets.ModelViewSet):
