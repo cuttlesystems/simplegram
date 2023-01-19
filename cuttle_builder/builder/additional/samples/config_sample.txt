@@ -1,5 +1,3 @@
 {imports}
 
-load_dotenv()
-
 BOT_TOKEN = '{bot_token}'
