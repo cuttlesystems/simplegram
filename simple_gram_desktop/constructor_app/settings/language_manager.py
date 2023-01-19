@@ -43,6 +43,6 @@ class LanguageManager:
         assert isinstance(language, LanguagesEnum)
         language_code = language.value
         return (
-            get_application_executable_dir() / 'desktop_constructor_app' /
+            get_application_executable_dir() /
             'constructor_app' / 'translations' / f'bot_constructor_{language_code}.qm'
         )

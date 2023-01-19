@@ -26,7 +26,7 @@ def is_run_from_source() -> bool:
 
 def get_application_executable_dir() -> Path:
     if is_run_from_source():
-        path = Path(__file__).parent.parent.parent.parent
+        path = Path(__file__).parent.parent.parent
     else:
         path = Path(sys.executable).parent
 
