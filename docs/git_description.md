@@ -21,7 +21,8 @@ git config --global core.symlinks true
 Чтобы разрешить создание ссылок без прав администратора, нужно включить 
 режим разработчика Windows. Как сделать:
 
-![Видеоинструкция](./video/developer_mode.mp4)
+https://user-images.githubusercontent.com/116724557/213355252-c7d0f35f-e24a-434e-99eb-3f0bb3e85bb9.mp4
+
 
 ## Новая функциональность и исправление ошибок
 
