@@ -5,7 +5,7 @@ import json
 from git import Repo
 from git.repo.base import InvalidGitRepositoryError
 
-from utils.get_root_dir import get_project_root_dir
+from common_utils.get_root_dir import get_project_root_dir
 
 
 def create_file_with_info_about_last_commit() -> None:

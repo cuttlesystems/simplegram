@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from utils.cut_string import cut_string
+from common_utils.cut_string import cut_string
 from b_logic.data_objects import ButtonTypesEnum, MessageTypeEnum
 
 User = get_user_model()

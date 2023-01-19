@@ -6,7 +6,7 @@ from pytz import timezone
 
 import requests
 
-from utils.get_root_dir import get_project_root_dir
+from common_utils.get_root_dir import get_project_root_dir
 
 
 def get_commit_info_from_github_api() -> dict:

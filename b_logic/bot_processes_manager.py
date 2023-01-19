@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 
 from b_logic.bot_runner import BotRunner
-from utils.singlethon import SingletonBase
+from common_utils.singlethon import SingletonBase
 
 
 @dataclass

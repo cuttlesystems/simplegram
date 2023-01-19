@@ -1,7 +1,7 @@
 import inspect
 import logging.handlers
 
-from utils.get_root_dir import get_project_root_dir
+from common_utils.get_root_dir import get_project_root_dir
 
 # Настройки логеров определены в settings.py в переменной LOGGING (dict) по ключу 'loggers'
 _LOGGER_DJANGO = logging.getLogger('django')

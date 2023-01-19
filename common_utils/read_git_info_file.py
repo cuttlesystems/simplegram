@@ -1,7 +1,7 @@
 from pathlib import Path
 import json
 
-from utils.get_root_dir import get_project_root_dir
+from common_utils.get_root_dir import get_project_root_dir
 
 
 def read_info_from_file_about_commit() -> str:
