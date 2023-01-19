@@ -3,17 +3,15 @@ import json
 from pathlib import Path
 from datetime import datetime
 from pytz import timezone
-
 import requests
 
-from common_utils.get_root_dir import get_project_root_dir
+from git_utils.genererate_git_info_file import get_project_root_dir
 
 
 def get_commit_info_from_github_api() -> dict:
     """Временная колхоз версия"""
     result = dict(error='Information about commit not found.')
     url = 'https://api.github.com/repos/cuttlesystems/tg_bot_constructor/commits'
-    print(sys.argv[1])
     try:
         token = sys.argv[1]
     except IndexError:
@@ -45,6 +43,8 @@ def get_commit_info_from_github_api() -> dict:
         except KeyError as error:
             print(f'Commit doesn\'t have field: {error}')
             result = dict(error='Error occurred while getting commit info')
+    else:
+        print(f'is error ({response.status_code}): {response.text}')
     return result
 
 
