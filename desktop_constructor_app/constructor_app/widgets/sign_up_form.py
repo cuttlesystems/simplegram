@@ -1,10 +1,9 @@
 # This Python file uses the following encoding: utf-8
 import typing
 
-from PySide6 import QtCore
 from PySide6.QtCore import Signal
-from PySide6.QtGui import QPixmap, QCloseEvent
-from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem, QPushButton
+from PySide6.QtGui import QCloseEvent
+from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox
 
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from b_logic.bot_api.i_bot_api import BotApiException
