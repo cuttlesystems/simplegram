@@ -1,11 +1,10 @@
-import typing
 import unittest
 import uuid
 
 import requests
 import json
 
-from app_tests.connection_settings import ConnectionSettings
+from mini_app.app_tests.connection_settings import ConnectionSettings
 
 
 class TestUserUrls(unittest.TestCase):
