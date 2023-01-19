@@ -18,16 +18,13 @@ def application_project_dir() -> Path:
 a = Analysis(
     [application_project_dir() / 'start_constructor.py'],
     pathex=[
-		application_project_dir(),
+        application_project_dir(),
     ],
     binaries=[],
     datas=[(
-        Path('..') / '..' / 'desktop_constructor_app' / 'constructor_app' / 'translations' / '*.qm', Path('desktop_constructor_app') / 'constructor_app' / 'translations'
+        application_project_dir() / 'desktop_constructor_app' / 'constructor_app' / 'translations' / '*.qm', Path('desktop_constructor_app') / 'constructor_app' / 'translations'
     )],
     hiddenimports=['desktop_constructor_app'],
-# (!) keep this comment to add 'common'-module into 'hiddenimports' later
-#	hiddenimports=['desktop_constructor_app', 'constructor_app', 'common'],
-#	hiddenimports=['desktop_constructor_app', 'constructor_app', 'rc_bot_icons', 'common'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -44,18 +41,15 @@ exe = EXE(
     a.scripts,
     [],
 	exclude_binaries=True,
-    name='simpe_gram',
+    name='simple_gram',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-#    console=False,
     console=True,
-#	icon='.\desktop_constructor_app\constructor_app\images\cuttle_systems.ico',
-	icon=Path('..') / '..' / 'desktop_constructor_app' / 'constructor_app' / 'images' / 'cuttle_systems.ico',
-#	icon=application_project_dir() / 'desktop_constructor_app' / 'constructor_app' / 'images' / 'cuttle_systems.ico',
+	icon=str(application_project_dir() / 'desktop_constructor_app' / 'constructor_app' / 'images' / 'cuttle_systems.ico'),
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
@@ -69,4 +63,4 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='simpe_gram')
+               name='simple_gram')
