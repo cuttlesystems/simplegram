@@ -5,7 +5,14 @@ import json
 from git import Repo
 from git.repo.base import InvalidGitRepositoryError
 
-from common_utils.get_root_dir import get_project_root_dir
+
+def get_project_root_dir() -> Path:
+    """
+    Возвращает полный путь до корневой директории проекта.
+
+    Returns: Полный путь до корневой директории проекта.
+    """
+    return Path(__file__).resolve().parent.parent
 
 
 def create_file_with_info_about_last_commit() -> None:
@@ -13,7 +20,7 @@ def create_file_with_info_about_last_commit() -> None:
     Создает файл с информацией о коммите в корне проекта
     """
     try:
-        repo = Repo(get_project_root_dir())
+        repo = Repo(get_project_root_dir() / '..')
     except InvalidGitRepositoryError:
         print(f'File .git not found in directory {get_project_root_dir()}')
         return
