@@ -22,7 +22,8 @@ a = Analysis(
     ],
     binaries=[],
     datas=[(
-        application_project_dir() / 'desktop_constructor_app' / 'constructor_app' / 'translations' / '*.qm', Path('desktop_constructor_app') / 'constructor_app' / 'translations'
+        application_project_dir() / 'desktop_constructor_app' / 'constructor_app' / 'translations' / '*.qm', \
+        Path('desktop_constructor_app') / 'constructor_app' / 'translations'
     )],
     hiddenimports=['desktop_constructor_app'],
     hookspath=[],
@@ -40,7 +41,7 @@ exe = EXE(
     pyz,
     a.scripts,
     [],
-	exclude_binaries=True,
+    exclude_binaries=True,
     name='simple_gram',
     debug=False,
     bootloader_ignore_signals=False,
@@ -49,7 +50,8 @@ exe = EXE(
     upx_exclude=[],
     runtime_tmpdir=None,
     console=True,
-	icon=str(application_project_dir() / 'desktop_constructor_app' / 'constructor_app' / 'images' / 'cuttle_systems.ico'),
+    icon=str(application_project_dir() / 'desktop_constructor_app' \
+    / 'constructor_app' / 'images' / 'cuttle_systems.ico'),
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
