@@ -132,11 +132,6 @@ dmypy.json
 /mini_app/app_tests/connection_settings.json
 current_commit_info.json
 
-# static media
-
-static/
-media/
-
 # файлы настройки среды VSCode 
 */.vscode/*
 .vscode/
