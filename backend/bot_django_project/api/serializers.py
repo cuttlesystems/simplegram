@@ -82,7 +82,8 @@ class VariantSerializer(serializers.ModelSerializer):
             'next_message'
         )
 
-    def validate_text(self, value):
+    def validate_text(self, value: str) -> str:
+        assert isinstance(value, str)
         if len(value) > Variant.text.field.max_length:
             raise serializers.ValidationError(f'Text field more than {Variant.text.field.max_length} chars.')
         return value
