@@ -1,9 +1,10 @@
+import shutil
 import typing
-import io
 import os
 from pathlib import Path
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand
+from backend.bot_django_project.bot_constructor.log_configs import logger_django
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
@@ -16,7 +17,6 @@ from cuttle_builder.builder.commands_generator.generate_commands import generate
 from cuttle_builder.builder.app_file_generator.generate_app_file import generate_app_file_code
 from cuttle_builder.APIFileCreator import APIFileCreator
 from typing import List, Optional
-from PIL import Image
 
 from cuttle_builder.builder.state_generator.to_state import get_state_name_by_mes_id
 
@@ -35,7 +35,6 @@ class BotGenerator:
             commands: List[BotCommand],
             bot: BotDescription,
             bot_path: str,
-            error_message_id: int = None
     ):
         """
         Класс для создания исходного кода ТГ бота по входному набору сообщений и вариантов
@@ -44,7 +43,6 @@ class BotGenerator:
             variants: список вариантов
             bot: экземпляр BotDescription
             bot_path: путь куда будут помещены исходники бота
-            bot_logs_path: путь к файлу с логами бота
         """
         assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
         assert all(isinstance(variant, BotVariant) for variant in variants)
@@ -160,16 +158,22 @@ class BotGenerator:
                 return message
         return None
 
-    def create_image_file_from_bytes(self, file: bytes, path_to_save: str, filename: str, file_format: str) -> str:
-        assert isinstance(file, bytes)
-        assert isinstance(path_to_save, str)
+    def create_image_file_in_bot_directory(self, full_path_to_source_file: str, path_to_bot_media_dir: str,
+                                           filename: str, file_format: str) -> str:
+        assert isinstance(full_path_to_source_file, str)
+        assert isinstance(path_to_bot_media_dir, str)
         assert isinstance(filename, str)
         assert isinstance(file_format, str)
-        Path(path_to_save).mkdir(exist_ok=True)
-        full_path = path_to_save + '/' + filename + '.' + file_format
-        Image.open(io.BytesIO(file)).save(full_path)
-        assert os.path.exists(full_path)
-        return full_path
+        Path(path_to_bot_media_dir).mkdir(exist_ok=True)
+        full_path_to_file_in_bot_dir = path_to_bot_media_dir + '/' + filename + '.' + file_format
+        try:
+            shutil.copyfile(full_path_to_source_file, full_path_to_file_in_bot_dir)
+            assert os.path.exists(full_path_to_file_in_bot_dir)
+            result = full_path_to_file_in_bot_dir
+        except FileNotFoundError as error:
+            logger_django.error_logging(error)
+            result = None
+        return result
 
     def create_keyboard(self, message_id: int, keyboard_type: ButtonTypesEnum) -> typing.Optional[str]:
         assert isinstance(keyboard_type, ButtonTypesEnum)
@@ -277,9 +281,9 @@ class BotGenerator:
         is_init_created = False
         # создать файл с изображением в директории бота и вернуть адрес
         if message.photo is not None:
-            image = self.create_image_file_from_bytes(
-                file=message.photo,
-                path_to_save=self._media_directory,
+            image = self.create_image_file_in_bot_directory(
+                full_path_to_source_file=message.photo,
+                path_to_bot_media_dir=self._media_directory,
                 filename='message' + str(message.id),
                 file_format=message.photo_file_format
             )
