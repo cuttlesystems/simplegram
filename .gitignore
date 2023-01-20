@@ -145,3 +145,7 @@ ui_*.py
 
 # сгенерированные тестовые боты
 /mini_app/bot_*
+
+*.pyproject.user
+
+#
