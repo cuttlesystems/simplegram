@@ -160,8 +160,12 @@ class BotGenerator:
                 return message
         return None
 
-    def create_image_file_from_bytes(self, file: bytes, path_to_save: str, filename: str, format: str) -> str:
-        full_path = path_to_save + '/' + filename + '.' + format
+    def create_image_file_from_bytes(self, file: bytes, path_to_save: str, filename: str, file_format: str) -> str:
+        assert isinstance(file, bytes)
+        assert isinstance(path_to_save, str)
+        assert isinstance(filename, str)
+        assert isinstance(file_format, str)
+        full_path = path_to_save + '/' + filename + '.' + file_format
         Image.open(io.BytesIO(file)).save(full_path)
         assert os.path.exists(full_path)
         return full_path
@@ -270,16 +274,16 @@ class BotGenerator:
         imports_for_handler = self._get_imports_sample('handler_import')
         keyboard_type = message.keyboard_type
         is_init_created = False
-        # создать файл с изображение в директории бота и вернуть адрес
-        if message.photo:
+        # создать файл с изображением в директории бота и вернуть адрес
+        if message.photo is not None:
             image = self.create_image_file_from_bytes(
                 file=message.photo,
                 path_to_save=self._media_directory,
                 filename='message' + str(message.id),
-                format='png'
+                file_format=message.photo_file_format
             )
         else:
-            image = message.photo
+            image = None
 
         if message.id == self._start_message_id:
 
