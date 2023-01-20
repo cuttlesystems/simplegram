@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BotEditorForm</class>
+ <widget class="QMainWindow" name="BotEditorForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1174</width>
+    <height>657</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Simple Gram</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QSplitter" name="splitter_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QSplitter" name="splitter">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="PropertiesView" name="bot_params_view"/>
+       <widget class="QWidget" name="layoutWidget">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Bot stdout output</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="stdout_textedit">
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOn</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOn</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Bot stderr output</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="stderr_textedit">
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOn</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOn</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="BotView" name="graphics_view"/>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1174</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuBit">
+    <property name="title">
+     <string>Bot</string>
+    </property>
+    <addaction name="action_generate_bot"/>
+    <addaction name="action_start_bot"/>
+    <addaction name="action_stop_bot"/>
+    <addaction name="action_read_logs"/>
+   </widget>
+   <widget class="QMenu" name="menuMessage">
+    <property name="title">
+     <string>Block</string>
+    </property>
+    <addaction name="action_add_message"/>
+    <addaction name="action_delete_message"/>
+    <addaction name="separator"/>
+    <addaction name="action_add_variant"/>
+    <addaction name="action_delete_variant"/>
+    <addaction name="separator"/>
+    <addaction name="action_mark_start"/>
+    <addaction name="action_mark_error"/>
+   </widget>
+   <widget class="QMenu" name="menuScheme">
+    <property name="title">
+     <string>Scheme</string>
+    </property>
+    <addaction name="action_manual_save"/>
+   </widget>
+   <addaction name="menuMessage"/>
+   <addaction name="menuScheme"/>
+   <addaction name="menuBit"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>32</width>
+     <height>32</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_add_message"/>
+   <addaction name="action_delete_message"/>
+   <addaction name="separator"/>
+   <addaction name="action_add_variant"/>
+   <addaction name="action_delete_variant"/>
+   <addaction name="separator"/>
+   <addaction name="action_mark_start"/>
+   <addaction name="action_mark_error"/>
+   <addaction name="separator"/>
+   <addaction name="action_generate_bot"/>
+   <addaction name="action_start_bot"/>
+   <addaction name="action_stop_bot"/>
+   <addaction name="action_read_logs"/>
+  </widget>
+  <action name="action_generate_bot">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/generate.svg</normaloff>:/icons/images/generate.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Generate bot</string>
+   </property>
+  </action>
+  <action name="action_start_bot">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/start_bot.svg</normaloff>:/icons/images/start_bot.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Start bot</string>
+   </property>
+  </action>
+  <action name="action_stop_bot">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/stop_bot.svg</normaloff>:/icons/images/stop_bot.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stop bot</string>
+   </property>
+  </action>
+  <action name="action_add_message">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/add_message.svg</normaloff>:/icons/images/add_message.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add message</string>
+   </property>
+  </action>
+  <action name="action_delete_message">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/delete_message.svg</normaloff>:/icons/images/delete_message.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Delete message</string>
+   </property>
+  </action>
+  <action name="action_mark_start">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/first_message.svg</normaloff>:/icons/images/first_message.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Mark as start</string>
+   </property>
+  </action>
+  <action name="action_delete_variant">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/delete_variant.svg</normaloff>:/icons/images/delete_variant.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Delete variant</string>
+   </property>
+  </action>
+  <action name="action_manual_save">
+   <property name="text">
+    <string>Manual save</string>
+   </property>
+  </action>
+  <action name="action_add_variant">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/add_variant.svg</normaloff>:/icons/images/add_variant.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add variant</string>
+   </property>
+  </action>
+  <action name="action_read_logs">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/logs.svg</normaloff>:/icons/images/logs.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Read logs</string>
+   </property>
+  </action>
+  <action name="action_mark_error">
+   <property name="icon">
+    <iconset resource="../../bot_icons.qrc">
+     <normaloff>:/icons/images/error_message.svg</normaloff>:/icons/images/error_message.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Mark as error</string>
+   </property>
+   <property name="toolTip">
+    <string>Mark as error</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PropertiesView</class>
+   <extends>QTreeView</extends>
+   <header>common.properties_view</header>
+  </customwidget>
+  <customwidget>
+   <class>BotView</class>
+   <extends>QGraphicsView</extends>
+   <header>constructor_app.graphic_scene.bot_view</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../bot_icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

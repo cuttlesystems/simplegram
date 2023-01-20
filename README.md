@@ -12,6 +12,8 @@
 
 [Инструкция по созданию исполняемого файла (*Win, Linux*) с помощью утилиты *PyInstaller*](./docs/create_executable_file.md)
 
+[Структура репозитория](./docs/repo_struct.md)
+
 ### Организация разработки
 
 [Проведение собеседования](./docs/interview.md)
