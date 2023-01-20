@@ -4,14 +4,18 @@ from pathlib import Path
 
 block_cipher = None
 
-# define the function to get the 'start_constructor.spec'-file path
-# D:\Git Repos\tg_bot_constructor\deploy\build_desktop
 def spec_file_dir() -> Path:
+    """
+    define the function to get the 'start_constructor.spec'-file path
+    D:\Git Repos\tg_bot_constructor\deploy\build_desktop
+    """
     return Path(SPECPATH)
 
-# define the function to get the project_directory path
-# D:\Git Repos\tg_bot_constructor
 def application_project_dir() -> Path:
+    """
+    define the function to get the project_directory path
+    D:\Git Repos\tg_bot_constructor
+    """
     return spec_file_dir() / Path('..') / '..'
 
 
@@ -23,7 +27,7 @@ a = Analysis(
     binaries=[],
     datas=[(
         application_project_dir() / 'desktop_constructor_app' / 'constructor_app' / 'translations' / '*.qm', \
-        Path('desktop_constructor_app') / 'constructor_app' / 'translations'
+            Path('desktop_constructor_app') / 'constructor_app' / 'translations'
     )],
     hiddenimports=['desktop_constructor_app'],
     hookspath=[],
@@ -51,7 +55,7 @@ exe = EXE(
     runtime_tmpdir=None,
     console=True,
     icon=str(application_project_dir() / 'desktop_constructor_app' \
-    / 'constructor_app' / 'images' / 'cuttle_systems.ico'),
+        / 'constructor_app' / 'images' / 'cuttle_systems.ico'),
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
