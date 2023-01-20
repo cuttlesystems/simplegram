@@ -5,7 +5,7 @@ from cuttle_builder.builder.additional.file_read_write.read_file import read_fil
 
 
 def create_handler(imports: str, handler_text: str, name: str, state_content: str,
-                   send_content: str, handler_sample_name: str) -> str:
+                   send_content: str, handler_sample_name: str, additional_functions) -> str:
     """Генерирует код хэндлера, подставляя значения в шаблон
 
     Args:
@@ -27,6 +27,7 @@ def create_handler(imports: str, handler_text: str, name: str, state_content: st
     code = code.format(imports=imports,
                        handler_params=handler_text,
                        handler_name=name,
+                       additional_functions=additional_functions,
                        state_to_set=state_content,
                        answer_content=send_content)
     return code
