@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "504dd16814c02017",
+        "id": "70c70296aca5a343",
         "type": "tabs",
         "children": [
           {
-            "id": "514124283f3aa6d6",
+            "id": "c7616753647dd2e2",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -145,10 +145,10 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "514124283f3aa6d6",
+  "active": "c7616753647dd2e2",
   "lastOpenFiles": [
-    "Untitled.canvas",
     "docs/repo_struct.md",
+    "Untitled.canvas",
     "README.md",
     "docs/create_executable_file.md",
     "docs/Index.md",
