@@ -165,6 +165,7 @@ class BotGenerator:
         assert isinstance(path_to_save, str)
         assert isinstance(filename, str)
         assert isinstance(file_format, str)
+        Path(path_to_save).mkdir(exist_ok=True)
         full_path = path_to_save + '/' + filename + '.' + file_format
         Image.open(io.BytesIO(file)).save(full_path)
         assert os.path.exists(full_path)
