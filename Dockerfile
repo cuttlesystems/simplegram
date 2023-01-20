@@ -4,7 +4,7 @@ RUN mkdir /app
 
 COPY . ./app
 
-WORKDIR /app/backend/bot_django_project
+WORKDIR /app/server_simple_gram/backend/bot_django_project
 
 RUN pip install --upgrade pip && pip install -r ../../requirements.txt --no-cache-dir
 

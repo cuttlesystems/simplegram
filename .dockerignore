@@ -1,0 +1,53 @@
+# игнорировать каталоги .git и .cache, а также файл .gitignore
+.git*
+.cache
+
+# игнорировать .spec и другие используемые в ходе разработки файлы,
+#    находящиеся в корневой директории проекта 'tg_bot_constructor'
+*.spec
+
+# игнорировать все файлы markdown (md) и bat-файлы
+*.md
+*.bat
+
+# игнорировать Dockerfile
+Dockerfile
+
+# игнорировать директорию .obsidian
+.obsidian
+
+# игнорировать директорию app_tests
+app_tests
+
+# игнорировать директорию bl_api
+bl_api
+
+# игнорировать директорию bot_3
+bot_3
+
+# игнорировать директорию deploy
+deploy
+
+# игнорировать директорию desktop_constructor_app
+desktop_constructor_app
+
+# игнорировать директорию deploy
+deploy
+
+# игнорировать директорию docs
+docs
+
+# игнорировать директорию infra
+infra
+
+# игнорировать директорию mini_app
+mini_app
+
+# игнорировать директорию simple_gram_desktop
+simple_gram_desktop
+
+# игнорировать директорию tg_bot_in_docker_test
+tg_bot_in_docker_test
+
+# игнорировать директорию utils
+utils
