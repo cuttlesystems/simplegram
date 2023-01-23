@@ -30,4 +30,5 @@ def create_handler(imports: str, handler_text: str, name: str, state_content: st
                        additional_functions=additional_functions,
                        state_to_set=state_content,
                        answer_content=send_content)
+    code = code.replace('\t', '    ')
     return code
