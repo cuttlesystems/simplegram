@@ -9,10 +9,6 @@
 #sudo docker exec infra-web-1 bash -c "python manage.py migrate"
 
 # additional step
-sudo docker tag infra_web infra-web
-echo "Updated 'infra_web' image was tagged as 'infra-web' (additional step)"
-echo ""
-
 sudo docker tag infra-web ramasuchka.kz:4443/infra-web:latest
 echo "Updated 'infra-web' image was tagged as 'ramasuchka.kz:4443/infra-web:latest'"
 echo ""

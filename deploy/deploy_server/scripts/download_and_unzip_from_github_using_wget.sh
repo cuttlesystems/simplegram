@@ -15,7 +15,7 @@ echo "ветка: '"$GH_BRANCH"';"
 echo ""
 if [ -d "$DIR" ]
 	then
-		WORKING_BOT_BACKUP_DIR_CREATION_TIME=$(date +%d-%m-%Y_%T)
+		WORKING_BOT_BACKUP_DIR_CREATION_TIME=$(date +%Y_%m_%d__%H_%M_%S)
 		mv -n ./"$GH_REPO" ./"$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME
 #        cp -r ./"$GH_REPO" ./"$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME
         echo "Выполнено переименование директории '"$GH_REPO"' с прежними версиями файлов в директорию '$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME"'"
@@ -46,14 +46,8 @@ echo "zip-архив загружен"
 echo ""
 unzip -q -o ./"$GH_REPO-$GH_BRANCH.zip"
 
-if [ -d "$DIR" ]
-        then
-                echo "Ошибка при выполнении скрипта разворота: директория '"$GH_REPO"' уже существует. Скрипт остановлен."
-                exit -1
-        else
-				mkdir -p ./$GH_REPO/deploy/deploy_server/infra
-                echo "Выполнено создание директории '"$GH_REPO"' с актуальным на момент запуска скрипта содержимым"
-fi
+# create directory to place '.env'-file 
+mkdir -p ./$GH_REPO/deploy/deploy_server/infra
 
 # To Do: убрать лишнее
 echo 'DB_ENGINE=django.db.backends.postgresql
@@ -78,14 +72,25 @@ rm -rf ./$(unzip -Z -1 ./"$GH_REPO-$GH_BRANCH.zip" | head -1)
 echo "Распаковка загруженного из репозитория архива выполнена с заменой файлов"
 echo ""
 
+if [ ! -d ./$GH_REPO/mini_app/venv/ ]
+    then
+        python3 -m venv ./$GH_REPO/mini_app/venv
+fi
+source ./$GH_REPO/mini_app/venv/bin/activate
+#echo "должен быть exit"
+#exit 1
+read -sn1 -p "Press any key to continue..."; echo
+python3 -m pip install -r ./$GH_REPO/mini_app/requirements.txt
+
 # python script 'get_commit_info_from_github_api.py' call from deploy script
 #python3 ~/$GH_REPO'/utils/get_commit_info_from_github_api.py' 'Bearer '$MY_TOKEN_CREATED_ON_GITHUB
-python3 ./$GH_REPO'/get_commit_info_from_github_api.py' 'Bearer '$MY_TOKEN_CREATED_ON_GITHUB
+python3 ./$GH_REPO'/mini_app/get_commit_info_from_github_api.py' 'Bearer '$MY_TOKEN_CREATED_ON_GITHUB
 #echo '"'./$GH_REPO/utils/get_commit_info_from_github_api.py'"' '"'Bearer $MY_TOKEN_CREATED_ON_GITHUB'"'
 
 if [ -d "$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME ] && [ -f "$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME/deploy/deploy_server/infra/.env ]
     then
 		cp ./"$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME/deploy/deploy_server/infra/.env ./"$GH_REPO"/deploy/deploy_server/infra/
+        echo ""
 		echo "Копирование ранее созданного файла '.env' из директории с прежними версиями файлов '$GH_REPO"_$WORKING_BOT_BACKUP_DIR_CREATION_TIME"' в обновлённую директорию '"$GH_REPO"' по пути '$GH_REPO/deploy/deploy_server/infra/'"
 		echo ""
 	else
