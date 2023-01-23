@@ -1,6 +1,8 @@
+import urllib.request
 from typing import Optional
 
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
+from PySide6.QtGui import QImage
 from PySide6.QtWidgets import QDialog
 
 from b_logic.data_objects import BotMessage, ButtonTypesEnum
@@ -30,3 +32,14 @@ class MessageEditorDialog(QDialog):
         elif self._ui.radio_inline.isChecked():
             button_types = ButtonTypesEnum.INLINE
         return button_types
+
+    def get_image(self, message: BotMessage):
+        assert isinstance(message, BotMessage)
+        url = message.photo
+        image_data = urllib.request.urlopen(url).read()
+        image = QtGui.QImage()
+        image.loadFromData(image_data)
+        image_size_ratio = 130 / image.height()
+        self._ui.message_image.setFixedHeight(130)
+        self._ui.message_image.setFixedWidth(int(image.width() * image_size_ratio))
+        self._ui.message_image.setPixmap(QtGui.QPixmap(image))
