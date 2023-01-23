@@ -19,9 +19,9 @@ if __name__ == '__main__':
         '5689990303:AAEnr1DqNhBvx_zwVt9rnb2P3YJynvjq2rg',
         'Описание созданного бота')
 
-    bot_api.create_command(bot, 'start', 'start bot')
-    bot_api.create_command(bot, 'restart', 'restart bot')
-    bot_api.create_command(bot, 'command_1', 'any command')
+    bot_api.create_command(bot, 'command_1', 'command_1')
+    bot_api.create_command(bot, 'command_2', 'command_2')
+    bot_api.create_command(bot, 'command_3', 'command_3')
 
     main_message = bot_api.create_message(bot, 'Что вас интересует?', ButtonTypesEnum.REPLY, 10, 10)
     bot_api.set_bot_start_message(bot, main_message)
@@ -87,5 +87,7 @@ if __name__ == '__main__':
     bot_api.connect_variant(iphone_14_variant, buy_iphone_14_message)
 
     bot_api.connect_variant(mobile_cancel_variant, main_message)
+
+    bot_api.create_message(bot, 'Error message', ButtonTypesEnum.REPLY, 300, 350)
 
     print(f'Идентификатор созданного бота: {bot.id}')

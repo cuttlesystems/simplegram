@@ -30,8 +30,8 @@ class BackendLogger:
         path_to_file = self._remove_home_dirs_from_path(self._get_path_from_call_stack())
         self.logger.warning(f'{path_to_file} - {message}')
 
-    def error_logging(self, message: str) -> None:
-        assert isinstance(message, str)
+    def error_logging(self, message: str | Exception) -> None:
+        assert isinstance(message, str | Exception)
         path_to_file = self._remove_home_dirs_from_path(self._get_path_from_call_stack())
         self.logger.error(f'{path_to_file} - {message}')
 

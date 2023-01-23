@@ -1,49 +1,15 @@
+from pathlib import Path
 from typing import List, Optional
 from io import BufferedIOBase
 
-from django.db.models.fields.files import ImageFieldFile
+from django.db.models.fields.files import ImageFieldFile, FieldFile
 from django.conf import settings
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
     MessageTypeEnum
+from bot_constructor.log_configs import logger_django
 from bots.models import Bot, Message, Variant, Command
-
-
-def get_full_path_to_django_image(base_dir: str, path_from_django: Optional[ImageFieldFile]) -> Optional[str]:
-    """Получение полного пути к медиа файлу
-
-    Args:
-        base_dir (str): Корневая директория для медиа файлов
-        path_from_django (Optional[ImageFieldFile]): Данные из бд в Django формате
-
-    Returns:
-        Optional[str]: Полный путь к медиа файлу
-    """
-    assert isinstance(base_dir, str)
-    assert isinstance(path_from_django, Optional[ImageFieldFile])
-    if not path_from_django:
-        result = None
-    else:
-        result = base_dir + '/' + str(path_from_django)
-    return result
-
-
-def convert_image_to_bytes(path_to_image: Optional[str]) -> Optional[bytes]:
-    """Конвертация изображения в байт код
-
-    Args:
-        path_to_image (Optional[str]): Полный путь к файлу
-
-    Returns:
-        Optional[bytes]: Байт код изображения
-    """
-    assert isinstance(path_to_image, Optional[str])
-    if not path_to_image:
-        result = None
-    else:
-        result = open(path_to_image, "rb").read()
-    return result
 
 
 class BotApiByDjangoORM(IBotApi):
@@ -198,10 +164,9 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.id = message_django.id
         bot_message.text = message_django.text
         bot_message.keyboard_type = ButtonTypesEnum(message_django.keyboard_type)
-        bot_message.photo = convert_image_to_bytes(
-            get_full_path_to_django_image(settings.MEDIA_ROOT, message_django.photo)
-        )
-        # todo: добавить фото файлнэйм
+        if message_django.photo:
+            bot_message.photo = self._get_full_path_to_django_image(message_django.photo)
+            bot_message.photo_file_format = self._get_file_format(message_django.photo)
         bot_message.video = message_django.video
         bot_message.file = message_django.file
         bot_message.x = message_django.coordinate_x
@@ -238,3 +203,37 @@ class BotApiByDjangoORM(IBotApi):
         command.command = command_django.command
         command.description = command_django.description
         return command
+
+    def _get_full_path_to_django_image(self, path_from_django: Optional[ImageFieldFile]) -> Optional[str]:
+        """Получение полного пути к медиа файлу
+
+        Args:
+            path_from_django (Optional[ImageFieldFile]): Данные о изображении из БД, в Django формате
+
+        Returns:
+            Optional[str]: Полный путь к медиа файлу
+        """
+        assert isinstance(path_from_django, Optional[ImageFieldFile])
+        if not path_from_django:
+            result = None
+        else:
+            result = path_from_django.path
+        return result
+
+    def _get_file_format(self, django_file_field: Optional[FieldFile]) -> Optional[str]:
+        """
+        Получить формат файла.
+
+        Args:
+            django_file_field (Optional[FieldFile]): путь к файлу
+
+        Returns:
+            Optional[str]: формат файла
+        """
+        assert isinstance(django_file_field, Optional[FieldFile])
+        if django_file_field:
+            extension = Path(django_file_field.path).suffix
+            result = extension.strip('.')
+        else:
+            result = None
+        return result
