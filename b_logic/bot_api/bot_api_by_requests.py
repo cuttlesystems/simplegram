@@ -548,7 +548,7 @@ class BotApiByRequests(IBotApi):
 
         # todo: с этими полями надо разобраться, похоже,
         #  там передается url путь, который надо сначала получить
-        bot_message.photo = convert_image_from_api_response_to_bytes(message_dict['photo'])
+        bot_message.photo = message_dict['photo']
         bot_message.video = message_dict['video']
         bot_message.file = message_dict['file']
 

@@ -39,12 +39,10 @@ def read_info_from_file_about_commit() -> str:
     if Path(filename).exists():
         with open(filename, 'r') as commit_info:
             commit_dict = json.load(commit_info)
-            try:
+            if 'commit_hash' in commit_dict:
                 result = ('Commit hash: ' + commit_dict['commit_hash'] +
                           ', Author: ' + commit_dict['commit_author'] +
                           ', Commit date: ' + commit_dict['commit_created_date'])
-            except KeyError:
-                pass
     else:
         print('------------->File with commit info not found.')
     return result

@@ -12,43 +12,6 @@ from bot_constructor.log_configs import logger_django
 from bots.models import Bot, Message, Variant, Command
 
 
-def get_full_path_to_django_image(path_from_django: Optional[ImageFieldFile]) -> Optional[str]:
-    """Получение полного пути к медиа файлу
-
-    Args:
-        path_from_django (Optional[ImageFieldFile]): Данные о изображении из БД, в Django формате
-
-    Returns:
-        Optional[str]: Полный путь к медиа файлу
-    """
-    assert isinstance(path_from_django, Optional[ImageFieldFile])
-    if not path_from_django:
-        result = None
-    else:
-        result = path_from_django.path
-    return result
-
-
-def get_file_format(django_file_field: Optional[FieldFile]) -> Optional[str]:
-    """
-    Получить формат файла.
-
-    Args:
-        django_file_field (Optional[FieldFile]): путь к файлу
-
-    Returns:
-        Optional[str]: формат файла
-    """
-    assert isinstance(django_file_field, Optional[FieldFile])
-    if django_file_field:
-        # result = str(django_file_field).split('.')[-1]
-        extension = Path(django_file_field.path).suffix
-        result = extension.strip('.')
-    else:
-        result = None
-    return result
-
-
 class BotApiByDjangoORM(IBotApi):
     def set_suite(self, suite_url: str):
         raise NotImplementedError('Метод не определен!')
@@ -202,8 +165,8 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.text = message_django.text
         bot_message.keyboard_type = ButtonTypesEnum(message_django.keyboard_type)
         if message_django.photo:
-            bot_message.photo = get_full_path_to_django_image(message_django.photo)
-            bot_message.photo_file_format = get_file_format(message_django.photo)
+            bot_message.photo = self._get_full_path_to_django_image(message_django.photo)
+            bot_message.photo_file_format = self._get_file_format(message_django.photo)
         bot_message.video = message_django.video
         bot_message.file = message_django.file
         bot_message.x = message_django.coordinate_x
@@ -240,3 +203,37 @@ class BotApiByDjangoORM(IBotApi):
         command.command = command_django.command
         command.description = command_django.description
         return command
+
+    def _get_full_path_to_django_image(self, path_from_django: Optional[ImageFieldFile]) -> Optional[str]:
+        """Получение полного пути к медиа файлу
+
+        Args:
+            path_from_django (Optional[ImageFieldFile]): Данные о изображении из БД, в Django формате
+
+        Returns:
+            Optional[str]: Полный путь к медиа файлу
+        """
+        assert isinstance(path_from_django, Optional[ImageFieldFile])
+        if not path_from_django:
+            result = None
+        else:
+            result = path_from_django.path
+        return result
+
+    def _get_file_format(self, django_file_field: Optional[FieldFile]) -> Optional[str]:
+        """
+        Получить формат файла.
+
+        Args:
+            django_file_field (Optional[FieldFile]): путь к файлу
+
+        Returns:
+            Optional[str]: формат файла
+        """
+        assert isinstance(django_file_field, Optional[FieldFile])
+        if django_file_field:
+            extension = Path(django_file_field.path).suffix
+            result = extension.strip('.')
+        else:
+            result = None
+        return result
