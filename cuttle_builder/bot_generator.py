@@ -310,13 +310,13 @@ class BotGenerator:
         imports_for_handler = self._get_imports_sample('handler_import')
         keyboard_type = message.keyboard_type
         is_init_created = False
-        # создать файл с изображение в директории бота и вернуть адрес
-        if message.photo:
-            image = self.create_image_file_from_bytes(
-                file=message.photo,
-                path_to_save=self._media_directory,
+        # создать файл с изображением в директории бота и вернуть адрес
+        if message.photo is not None:
+            image = self.create_image_file_in_bot_directory(
+                full_path_to_source_file=message.photo,
+                path_to_bot_media_dir=self._media_directory,
                 filename='message' + str(message.id),
-                format='png'
+                file_format=message.photo_file_format
             )
         else:
             image = None
