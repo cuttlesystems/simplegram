@@ -1,6 +1,4 @@
-import urllib.request
 from typing import Optional
-from urllib.error import HTTPError
 
 from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtWidgets import QDialog
@@ -11,6 +9,7 @@ from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_Messa
 
 class MessageEditorDialog(QDialog):
     _IMAGE_HEIGHT = 130
+    _IMAGE_WIDTH = 130
     _IMAGE_NOT_FOUND_WINDOW_HEIGHT = 130
     _IMAGE_NOT_FOUND_WINDOW_WIDTH = 130
 
@@ -42,9 +41,9 @@ class MessageEditorDialog(QDialog):
         if image_data is not None:
             image = QtGui.QImage()
             image.loadFromData(image_data)
-            image_size_ratio = self._IMAGE_HEIGHT / image.height()
-            self._ui.message_image.setFixedHeight(self._IMAGE_HEIGHT)
-            self._ui.message_image.setFixedWidth(int(image.width() * image_size_ratio))
+            image_size = self.calculate_optimal_image_size(image.height(), image.width())
+            self._ui.message_image.setFixedHeight(image_size['height'])
+            self._ui.message_image.setFixedWidth(image_size['width'])
             self._ui.message_image.setPixmap(QtGui.QPixmap(image))
         else:
             self._ui.message_image.setFixedSize(
@@ -52,3 +51,20 @@ class MessageEditorDialog(QDialog):
             self._ui.message_image.setStyleSheet("border: 1px solid #cecdd1;")
             self._ui.message_image.setText('Error!\nImage not found')
             self._ui.message_image.setAlignment(QtCore.Qt.AlignCenter)
+
+    def calculate_optimal_image_size(self, height: int, width: int) -> dict:
+        assert isinstance(height, int)
+        assert isinstance(width, int)
+        if height > width:
+            image_size_ratio = self._IMAGE_HEIGHT / height
+            size = dict(
+                height=self._IMAGE_HEIGHT,
+                width=int(width * image_size_ratio)
+            )
+        else:
+            image_size_ratio = self._IMAGE_WIDTH / width
+            size = dict(
+                height=int(height * image_size_ratio),
+                width=self._IMAGE_WIDTH
+            )
+        return size
