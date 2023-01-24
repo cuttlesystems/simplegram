@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from abc import abstractmethod, ABC
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotCommand, BotLogs
@@ -156,6 +156,19 @@ class IBotApi(ABC):
 
         Returns:
             объект созданного сообщения
+        """
+        pass
+
+    @abstractmethod
+    def get_message_image_by_url(self, message: BotMessage) -> Optional[bytes]:
+        """
+        Получает изображение из сообщения.
+
+        Args:
+            message: сообщение, у которого есть фото
+
+        Returns:
+            изображение в виде байт-кода
         """
         pass
 

@@ -207,7 +207,8 @@ class BotEditorForm(QMainWindow):
         message = block.get_message()
         editor_dialog = MessageEditorDialog(self)
         editor_dialog.set_message(block.get_message())
-        editor_dialog.show_image(message)
+        if message.photo:
+            editor_dialog.show_image(self._bot_api.get_message_image_by_url(message))
 
         # todo: тут появляется побочный эффект - после закрытия окна диалога следующий клик пропадает,
         #  надо бы поправить
