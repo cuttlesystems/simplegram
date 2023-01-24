@@ -205,7 +205,7 @@ class BotGenerator:
     def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                               state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
                               kb: str, handler_type: ButtonTypesEnum, extended_imports: str = '',
-                              additional_functions='') -> str:
+                              additional_functions: Optional[str]='') -> str:
         """Подготовка данных и выбор генерируемого хэндлера в зависимости от типа клавиатуры
 
         Args:
@@ -338,7 +338,7 @@ class BotGenerator:
 
 
         previous_messages: typing.List[BotMessage] = self._find_previous_messages(message.id)
-        if previous_messages:
+        if previous_messages != []:
             print(f'current - {message}')
             print(f'previous - {previous_messages}')
 
@@ -415,7 +415,7 @@ class BotGenerator:
                 format='png'
             )
         else:
-            image = message.photo
+            image = None
 
         if message.id == self._start_message_id:
             # Создание клавиатуры для сообщения.

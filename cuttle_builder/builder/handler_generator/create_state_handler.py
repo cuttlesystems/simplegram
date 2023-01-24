@@ -15,7 +15,7 @@ def prev_state_code_line(prev_state: Optional[str]) -> str:
 
 def create_state_message_handler(imports: str, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                                  state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                                 kb: Optional[str], additional_functions) -> str:
+                                 kb: Optional[str], additional_functions: Optional[str]) -> str:
     """Подготовка данных для генерации кода меседж хэндлера
 
     Args:
