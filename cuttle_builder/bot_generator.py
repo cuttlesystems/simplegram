@@ -4,7 +4,6 @@ import os
 from pathlib import Path
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand
-from backend.bot_django_project.bot_constructor.log_configs import logger_django
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
@@ -138,7 +137,8 @@ class BotGenerator:
         assert isinstance(message_id, int)
         return get_state_name_by_mes_id(message_id)
 
-    def _get_imports_sample(self, imports_file_name) -> str:
+    def _get_imports_sample(self, imports_file_name: str) -> str:
+        assert isinstance(imports_file_name, str)
         imports = str(
             CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'imports' / f'{imports_file_name}.txt')
         extended_imports = self._file_manager.read_file(imports)
@@ -204,7 +204,8 @@ class BotGenerator:
 
     def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                               state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                              kb: str, handler_type: ButtonTypesEnum, extended_imports: str = '') -> str:
+                              kb: str, handler_type: ButtonTypesEnum, extended_imports: str = '',
+                              additional_functions: str = '') -> str:
         """Подготовка данных и выбор генерируемого хэндлера в зависимости от типа клавиатуры
 
         Args:
@@ -222,16 +223,19 @@ class BotGenerator:
             str: generated code for handler with state and handled text
         """
         assert isinstance(handler_type, ButtonTypesEnum)
+        assert isinstance(additional_functions, str)
 
         import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
         extended_imports += '\n' + import_keyboard
         full_command = f'Command(\'{command}\')' if command != '' else command
         if handler_type == ButtonTypesEnum.REPLY:
             return create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
-                                                state_to_set_name, text_of_answer, image_answer, kb)
+                                                state_to_set_name, text_of_answer, image_answer, kb,
+                                                additional_functions)
         elif handler_type == ButtonTypesEnum.INLINE:
             return create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
-                                                 state_to_set_name, text_of_answer, image_answer, kb)
+                                                 state_to_set_name, text_of_answer, image_answer, kb,
+                                                 additional_functions)
 
     def _find_previous_variants(self, message_id: int) -> typing.List[BotVariant]:
         """Получает список вариантов у которых next_message == message.id (принемаемый
@@ -273,6 +277,31 @@ class BotGenerator:
                 prepared_handler_inits.append(handler_init)
         return prepared_handler_inits
 
+    def _add_handler_init_by_condition(self, is_init_created: bool, message_id: int) -> bool:
+        assert isinstance(is_init_created, bool)
+        assert isinstance(message_id, int)
+        if not is_init_created:
+            is_error_message = message_id == self._error_message_id
+            self._handler_inits.append(
+                HandlerInit(handler_name=str(message_id), is_error_message=is_error_message)
+            )
+            is_init_created = True
+        return is_init_created
+
+    def create_bot(self) -> None:
+        self._file_manager.delete_dir(self._bot_directory)
+        self._check_valid_data()
+        self._create_generated_bot_directory()
+        self._create_config_file()
+        self._create_app_file()
+        self._create_on_startup_commands_file()
+        self._create_log_dir_if_it_doesnt_exist()
+        for message in self._messages:
+            self.create_file_handlers(message)
+        self._create_init_handler_files()
+        self._file_manager.create_state_file(self._create_state())
+        self._file_manager.create_state_file_init()
+
     def create_file_handlers(self, message: BotMessage) -> None:
         keyboard_generation_counter = 0
         imports_generation_counter = 0
@@ -291,7 +320,6 @@ class BotGenerator:
             image = None
 
         if message.id == self._start_message_id:
-
             # Создание клавиатуры для сообщения.
             keyboard_name = self.create_keyboard(message.id, keyboard_type)
             keyboard_generation_counter += 1
@@ -363,32 +391,35 @@ class BotGenerator:
             keyboard_generation_counter += 1
             imports_generation_counter += 1
 
-        previous_messages: List[BotMessage] = self._find_previous_messages(message.id)
+        previous_messages = self._find_previous_messages(message.id)
+        previous_message = previous_messages[0] if previous_messages else None
 
-    def _add_handler_init_by_condition(self, is_init_created: bool, message_id: int) -> bool:
-        assert isinstance(is_init_created, bool)
-        assert isinstance(message_id, int)
-        if not is_init_created:
-            is_error_message = message_id == self._error_message_id
-            self._handler_inits.append(
-                HandlerInit(handler_name=str(message_id), is_error_message=is_error_message)
+        # it is ANY_INPUT
+        if previous_message is not None:
+            if keyboard_generation_counter == 0:
+                keyboard_name = self.create_keyboard(message.id, keyboard_type)
+            else:
+                keyboard_name = self._get_keyboard_name_for_message(message.id)
+
+            # Создание хэндлера для команды /prev_variant.text
+            update_state_data = f'await state.update_data({previous_message.variable}=message.text)'
+
+            handler_code = self._create_state_handler(
+                command='',
+                prev_state=self._get_handler_name_for_message(previous_message.id),
+                text_to_handle=None,
+                state_to_set_name=self._get_handler_name_for_message(message.id),
+                text_of_answer=message.text,
+                image_answer=image,
+                kb=keyboard_name,
+                handler_type=ButtonTypesEnum.REPLY,
+                extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
+                additional_functions=update_state_data
             )
-            is_init_created = True
-        return is_init_created
-
-    def create_bot(self) -> None:
-        self._file_manager.delete_dir(self._bot_directory)
-        self._check_valid_data()
-        self._create_generated_bot_directory()
-        self._create_config_file()
-        self._create_app_file()
-        self._create_on_startup_commands_file()
-        self._create_log_dir_if_it_doesnt_exist()
-        for message in self._messages:
-            self.create_file_handlers(message)
-        self._create_init_handler_files()
-        self._file_manager.create_state_file(self._create_state())
-        self._file_manager.create_state_file_init()
+            self._file_manager.create_file_handler(str(message.id), handler_code)
+            is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
+            keyboard_generation_counter += 1
+            imports_generation_counter += 1
 
     def _create_state(self) -> str:
         """generate code of state class

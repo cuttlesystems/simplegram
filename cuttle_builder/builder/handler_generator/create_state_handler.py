@@ -15,7 +15,7 @@ def prev_state_code_line(prev_state: Optional[str]) -> str:
 
 def create_state_message_handler(imports: str, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                                  state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                                 kb: Optional[str]) -> str:
+                                 kb: Optional[str], additional_functions: str) -> str:
     """Подготовка данных для генерации кода меседж хэндлера
 
     Args:
@@ -27,6 +27,7 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
         text_of_answer (str): Текст ответа
         image_answer (Optional[str]): Путь к файлу с изображением
         kb (str): Клавиатура
+        additional_functions
 
     Returns:
         str: Сгенерированный код
@@ -39,6 +40,7 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
     assert isinstance(text_of_answer, str)
     assert isinstance(image_answer, Optional[str])
     assert isinstance(kb, Optional[str])
+    assert isinstance(additional_functions, str)
     handler_sample_name = 'message_handler_sample.txt'
     list_of_handler_params = [
         command,
@@ -58,12 +60,13 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
                           state_to_set_name,
                           state_to_set_content,
                           answer_content,
-                          handler_sample_name)
+                          handler_sample_name,
+                          additional_functions)
 
 
 def create_state_callback_handler(imports: str, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                                   state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                                  kb: Optional[str]) -> str:
+                                  kb: Optional[str], additional_functions: str = '') -> str:
     """Подготовка данных для генерации кода колбэк хэндлера
 
     Args:
@@ -76,6 +79,7 @@ def create_state_callback_handler(imports: str, command: str, prev_state: Option
         text_of_answer (str): Текст ответа
         image_answer (Optional[str]): Путь к файлу с изображением
         kb (str): Клавиатура
+        additional_functions
 
     Returns:
         str: Сгенерированный код
@@ -88,6 +92,7 @@ def create_state_callback_handler(imports: str, command: str, prev_state: Option
     assert isinstance(text_of_answer, str)
     assert isinstance(image_answer, Optional[str])
     assert isinstance(kb, Optional[str])
+    assert isinstance(additional_functions, str)
     handler_sample_name = 'callback_handler_sample.txt'
     list_of_handler_params = [
         command,
@@ -107,4 +112,5 @@ def create_state_callback_handler(imports: str, command: str, prev_state: Option
                           state_to_set_name,
                           state_to_set_content,
                           answer_content,
-                          handler_sample_name)
+                          handler_sample_name,
+                          additional_functions)
