@@ -149,3 +149,4 @@ ui_*.py
 *.pyproject.user
 
 #
+rc_*.py
