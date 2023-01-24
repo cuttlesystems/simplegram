@@ -135,7 +135,6 @@ current_commit_info.json
 # файлы настройки среды VSCode 
 */.vscode/*
 .vscode/
-/desktop_constructor_app/constructor_app/rc_bot_icons.py
 
 # скомпилированные .ui файлы
 ui_*.py
@@ -148,5 +147,5 @@ ui_*.py
 
 *.pyproject.user
 
-#
+# скомпилированные файлы Qt ресурсов
 rc_*.py

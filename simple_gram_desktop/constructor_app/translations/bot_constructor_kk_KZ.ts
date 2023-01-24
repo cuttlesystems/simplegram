@@ -5,7 +5,7 @@
     <name>BotEditorForm</name>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="14"/>
-        <source>Bot Editor</source>
+        <source>Simple Gram</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -29,63 +29,69 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="116"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="117"/>
         <source>Scheme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="127"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="128"/>
         <source>toolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="159"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="162"/>
         <source>Generate bot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="168"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="171"/>
         <source>Start bot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="177"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="180"/>
         <source>Stop bot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="186"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="189"/>
         <source>Add message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="195"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="198"/>
         <source>Delete message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="204"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="207"/>
         <source>Mark as start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="213"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="216"/>
         <source>Delete variant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="218"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="221"/>
         <source>Manual save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="227"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="230"/>
         <source>Add variant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="232"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="239"/>
         <source>Read logs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="248"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="251"/>
+        <source>Mark as error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -170,18 +176,43 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="36"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="34"/>
+        <source>Message type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="40"/>
+        <source>Message with variants</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="47"/>
+        <source>Message with any input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="54"/>
+        <source>Message with jump</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="64"/>
         <source>Keyboard type for variants</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="45"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="70"/>
         <source>Reply</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="52"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="77"/>
         <source>Inline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="102"/>
+        <source>Variable name</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
