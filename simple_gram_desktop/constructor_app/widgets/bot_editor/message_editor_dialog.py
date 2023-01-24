@@ -1,8 +1,8 @@
 import urllib.request
 from typing import Optional
+from urllib.error import HTTPError
 
-from PySide6 import QtWidgets, QtGui
-from PySide6.QtGui import QImage
+from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtWidgets import QDialog
 
 from b_logic.data_objects import BotMessage, ButtonTypesEnum
@@ -10,6 +10,10 @@ from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_Messa
 
 
 class MessageEditorDialog(QDialog):
+    _IMAGE_HEIGHT = 130
+    _IMAGE_NOT_FOUND_WINDOW_HEIGHT = 130
+    _IMAGE_NOT_FOUND_WINDOW_WIDTH = 130
+
     def __init__(self, parent: Optional[QtWidgets.QWidget] = None):
         super().__init__(parent)
 
@@ -33,13 +37,26 @@ class MessageEditorDialog(QDialog):
             button_types = ButtonTypesEnum.INLINE
         return button_types
 
-    def get_image(self, message: BotMessage):
+    def show_image(self, message: BotMessage):
         assert isinstance(message, BotMessage)
-        url = message.photo
-        image_data = urllib.request.urlopen(url).read()
-        image = QtGui.QImage()
-        image.loadFromData(image_data)
-        image_size_ratio = 130 / image.height()
-        self._ui.message_image.setFixedHeight(130)
-        self._ui.message_image.setFixedWidth(int(image.width() * image_size_ratio))
-        self._ui.message_image.setPixmap(QtGui.QPixmap(image))
+        if message.photo:
+            try:
+                url = message.photo
+                image_data = urllib.request.urlopen(url).read()
+                image = QtGui.QImage()
+                image.loadFromData(image_data)
+                image_size_ratio = self._IMAGE_HEIGHT / image.height()
+                self._ui.message_image.setFixedHeight(self._IMAGE_HEIGHT)
+                self._ui.message_image.setFixedWidth(int(image.width() * image_size_ratio))
+                self._ui.message_image.setPixmap(QtGui.QPixmap(image))
+            except HTTPError as error:
+                print(f'------------------->logging. Image not found! {error}')
+                self._ui.message_image.setFixedSize(
+                    self._IMAGE_NOT_FOUND_WINDOW_WIDTH, self._IMAGE_NOT_FOUND_WINDOW_HEIGHT)
+                self._ui.message_image.setText('Error!\nImage not found.')
+                self._ui.message_image.setAlignment(QtCore.Qt.AlignCenter)
+        else:
+            self._ui.message_image.setFixedSize(
+                self._IMAGE_NOT_FOUND_WINDOW_WIDTH, self._IMAGE_NOT_FOUND_WINDOW_HEIGHT)
+            self._ui.message_image.setText('Image not set.')
+            self._ui.message_image.setAlignment(QtCore.Qt.AlignCenter)
