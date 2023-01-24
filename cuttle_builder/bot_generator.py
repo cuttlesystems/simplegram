@@ -299,9 +299,7 @@ class BotGenerator:
         self._create_on_startup_commands_file()
         self._create_log_dir_if_it_doesnt_exist()
         for message in self._messages:
-            self._test_method(message)
-        # for message in self._messages:
-        #     self.create_file_handlers(message)
+            self.create_file_handlers(message)
         self._create_init_handler_files()
         self._file_manager.create_state_file(self._create_state())
         self._file_manager.create_state_file_init()
