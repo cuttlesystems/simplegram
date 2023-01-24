@@ -290,7 +290,6 @@ class BotGenerator:
         return is_init_created
 
     def create_bot(self) -> None:
-
         self._file_manager.delete_dir(self._bot_directory)
         self._check_valid_data()
         self._create_generated_bot_directory()
@@ -375,7 +374,6 @@ class BotGenerator:
 
             # Создание хэндлера для команды /prev_variant.text
             current_message_of_variant = self._get_message_object_by_id(prev_variant.current_message_id)
-
 
             handler_code = self._create_state_handler(
                 command='',
