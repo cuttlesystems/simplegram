@@ -61,10 +61,14 @@ class BotScene(QGraphicsScene):
         self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
 
-    def get_bot(self):
+    def get_bot_scene(self) -> BotDescription:
         return self._bot
 
-    def set_bot(self, value: BotDescription):
+    def set_bot_scene(self, value: BotDescription):
+        """
+        Установить бота, связанного со сценой. Устанавливается только объект бота,
+        его сообщения и варианты надо добавлять отдельно
+        """
         assert isinstance(value, BotDescription)
         self._bot = value
 
