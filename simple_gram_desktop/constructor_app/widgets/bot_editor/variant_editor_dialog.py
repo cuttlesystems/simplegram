@@ -3,8 +3,7 @@ from copy import copy
 from typing import Optional
 
 from PySide6 import QtWidgets
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QDialog, QListWidgetItem
+from PySide6.QtWidgets import QDialog
 
 from b_logic.data_objects import BotVariant, BotMessage
 from constructor_app.widgets.bot_editor.ui_variant_editor_dialog import Ui_VariantEditorDialog
@@ -34,7 +33,7 @@ class VariantEditorDialog(QDialog):
         self._ui.variant_text_edit.setText(self._variant.text)
 
         self._ui.next_message_select_list_widget.set_messages(messages)
-        self._ui.next_message_select_list_widget.select_message(self._variant.next_message_id)
+        self._ui.next_message_select_list_widget.set_selected_message(self._variant.next_message_id)
 
     def get_variant(self) -> BotVariant:
         """

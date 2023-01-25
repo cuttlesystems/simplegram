@@ -7,6 +7,10 @@ from b_logic.data_objects import BotMessage
 
 
 class MessageSelectorList(QListWidget):
+    """
+    Список в котором можно выбрать следующий вариант
+    """
+
     _DATA_ROLE = Qt.UserRole + 1
 
     def __init__(self, parent: typing.Optional[QWidget] = None):
@@ -30,7 +34,12 @@ class MessageSelectorList(QListWidget):
         for item in list_items:
             self.addItem(item)
 
-    def select_message(self, message_id: typing.Optional[int]) -> None:
+    def set_selected_message(self, message_id: typing.Optional[int]) -> None:
+        """
+        Установить выбранное в списке сообщение
+        Args:
+            message_id: идентификатор выбранного сообщения
+        """
         assert isinstance(message_id, typing.Optional[int])
         for item_index in range(self.count()):
             item = self.item(item_index)
@@ -40,6 +49,11 @@ class MessageSelectorList(QListWidget):
                 self.setCurrentItem(item)
 
     def get_selected_message(self) -> typing.Optional[BotMessage]:
+        """
+        Получить выбранное в списке сообщение
+        Returns:
+            объект выбранного сообщения
+        """
         current_message: typing.Optional[BotMessage] = None
         current_item = self.currentItem()
         if current_item is not None:
