@@ -6,6 +6,7 @@ from PySide6.QtWidgets import QDialog
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotMessage, ButtonTypesEnum
+from b_logic.data_objects import BotMessage, ButtonTypesEnum, MessageTypeEnum
 from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
 
 
@@ -22,7 +23,7 @@ class MessageEditorDialog(QDialog):
         self._ui.setupUi(self)
         self._bot_api = bot_api
 
-    def set_message(self, message: BotMessage):
+    def set_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
         self._ui.message_text_edit.setText(message.text)
         self._ui.radio_reply.setChecked(message.keyboard_type == ButtonTypesEnum.REPLY)
@@ -30,6 +31,12 @@ class MessageEditorDialog(QDialog):
         self._ui.message_image.clear()
         if message.photo:
             self._show_image(self._bot_api.get_message_image_by_url(message))
+
+        self._ui.message_variants_radio.setChecked(message.message_type == MessageTypeEnum.VARIANTS)
+        self._ui.message_any_input_radio.setChecked(message.message_type == MessageTypeEnum.ANY_INPUT)
+        self._ui.message_jump_radio.setChecked(message.message_type == MessageTypeEnum.GOTO)
+
+        self._ui.variable_name_line_edit.setText(message.variable)
 
     def message_text(self) -> str:
         return self._ui.message_text_edit.toPlainText()
@@ -41,6 +48,21 @@ class MessageEditorDialog(QDialog):
         elif self._ui.radio_inline.isChecked():
             button_types = ButtonTypesEnum.INLINE
         return button_types
+
+    def message_type(self) -> MessageTypeEnum:
+        if self._ui.message_variants_radio.isChecked():
+            message_type = MessageTypeEnum.VARIANTS
+        elif self._ui.message_any_input_radio.isChecked():
+            message_type = MessageTypeEnum.ANY_INPUT
+        elif self._ui.message_jump_radio.isChecked():
+            message_type = MessageTypeEnum.GOTO
+        else:
+            raise ValueError('Message type undefined')
+        return message_type
+
+    def variable_name(self) -> Optional[str]:
+        variable = self._ui.variable_name_line_edit.text()
+        return variable if variable != '' else None
 
     def _show_image(self, image_data: Optional[bytes]) -> None:
         assert isinstance(image_data, Optional[bytes])
