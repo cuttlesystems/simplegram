@@ -589,11 +589,9 @@ class BotApiByRequests(IBotApi):
 
     def _create_upload_files_message_dict_from_message_obj(self, message: BotMessage) -> dict:
         assert isinstance(message, BotMessage)
-        upload_files_message_dict = {
-            'photo': (message.photo_filename, message.photo),
-            # 'video': (),
-            # 'file': ()
-        }
+        upload_files_message_dict = dict()
+        if message.photo and message.photo_filename:
+            upload_files_message_dict['photo'] = (message.photo_filename, message.photo)
         return upload_files_message_dict
 
     def _create_variant_from_data(self, variant_dict: dict) -> BotVariant:
