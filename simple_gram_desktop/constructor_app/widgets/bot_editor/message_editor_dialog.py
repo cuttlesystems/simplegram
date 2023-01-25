@@ -1,8 +1,10 @@
 from typing import Optional
 
 from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6.QtCore import QSize
 from PySide6.QtWidgets import QDialog
 
+from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotMessage, ButtonTypesEnum
 from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
 
@@ -13,17 +15,20 @@ class MessageEditorDialog(QDialog):
     _IMAGE_NOT_FOUND_WINDOW_HEIGHT = 130
     _IMAGE_NOT_FOUND_WINDOW_WIDTH = 130
 
-    def __init__(self, parent: Optional[QtWidgets.QWidget] = None):
+    def __init__(self, bot_api: IBotApi, parent: Optional[QtWidgets.QWidget] = None):
         super().__init__(parent)
 
         self._ui = Ui_MessageEditorDialog()
         self._ui.setupUi(self)
+        self._bot_api = bot_api
 
     def set_message(self, message: BotMessage):
         assert isinstance(message, BotMessage)
         self._ui.message_text_edit.setText(message.text)
         self._ui.radio_reply.setChecked(message.keyboard_type == ButtonTypesEnum.REPLY)
         self._ui.radio_inline.setChecked(message.keyboard_type == ButtonTypesEnum.INLINE)
+        if message.photo:
+            self.show_image(self._bot_api.get_message_image_by_url(message))
 
     def message_text(self) -> str:
         return self._ui.message_text_edit.toPlainText()
@@ -41,9 +46,9 @@ class MessageEditorDialog(QDialog):
         if image_data is not None:
             image = QtGui.QImage()
             image.loadFromData(image_data)
-            image_size = self.calculate_optimal_image_size(image.height(), image.width())
-            self._ui.message_image.setFixedHeight(image_size['height'])
-            self._ui.message_image.setFixedWidth(image_size['width'])
+            image_size = self.calculate_optimal_image_size(image.width(), image.height())
+            self._ui.message_image.setFixedWidth(image_size.width())
+            self._ui.message_image.setFixedHeight(image_size.height())
             self._ui.message_image.setPixmap(QtGui.QPixmap(image))
         else:
             self._ui.message_image.setFixedSize(
@@ -52,19 +57,16 @@ class MessageEditorDialog(QDialog):
             self._ui.message_image.setText('Error!\nImage not found')
             self._ui.message_image.setAlignment(QtCore.Qt.AlignCenter)
 
-    def calculate_optimal_image_size(self, height: int, width: int) -> dict:
+    def calculate_optimal_image_size(self, width: int, height: int) -> QSize:
         assert isinstance(height, int)
         assert isinstance(width, int)
+        size = QSize()
         if height > width:
             image_size_ratio = self._IMAGE_HEIGHT / height
-            size = dict(
-                height=self._IMAGE_HEIGHT,
-                width=int(width * image_size_ratio)
-            )
+            size.setWidth(int(width * image_size_ratio))
+            size.setHeight(self._IMAGE_HEIGHT)
         else:
             image_size_ratio = self._IMAGE_WIDTH / width
-            size = dict(
-                height=int(height * image_size_ratio),
-                width=self._IMAGE_WIDTH
-            )
+            size.setWidth(self._IMAGE_WIDTH)
+            size.setHeight(int(height * image_size_ratio))
         return size
