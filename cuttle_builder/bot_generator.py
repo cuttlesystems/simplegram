@@ -441,12 +441,12 @@ class BotGenerator:
             imports_generation_counter += 1
 
     def _message_validation(self, message: BotMessage):
+        print(self._user_variables)
         text = message.text
         variables = []
         for variable in self._user_variables:
             if f'{{{variable}}}' in text:
                 variables.append(variable)
-                print(text)
         return variables
 
     def _get_all_user_variables(self):
