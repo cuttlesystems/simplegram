@@ -43,10 +43,10 @@ class MessageEditorDialog(QDialog):
         # задаем имя переменной для считывания данных от пользователя
         self._ui.variable_name_line_edit.setText(message.variable)
 
-    def message_text(self) -> str:
+    def get_message_text(self) -> str:
         return self._ui.message_text_edit.toPlainText()
 
-    def keyboard_type(self) -> Optional[ButtonTypesEnum]:
+    def get_keyboard_type(self) -> Optional[ButtonTypesEnum]:
         button_types: Optional[ButtonTypesEnum] = None
         if self._ui.radio_reply.isChecked():
             button_types = ButtonTypesEnum.REPLY
@@ -54,7 +54,7 @@ class MessageEditorDialog(QDialog):
             button_types = ButtonTypesEnum.INLINE
         return button_types
 
-    def message_type(self) -> MessageTypeEnum:
+    def get_message_type(self) -> MessageTypeEnum:
         if self._ui.message_variants_radio.isChecked():
             message_type = MessageTypeEnum.VARIANTS
         elif self._ui.message_any_input_radio.isChecked():
@@ -65,7 +65,7 @@ class MessageEditorDialog(QDialog):
             raise ValueError('Message type undefined')
         return message_type
 
-    def variable_name(self) -> Optional[str]:
+    def get_variable_name(self) -> Optional[str]:
         variable = self._ui.variable_name_line_edit.text()
         return variable if variable != '' else None
 
