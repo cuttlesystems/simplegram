@@ -5,7 +5,6 @@ from PySide6.QtCore import QSize
 from PySide6.QtWidgets import QDialog
 
 from b_logic.bot_api.i_bot_api import IBotApi
-from b_logic.data_objects import BotMessage, ButtonTypesEnum
 from b_logic.data_objects import BotMessage, ButtonTypesEnum, MessageTypeEnum
 from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
 
@@ -26,16 +25,22 @@ class MessageEditorDialog(QDialog):
     def set_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
         self._ui.message_text_edit.setText(message.text)
+
+        # задаем тип кнопок для вариантов
         self._ui.radio_reply.setChecked(message.keyboard_type == ButtonTypesEnum.REPLY)
         self._ui.radio_inline.setChecked(message.keyboard_type == ButtonTypesEnum.INLINE)
+
+        # отображаем изображение для сообщения
         self._ui.message_image.clear()
         if message.photo:
             self._show_image(self._bot_api.get_message_image_by_url(message))
 
+        # задаем тип сообщения
         self._ui.message_variants_radio.setChecked(message.message_type == MessageTypeEnum.VARIANTS)
         self._ui.message_any_input_radio.setChecked(message.message_type == MessageTypeEnum.ANY_INPUT)
         self._ui.message_jump_radio.setChecked(message.message_type == MessageTypeEnum.GOTO)
 
+        # задаем имя переменной для считывания данных от пользователя
         self._ui.variable_name_line_edit.setText(message.variable)
 
     def message_text(self) -> str:
