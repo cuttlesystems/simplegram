@@ -125,12 +125,16 @@ dmypy.json
 # файлы настройки среды PyCharm
 .idea/
 **/.DS_Store
-/bot_*/
 /server_simple_gram/backend/bot_django_project/data_files
 
-/venv*/
+# файл с индивидуальными настройками подключения
 /mini_app/app_tests/connection_settings.json
-current_commit_info.json
+
+# сгенерированные тестовые боты
+/mini_app/bot_*
+
+# сгенерированный файл с информацией о коммите
+/mini_app/current_commit_info.json
 
 # файлы настройки среды VSCode 
 */.vscode/*
@@ -141,9 +145,6 @@ ui_*.py
 
 # скомпилированные файлы Qt переводов
 *.qm
-
-# сгенерированные тестовые боты
-/mini_app/bot_*
 
 *.pyproject.user
 
