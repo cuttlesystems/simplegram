@@ -214,6 +214,8 @@ class BotEditorForm(QMainWindow):
         if editor_dialog.exec_() == QDialog.DialogCode.Accepted:
             message.text = editor_dialog.message_text()
             message.keyboard_type = editor_dialog.keyboard_type()
+            message.variable = editor_dialog.variable_name()
+            message.message_type = editor_dialog.message_type()
             self._bot_api.change_message(message)
 
             block.change_message(message)
