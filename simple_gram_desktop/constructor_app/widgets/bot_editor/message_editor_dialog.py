@@ -27,8 +27,9 @@ class MessageEditorDialog(QDialog):
         self._ui.message_text_edit.setText(message.text)
         self._ui.radio_reply.setChecked(message.keyboard_type == ButtonTypesEnum.REPLY)
         self._ui.radio_inline.setChecked(message.keyboard_type == ButtonTypesEnum.INLINE)
+        self._ui.message_image.clear()
         if message.photo:
-            self.show_image(self._bot_api.get_message_image_by_url(message))
+            self._show_image(self._bot_api.get_message_image_by_url(message))
 
     def message_text(self) -> str:
         return self._ui.message_text_edit.toPlainText()
@@ -41,12 +42,12 @@ class MessageEditorDialog(QDialog):
             button_types = ButtonTypesEnum.INLINE
         return button_types
 
-    def show_image(self, image_data: Optional[bytes]) -> None:
+    def _show_image(self, image_data: Optional[bytes]) -> None:
         assert isinstance(image_data, Optional[bytes])
         if image_data is not None:
             image = QtGui.QImage()
             image.loadFromData(image_data)
-            image_size = self.calculate_optimal_image_size(image.width(), image.height())
+            image_size = self._calculate_optimal_image_size(image.width(), image.height())
             self._ui.message_image.setFixedWidth(image_size.width())
             self._ui.message_image.setFixedHeight(image_size.height())
             self._ui.message_image.setPixmap(QtGui.QPixmap(image))
@@ -57,7 +58,7 @@ class MessageEditorDialog(QDialog):
             self._ui.message_image.setText('Error!\nImage not found')
             self._ui.message_image.setAlignment(QtCore.Qt.AlignCenter)
 
-    def calculate_optimal_image_size(self, width: int, height: int) -> QSize:
+    def _calculate_optimal_image_size(self, width: int, height: int) -> QSize:
         assert isinstance(height, int)
         assert isinstance(width, int)
         size = QSize()
