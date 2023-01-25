@@ -1,5 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 from pathlib import Path
+import time
 
 
 block_cipher = None
@@ -17,23 +18,21 @@ def spec_file_dir() -> Path:
 def application_project_dir() -> Path:
     """
     define the function to get the project_directory path
-    D:\Git Repos\tg_bot_constructor
+    D:\Git Repos\tg_bot_constructor\simple_gram_desktop
     """
-    return spec_file_dir() / Path('..') / '..'
+    return spec_file_dir() / Path('..') / '..' / 'simple_gram_desktop'
 
 
 a = Analysis(
-    [application_project_dir() / 'simple_gram_desktop' / 'start_constructor.py'],
+    [application_project_dir() / 'start_constructor.py'],
     pathex=[
         application_project_dir(),
-        application_project_dir() / 'simple_gram_desktop'
     ],
     binaries=[],
     datas=[(
-        application_project_dir() / 'simple_gram_desktop' / 'constructor_app' / 'translations' / '*.qm', \
-        Path('constructor_app') / 'translations'
+        application_project_dir() / 'constructor_app' / 'translations' / '*.qm', \
+            Path('constructor_app') / 'translations'
     )],
-    hiddenimports=['simple_gram_desktop'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -50,7 +49,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='simple_gram',
+    name='simple_gram_'+time.strftime("%Y_%m_%d__%H_%M_%S"),
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -58,7 +57,7 @@ exe = EXE(
     upx_exclude=[],
     runtime_tmpdir=None,
     console=True,
-    icon=str(application_project_dir() / 'simple_gram_desktop' / 'constructor_app' / 'images' / 'cuttle_systems.ico'),
+    icon=str(application_project_dir() / 'constructor_app' / 'images' / 'cuttle_systems.ico'),
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
