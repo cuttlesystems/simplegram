@@ -1,6 +1,8 @@
 import json
 import typing
 from typing import List, Optional
+from urllib.error import HTTPError
+
 import requests
 import urllib.request
 
@@ -254,6 +256,7 @@ class BotApiByRequests(IBotApi):
         Args:
             bot: объект бота, для которого создается сообщение
             text: тест сообщения
+            keyboard_type: тип клавиатуры для сообщения
             x: координата по x
             y: координата по y
 
@@ -278,6 +281,16 @@ class BotApiByRequests(IBotApi):
         if response.status_code != requests.status_codes.codes.created:
             raise BotApiException('Ошибка при создании сообщения: {0}'.format(response.text))
         return self._create_bot_message_from_data(json.loads(response.text))
+
+    def get_message_image_by_url(self, message: BotMessage) -> Optional[bytes]:
+        assert isinstance(message, BotMessage)
+        try:
+            url = message.photo
+            image_data = urllib.request.urlopen(url).read()
+        except HTTPError as image_not_found_error:
+            print(f'----------->Image not found: {image_not_found_error}')
+            image_data = None
+        return image_data
 
     def change_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)

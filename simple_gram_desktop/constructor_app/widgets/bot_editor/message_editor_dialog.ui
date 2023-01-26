@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>541</width>
-    <height>429</height>
+    <width>601</width>
+    <height>474</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,37 +26,79 @@
      <item>
       <widget class="QTextEdit" name="message_text_edit"/>
      </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Message type</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QRadioButton" name="message_variants_radio">
+            <property name="text">
+             <string>Message with variants</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="message_any_input_radio">
+            <property name="text">
+             <string>Message with any input</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="message_jump_radio">
+            <property name="text">
+             <string>Message with jump</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="message_image">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Message type</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QRadioButton" name="message_variants_radio">
-        <property name="text">
-         <string>Message with variants</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="message_any_input_radio">
-        <property name="text">
-         <string>Message with any input</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="message_jump_radio">
-        <property name="text">
-         <string>Message with jump</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox">
@@ -109,6 +151,16 @@
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Next message</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="MessageSelectorList" name="next_message_list_widget"/>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <spacer name="horizontalSpacer">
@@ -137,6 +189,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MessageSelectorList</class>
+   <extends>QListWidget</extends>
+   <header>constructor_app.widgets.bot_editor.message_selector_list</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
