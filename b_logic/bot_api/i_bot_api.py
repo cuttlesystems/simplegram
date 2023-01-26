@@ -195,6 +195,16 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
+    def remove_message_image(self, message: BotMessage) -> None:
+        """
+        Удаление изображения у сообщения.
+
+        Args:
+            message: сообщение, у которого необходимо удалить изображение
+        """
+        pass
+
+    @abstractmethod
     def delete_message(self, message: BotMessage) -> None:
         """
         Удалить сообщение из бота

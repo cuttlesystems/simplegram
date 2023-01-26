@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QDialog, QFileDialog
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotMessage, ButtonTypesEnum, MessageTypeEnum, BotDescription
 from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
-from utils.image_to_bytes import convert_image_to_bytes
+from utils.image_to_bytes import get_binary_data_from_image_file
 
 
 class MessageEditorDialog(QDialog):
@@ -32,9 +32,12 @@ class MessageEditorDialog(QDialog):
         self._bot = bot
 
         self._ui.load_image_button.clicked.connect(self._on_load_image)
+        self._ui.remove_image_button.clicked.connect(self._on_remove_image)
 
         self.message_image_path: Optional[str] = None
         self.message_image_filename: Optional[str] = None
+
+        self.image_must_be_removed: bool = False
 
     def set_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
@@ -120,10 +123,24 @@ class MessageEditorDialog(QDialog):
         return size
 
     def _on_load_image(self, checked: bool) -> None:
-        file_info = QFileDialog.getOpenFileNames(self, 'Open file', '', '', '')
+        file_info = QFileDialog.getOpenFileName(
+            parent=self,
+            caption='Open file',
+            dir='',
+            filter='Images (*.png *.bmp *.jpg)'
+        )
+        print(file_info)
         if len(file_info[0]) > 0:
-            full_path_to_file: str = file_info[0][0]
-            image_data = convert_image_to_bytes(full_path_to_file)
+            full_path_to_file: str = file_info[0]
+            image_data = get_binary_data_from_image_file(full_path_to_file)
             self._show_image(image_data)
+            self.image_must_be_removed = False
             self.message_image_path = full_path_to_file
             self.message_image_filename = os.path.basename(full_path_to_file)
+
+    def _on_remove_image(self, checked: bool) -> None:
+        self._ui.message_image.clear()
+        self.image_must_be_removed = True
+        self.message_image_path = None
+        self.message_image_filename = None
+

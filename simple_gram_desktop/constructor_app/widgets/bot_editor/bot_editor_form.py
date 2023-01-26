@@ -220,7 +220,9 @@ class BotEditorForm(QMainWindow):
 
             next_message = editor_dialog.get_next_message()
             message.next_message_id = next_message.id if next_message is not None else None
-
+            print(f'Удаляем имэйдж? {editor_dialog.image_must_be_removed}')
+            if editor_dialog.image_must_be_removed:
+                self._bot_api.remove_message_image(message)
             message.photo = editor_dialog.message_image_path
             message.photo_filename = editor_dialog.message_image_filename
             self._bot_api.change_message(message)

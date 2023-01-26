@@ -1,7 +1,7 @@
 from typing import Optional
 
 
-def convert_image_to_bytes(path_to_file: str) -> Optional[bytes]:
+def get_binary_data_from_image_file(path_to_file: str) -> Optional[bytes]:
     """
     Конвертация файла по path в байт-код.
 
