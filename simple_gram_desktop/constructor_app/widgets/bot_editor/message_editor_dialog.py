@@ -36,11 +36,6 @@ class MessageEditorDialog(QDialog):
         self.message_image_path: Optional[str] = None
         self.message_image_filename: Optional[str] = None
 
-        self._ui.load_image_button.clicked.connect(self._on_load_image)
-
-        self.message_image_path: Optional[str] = None
-        self.message_image_filename: Optional[str] = None
-
     def set_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
         self._ui.message_text_edit.setText(message.text)
