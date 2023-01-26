@@ -3,15 +3,15 @@ import typing
 from enum import Enum
 
 from PySide6 import QtCore
-from PySide6.QtCore import Signal, QCoreApplication
-from PySide6.QtGui import QPixmap, QBrush, QColor, Qt
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QPixmap, Qt
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
 from b_logic.bot_api.bot_api_by_requests import BotApiException
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotDescription
 from common.localisation import tran
-from common.utils.name_utils import gen_next_name
+from utils.name_utils import gen_next_name
 from constructor_app.settings.login_settings_manager import LoginSettingsManager
 from constructor_app.settings.get_application_data_dir import get_application_data_dir
 from constructor_app.widgets.ui_login_form import Ui_LoginForm

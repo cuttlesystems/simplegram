@@ -9,6 +9,7 @@ import urllib.request
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
     MessageTypeEnum
+from utils.image_to_bytes import convert_image_to_bytes
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
@@ -602,8 +603,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(message, BotMessage)
         upload_files_message_dict = dict()
         if message.photo and message.photo_filename:
-            with open(message.photo, 'rb') as file:
-                file_data = file.read()
+            file_data = convert_image_to_bytes(message.photo)
             upload_files_message_dict['photo'] = (message.photo_filename, file_data)
         return upload_files_message_dict
 

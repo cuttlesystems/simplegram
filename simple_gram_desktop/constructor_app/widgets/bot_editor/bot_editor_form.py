@@ -10,7 +10,7 @@ from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum
 from common.localisation import tran
 from common.model_property import ModelProperty
-from common.utils.name_utils import gen_next_name
+from utils.name_utils import gen_next_name
 from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from constructor_app.graphic_scene.bot_scene import BotScene
 from constructor_app.widgets.bot_editor.message_editor_dialog import MessageEditorDialog
