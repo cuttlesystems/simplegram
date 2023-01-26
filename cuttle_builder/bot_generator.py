@@ -1,3 +1,4 @@
+import re
 import shutil
 import typing
 import os
@@ -5,6 +6,7 @@ from pathlib import Path
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand, \
     MessageTypeEnum
+from cuttle_builder.builder.additional.helpers.user_message_validator import UserMessageValidator
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
@@ -61,7 +63,7 @@ class BotGenerator:
         self._bot_directory = bot_path
         self._logs_file_path = self._get_bot_logs_file_path(bot, bot_path)
         self._media_directory = bot_path + '/media'
-        self._user_variables = self._get_all_user_variables()
+        self._user_message_validator = UserMessageValidator(messages)
 
         self._error_message_id = bot.error_message_id
         for message in messages:
@@ -311,7 +313,8 @@ class BotGenerator:
         return f'f{text}'
 
     def create_file_handlers(self, message: BotMessage) -> None:
-        variables = self._message_validation(message)
+        variables = self._user_message_validator.message_validation(message.text)
+        text = self._user_message_validator.get_validated_message_text(message.text)
         additional_functions = ''
         if len(variables) != 0:
             variable_string_sequence = ", ".join(variables)
@@ -347,7 +350,7 @@ class BotGenerator:
                 prev_state='*',
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=message.text,
+                text_of_answer=text,
                 image_answer=image,
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
@@ -370,7 +373,7 @@ class BotGenerator:
                 prev_state='*',
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=message.text,
+                text_of_answer=text,
                 image_answer=image,
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
@@ -396,7 +399,7 @@ class BotGenerator:
                 prev_state=self._get_handler_name_for_message(prev_variant.current_message_id),
                 text_to_handle=prev_variant.text,
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=message.text,
+                text_of_answer=text,
                 image_answer=image,
                 kb=keyboard_name,
                 handler_type=current_message_of_variant.keyboard_type,
@@ -420,15 +423,14 @@ class BotGenerator:
                 keyboard_name = self._get_keyboard_name_for_message(message.id)
 
             # Создание хэндлера для команды /prev_variant.text
-            update_state_data = f'await state.update_data({previous_message.variable}=message.text)'
-            print(additional_functions)
+            update_state_data = f'await state.update_data({previous_message.variable}=message.text)' if previous_message.variable else ''
             additional_functions = self._tab_from_new_line(update_state_data) + additional_functions
             handler_code = self._create_state_handler(
                 command='',
                 prev_state=self._get_handler_name_for_message(previous_message.id),
                 text_to_handle=None,
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=message.text,
+                text_of_answer=text,
                 image_answer=image,
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
@@ -440,17 +442,7 @@ class BotGenerator:
             keyboard_generation_counter += 1
             imports_generation_counter += 1
 
-    def _message_validation(self, message: BotMessage):
-        print(self._user_variables)
-        text = message.text
-        variables = []
-        for variable in self._user_variables:
-            if f'{{{variable}}}' in text:
-                variables.append(variable)
-        return variables
 
-    def _get_all_user_variables(self):
-        return [message.variable for message in self._messages if message.message_type==MessageTypeEnum.ANY_INPUT]
 
     def _create_state(self) -> str:
         """generate code of state class

@@ -19,7 +19,7 @@ class FileManager:
             return file.read().split('\n')
 
     # TODO: сделать метод для записи в файл в режиме 'w'
-    def write_file(self, directory: str, code: str) -> None:
+    def write_file_insert(self, directory: str, code: str) -> None:
         """add into directory file, that contains generated code
 
         Args:
@@ -30,7 +30,22 @@ class FileManager:
         with open(directory, 'a', encoding='utf-8') as f:
             f.seek(0, 0)
             f.write(code)
-            f.close()
+            # f.close()
+
+
+    def write_file_rewrite(self, directory: str, code: str) -> None:
+        """add into directory file, that contains generated code
+
+        Args:
+            directory:
+            code (_type_): generated code
+        """
+
+        with open(directory, 'w', encoding='utf-8') as f:
+            f.seek(0, 0)
+            f.write(code)
+            # f.close()
+
 
     def write_into_init(self, directory: str, code: str) -> None:
         """add into init files names of new units to register generated code (dir - init directory, code - import of unit)
@@ -56,7 +71,7 @@ class FileManager:
             init_path (_type_): init file path
             import_code (_type_): generated code (import inside init)
         """
-        self.write_file(file_path, code)
+        self.write_file_insert(file_path, code)
         if init_path is not None and import_code is not None:
             self.write_into_init(init_path, import_code)
 
