@@ -205,8 +205,10 @@ class BotEditorForm(QMainWindow):
         assert isinstance(block, BlockGraphicsItem)
         assert all(isinstance(variant, BotVariant) for variant in variants)
         message = block.get_message()
+        message = self._bot_api.get_one_message(message.id)
         editor_dialog = MessageEditorDialog(self._bot_api, self)
-        editor_dialog.set_message(block.get_message())
+        # editor_dialog.set_message(block.get_message())
+        editor_dialog.set_message(message)
 
         # todo: тут появляется побочный эффект - после закрытия окна диалога следующий клик пропадает,
         #  надо бы поправить

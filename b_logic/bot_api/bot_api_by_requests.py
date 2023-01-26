@@ -292,6 +292,17 @@ class BotApiByRequests(IBotApi):
             image_data = None
         return image_data
 
+    def get_one_message(self, message_id: int) -> BotMessage:
+        assert isinstance(message_id, int)
+        response = requests.get(
+            url=self._suite_url + f'api/message/{message_id}/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException(
+                'Ошибка при получении информации о сообщении: {0}'.format(response.text))
+        return self._create_bot_message_from_data(json.loads(response.text))
+
     def change_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
         response = requests.patch(
