@@ -41,12 +41,19 @@ class MessageSelectorList(QListWidget):
             message_id: идентификатор выбранного сообщения
         """
         assert isinstance(message_id, typing.Optional[int])
-        for item_index in range(self.count()):
-            item = self.item(item_index)
-            message: BotMessage = item.data(self._DATA_ROLE)
-            assert isinstance(message, BotMessage)
-            if message.id == message_id:
-                self.setCurrentItem(item)
+
+        # сбрасываем выделение текущего элемента
+        self.setCurrentItem(QListWidgetItem())
+
+        if message_id is not None:
+            for item_index in range(self.count()):
+                item = self.item(item_index)
+                message: BotMessage = item.data(self._DATA_ROLE)
+                assert isinstance(message, BotMessage)
+                if message.id == message_id:
+                    # выделяем заданный элемент
+                    self.setCurrentItem(item)
+                    break
 
     def get_selected_message(self) -> typing.Optional[BotMessage]:
         """
