@@ -8,7 +8,7 @@ from b_logic.data_objects import BotMessage
 
 class MessageSelectorList(QListWidget):
     """
-    Список в котором можно выбрать следующий вариант
+    Список в котором можно выбрать следующее сообщение
     """
 
     _DATA_ROLE = Qt.UserRole + 1
@@ -59,7 +59,7 @@ class MessageSelectorList(QListWidget):
         """
         Получить выбранное в списке сообщение
         Returns:
-            объект выбранного сообщения
+            объект выбранного сообщения или None, если не выбрано
         """
         current_message: typing.Optional[BotMessage] = None
         current_item = self.currentItem()
