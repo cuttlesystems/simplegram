@@ -2,7 +2,8 @@ from typing import Optional
 
 from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtCore import QSize
-from PySide6.QtWidgets import QDialog
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QDialog, QFileDialog
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotMessage, ButtonTypesEnum, MessageTypeEnum
@@ -20,7 +21,13 @@ class MessageEditorDialog(QDialog):
 
         self._ui = Ui_MessageEditorDialog()
         self._ui.setupUi(self)
+
         self._bot_api = bot_api
+
+        self._ui.load_image_button.clicked.connect(self._on_load_image)
+
+        self.message_image_path: Optional[str] = None
+        self.message_image_filename: Optional[str] = None
 
     def set_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
@@ -98,3 +105,18 @@ class MessageEditorDialog(QDialog):
             size.setWidth(self._IMAGE_WIDTH)
             size.setHeight(int(height * image_size_ratio))
         return size
+
+    def _on_load_image(self, checked: bool) -> None:
+        print()
+        file_data = QFileDialog.getOpenFileNames(self, 'Open file', '', '', '')
+        if len(file_data[0]) > 0:
+            full_path_to_file: str = file_data[0][0]
+            with open(full_path_to_file, 'rb') as image:
+                image_data = image.read()
+                self._show_image(image_data)
+            self.message_image_path = full_path_to_file
+            print(self.message_image_path)
+            self.message_image_filename = full_path_to_file.split('/')[-1]
+            print(self.message_image_filename)
+
+

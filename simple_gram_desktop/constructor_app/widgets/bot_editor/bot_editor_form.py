@@ -216,6 +216,8 @@ class BotEditorForm(QMainWindow):
             message.keyboard_type = editor_dialog.keyboard_type()
             message.variable = editor_dialog.variable_name()
             message.message_type = editor_dialog.message_type()
+            message.photo = editor_dialog.message_image_path
+            message.photo_filename = editor_dialog.message_image_filename
             self._bot_api.change_message(message)
 
             block.change_message(message)
