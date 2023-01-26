@@ -56,6 +56,7 @@ class MessageEditorDialog(QDialog):
 
         self._ui.next_message_list_widget.set_messages(self._bot_api.get_messages(self._bot))
         self._ui.next_message_list_widget.set_selected_message(message.next_message_id)
+        print()
 
     def get_message_text(self) -> str:
         return self._ui.message_text_edit.toPlainText()
