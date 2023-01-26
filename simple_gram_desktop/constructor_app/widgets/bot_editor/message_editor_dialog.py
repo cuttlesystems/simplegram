@@ -127,7 +127,7 @@ class MessageEditorDialog(QDialog):
             parent=self,
             caption='Open file',
             dir='',
-            filter='Images (*.png *.bmp *.jpg)'
+            filter='Images (*.png *.bmp *.jpg *.gif *.ico *.jpeg *.svg *.tif *.webp *.xpm);;All files (*.*)'
         )
         print(file_info)
         if len(file_info[0]) > 0:
