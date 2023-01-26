@@ -1,3 +1,5 @@
+import os.path
+from pathlib import Path
 from typing import Optional
 
 from PySide6 import QtWidgets, QtGui, QtCore
@@ -8,6 +10,7 @@ from PySide6.QtWidgets import QDialog, QFileDialog
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotMessage, ButtonTypesEnum, MessageTypeEnum, BotDescription
 from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
+from utils.image_to_bytes import convert_image_to_bytes
 
 
 class MessageEditorDialog(QDialog):
@@ -118,16 +121,10 @@ class MessageEditorDialog(QDialog):
         return size
 
     def _on_load_image(self, checked: bool) -> None:
-        print()
-        file_data = QFileDialog.getOpenFileNames(self, 'Open file', '', '', '')
-        if len(file_data[0]) > 0:
-            full_path_to_file: str = file_data[0][0]
-            with open(full_path_to_file, 'rb') as image:
-                image_data = image.read()
-                self._show_image(image_data)
+        file_info = QFileDialog.getOpenFileNames(self, 'Open file', '', '', '')
+        if len(file_info[0]) > 0:
+            full_path_to_file: str = file_info[0][0]
+            image_data = convert_image_to_bytes(full_path_to_file)
+            self._show_image(image_data)
             self.message_image_path = full_path_to_file
-            print(self.message_image_path)
-            self.message_image_filename = full_path_to_file.split('/')[-1]
-            print(self.message_image_filename)
-
-
+            self.message_image_filename = os.path.basename(full_path_to_file)
