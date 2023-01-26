@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>601</width>
-    <height>464</height>
+    <height>474</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -151,6 +151,16 @@
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Next message</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="MessageSelectorList" name="next_message_list_widget"/>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <spacer name="horizontalSpacer">
@@ -179,6 +189,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MessageSelectorList</class>
+   <extends>QListWidget</extends>
+   <header>constructor_app.widgets.bot_editor.message_selector_list</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

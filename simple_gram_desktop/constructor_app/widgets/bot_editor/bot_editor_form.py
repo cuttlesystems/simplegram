@@ -205,17 +205,21 @@ class BotEditorForm(QMainWindow):
         assert isinstance(block, BlockGraphicsItem)
         assert all(isinstance(variant, BotVariant) for variant in variants)
         message = block.get_message()
-        editor_dialog = MessageEditorDialog(self._bot_api, self)
+        editor_dialog = MessageEditorDialog(self._bot_api, self._bot, self)
         editor_dialog.set_message(block.get_message())
 
         # todo: тут появляется побочный эффект - после закрытия окна диалога следующий клик пропадает,
         #  надо бы поправить
 
         if editor_dialog.exec_() == QDialog.DialogCode.Accepted:
-            message.text = editor_dialog.message_text()
-            message.keyboard_type = editor_dialog.keyboard_type()
-            message.variable = editor_dialog.variable_name()
-            message.message_type = editor_dialog.message_type()
+            message.text = editor_dialog.get_message_text()
+            message.keyboard_type = editor_dialog.get_keyboard_type()
+            message.variable = editor_dialog.get_variable_name()
+            message.message_type = editor_dialog.get_message_type()
+
+            next_message = editor_dialog.get_next_message()
+            message.next_message_id = next_message.id if next_message is not None else None
+
             self._bot_api.change_message(message)
 
             block.change_message(message)
