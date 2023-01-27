@@ -102,7 +102,7 @@ def create_state_callback_handler(imports: str, command: str, prev_state: Option
     handler_params = ', '.join(element for element in list_of_handler_params if element)
     state_to_set_content = 'await States.{state_name}.set()'.format(state_name=state_to_set_name) if state_to_set_name else ''
     keyboard_if_exists = f', reply_markup={kb}' if kb else ""
-    answer_content = f'await callback.message.answer(text={repr(text_of_answer)}{keyboard_if_exists})'
+    answer_content = f'await callback.message.answer(text=f{repr(text_of_answer)}{keyboard_if_exists})'
     if image_answer:
         image_content = f'\n    await callback.message.answer_photo(photo=types.InputFile(\'{image_answer}\'))'
         answer_content += image_content
