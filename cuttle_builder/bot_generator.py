@@ -4,8 +4,8 @@ import typing
 import os
 from pathlib import Path
 
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand, \
-    MessageTypeEnum
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand
+# from bot_constructor.log_configs import logger_django
 from cuttle_builder.builder.additional.helpers.user_message_validator import UserMessageValidator
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
@@ -307,12 +307,18 @@ class BotGenerator:
         self._file_manager.create_state_file_init()
 
     def _tab_from_new_line(self, code: str) -> str:
+        """
+        Prepare generate code: replace next string to new line and add tabulation
+        Args:
+            code (str): code, that will writen in file
+        Returns:
+            prepared string, that move next string to new line and add tabulation
+        """
         assert isinstance(code, str)
         return f'{code}\n\t'
 
     def create_file_handlers(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
-
         variables = self._user_message_validator.get_variables_from_text_exist_in_user_variables(message.text)
         text = self._user_message_validator.get_validated_message_text(message.text)
         # Fill in additional functions, if variables are exist, get variables, that use in text

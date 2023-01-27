@@ -7,6 +7,9 @@ from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 
 
 class FileManager:
+
+    _FROM_BEGINNING = 0
+
     def __init__(self) -> None:
         pass
 
@@ -18,7 +21,6 @@ class FileManager:
         with open(directory, 'r') as file:
             return file.read().split('\n')
 
-    # TODO: сделать метод для записи в файл в режиме 'w'
     def write_file_insert(self, directory: str, code: str) -> None:
         """add into directory file, that contains generated code
 
@@ -26,12 +28,9 @@ class FileManager:
             directory:
             code (_type_): generated code
         """
-
         with open(directory, 'a', encoding='utf-8') as f:
-            f.seek(0, 0)
+            f.seek(0, self._FROM_BEGINNING)
             f.write(code)
-            # f.close()
-
 
     def write_file_rewrite(self, directory: str, code: str) -> None:
         """add into directory file, that contains generated code
@@ -40,11 +39,8 @@ class FileManager:
             directory:
             code (_type_): generated code
         """
-
         with open(directory, 'w', encoding='utf-8') as f:
-            f.seek(0, 0)
             f.write(code)
-            # f.close()
 
 
     def write_into_init(self, directory: str, code: str) -> None:
@@ -57,9 +53,8 @@ class FileManager:
         """
         with open(directory, 'r+') as file:
             file_data = file.read()
-            file.seek(0, 0)
+            file.seek(0, self._FROM_BEGINNING)
             file.write(code + file_data)
-            # file.close()
 
     def create_file(self, file_path: str, code: str, init_path: Optional[str] = None,
                     import_code: Optional[str] = None) -> None:
