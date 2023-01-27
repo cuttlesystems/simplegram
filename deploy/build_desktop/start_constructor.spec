@@ -15,8 +15,7 @@ from python_and_venv_path import get_building_dir
 
 block_cipher = None
 
-# define the function to get the 'start_constructor.spec'-file path
-# D:\Git Repos\tg_bot_constructor\deploy\build_desktop
+
 def spec_file_dir() -> Path:
     """
     define the function to get the 'start_constructor.spec'-file path
@@ -31,23 +30,6 @@ def application_project_dir() -> Path:
     D:\Git Repos\tg_bot_constructor\simple_gram_desktop
     """
     return spec_file_dir() / Path('..') / '..' / 'simple_gram_desktop'
-
-
-#class OsClass(Enum):
-#    LINUX_CLASS = 'linux_class'
-#    WINDOWS_CLASS = 'windows_class'
-
-
-#def os_related_path_part():
-#    current_os = get_current_os()
-#    if current_os == OsClass.WINDOWS_CLASS:
-#        result = spec_file_dir() / 'windows'
-#    elif current_os == OsClass.LINUX_CLASS:
-#        result = spec_file_dir() / 'linux'
-#    else:
-#        raise NotImplementedError('Unsupported os')
-#    return result
-
 
 
 # working and destination directories for executable file creation
@@ -71,8 +53,8 @@ a = Analysis(
     ],
     binaries=[],
     datas=[(
-        application_project_dir() / 'constructor_app' / 'translations' / '*.qm', \
-            Path('constructor_app') / 'translations'
+        application_project_dir() / 'constructor_app' / 'translations' / '*.qm',
+        Path('constructor_app') / 'translations'
     )],
     hookspath=[],
     hooksconfig={},
