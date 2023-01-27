@@ -33,10 +33,10 @@ class MessageEditorDialog(QDialog):
         self._ui.load_image_button.clicked.connect(self._on_load_image)
         self._ui.remove_image_button.clicked.connect(self._on_remove_image)
 
-        self.message_image_path: Optional[str] = None
-        self.message_image_filename: Optional[str] = None
+        self._message_image_path: Optional[str] = None
+        self._message_image_filename: Optional[str] = None
 
-        self.image_must_be_removed: bool = False
+        self._image_must_be_removed: bool = False
 
     def set_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
@@ -133,13 +133,13 @@ class MessageEditorDialog(QDialog):
             full_path_to_file: str = file_info[0]
             image_data = get_binary_data_from_image_file(full_path_to_file)
             self._show_image(image_data)
-            self.image_must_be_removed = False
-            self.message_image_path = full_path_to_file
-            self.message_image_filename = os.path.basename(full_path_to_file)
+            self._image_must_be_removed = False
+            self._message_image_path = full_path_to_file
+            self._message_image_filename = os.path.basename(full_path_to_file)
 
     def _on_remove_image(self, checked: bool) -> None:
         self._ui.message_image.clear()
-        self.image_must_be_removed = True
-        self.message_image_path = None
-        self.message_image_filename = None
+        self._image_must_be_removed = True
+        self._message_image_path = None
+        self._message_image_filename = None
 
