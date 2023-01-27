@@ -10,13 +10,18 @@ class OsClass(Enum):
     WINDOWS_CLASS = 'windows_class'
 
 
-# функция получения родительской директории запускаемого скрипта
 def get_script_dir() -> Path:
+    """
+    функция получения родительской директории запускаемого скрипта
+    """
     return Path(__file__).parent
 
 
-# функция получения операционной системы, в которой выполняется запуск
+
 def get_current_os() -> OsClass:
+    """
+    функция получения операционной системы, в которой выполняется запуск
+    """
     current_os = platform.system()
     if current_os == "Linux" or current_os == 'Darwin':
         result = OsClass.LINUX_CLASS
@@ -27,9 +32,11 @@ def get_current_os() -> OsClass:
     return result
 
 
-# функция определения пути к исполняемому файлу python в виртуальном окружении
-#  в зависимости от типа операционной системы
 def get_venv_python_path(venv_dir: Path) -> Path:
+    """
+    функция определения пути к исполняемому файлу python в виртуальном окружении
+    в зависимости от типа операционной системы
+    """
     assert isinstance(venv_dir, Path)
     current_os = get_current_os()
     if current_os == OsClass.WINDOWS_CLASS:
@@ -41,9 +48,11 @@ def get_venv_python_path(venv_dir: Path) -> Path:
     return result
 
 
-# функция получения необходимой для создания исполняемого файла приложения 'simple_gram' директории
-#  в зависимости от типа операционной системы
 def get_building_dir():
+    """
+    функция получения необходимой для создания исполняемого файла приложения 'simple_gram' директории
+    в зависимости от типа операционной системы
+    """
     current_os = get_current_os()
     if current_os == OsClass.WINDOWS_CLASS:
         result = get_script_dir() / 'windows'
