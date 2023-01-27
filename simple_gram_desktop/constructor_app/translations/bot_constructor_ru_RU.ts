@@ -41,7 +41,7 @@
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="162"/>
         <source>Generate bot</source>
-        <translation type="unfinished"></translation>
+        <translation>Сгенерировать бота</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="171"/>
@@ -180,43 +180,48 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="34"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="37"/>
         <source>Message type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="40"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="43"/>
         <source>Message with variants</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="47"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="50"/>
         <source>Message with any input</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="54"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="57"/>
         <source>Message with jump</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="64"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="106"/>
         <source>Keyboard type for variants</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="70"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="112"/>
         <source>Reply</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="77"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="119"/>
         <source>Inline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="102"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="144"/>
         <source>Variable name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="156"/>
+        <source>Next message</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

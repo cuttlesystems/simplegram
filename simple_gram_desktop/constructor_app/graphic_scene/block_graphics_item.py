@@ -45,6 +45,9 @@ class BlockGraphicsItem(QGraphicsItem):
     _MESSAGE_WIDTH = 150
     _MESSAGE_HEIGHT = 100
 
+    _NODE_WIDTH = 20
+    _NODE_HEIGHT = 20
+
     _VARIANT_WIDTH = 150
     _VARIANT_HEIGHT = 50
 
@@ -418,6 +421,7 @@ class BlockGraphicsItem(QGraphicsItem):
         painter.drawRect(self._variant_rect(index))
 
         if not is_illusory_variant:
+            painter.drawEllipse(self._node_rect(index))
             painter.setPen(QColor(self._color_scheme.text_color))
             painter.drawText(self._variant_text_rect(index), cut_string(variant.text, self._MAX_VARIANT_CHARS))
         else:
@@ -500,6 +504,14 @@ class BlockGraphicsItem(QGraphicsItem):
             self._VARIANT_WIDTH,
             self._VARIANT_HEIGHT)
 
+    def _node_rect(self, variant_index: int) -> QRectF:
+        dy = self._VARIANT_HEIGHT + self._VARIANT_DISTANCE
+        return QRectF(
+            self._VARIANT_WIDTH-self._NODE_WIDTH/2,
+            self._MESSAGE_HEIGHT + self._VARIANT_DISTANCE + dy * variant_index +self._VARIANT_HEIGHT/2-self._NODE_HEIGHT/2,
+            self._NODE_WIDTH,
+            self._NODE_HEIGHT)
+
     def _variant_text_rect(self, variant_index: int) -> QRectF:
         variant_rect = self._variant_rect(variant_index)
         return QRectF(
@@ -518,6 +530,7 @@ class BlockGraphicsItem(QGraphicsItem):
             variant_rect.width() - self._VARIANT_ICON_RECT_BORDER * 2,
             variant_rect.height() - self._VARIANT_ICON_RECT_BORDER * 2
         )
+
 
     def _message_rect(self) -> QRectF:
         return QRectF(0, 0, self._MESSAGE_WIDTH, self._MESSAGE_HEIGHT)
