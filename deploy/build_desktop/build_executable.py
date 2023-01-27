@@ -13,6 +13,12 @@ def create_venv(venv_dir: Path):
     """
     функция создания виртуального окружения с установкой пакета 'pip', последующим его обновлением и
     установкой требуемых пакетов из файла 'requirements.txt'
+    Args:
+        venv_dir: путь к папке виртуального окружения
+
+    Returns: созданное виртуальное окружение с установленным и обновлённым пакетом 'pip',
+    а также установленными требуемыми пакетами из файла 'requirements.txt'
+
     """
     assert isinstance(venv_dir, Path)
     print(f'Current OS: ', get_current_os())
@@ -31,6 +37,8 @@ def create_venv(venv_dir: Path):
 def pyinstaller_exe_path() -> Path:
     """
     define function to determine the PyInstaller executable file's path
+    Returns: путь к исполняемому файлу 'PyInstaller' в созданном виртуальном окружении
+
     """
     current_os = get_current_os()
     scripts_bin_path = get_venv_python_path(venv_dir).parent

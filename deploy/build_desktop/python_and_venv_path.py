@@ -1,4 +1,6 @@
-# модуль, необходимый для выполнения скрипта 'build_executable.py' с использованием файла 'start_constructor.spec'
+"""
+модуль, необходимый для выполнения скрипта 'build_executable.py' с использованием файла 'start_constructor.spec'
+"""
 
 import platform
 from enum import Enum
@@ -6,6 +8,9 @@ from pathlib import Path
 
 
 class OsClass(Enum):
+    """
+    класс для определения операционной системы
+    """
     LINUX_CLASS = 'linux_class'
     WINDOWS_CLASS = 'windows_class'
 
@@ -13,14 +18,16 @@ class OsClass(Enum):
 def get_script_dir() -> Path:
     """
     функция получения родительской директории запускаемого скрипта
+    Returns: путь к родительской директории запускаемого скрипта
     """
     return Path(__file__).parent
-
 
 
 def get_current_os() -> OsClass:
     """
     функция получения операционной системы, в которой выполняется запуск
+    Returns: используемая для запуска скрипта платформа
+
     """
     current_os = platform.system()
     if current_os == "Linux" or current_os == 'Darwin':
@@ -36,6 +43,12 @@ def get_venv_python_path(venv_dir: Path) -> Path:
     """
     функция определения пути к исполняемому файлу python в виртуальном окружении
     в зависимости от типа операционной системы
+    Args:
+        venv_dir: путь к папке виртуального окружения
+
+    Returns: путь к исполняемому файлу python в созданном виртуальном окружении
+    в зависимости от типа операционной системы
+
     """
     assert isinstance(venv_dir, Path)
     current_os = get_current_os()
@@ -50,8 +63,11 @@ def get_venv_python_path(venv_dir: Path) -> Path:
 
 def get_building_dir():
     """
-    функция получения необходимой для создания исполняемого файла приложения 'simple_gram' директории
+    функция получения необходимой для создания исполняемого файла приложения 'simple_gram` директории
     в зависимости от типа операционной системы
+    Returns: соответствующая типу операционной системы директория
+    для создания исполняемого файла приложения 'simple_gram`
+
     """
     current_os = get_current_os()
     if current_os == OsClass.WINDOWS_CLASS:
