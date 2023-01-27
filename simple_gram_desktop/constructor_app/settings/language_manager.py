@@ -20,7 +20,6 @@ class LanguageManager:
 
     def __init__(self):
         self._languages = [language for language in LanguagesEnum]
-
         # важно, чтобы объект переводчика хранился в классе, чтобы время жизни переменной переводчика
         # было: все время работы приложения
         self._translator: typing.Optional[QTranslator] = None

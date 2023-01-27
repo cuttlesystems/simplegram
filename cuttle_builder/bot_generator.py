@@ -1,10 +1,12 @@
+import re
 import shutil
 import typing
 import os
 from pathlib import Path
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand
-from bot_constructor.log_configs import logger_django
+# from bot_constructor.log_configs import logger_django
+from cuttle_builder.builder.additional.helpers.user_message_validator import UserMessageValidator
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
 from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
@@ -61,6 +63,7 @@ class BotGenerator:
         self._bot_directory = bot_path
         self._logs_file_path = self._get_bot_logs_file_path(bot, bot_path)
         self._media_directory = bot_path + '/media'
+        self._user_message_validator = UserMessageValidator(messages)
 
         self._error_message_id = bot.error_message_id
         for message in messages:
@@ -262,7 +265,7 @@ class BotGenerator:
         """
         return [item for item in self._messages if item.next_message_id == message_id]
 
-    def _create_init_handler_files(self):
+    def _create_init_handler_files(self) -> None:
         prepared_handler_inits = self._prepare_init_handlers()
         for handler_init in prepared_handler_inits:
             self._file_manager.create_handler_file_init(handler_init.handler_name)
@@ -303,7 +306,30 @@ class BotGenerator:
         self._file_manager.create_state_file(self._create_state())
         self._file_manager.create_state_file_init()
 
+    def _tab_from_new_line(self, code: str) -> str:
+        """
+        Prepare generate code: replace next string to new line and add tabulation
+        Args:
+            code (str): code, that will writen in file
+        Returns:
+            prepared string, that move next string to new line and add tabulation
+        """
+        assert isinstance(code, str)
+        return f'{code}\n\t'
+
     def create_file_handlers(self, message: BotMessage) -> None:
+        assert isinstance(message, BotMessage)
+        variables = self._user_message_validator.get_variables_from_text_exist_in_user_variables(message.text)
+        text = self._user_message_validator.get_validated_message_text(message.text)
+        # Fill in additional functions, if variables are exist, get variables, that use in text
+        additional_functions = ''
+        if len(variables) != 0:
+            variable_string_sequence = ", ".join(variables)
+            variable_value_string_sequence = ', '.join([f"variables.get('{variable}', '')" for variable in variables])
+            additional_functions += self._tab_from_new_line('variables = await state.get_data()')
+            additional_functions += \
+                self._tab_from_new_line(f'{variable_string_sequence} = {variable_value_string_sequence}')
+
         keyboard_generation_counter = 0
         imports_generation_counter = 0
         imports_for_handler = self._get_imports_sample('handler_import')
@@ -333,11 +359,12 @@ class BotGenerator:
                 prev_state='*',
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=message.text,
+                text_of_answer=text,
                 image_answer=image,
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
-                extended_imports=imports_for_start_handler
+                extended_imports=imports_for_start_handler,
+                additional_functions=additional_functions
             )
             self._file_manager.create_file_handler(str(message.id), start_handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -355,11 +382,12 @@ class BotGenerator:
                 prev_state='*',
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=message.text,
+                text_of_answer=text,
                 image_answer=image,
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
-                extended_imports=imports_for_handler
+                extended_imports=imports_for_handler,
+                additional_functions=additional_functions
             )
             self._file_manager.create_file_handler(str(message.id), error_handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -380,11 +408,12 @@ class BotGenerator:
                 prev_state=self._get_handler_name_for_message(prev_variant.current_message_id),
                 text_to_handle=prev_variant.text,
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=message.text,
+                text_of_answer=text,
                 image_answer=image,
                 kb=keyboard_name,
                 handler_type=current_message_of_variant.keyboard_type,
-                extended_imports=imports_for_handler if imports_generation_counter == 0 else ''
+                extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
+                additional_functions=additional_functions
             )
             self._file_manager.create_file_handler(str(message.id), handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -402,20 +431,21 @@ class BotGenerator:
             else:
                 keyboard_name = self._get_keyboard_name_for_message(message.id)
 
-            # Создание хэндлера для команды /prev_variant.text
-            update_state_data = f'await state.update_data({previous_message.variable}=message.text)'
-
+            # Создание хэндлера для команды /previous_message.variable
+            update_state_data = f'await state.update_data({previous_message.variable}=message.text)' \
+                if previous_message.variable else ''
+            additional_functions = self._tab_from_new_line(update_state_data) + additional_functions
             handler_code = self._create_state_handler(
                 command='',
                 prev_state=self._get_handler_name_for_message(previous_message.id),
                 text_to_handle=None,
                 state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=message.text,
+                text_of_answer=text,
                 image_answer=image,
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
-                additional_functions=update_state_data
+                additional_functions=additional_functions
             )
             self._file_manager.create_file_handler(str(message.id), handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -431,7 +461,7 @@ class BotGenerator:
         extended_imports = self._get_imports_sample('state_import')
         return create_state(extended_imports, self._states)
 
-    def _create_config_file(self):
+    def _create_config_file(self) -> None:
         extend_imports = self._get_imports_sample('config_import')
         config_code = create_config(extend_imports, {'TOKEN': self._token})
         self._file_manager.create_config_file(config_code)
@@ -443,7 +473,7 @@ class BotGenerator:
         commands_code = generate_commands_code(self._commands)
         self._file_manager.create_commands_file(commands_code)
 
-    def _create_log_dir_if_it_doesnt_exist(self):
+    def _create_log_dir_if_it_doesnt_exist(self) -> None:
         create_dir_if_it_doesnt_exist(Path(self._logs_file_path).parent)
 
     def _create_app_file(self) -> None:

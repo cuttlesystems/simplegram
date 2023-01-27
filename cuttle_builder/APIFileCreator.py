@@ -22,7 +22,7 @@ class APIFileCreator(FileManager):
 
         keyboard_code_file = str(
             Path(self._bot_directory) / 'keyboards' / f'{keyboard_name}.py')
-        self.write_file(keyboard_code_file, keyboard_code)
+        self.write_file_insert(keyboard_code_file, keyboard_code)
 
     def create_keyboard_file_init(self, keyboard_name: str) -> None:
         assert isinstance(keyboard_name, str)
@@ -44,7 +44,7 @@ class APIFileCreator(FileManager):
 
         handler_code_file = str(
             Path(self._bot_directory) / 'handlers' / f'get_{name}.py')
-        self.write_file(handler_code_file, code)
+        self.write_file_insert(handler_code_file, code)
 
     def create_handler_file_init(self, name: str) -> None:
         assert isinstance(name, str)
@@ -64,7 +64,7 @@ class APIFileCreator(FileManager):
 
         state_code_file = str(
             Path(self._bot_directory) / 'state' / 'states.py')
-        self.write_file(state_code_file, code)
+        self.write_file_insert(state_code_file, code)
 
     def create_state_file_init(self) -> None:
         import_code = 'from .states import States'
@@ -90,7 +90,7 @@ class APIFileCreator(FileManager):
 
         path_to_file = str(
             Path(self._bot_directory) / 'on_startup_commands.py')
-        self.write_file(path_to_file, code)
+        self.write_file_insert(path_to_file, code)
 
     def create_app_file(self, code: str) -> None:
         """
@@ -103,4 +103,4 @@ class APIFileCreator(FileManager):
 
         path_to_file = str(
             Path(self._bot_directory) / 'app.py')
-        self.write_file(path_to_file, code)
+        self.write_file_insert(path_to_file, code)
