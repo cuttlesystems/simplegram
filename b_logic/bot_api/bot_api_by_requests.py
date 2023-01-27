@@ -9,6 +9,7 @@ import urllib.request
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
     MessageTypeEnum
+from utils.image_to_bytes import get_binary_data_from_image_file
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
@@ -292,6 +293,17 @@ class BotApiByRequests(IBotApi):
             image_data = None
         return image_data
 
+    def get_one_message(self, message_id: int) -> BotMessage:
+        assert isinstance(message_id, int)
+        response = requests.get(
+            url=self._suite_url + f'api/message/{message_id}/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException(
+                'Ошибка при получении информации о сообщении: {0}'.format(response.text))
+        return self._create_bot_message_from_data(json.loads(response.text))
+
     def change_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
         response = requests.patch(
@@ -303,6 +315,17 @@ class BotApiByRequests(IBotApi):
         if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException(
                 'Ошибка при изменении сообщения: {0}'.format(response.text))
+
+    def remove_message_image(self, message: BotMessage) -> None:
+        assert isinstance(message, BotMessage)
+        response = requests.patch(
+            url=self._suite_url + f'api/message/{message.id}/',
+            json={'photo': None},
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException(
+                'Ошибка при удалении изображения: {0}'.format(response.text))
 
     def delete_message(self, message: BotMessage):
         assert isinstance(message, BotMessage)
@@ -589,11 +612,10 @@ class BotApiByRequests(IBotApi):
 
     def _create_upload_files_message_dict_from_message_obj(self, message: BotMessage) -> dict:
         assert isinstance(message, BotMessage)
-        upload_files_message_dict = {
-            'photo': (message.photo_filename, message.photo),
-            # 'video': (),
-            # 'file': ()
-        }
+        upload_files_message_dict = dict()
+        if message.photo and message.photo_filename:
+            file_data = get_binary_data_from_image_file(message.photo)
+            upload_files_message_dict['photo'] = (message.photo_filename, file_data)
         return upload_files_message_dict
 
     def _create_variant_from_data(self, variant_dict: dict) -> BotVariant:
