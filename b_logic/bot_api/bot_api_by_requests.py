@@ -55,8 +55,8 @@ class BotApiByRequests(IBotApi):
         """
         try:
             response = requests.post(
-                self._suite_url + 'api/users/',
-                {
+                url=self._suite_url + 'api/users/',
+                data={
                     'username': username,
                     'email': email,
                     'password': password
@@ -77,8 +77,8 @@ class BotApiByRequests(IBotApi):
         """
         try:
             response = requests.post(
-                self._suite_url + 'api/auth/token/login/',
-                {
+                url=self._suite_url + 'api/auth/token/login/',
+                data={
                     'username': username,
                     'password': password
                 }
@@ -105,7 +105,7 @@ class BotApiByRequests(IBotApi):
             список ботов
         """
         response = requests.get(
-            self._suite_url + 'api/bots/',
+            url=self._suite_url + 'api/bots/',
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -133,8 +133,8 @@ class BotApiByRequests(IBotApi):
             bot_description=bot_description
         )
         response = requests.post(
-            self._suite_url + 'api/bots/',
-            self._create_bot_dict_from_obj(bot),
+            url=self._suite_url + 'api/bots/',
+            data=self._create_bot_dict_from_obj(bot),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
@@ -151,7 +151,7 @@ class BotApiByRequests(IBotApi):
             объект бота
         """
         response = requests.get(
-            self._suite_url + f'api/bots/{id}/',
+            url=self._suite_url + f'api/bots/{id}/',
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -163,8 +163,8 @@ class BotApiByRequests(IBotApi):
         assert isinstance(bot.id, int)
         bot_dict = self._create_bot_dict_from_obj(bot)
         response = requests.patch(
-            self._suite_url + f'api/bots/{bot.id}/',
-            bot_dict,
+            url=self._suite_url + f'api/bots/{bot.id}/',
+            data=bot_dict,
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -177,7 +177,7 @@ class BotApiByRequests(IBotApi):
             id: идентификатор бота
         """
         response = requests.delete(
-            self._suite_url + f'api/bots/{id}/',
+            url=self._suite_url + f'api/bots/{id}/',
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.no_content:
@@ -194,8 +194,8 @@ class BotApiByRequests(IBotApi):
         assert isinstance(bot, BotDescription)
         assert isinstance(start_message, BotMessage)
         response = requests.patch(
-            self._suite_url + f'api/bots/{bot.id}/',
-            {
+            url=self._suite_url + f'api/bots/{bot.id}/',
+            data={
                 'start_message': start_message.id
             },
             headers=self._get_headers()
@@ -216,8 +216,8 @@ class BotApiByRequests(IBotApi):
         assert isinstance(bot, BotDescription)
         assert isinstance(error_message, BotMessage)
         response = requests.patch(
-            self._suite_url + f'api/bots/{bot.id}/',
-            {
+            url=self._suite_url + f'api/bots/{bot.id}/',
+            data={
                 'error_message': error_message.id
             },
             headers=self._get_headers()
@@ -238,7 +238,7 @@ class BotApiByRequests(IBotApi):
         """
         assert isinstance(bot, BotDescription)
         response = requests.get(
-            self._suite_url + f'api/bots/{bot.id}/messages/',
+            url=self._suite_url + f'api/bots/{bot.id}/messages/',
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -331,7 +331,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(message, BotMessage)
         print(f'delete message id {message.id}')
         response = requests.delete(
-            self._suite_url + f'api/message/{message.id}/',
+            url=self._suite_url + f'api/message/{message.id}/',
             headers=self._get_headers()
         )
         print(f'delete response {response.status_code}')
@@ -349,7 +349,7 @@ class BotApiByRequests(IBotApi):
         """
         assert isinstance(message, BotMessage)
         response = requests.get(
-            self._suite_url + f'api/messages/{message.id}/variants/',
+            url=self._suite_url + f'api/messages/{message.id}/variants/',
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -376,8 +376,8 @@ class BotApiByRequests(IBotApi):
             text=text
         )
         response = requests.post(
-            self._suite_url + f'api/messages/{message.id}/variants/',
-            self._create_variant_dict_from_variant_obj(variant_obj),
+            url=self._suite_url + f'api/messages/{message.id}/variants/',
+            data=self._create_variant_dict_from_variant_obj(variant_obj),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
@@ -393,8 +393,8 @@ class BotApiByRequests(IBotApi):
         """
         assert isinstance(variant, BotVariant)
         response = requests.patch(
-            self._suite_url + f'api/variant/{variant.id}/',
-            self._create_variant_dict_from_variant_obj(variant),
+            url=self._suite_url + f'api/variant/{variant.id}/',
+            json=self._create_variant_dict_from_variant_obj(variant),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -410,8 +410,8 @@ class BotApiByRequests(IBotApi):
         assert isinstance(variant, BotVariant)
         assert isinstance(message, BotMessage)
         response = requests.patch(
-            self._suite_url + f'api/variant/{variant.id}/',
-            {
+            url=self._suite_url + f'api/variant/{variant.id}/',
+            data={
                 'next_message': message.id
             },
             headers=self._get_headers()
@@ -430,7 +430,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(variant, BotVariant)
         print(f'delete variant id {variant.id}')
         response = requests.delete(
-            self._suite_url + f'api/variant/{variant.id}/',
+            url=self._suite_url + f'api/variant/{variant.id}/',
             headers=self._get_headers()
         )
         print(f'delete response {response.status_code}')
@@ -449,7 +449,7 @@ class BotApiByRequests(IBotApi):
         """
         assert isinstance(bot, BotDescription)
         response = requests.get(
-            self._suite_url + f'api/bots/{bot.id}/commands/',
+            url=self._suite_url + f'api/bots/{bot.id}/commands/',
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -530,7 +530,7 @@ class BotApiByRequests(IBotApi):
     def get_bot_logs(self, bot: BotDescription) -> BotLogs:
         assert isinstance(bot, BotDescription)
         response = requests.get(
-            self._suite_url + f'api/bots/{bot.id}/logs/',
+            url=self._suite_url + f'api/bots/{bot.id}/logs/',
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
