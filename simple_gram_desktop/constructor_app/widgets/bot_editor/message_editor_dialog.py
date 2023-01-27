@@ -1,10 +1,8 @@
 import os.path
-from pathlib import Path
 from typing import Optional
 
 from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtCore import QSize
-from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QDialog, QFileDialog
 
 from b_logic.bot_api.i_bot_api import IBotApi
@@ -18,6 +16,7 @@ class MessageEditorDialog(QDialog):
     _IMAGE_WIDTH = 130
     _IMAGE_NOT_FOUND_WINDOW_HEIGHT = 130
     _IMAGE_NOT_FOUND_WINDOW_WIDTH = 130
+    _IMAGE_ALLOWED_FORMATS = '(*.png *.bmp *.jpg *.gif *.ico *.jpeg *.svg *.tif *.webp *.xpm)'
 
     def __init__(self, bot_api: IBotApi, bot: BotDescription, parent: Optional[QtWidgets.QWidget] = None):
         assert isinstance(bot_api, IBotApi)
@@ -127,7 +126,7 @@ class MessageEditorDialog(QDialog):
             parent=self,
             caption='Open file',
             dir='',
-            filter='Images (*.png *.bmp *.jpg *.gif *.ico *.jpeg *.svg *.tif *.webp *.xpm);;All files (*.*)'
+            filter=f'Images {self._IMAGE_ALLOWED_FORMATS};;All files (*.*)'
         )
         print(file_info)
         if len(file_info[0]) > 0:
