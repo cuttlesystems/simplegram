@@ -164,7 +164,7 @@ class BotApiByRequests(IBotApi):
         bot_dict = self._create_bot_dict_from_obj(bot)
         response = requests.patch(
             url=self._suite_url + f'api/bots/{bot.id}/',
-            data=bot_dict,
+            json=bot_dict,
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -195,7 +195,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(start_message, BotMessage)
         response = requests.patch(
             url=self._suite_url + f'api/bots/{bot.id}/',
-            data={
+            json={
                 'start_message': start_message.id
             },
             headers=self._get_headers()
@@ -217,7 +217,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(error_message, BotMessage)
         response = requests.patch(
             url=self._suite_url + f'api/bots/{bot.id}/',
-            data={
+            json={
                 'error_message': error_message.id
             },
             headers=self._get_headers()
@@ -250,7 +250,7 @@ class BotApiByRequests(IBotApi):
 
     def create_message(self, bot: BotDescription, text: str,
                        keyboard_type: ButtonTypesEnum, x: int, y: int,
-                       photo: Optional[bytes] = None,
+                       photo: Optional[str] = None,
                        photo_filename: Optional[str] = None) -> BotMessage:
         """
         Создать сообщение
@@ -260,6 +260,8 @@ class BotApiByRequests(IBotApi):
             keyboard_type: тип клавиатуры для сообщения
             x: координата по x
             y: координата по y
+            photo: путь к файлу изображения
+            photo_filename: имя файла с расширением
 
         Returns:
             объект созданного сообщения
@@ -308,7 +310,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(message, BotMessage)
         response = requests.patch(
             url=self._suite_url + f'api/message/{message.id}/',
-            data=self._create_message_dict_from_message_obj(message),
+            json=self._create_message_dict_from_message_obj(message),
             headers=self._get_headers(),
             files=self._create_upload_files_message_dict_from_message_obj(message)
         )
@@ -411,7 +413,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(message, BotMessage)
         response = requests.patch(
             url=self._suite_url + f'api/variant/{variant.id}/',
-            data={
+            json={
                 'next_message': message.id
             },
             headers=self._get_headers()
