@@ -15,11 +15,6 @@ class MessageSelectorList(QListWidget):
 
     def __init__(self, parent: typing.Optional[QWidget] = None):
         super().__init__(parent)
-        #self.installEventFilter(self)
-        #self.viewport().installEventFilter(self)
-        #self.viewport().setMouseTracking(False)
-            #QListWidgetItem.flags() & ~Qt.ItemFlag.ItemIsSelectable
-
 
     def set_messages(self, messages: typing.List[BotMessage]) -> None:
         """
@@ -59,11 +54,6 @@ class MessageSelectorList(QListWidget):
                     # выделяем заданный элемент
                     self.setCurrentItem(item)
                     break
-
-    #def eventFilter(self, obj, event) -> None:
-        #if obj == self.viewport():
-        #    return False
-    #    pass
 
     def get_selected_message(self) -> typing.Optional[BotMessage]:
         """
