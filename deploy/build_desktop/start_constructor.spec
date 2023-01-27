@@ -1,6 +1,16 @@
 # -*- mode: python ; coding: utf-8 -*-
 from pathlib import Path
+from enum import Enum
 import time
+import PyInstaller.config
+import os
+import sys
+
+# обходное решение для добавления текущей директории в 'PYTHONPATH'
+#  небходимо для того, чтобы проходил import, выполняемый строкой ниже
+sys.path.append('.')
+
+from python_and_venv_path import get_building_dir
 
 
 block_cipher = None
@@ -21,6 +31,37 @@ def application_project_dir() -> Path:
     D:\Git Repos\tg_bot_constructor\simple_gram_desktop
     """
     return spec_file_dir() / Path('..') / '..' / 'simple_gram_desktop'
+
+
+#class OsClass(Enum):
+#    LINUX_CLASS = 'linux_class'
+#    WINDOWS_CLASS = 'windows_class'
+
+
+#def os_related_path_part():
+#    current_os = get_current_os()
+#    if current_os == OsClass.WINDOWS_CLASS:
+#        result = spec_file_dir() / 'windows'
+#    elif current_os == OsClass.LINUX_CLASS:
+#        result = spec_file_dir() / 'linux'
+#    else:
+#        raise NotImplementedError('Unsupported os')
+#    return result
+
+
+
+# working and destination directories for executable file creation
+build_dir = get_building_dir() / 'build'
+dist_dir = get_building_dir() / 'dist'
+
+build_dir.mkdir(exist_ok=True)
+dist_dir.mkdir(exist_ok=True)
+
+
+# define working directory for executable file creation
+PyInstaller.config.CONF['workpath'] = str(build_dir)
+# define destination directory for executable file creation
+PyInstaller.config.CONF['distpath'] = str(dist_dir)
 
 
 a = Analysis(
