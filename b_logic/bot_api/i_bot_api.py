@@ -173,11 +173,34 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
+    def get_one_message(self, message_id: int) -> BotMessage:
+        """
+        Получение информации о конкретном сообщении из БД.
+
+        Args:
+            message_id: id сообщения
+
+        Returns:
+            объект BotMessage
+        """
+        pass
+
+    @abstractmethod
     def change_message(self, message: BotMessage) -> None:
         """
         Изменить сообщение
         Args:
             message: сообщение, которое необходимо изменить
+        """
+        pass
+
+    @abstractmethod
+    def remove_message_image(self, message: BotMessage) -> None:
+        """
+        Удаление изображения у сообщения.
+
+        Args:
+            message: сообщение, у которого необходимо удалить изображение
         """
         pass
 
