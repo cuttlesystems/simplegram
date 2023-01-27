@@ -82,7 +82,13 @@ class BotApiByDjangoORM(IBotApi):
     def get_message_image_by_url(self, message: BotMessage) -> Optional[bytes]:
         raise NotImplementedError('Метод не определен!')
 
+    def get_one_message(self, message_id: int) -> BotMessage:
+        raise NotImplementedError('Метод не определен!')
+
     def change_message(self, message: BotMessage) -> None:
+        raise NotImplementedError('Метод не определен!')
+
+    def remove_message_image(self, message: BotMessage) -> None:
         raise NotImplementedError('Метод не определен!')
 
     def delete_message(self, message: BotMessage):

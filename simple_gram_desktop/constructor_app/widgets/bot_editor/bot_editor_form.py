@@ -10,7 +10,7 @@ from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum
 from common.localisation import tran
 from common.model_property import ModelProperty
-from common.utils.name_utils import gen_next_name
+from utils.name_utils import gen_next_name
 from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from constructor_app.graphic_scene.bot_scene import BotScene
 from constructor_app.widgets.bot_editor.message_editor_dialog import MessageEditorDialog
@@ -205,8 +205,9 @@ class BotEditorForm(QMainWindow):
         assert isinstance(block, BlockGraphicsItem)
         assert all(isinstance(variant, BotVariant) for variant in variants)
         message = block.get_message()
+        message = self._bot_api.get_one_message(message.id)
         editor_dialog = MessageEditorDialog(self._bot_api, self._bot, self)
-        editor_dialog.set_message(block.get_message())
+        editor_dialog.set_message(message)
 
         # todo: тут появляется побочный эффект - после закрытия окна диалога следующий клик пропадает,
         #  надо бы поправить
@@ -219,7 +220,11 @@ class BotEditorForm(QMainWindow):
 
             next_message = editor_dialog.get_next_message()
             message.next_message_id = next_message.id if next_message is not None else None
-
+            print(f'Удаляем имэйдж? {editor_dialog.get_image_must_be_removed_state()}')
+            if editor_dialog.get_image_must_be_removed_state():
+                self._bot_api.remove_message_image(message)
+            message.photo = editor_dialog.get_message_image_path()
+            message.photo_filename = editor_dialog.get_message_image_filename()
             self._bot_api.change_message(message)
 
             block.change_message(message)

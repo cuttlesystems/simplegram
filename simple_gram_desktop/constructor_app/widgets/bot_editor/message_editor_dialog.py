@@ -1,12 +1,14 @@
+import os.path
 from typing import Optional
 
 from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtCore import QSize
-from PySide6.QtWidgets import QDialog
+from PySide6.QtWidgets import QDialog, QFileDialog
 
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotMessage, ButtonTypesEnum, MessageTypeEnum, BotDescription
 from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
+from utils.image_to_bytes import get_binary_data_from_image_file
 
 
 class MessageEditorDialog(QDialog):
@@ -14,6 +16,7 @@ class MessageEditorDialog(QDialog):
     _IMAGE_WIDTH = 130
     _IMAGE_NOT_FOUND_WINDOW_HEIGHT = 130
     _IMAGE_NOT_FOUND_WINDOW_WIDTH = 130
+    _IMAGE_ALLOWED_FORMATS = '(*.png *.bmp *.jpg *.gif *.ico *.jpeg *.svg *.tif *.webp *.xpm)'
 
     def __init__(self, bot_api: IBotApi, bot: BotDescription, parent: Optional[QtWidgets.QWidget] = None):
         assert isinstance(bot_api, IBotApi)
@@ -23,8 +26,17 @@ class MessageEditorDialog(QDialog):
 
         self._ui = Ui_MessageEditorDialog()
         self._ui.setupUi(self)
+
         self._bot_api = bot_api
         self._bot = bot
+
+        self._ui.load_image_button.clicked.connect(self._on_load_image)
+        self._ui.remove_image_button.clicked.connect(self._on_remove_image)
+
+        self._message_image_path: Optional[str] = None
+        self._message_image_filename: Optional[str] = None
+
+        self._image_must_be_removed_state: bool = False
 
     def set_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
@@ -108,3 +120,34 @@ class MessageEditorDialog(QDialog):
             size.setWidth(self._IMAGE_WIDTH)
             size.setHeight(int(height * image_size_ratio))
         return size
+
+    def _on_load_image(self, checked: bool) -> None:
+        file_info = QFileDialog.getOpenFileName(
+            parent=self,
+            caption='Open file',
+            dir='',
+            filter=f'Images {self._IMAGE_ALLOWED_FORMATS};;All files (*.*)'
+        )
+        print(file_info)
+        if len(file_info[0]) > 0:
+            full_path_to_file: str = file_info[0]
+            image_data = get_binary_data_from_image_file(full_path_to_file)
+            self._show_image(image_data)
+            self._image_must_be_removed_state = False
+            self._message_image_path = full_path_to_file
+            self._message_image_filename = os.path.basename(full_path_to_file)
+
+    def _on_remove_image(self, checked: bool) -> None:
+        self._ui.message_image.clear()
+        self._image_must_be_removed_state = True
+        self._message_image_path = None
+        self._message_image_filename = None
+
+    def get_message_image_path(self) -> Optional[str]:
+        return self._message_image_path
+
+    def get_message_image_filename(self) -> Optional[str]:
+        return self._message_image_filename
+
+    def get_image_must_be_removed_state(self) -> bool:
+        return self._image_must_be_removed_state
