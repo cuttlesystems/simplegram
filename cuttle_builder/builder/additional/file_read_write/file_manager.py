@@ -28,7 +28,6 @@ class FileManager:
             code (_type_): generated code
         """
         with open(directory, 'a', encoding='utf-8') as f:
-            f.seek(0, self._FROM_BEGINNING)
             f.write(code)
 
     def write_file_owerwrite(self, directory: str, code: str) -> None:
