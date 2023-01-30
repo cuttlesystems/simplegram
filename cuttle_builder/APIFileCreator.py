@@ -103,4 +103,4 @@ class APIFileCreator(FileManager):
 
         path_to_file = str(
             Path(self._bot_directory) / 'app.py')
-        self.write_file_insert(path_to_file, code)
+        self.write_file_owerwrite(path_to_file, code)

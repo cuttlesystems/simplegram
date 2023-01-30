@@ -7,7 +7,6 @@ from cuttle_builder.bot_generator_params import CUTTLE_BUILDER_PATH
 
 
 class FileManager:
-
     _FROM_BEGINNING = 0
 
     def __init__(self) -> None:
@@ -32,7 +31,7 @@ class FileManager:
             f.seek(0, self._FROM_BEGINNING)
             f.write(code)
 
-    def write_file_rewrite(self, directory: str, code: str) -> None:
+    def write_file_owerwrite(self, directory: str, code: str) -> None:
         """add into directory file, that contains generated code
 
         Args:
@@ -41,7 +40,6 @@ class FileManager:
         """
         with open(directory, 'w', encoding='utf-8') as f:
             f.write(code)
-
 
     def write_into_init(self, directory: str, code: str) -> None:
         """add into init files names of new units to register generated code (dir - init directory, code - import of unit)
