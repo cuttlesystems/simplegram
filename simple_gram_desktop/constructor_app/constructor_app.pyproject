@@ -11,7 +11,11 @@
 
         "widgets/bot_editor/bot_editor_form.ui",
         "widgets/bot_editor/message_editor_dialog.ui",
-        "widgets/bot_editor/variant_editor_dialog.ui"
+        "widgets/bot_editor/variant_editor_dialog.ui",
+
+        "widgets/client_widget.ui",
+        "widgets/login_widget.ui",
+        "widgets/item_project_sidebar.ui"
 
     ]
 }

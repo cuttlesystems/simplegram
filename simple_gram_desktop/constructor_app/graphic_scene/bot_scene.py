@@ -238,3 +238,4 @@ class BotScene(QGraphicsScene):
         for block in self._message_graphics_list:
             if block.get_message().id == message_id:
                 return block
+

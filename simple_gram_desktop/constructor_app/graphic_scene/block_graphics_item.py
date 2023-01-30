@@ -45,8 +45,8 @@ class BlockGraphicsItem(QGraphicsItem):
     _MESSAGE_WIDTH = 150
     _MESSAGE_HEIGHT = 100
 
-    _NODE_WIDTH = 20
-    _NODE_HEIGHT = 20
+    _NODE_WIDTH = 16
+    _NODE_HEIGHT = 16
 
     _VARIANT_WIDTH = 150
     _VARIANT_HEIGHT = 50
@@ -59,6 +59,8 @@ class BlockGraphicsItem(QGraphicsItem):
 
     _BORDER_THICKNESS_NORMAL = 2
     _BORDER_THICKNESS_SELECTED = 3
+
+    _SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE = 5
 
     _ROUND_RADIUS = 30
     _BLOCK_RECT_EXTEND_SPACE = 25
@@ -155,6 +157,20 @@ class BlockGraphicsItem(QGraphicsItem):
         width = rect.width() + self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE * 2
         height = rect.height() + self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE * 2
         return QRectF(x, y, width, height)
+
+    def summaryVariantsBlockRect(self) -> QRectF:
+        """
+        Определение области выделенной для вариантов в блоке.
+        Returns:
+            координаты внешней области фигуры
+        """
+        rect = self.boundingRect()
+        x = rect.x() + 2*self._SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE
+        y = rect.y() + 2*self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE + self._START_MESSAGE_TITLE_HEIGHT + self._MESSAGE_HEIGHT + self._VARIANT_DISTANCE/2
+        width = rect.width() - self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE * 2 - self._NODE_WIDTH
+        height = rect.height() - self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE * 4 - self._START_MESSAGE_TITLE_HEIGHT - self._MESSAGE_HEIGHT - self._VARIANT_DISTANCE
+        return QRectF(x, y, width, height)
+
 
     def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value: typing.Any) -> typing.Any:
         """
@@ -414,12 +430,15 @@ class BlockGraphicsItem(QGraphicsItem):
         assert isinstance(variant, BotVariant) or variant is None
         assert isinstance(index, int)
 
+        painter.setBrush(QColor(self._color_scheme.summary_variants_block_color))
+        painter.setPen(QColor(self._color_scheme.summary_variants_block_color))
+        painter.drawRoundedRect(self.summaryVariantsBlockRect(), 16, 16)
+
         is_illusory_variant = variant is None
 
         self._setup_variant_colors(painter, index, is_illusory_variant)
 
         painter.drawRect(self._variant_rect(index))
-
         if not is_illusory_variant:
             painter.drawEllipse(self._node_rect(index))
             painter.setPen(QColor(self._color_scheme.text_color))
@@ -436,23 +455,25 @@ class BlockGraphicsItem(QGraphicsItem):
         variant_rect.x() + variant_rect.width() / 2.0 - height
 
     def _get_block_brush(self) -> QBrush:
-        alpha_top_left = 180
-        alpha_right_bottom = 50
-        if self.isSelected():
-            alpha_top_left = 230
-            alpha_right_bottom = 230
+        #alpha_top_left = 180
+        #alpha_right_bottom = 50
+        #if self.isSelected():
+        #    alpha_top_left = 230
+        #    alpha_right_bottom = 230
 
-        gradient = QLinearGradient(0, 0, 100, 100)
+        #gradient = QLinearGradient(0, 0, 100, 100)
 
-        block_brush_color_top_left = QColor(0xb4e6ce)
-        block_brush_color_top_left.setAlpha(alpha_top_left)
+        #block_brush_color_top_left = QColor(0xb4e6ce)
+        #block_brush_color_top_left.setAlpha(alpha_top_left)
 
-        block_brush_color_right_bottom = QColor(0xaef7d5)
-        block_brush_color_right_bottom.setAlpha(alpha_right_bottom)
+        #block_brush_color_right_bottom = QColor(0xaef7d5)
+        #block_brush_color_right_bottom.setAlpha(alpha_right_bottom)
 
-        gradient.setColorAt(0.0, block_brush_color_top_left)
-        gradient.setColorAt(1.0, block_brush_color_right_bottom)
-        block_brush = QBrush(gradient)
+        #gradient.setColorAt(0.0, block_brush_color_top_left)
+        #gradient.setColorAt(1.0, block_brush_color_right_bottom)
+        #block_brush = QBrush(gradient)
+
+        block_brush = QBrush(QColor(255,255,255))
         return block_brush
 
     def _setup_message_colors(self, painter: QtGui.QPainter):
@@ -556,7 +577,7 @@ class BlockGraphicsItem(QGraphicsItem):
 
         x = rect.x() - self._BLOCK_RECT_EXTEND_SPACE
         y = rect.y() - self._BLOCK_RECT_EXTEND_SPACE
-        width = rect.width() + 2 * self._BLOCK_RECT_EXTEND_SPACE
+        width = rect.width() + 2 * self._BLOCK_RECT_EXTEND_SPACE + self._NODE_WIDTH*2
         height = rect.height() + 2 * self._BLOCK_RECT_EXTEND_SPACE
         return QRectF(x, y, width, height)
 

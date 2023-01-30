@@ -19,6 +19,9 @@ class BotView(QGraphicsView):
         assert isinstance(parent, Optional[QtWidgets.QWidget])
         super().__init__(parent)
 
+        # подложка для общей графической сцены
+        self.setStyleSheet("QGraphicsView{background:rgb(241,241,241);}")
+
         # контекстное меню для блока
         self._context_menu_block: typing.Optional[QMenu] = None
 
