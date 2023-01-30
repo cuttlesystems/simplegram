@@ -5,7 +5,6 @@ import os
 from pathlib import Path
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand
-from bot_constructor.log_configs import logger_django
 from cuttle_builder.builder.additional.helpers.user_message_validator import UserMessageValidator
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
@@ -175,7 +174,7 @@ class BotGenerator:
             assert os.path.exists(full_path_to_file_in_bot_dir)
             result = full_path_to_file_in_bot_dir
         except FileNotFoundError as error:
-            logger_django.error_logging(error)
+            print(f'----------->>>Logging error: {error}')
             result = None
         return result
 
