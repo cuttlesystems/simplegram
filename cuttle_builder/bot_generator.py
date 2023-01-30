@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand
-# from bot_constructor.log_configs import logger_django
+from bot_constructor.log_configs import logger_django
 from cuttle_builder.builder.additional.helpers.user_message_validator import UserMessageValidator
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
