@@ -63,12 +63,11 @@ class LoginForm(QWidget):
         settings_path = get_application_data_dir()
         self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
         settings = self._application_settings.read_settings()
-        address = settings.address if settings.address else self._DEFAULT_ADDRESS
         state = Qt.CheckState.Checked if settings.save_password else Qt.CheckState.Unchecked
         self._ui.save_my_password.setCheckState(state)
         self._ui.username_edit.setText(settings.name)
         self._ui.password_edit.setText(settings.password)
-        self._ui.server_addr_edit.setText(address)
+        self._ui.server_addr_edit.setText(settings.address)
         self._connect_signals()
         self._dialog_state: LoginStateEnum = LoginStateEnum.LOGIN
         self._activate_controls()

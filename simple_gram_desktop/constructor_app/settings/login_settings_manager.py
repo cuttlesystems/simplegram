@@ -25,6 +25,7 @@ class LoginSettingsManager:
             with open(settings_path) as file:
                 data = json.load(file)
                 settings = self._dict_to_settings(data)
+        settings.address = settings.address if settings.address else self._DEFAULT_ADDRESS
         return settings
 
     def write_settings(self, settings: LoginSettings) -> None:
