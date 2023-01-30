@@ -10,7 +10,7 @@ from constructor_app.settings.login_settings import LoginSettings
 
 class LoginSettingsManager:
 
-    _DEFAULT_ADDRESS = 'https://ramasuchka.kz'
+    _DEFAULT_ADDRESS = 'https://ramasuchka.kz/'
 
     def __init__(self, path_to_storage: Path, key: bytes):
         assert isinstance(path_to_storage, Path)

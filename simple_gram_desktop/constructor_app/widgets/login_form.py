@@ -43,7 +43,6 @@ class LoginForm(QWidget):
     sign_up_signal = Signal(str)
 
     _KEY = b'OCbAwQH4JA9ID-5gJB4nvk4UbNwpHx4wNT5O5VNKcGI='
-    _DEFAULT_ADDRESS = 'https://ramasuchka.kz'
 
     def __init__(self, parent: typing.Optional[QWidget], bot_api: IBotApi):
         super().__init__(parent)
