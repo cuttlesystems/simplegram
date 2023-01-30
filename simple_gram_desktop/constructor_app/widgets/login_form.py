@@ -43,6 +43,7 @@ class LoginForm(QWidget):
     sign_up_signal = Signal(str)
 
     _KEY = b'OCbAwQH4JA9ID-5gJB4nvk4UbNwpHx4wNT5O5VNKcGI='
+    _DEFAULT_ADDRESS = 'https://ramasuchka.kz'
 
     def __init__(self, parent: typing.Optional[QWidget], bot_api: IBotApi):
         super().__init__(parent)
@@ -62,11 +63,13 @@ class LoginForm(QWidget):
         settings_path = get_application_data_dir()
         self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
         settings = self._application_settings.read_settings()
+        address = settings.address if settings.address else self._DEFAULT_ADDRESS
+        print(settings)
         state = Qt.CheckState.Checked if settings.save_password else Qt.CheckState.Unchecked
         self._ui.save_my_password.setCheckState(state)
         self._ui.username_edit.setText(settings.name)
         self._ui.password_edit.setText(settings.password)
-        self._ui.server_addr_edit.setText(settings.address)
+        self._ui.server_addr_edit.setText(address)
         self._connect_signals()
         self._dialog_state: LoginStateEnum = LoginStateEnum.LOGIN
         self._activate_controls()
