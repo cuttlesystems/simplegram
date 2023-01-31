@@ -47,8 +47,8 @@ class FileManager:
         except Exception as e:
             print(e)
 
-    def read_file(self, directory: str) -> str:
-        with open(directory, 'r') as file:
+    def read_file(self, file_path: str) -> str:
+        with open(file_path, 'r') as file:
             return file.read()
 
     def _get_dir(self, bot_id: int) -> str:
@@ -62,34 +62,34 @@ class FileManager:
         """
         return 'bot_{0}'.format(bot_id)
 
-    def _write_file_insert(self, directory: str, code: str) -> None:
+    def _write_file_insert(self, file_path: str, code: str) -> None:
         """add into directory file, that contains generated code
 
         Args:
-            directory:
+            file_path:
             code (_type_): generated code
         """
-        with open(directory, 'a', encoding='utf-8') as f:
+        with open(file_path, 'a', encoding='utf-8') as f:
             f.write(code)
 
-    def _write_file_owerwrite(self, directory: str, code: str) -> None:
+    def _write_file_owerwrite(self, file_path: str, code: str) -> None:
         """add into directory file, that contains generated code
 
         Args:
-            directory:
+            file_path:
             code (_type_): generated code
         """
-        with open(directory, 'w', encoding='utf-8') as f:
+        with open(file_path, 'w', encoding='utf-8') as f:
             f.write(code)
 
-    def _write_into_init(self, directory: str, code: str) -> None:
+    def _write_into_init(self, file_path: str, code: str) -> None:
         """add into init files names of new units to register generated code (dir - init directory, code - import of unit)
 
         Args:
-            directory:
+            file_path:
             dir (_type_): directory path
             code (_type_): generated code (import insdide init)
         """
-        prev_file = self.read_file(directory)
-        with open(directory, 'w') as file:
+        prev_file = self.read_file(file_path)
+        with open(file_path, 'w') as file:
             file.write(code + prev_file)

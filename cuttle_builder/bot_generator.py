@@ -393,6 +393,7 @@ class BotGenerator:
                                                  state_to_set_name, text_of_answer, image_answer, kb,
                                                  additional_functions)
         return message_handler
+
     def _find_previous_messages(self, message_id: int) -> typing.List[BotMessage]:
         """Получает список собщении у которых next_message == message.id (принемаемый
         на вход функцией)
