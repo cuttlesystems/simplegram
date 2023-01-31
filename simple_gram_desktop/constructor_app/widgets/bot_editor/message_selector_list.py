@@ -4,6 +4,7 @@ import typing
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget
 from b_logic.data_objects import BotMessage
+from common.localisation import tran
 
 
 class MessageSelectorList(QListWidget):
@@ -29,7 +30,7 @@ class MessageSelectorList(QListWidget):
             list_item = QListWidgetItem(message.text)
             list_item.setData(self._DATA_ROLE, message)
             list_items.append(list_item)
-        list_items.append(QListWidgetItem(u"--none connection--"))
+        list_items.append(QListWidgetItem(self._tr("--none connection--")))
         self.clear()
         for item in list_items:
             self.addItem(item)
@@ -67,3 +68,5 @@ class MessageSelectorList(QListWidget):
             assert isinstance(current_item, QListWidgetItem)
             current_message = current_item.data(self._DATA_ROLE)
         return current_message
+    def _tr(self, text: str) -> str:
+        return tran('MessageSelectorList.manual', text)
