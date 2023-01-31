@@ -297,7 +297,7 @@ color:rgb(255,255,255);
        </item>
       </layout>
      </widget>
-     <widget class="QGroupBox" name="centralPannel">
+     <widget class="QGroupBox" name="centrall_panel">
       <property name="styleSheet">
        <string notr="true">QGroupBox{
 border:none;
@@ -439,7 +439,7 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
         </widget>
        </item>
        <item>
-        <widget class="QStackedWidget" name="centralPannelWidget">
+        <widget class="QStackedWidget" name="centrall_pannel_widget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>

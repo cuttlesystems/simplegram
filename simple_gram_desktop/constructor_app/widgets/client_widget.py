@@ -29,7 +29,7 @@ class ClientWidget(QWidget):
     #инициализация окна авторизации
     def _start_login_users(self) ->None:
         #выстравляю страницу инициализации
-        self._ui.centralPannelWidget.setCurrentIndex(0)
+        self._ui.centrall_pannel_widget.setCurrentIndex(0)
         # прячу сайдбар и топпанел
         self._ui.side_bar.hide()
         self._ui.top_pannel.hide()
@@ -37,7 +37,7 @@ class ClientWidget(QWidget):
     #инициализация основого окна приложения
     def _start_main_menu(self) ->None:
         #выстравляю страницу главного окна
-        self._ui.centralPannelWidget.setCurrentIndex(1)
+        self._ui.centrall_pannel_widget.setCurrentIndex(1)
         #показываю сайдбар и топпанел
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
@@ -45,9 +45,9 @@ class ClientWidget(QWidget):
     # инициализация основого окна приложения
     def _start_selected_project(self) ->None:
         #выстравляю страницу с информацией о выбранном боте
-        self._ui.centralPannelWidget.setCurrentIndex(2)
+        self._ui.centrall_pannel_widget.setCurrentIndex(2)
 
     # инициализация основого окна приложения
     def _start_new_roject(self) ->None:
         #выстравляю страницу добавления новго бота
-        self._ui.centralPannelWidget.setCurrentIndex(3)
+        self._ui.centrall_pannel_widget.setCurrentIndex(3)
