@@ -307,7 +307,7 @@ class BotEditorForm(QMainWindow):
             QMessageBox.warning(
                 self,
                 self._tr('Error'),
-                self._tr('Select only one message to set is as error message'))
+                self._tr('Select only one message to set as error message'))
 
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
         assert isinstance(variant_name, str)
