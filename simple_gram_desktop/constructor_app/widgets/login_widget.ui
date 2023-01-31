@@ -155,10 +155,10 @@ QRadioButton::indicator{
          <property name="currentIndex">
           <number>1</number>
          </property>
-         <widget class="QWidget" name="page">
+         <widget class="QWidget" name="registrated_page">
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <widget class="QGroupBox" name="groupBox">
+            <widget class="QGroupBox" name="background_registrated">
              <property name="styleSheet">
               <string notr="true">QGroupBox{
 	border:none;
@@ -248,7 +248,7 @@ QRadioButton::indicator{
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="enter_button">
                 <property name="enabled">
                  <bool>true</bool>
                 </property>
@@ -284,10 +284,10 @@ QPushButton::hover{
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page_2">
+         <widget class="QWidget" name="login_page">
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QGroupBox" name="groupBox_2">
+            <widget class="QGroupBox" name="background_login">
              <property name="styleSheet">
               <string notr="true">QGroupBox{
 	border:none;
@@ -333,7 +333,7 @@ QPushButton::hover{
                </spacer>
               </item>
               <item>
-               <widget class="QLineEdit" name="username_edit_2">
+               <widget class="QLineEdit" name="username_widget">
                 <property name="styleSheet">
                  <string notr="true">QLineEdit{
 	color: rgb(64,64,64);
@@ -347,7 +347,7 @@ QPushButton::hover{
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="password_edit_2">
+               <widget class="QLineEdit" name="password_widget">
                 <property name="styleSheet">
                  <string notr="true">QLineEdit{
 	color: rgb(64,64,64);

@@ -19,7 +19,7 @@ class LoginWidget(QWidget):
     def _clicked_LogIn(self):
         self.log_in.emit()
 
-    def _switchBot(self):
+    def _switch_login(self):
         #if (self._ui.switchActivatedBot.isChecked()):
         #    self._ui.markerActivisionBot.setStyleSheet("QLabel{border-radius:8px; border:none; color:white;"
         #                                                   "background-color:#4DAAFF;}")
