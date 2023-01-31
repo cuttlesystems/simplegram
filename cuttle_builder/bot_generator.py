@@ -383,15 +383,16 @@ class BotGenerator:
         import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
         extended_imports += '\n' + import_keyboard
         full_command = f'Command(\'{command}\')' if command != '' else command
+
         if handler_type == ButtonTypesEnum.REPLY:
-            return create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
+            message_handler = create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                 state_to_set_name, text_of_answer, image_answer, kb,
                                                 additional_functions)
         elif handler_type == ButtonTypesEnum.INLINE:
-            return create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
+            message_handler = create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                  state_to_set_name, text_of_answer, image_answer, kb,
                                                  additional_functions)
-
+        return message_handler
     def _find_previous_messages(self, message_id: int) -> typing.List[BotMessage]:
         """Получает список собщении у которых next_message == message.id (принемаемый
         на вход функцией)
