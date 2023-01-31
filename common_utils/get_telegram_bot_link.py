@@ -8,6 +8,15 @@ LINK_TO_BOT = 'https://t.me/'
 
 
 def get_bot_link(bot_token: Optional[str]) -> str:
+    """
+    Получает ссылку к телеграм боту по токену бота.
+
+    Args:
+        bot_token: токен бота
+
+    Returns:
+        Ссылка на телеграм бота в формате: (https://t.me/VasiaBot)
+    """
     assert isinstance(bot_token, Optional[str])
     bot_username = ''
     if bot_token is None or bot_token == '':
