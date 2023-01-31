@@ -69,7 +69,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QRadioButton" name="radioButton">
+             <widget class="QRadioButton" name="registrate_radiobutton">
               <property name="layoutDirection">
                <enum>Qt::LeftToRight</enum>
               </property>
@@ -106,7 +106,7 @@ margin-bottom:15px;
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="radioButton_2">
+             <widget class="QRadioButton" name="login_radiobutton">
               <property name="styleSheet">
                <string notr="true">QRadioButton{}
 
