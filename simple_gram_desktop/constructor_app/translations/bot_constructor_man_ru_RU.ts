@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>Server address error</source>
-        <translation>Адрес сервера ошибочный</translation>
+        <translation>Неверный адрес сервера</translation>
     </message>
     <message>
         <source>Please fill in the server address field. For example: https://ramasuchka.kz/</source>
@@ -18,7 +18,7 @@
     <message>
         <source>Bot creation error: {0}</source>
         <translation>Ошибка создания бота: {0}</translation>
-    </message>    
+    </message>
 </context>
 <context>
     <name>BotEditorForm.manual</name>
@@ -32,7 +32,7 @@
     </message>
     <message>
         <source>Select only one message to set is as start message</source>
-        <translation>Выберите только одно сообщнеие для того чтобы установить его как стартовое</translation>
-    </message>  
+        <translation>Выберите только одно сообщнеие для того, чтобы установить его как стартовое</translation>
+    </message>
 </context>
 </TS>

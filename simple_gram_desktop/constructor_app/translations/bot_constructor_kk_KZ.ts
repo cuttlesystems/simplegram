@@ -11,7 +11,7 @@
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="33"/>
         <source>Bot stdout output</source>
-        <translation>Бот  stdout output</translation>
+        <translation>Бот stdout output</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="56"/>
@@ -67,7 +67,7 @@
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="207"/>
         <source>Mark as start</source>
-        <translation>Қосылды деп белгілеу</translation>
+        <translation>Бастапқы деп белгілеу</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="216"/>
@@ -194,7 +194,7 @@
     <message>
         <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="57"/>
         <source>Message with jump</source>
-        <translation>Секірмесі бар хабарлама</translation>
+        <translation>Тура өткізетін хабарлама</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="135"/>
@@ -214,12 +214,12 @@
     <message>
         <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="159"/>
         <source>Reply</source>
-        <translation>Жауап</translation>
+        <translation>Reply</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="166"/>
         <source>Inline</source>
-        <translation>Кезек</translation>
+        <translation>Inline</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="191"/>
@@ -272,7 +272,7 @@
     <message>
         <location filename="../widgets/sign_up_form.ui" line="76"/>
         <source>Confirm Password</source>
-        <translation>Құпия сөзді растау</translation>
+        <translation>Құпия сөзді растаңыз</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="89"/>
