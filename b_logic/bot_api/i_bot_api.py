@@ -76,11 +76,12 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def get_bot_by_id(self, id: int) -> BotDescription:
+    def get_bot_by_id(self, bot_id: int, with_link: int = 0) -> BotDescription:
         """
         Получить объект бота с заданным идентификатором
         Args:
-            id: идентификатор бота
+            bot_id: идентификатор бота
+            with_link: при значении 1 выведет доп поле bot_link
 
         Returns:
             объект бота
@@ -97,11 +98,11 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def delete_bot(self, id: int) -> None:
+    def delete_bot(self, bot_id: int) -> None:
         """
         Удалить бота
         Args:
-            id: идентификатор бота
+            bot_id: идентификатор бота
         """
         pass
 

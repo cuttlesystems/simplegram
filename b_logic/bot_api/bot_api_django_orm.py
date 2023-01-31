@@ -32,24 +32,24 @@ class BotApiByDjangoORM(IBotApi):
     def get_bots(self) -> List[BotDescription]:
         raise NotImplementedError('Метод не определен!')
 
-    def get_bot_by_id(self, id: int) -> BotDescription:
+    def get_bot_by_id(self, bot_id: int) -> BotDescription:
         """
         Получить объект бота с заданным идентификатором
         Args:
-            id: идентификатор бота
+            bot_id: идентификатор бота
 
         Returns:
             объект бота
         """
-        bot = Bot.objects.get(id=id)
+        bot = Bot.objects.get(id=bot_id)
         if not bot:
-            raise BotApiException(f'Ошибка при получении бота № {id}')
+            raise BotApiException(f'Ошибка при получении бота № {bot_id}')
         return self._create_bot_obj_from_data(bot)
 
     def change_bot(self, bot: BotDescription) -> None:
         raise NotImplementedError('Метод не определен!')
 
-    def delete_bot(self, id: int) -> None:
+    def delete_bot(self, bot_id: int) -> None:
         raise NotImplementedError('Метод не определен!')
 
     def set_bot_start_message(self, bot: BotDescription,

@@ -21,7 +21,7 @@ from rest_framework.exceptions import ValidationError
 from .utils import check_bot_token_when_generate_bot
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from cuttle_builder.exceptions.bot_gen_exceptions import BotGeneratorException
-from .serializers import (BotSerializer, MessageSerializer, MessageSerializerWithVariants,
+from .serializers import (BotSerializer, OneBotSerializer, MessageSerializer, MessageSerializerWithVariants,
                           VariantSerializer, CommandSerializer)
 from bots.models import Bot, Message, Variant, Command
 from .mixins import RetrieveUpdateDestroyViewSet
@@ -29,7 +29,8 @@ from .permissions import (IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, 
                           IsCommandOwnerOrForbidden, check_is_bot_owner_or_permission_denied)
 from .exceptions import ErrorsFromBotGenerator
 
-API_RESPONSE_WITH_VARIANTS = 'with_variants'
+MESSAGE_WITH_VARIANTS = 'with_variants'
+BOT_WITH_LINK = 'with_link'
 
 
 class BotViewSet(viewsets.ModelViewSet):
@@ -52,11 +53,14 @@ class BotViewSet(viewsets.ModelViewSet):
     POST запрос создает новую запись в таблице Bot.
     В теле POST запроса мы не будем указывать значение для поля owner явно, за нас это сделает метод perform_create.
     """
-    serializer_class = BotSerializer
     permission_classes = (IsBotOwnerOrForbidden,)
-
-    # указываем имя параметра, в котором будет приходить номер бота, взятый из url (по умолчанию 'pk')
     lookup_url_kwarg = 'bot_id_str'
+    # указываем имя параметра, в котором будет приходить номер бота, взятый из url (по умолчанию 'pk')
+
+    def get_serializer_class(self):
+        if self.request.query_params.get(BOT_WITH_LINK) == '1':
+            return OneBotSerializer
+        return BotSerializer
 
     def get_queryset(self) -> QuerySet:
         return Bot.objects.filter(owner=self.request.user)
@@ -332,7 +336,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         )
 
     def get_serializer_class(self):
-        if self.request.query_params.get(API_RESPONSE_WITH_VARIANTS) == '1':
+        if self.request.query_params.get(MESSAGE_WITH_VARIANTS) == '1':
             return MessageSerializerWithVariants
         return MessageSerializer
 
@@ -352,7 +356,7 @@ class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
     queryset = Message.objects.all()
 
     def get_serializer_class(self):
-        if self.request.query_params.get(API_RESPONSE_WITH_VARIANTS) == '1':
+        if self.request.query_params.get(MESSAGE_WITH_VARIANTS) == '1':
             return MessageSerializerWithVariants
         return MessageSerializer
 
