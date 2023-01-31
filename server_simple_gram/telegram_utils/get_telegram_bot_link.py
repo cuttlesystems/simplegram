@@ -32,7 +32,7 @@ def get_bot_link(bot_token: Optional[str]) -> str:
                 bot_username = LINK_TO_BOT + bot_username
             elif response.status_code in [requests.status_codes.codes.not_found,
                                           requests.status_codes.codes.unauthorized]:
-                bot_username = 'Information by provided token was not found.'
+                bot_username = 'Information on provided token was not found.'
         except ConnectionError as error:
             bot_username = 'Check your internet connection.'
             print(f'-----> Logger: {error}')
