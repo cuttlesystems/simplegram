@@ -141,39 +141,21 @@ class BotApiByRequests(IBotApi):
             raise BotApiException('Ошибка при создании бота: {0}'.format(response.text))
         return self._create_bot_obj_from_data(json.loads(response.text))
 
-    def get_bot_by_id(self, id: int) -> BotDescription:
+    def get_bot_by_id(self, bot_id: int, with_link: int = 0) -> BotDescription:
         """
         Получить объект бота с заданным идентификатором
         Args:
-            id: идентификатор бота
-
-        Returns:
-            объект бота
-        """
-        response = requests.get(
-            url=self._suite_url + f'api/bots/{id}/',
-            headers=self._get_headers()
-        )
-        if response.status_code != requests.status_codes.codes.ok:
-            raise BotApiException(f'Ошибка при получении списка бота {response.text}')
-
-        return self._create_bot_obj_from_data(json.loads(response.text))
-
-    def get_bot_by_id_with_link(self, id: int) -> BotDescription:
-        """
-        Получить конкретного бота с дополнительным полем bot_link
-
-        Args:
-            id: идентификатор бота
+            bot_id: идентификатор бота
+            with_link: при значении 1 выведет доп поле bot_link
 
         Returns:
             объект бота
         """
         params = {
-            'with_link': 1
+            'with_link': with_link,
         }
         response = requests.get(
-            url=self._suite_url + f'api/bots/{id}/',
+            url=self._suite_url + f'api/bots/{bot_id}/',
             headers=self._get_headers(),
             params=params
         )
@@ -193,14 +175,14 @@ class BotApiByRequests(IBotApi):
         if response.status_code != requests.status_codes.codes.ok:
             raise BotApiException(f'Ошибка при изменении бота: {response.text}')
 
-    def delete_bot(self, id: int) -> None:
+    def delete_bot(self, bot_id: int) -> None:
         """
         Удалить бота
         Args:
-            id: идентификатор бота
+            bot_id: идентификатор бота
         """
         response = requests.delete(
-            url=self._suite_url + f'api/bots/{id}/',
+            url=self._suite_url + f'api/bots/{bot_id}/',
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.no_content:

@@ -52,8 +52,7 @@ class BotEditorForm(QMainWindow):
 
     def set_bot(self, bot: typing.Optional[BotDescription]):
         assert isinstance(bot, BotDescription) or bot is None
-        self._bot = self._bot_api.get_bot_by_id_with_link(bot.id)
-        # print(self._bot)
+        self._bot = self._bot_api.get_bot_by_id(bot_id=bot.id, with_link=1)
         self._bot_scene.set_bot_scene(self._bot)
 
         if bot is not None:
@@ -61,7 +60,7 @@ class BotEditorForm(QMainWindow):
             self._prop_model.set_token(self._bot.bot_token)
             self._prop_model.set_description(self._bot.bot_description)
             self._prop_model.set_link(self._bot.bot_link)
-            # print(bot.bot_link)
+
         else:
             self._prop_model.set_name('')
             self._prop_model.set_token('')
