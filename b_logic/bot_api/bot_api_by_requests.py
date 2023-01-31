@@ -10,7 +10,7 @@ from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
     MessageTypeEnum
 from utils.image_to_bytes import get_binary_data_from_image_file
-from common_utils.get_telegram_bot_link import get_bot_link
+from telegram_utils.get_telegram_bot_link import get_bot_link
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
