@@ -51,10 +51,6 @@ class FileManager:
         with open(directory, 'r') as file:
             return file.read()
 
-    def read_file_by_line(self, directory: str) -> List[str]:
-        with open(directory, 'r') as file:
-            return file.read().split('\n')
-
     def _get_dir(self, bot_id: int) -> str:
         """generate path, where bot is store (doesn't work if call outside of cuttle_builder directory)
 
@@ -94,7 +90,6 @@ class FileManager:
             dir (_type_): directory path
             code (_type_): generated code (import insdide init)
         """
-        with open(directory, 'r+') as file:
-            file_data = file.read()
-            file.seek(0, self._FROM_BEGINNING)
-            file.write(code + file_data)
+        prev_file = self.read_file(directory)
+        with open(directory, 'w') as file:
+            file.write(code + prev_file)
