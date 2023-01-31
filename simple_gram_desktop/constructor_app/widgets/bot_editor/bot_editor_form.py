@@ -52,7 +52,7 @@ class BotEditorForm(QMainWindow):
 
     def set_bot(self, bot: typing.Optional[BotDescription]):
         assert isinstance(bot, BotDescription) or bot is None
-        self._bot = self._bot_api.get_bot_by_id(bot.id)
+        self._bot = self._bot_api.get_bot_by_id_with_link(bot.id)
         # print(self._bot)
         self._bot_scene.set_bot_scene(self._bot)
 

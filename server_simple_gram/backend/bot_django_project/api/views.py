@@ -29,7 +29,8 @@ from .permissions import (IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, 
                           IsCommandOwnerOrForbidden, check_is_bot_owner_or_permission_denied)
 from .exceptions import ErrorsFromBotGenerator
 
-API_RESPONSE_WITH_VARIANTS = 'with_variants'
+MESSAGE_WITH_VARIANTS = 'with_variants'
+BOT_WITH_LINK = 'with_link'
 
 
 class BotViewSet(viewsets.ModelViewSet):
@@ -57,12 +58,7 @@ class BotViewSet(viewsets.ModelViewSet):
     # указываем имя параметра, в котором будет приходить номер бота, взятый из url (по умолчанию 'pk')
 
     def get_serializer_class(self):
-        """
-        Выбор сериалайзера в зависимости от запроса:
-        - к одному объекту,
-        - к множеству объектов.
-        """
-        if self.detail:
+        if self.request.query_params.get(BOT_WITH_LINK) == '1':
             return OneBotSerializer
         return BotSerializer
 
@@ -340,7 +336,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         )
 
     def get_serializer_class(self):
-        if self.request.query_params.get(API_RESPONSE_WITH_VARIANTS) == '1':
+        if self.request.query_params.get(MESSAGE_WITH_VARIANTS) == '1':
             return MessageSerializerWithVariants
         return MessageSerializer
 
@@ -360,7 +356,7 @@ class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
     queryset = Message.objects.all()
 
     def get_serializer_class(self):
-        if self.request.query_params.get(API_RESPONSE_WITH_VARIANTS) == '1':
+        if self.request.query_params.get(MESSAGE_WITH_VARIANTS) == '1':
             return MessageSerializerWithVariants
         return MessageSerializer
 

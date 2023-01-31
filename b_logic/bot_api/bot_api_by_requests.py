@@ -155,7 +155,30 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise BotApiException(f'Ошибка при получении списка ботов {response.text}')
+            raise BotApiException(f'Ошибка при получении списка бота {response.text}')
+
+        return self._create_bot_obj_from_data(json.loads(response.text))
+
+    def get_bot_by_id_with_link(self, id: int) -> BotDescription:
+        """
+        Получить конкретного бота с дополнительным полем bot_link
+
+        Args:
+            id: идентификатор бота
+
+        Returns:
+            объект бота
+        """
+        params = {
+            'with_link': 1
+        }
+        response = requests.get(
+            url=self._suite_url + f'api/bots/{id}/',
+            headers=self._get_headers(),
+            params=params
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise BotApiException(f'Ошибка при получении списка бота {response.text}')
 
         return self._create_bot_obj_from_data(json.loads(response.text))
 
