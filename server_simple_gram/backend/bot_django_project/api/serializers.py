@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from bots.models import Bot, Message, Variant, Command
+from telegram_utils.get_telegram_bot_link import get_bot_link
 
 User = get_user_model()
 
@@ -45,6 +46,26 @@ class BotSerializer(serializers.ModelSerializer):
                 message='Вы уже создавали бота с таким именем.',
             )
         ]
+
+
+class OneBotSerializer(BotSerializer):
+    bot_link = serializers.SerializerMethodField()
+
+    def get_bot_link(self, obj):
+        return get_bot_link(obj.token)
+
+    class Meta:
+        model = Bot
+        fields = (
+            'id',
+            'name',
+            'token',
+            'description',
+            'owner',
+            'start_message',
+            'error_message',
+            'bot_link'
+        )
 
 
 class MessageSerializer(serializers.ModelSerializer):

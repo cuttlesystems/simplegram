@@ -10,7 +10,6 @@ from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
     MessageTypeEnum
 from utils.image_to_bytes import get_binary_data_from_image_file
-from telegram_utils.get_telegram_bot_link import get_bot_link
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
@@ -576,7 +575,7 @@ class BotApiByRequests(IBotApi):
         bot_description.bot_description = bot_dict['description']
         bot_description.start_message_id = bot_dict['start_message']
         bot_description.error_message_id = bot_dict['error_message']
-        bot_description.bot_link = get_bot_link(bot_description.bot_token)
+        bot_description.bot_link = bot_dict.get('bot_link')
         return bot_description
 
     def _create_bot_message_from_data(self, message_dict: dict) -> BotMessage:
