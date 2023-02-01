@@ -6,8 +6,8 @@ import PyInstaller.config
 import os
 import sys
 
-# РѕР±С…РѕРґРЅРѕРµ СЂРµС€РµРЅРёРµ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ С‚РµРєСѓС‰РµР№ РґРёСЂРµРєС‚РѕСЂРёРё РІ 'PYTHONPATH'
-#  РЅРµР±С…РѕРґРёРјРѕ РґР»СЏ С‚РѕРіРѕ, С‡С‚РѕР±С‹ РїСЂРѕС…РѕРґРёР» import, РІС‹РїРѕР»РЅСЏРµРјС‹Р№ СЃС‚СЂРѕРєРѕР№ РЅРёР¶Рµ
+# обходное решение для добавления текущей директории в 'PYTHONPATH'
+#  небходимо для того, чтобы проходил import, выполняемый строкой ниже
 sys.path.append('.')
 
 from python_and_venv_path import get_building_dir
@@ -54,7 +54,7 @@ a = Analysis(
     binaries=[],
     datas=[(
         application_project_dir() / 'constructor_app' / 'translations' / '*.qm',
-        Path('constructor_app') / 'translations'
+            Path('constructor_app') / 'translations'
     )],
     hookspath=[],
     hooksconfig={},
