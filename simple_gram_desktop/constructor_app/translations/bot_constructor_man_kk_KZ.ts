@@ -51,4 +51,37 @@
         <translation>Бастапқы хабар ретінде орнату үшін тек бір хабарды таңдаңыз</translation>
     </message>
 </context>
+
+
+<context>
+    <name>BotPropertiesModel.manual</name>
+    <message>
+        <source>Bot name</source>
+        <translation>Боттың аты</translation>
+    </message>
+    <message>
+        <source>Bot token</source>
+        <translation>Боттың токені</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation>Сипаттама</translation>
+    </message>
+    <message>
+        <source>Link to bot</source>
+        <translation>Ботқа сілтеме</translation>
+    </message>
+</context>
+
+<context>
+    <name>PropertiesModel.manual</name>
+    <message>
+        <source>Parameter</source>
+        <translation>Параметр</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Мәні</translation>
+    </message>
+</context>
 </TS>
