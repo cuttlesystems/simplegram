@@ -61,12 +61,12 @@ def get_venv_python_path(venv_dir: Path) -> Path:
     return result
 
 
-def get_building_dir():
+def get_building_dir() -> Path:
     """
-    функция получения необходимой для создания исполняемого файла приложения 'simple_gram` директории
+    функция получения необходимой для создания исполняемого файла приложения 'simple_gram' директории
     в зависимости от типа операционной системы
     Returns: соответствующая типу операционной системы директория
-    для создания исполняемого файла приложения 'simple_gram`
+    для создания исполняемого файла приложения 'simple_gram'
 
     """
     current_os = get_current_os()
@@ -74,6 +74,36 @@ def get_building_dir():
         result = get_script_dir() / 'windows'
     elif current_os == OsClass.LINUX_CLASS:
         result = get_script_dir() / 'linux'
+    else:
+        raise NotImplementedError('Unsupported os')
+    return result
+
+
+def get_venv_dir() -> Path:
+    """
+    функция определения пути к директории с виртуальным окружением
+    в зависимости от типа операционной системы
+    Returns: соответствующий типу операционной системы путь к папке с виртуальным окружением
+    """
+    venv_dir = get_building_dir() / 'venv'
+    return venv_dir
+
+
+def get_executable_path_from_venv(win_exe_path: str, lin_exe_path: str) -> Path:
+    """
+    define function to determine executable files' paths
+    Returns: путь к исполняемым файлам в созданном виртуальном окружении
+
+    """
+    assert isinstance(win_exe_path, str)
+    assert isinstance(lin_exe_path, str)
+    current_os = get_current_os()
+    venv_dir = get_venv_dir()
+    scripts_bin_path = get_venv_python_path(venv_dir).parent
+    if current_os == OsClass.WINDOWS_CLASS:
+        result = scripts_bin_path / win_exe_path
+    elif current_os == OsClass.LINUX_CLASS:
+        result = scripts_bin_path / lin_exe_path
     else:
         raise NotImplementedError('Unsupported os')
     return result

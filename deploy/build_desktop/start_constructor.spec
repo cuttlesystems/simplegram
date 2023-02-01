@@ -10,7 +10,7 @@ import sys
 #  небходимо для того, чтобы проходил import, выполняемый строкой ниже
 sys.path.append('.')
 
-from python_and_venv_path import get_building_dir
+from python_venv_execs_paths import get_building_dir
 
 
 block_cipher = None
@@ -54,7 +54,7 @@ a = Analysis(
     binaries=[],
     datas=[(
         application_project_dir() / 'constructor_app' / 'translations' / '*.qm',
-        Path('constructor_app') / 'translations'
+            Path('constructor_app') / 'translations'
     )],
     hookspath=[],
     hooksconfig={},
