@@ -4,17 +4,12 @@
     а также используемый при запуске приложения
 """
 
-import glob
 import os
 import subprocess
-
-from subprocess import run
-
-from python_venv_execs_paths import get_script_dir, get_executable_path_from_venv
-
+import typing
 from pathlib import Path
 
-import typing
+from python_venv_execs_paths import get_script_dir, get_executable_path_from_venv
 
 
 def pyside6_lrelease_exe_path() -> Path:
@@ -60,25 +55,16 @@ def compile_translations():
     localizations = list(ts_files_path.glob('**/*_man_*.ts'))
     print(f'\ntranslation files path: ', ts_files_path)
     print(f'Файлы локализаций: ', localizations)
-    # localizations = ['en_US.ts', 'kk_KZ.ts', 'ru_RU.ts']
 
     # компилирование файлов переводов перед запуском процесса создания исполняемого файла приложения 'simple_gram'
     for localization in localizations:
-        # print(f'localization: ', str(localization))
-        # print(f'split(localization): ', str(localization).split('_man_'))
-        # subprocess.run([pyside6_lrelease_exe_path(), ts_files_path / ('bot_constructor_man_' + 'en_US.ts'),
-        #             ts_files_path / 'bot_constructor_en_US.ts', '-qm', 'bot_constructor_en_US.qm'])
-        # subprocess.run
         localization_norm_path = Path(os.path.normpath(localization))
         print(f'\nlocalization: ', localization)
         print(f'localization_norm_path: ', localization_norm_path)
 
-        # localization_norm_path.name
-        # localization_without_man = str(localization_norm_path).split('_man_')[0] + '_' + str(localization_norm_path).split('_man_')[1]
         localization_without_man = localization_norm_path.parent / \
                                    str(localization_norm_path.name).replace('_man_', '_')
-        print(f'localization_without_man: ', localization_without_man)
-        # qm_file_name = str(localization_norm_path).split('_man_')[1].split('.')[0] + '.qm'
+        print(f'\nlocalization_without_man: ', localization_without_man)
         qm_file_name = str(localization_without_man).replace('.ts', '.qm')
         print(f'qm_file_name: ', qm_file_name)
 
@@ -93,53 +79,15 @@ def compile_translations():
         )
 
 
-# def compile_ui_forms():
-#     """
-#     компилирование файлов ui-форм перед запуском процесса создания исполняемого файла приложения 'simple_gram'
-#     Returns: генерируются файлы переводов '*.qm' по пути
-#             'D:\Git Repos\tg_bot_constructor\simple_gram_desktop\constructor_app\translations\bot_constructor_*.qm'
-#
-#     """
-#     ui_files_path = get_script_dir() / '..' / '..' / 'simple_gram_desktop' / 'constructor_app' / 'widgets'
-#     print(f'get_script_dir: ', get_script_dir())
-#
-#     localizations = list(ui_files_path.glob('**/*.ui'))
-#     print(f'translation files path: ', ui_files_path)
-#     print(f'Файлы локализаций: ', localizations)
-# localizations = ['en_US.ts', 'kk_KZ.ts', 'ru_RU.ts']
-
-# # компилирование файлов ui-форм перед запуском процесса создания исполняемого файла приложения 'simple_gram'
-# for localization in localizations:
-#     # print(f'localization: ', str(localization))
-#     # print(f'split(localization): ', str(localization).split('_man_'))
-#     # subprocess.run([pyside6_lrelease_exe_path(), ts_files_path / ('bot_constructor_man_' + 'en_US.ts'),
-#     #             ts_files_path / 'bot_constructor_en_US.ts', '-qm', 'bot_constructor_en_US.qm'])
-#     # subprocess.run
-#     localization_norm_path = Path(os.path.normpath(localization))
-#     print(f'localization: ', localization)
-#     print(f'localization_norm_path: ', localization_norm_path)
-#
-#     # localization_norm_path.name
-#     # localization_without_man = str(localization_norm_path).split('_man_')[0] + '_' + str(localization_norm_path).split('_man_')[1]
-#     localization_without_man = localization_norm_path.parent / \
-#                                str(localization_norm_path.name).replace('_man_', '_')
-#     print(f'localization_without_man: ', localization_without_man)
-#     # qm_file_name = str(localization_norm_path).split('_man_')[1].split('.')[0] + '.qm'
-#     qm_file_name = str(localization_without_man).replace('.ts', '.qm')
-#     print(f'qm_file_name: ', qm_file_name)
-#
-#     subprocess.run(
-#         [
-#             pyside6_lrelease_exe_path(),
-#             ts_files_path / localization_norm_path,
-#             localization_without_man,
-#             '-qm',
-#             qm_file_name
-#         ]
-#     )
-
-
 def name_ui_to_ui_py(name: str) -> str:
+    """
+    функция получения пути генерируемого файла 'ui_*_form.py', необходимого для компиляции
+    Args:
+        name: имя файла с расширением '.ui'
+
+    Returns: путь генерируемого файла 'ui_*_form.py', который будет использоваться при компиляции
+
+    """
     path = Path(name)
     directory = path.parent
     filename: str = 'ui_' + path.name
@@ -149,16 +97,15 @@ def name_ui_to_ui_py(name: str) -> str:
 
 
 def generate_ui_file(ui_name: str):
+    """
+    функция, осуществляющая генерацию файла ui-форм 'ui_*_form.py' в директории с исходным файлом
+    Args:
+        ui_name: имя файла с расширением '.ui'
+
+    Returns: путь генерируемого файла 'ui_*_form.py', который будет использоваться при компиляции
+
+    """
     ui_py_name = name_ui_to_ui_py(ui_name)
-    # run_string = 'venv\\Scripts\\pyside6-uic "{input_name}" -o "{out_name}"'.format(
-    #         input_name=ui_name,
-    #         out_name=ui_py_name
-    #     )
-    # print(run_string)
-    # os.system(
-    #     run_string
-    # )
-    #
     subprocess.run(
         [
             pyside6_uic_exe_path(),
@@ -170,6 +117,14 @@ def generate_ui_file(ui_name: str):
 
 
 def search_ui_files(search_dir: str) -> typing.List[Path]:
+    """
+    функция, осуществляющая поиск файлов ui-форм '.ui' в заданном расположении
+    Args:
+        search_dir: директория для поиска файлов ui-форм '.ui'
+
+    Returns: имеющиеся в заданном расположении список файлов ui-форм '.ui'
+
+    """
     search_dir_path = Path(search_dir)
     files = search_dir_path.glob('**/*.ui')
     files_list = list(files)
@@ -203,17 +158,14 @@ def compile_ui_forms():
     print(f'\nКомпиляция файлов ui-форм выполнена, скомпилировано', ui_files_counter, 'файлов')
 
 
-# :: ..\..\venv\Scripts\pyside6-project build \
-# ::     ..\..\venv\Scripts\pyside6-rcc "D:\Git Repos\tg_bot_constructor\desktop_constructor_app\constructor_app\bot_icons.qrc" -o \
-# ::     "D:\Git Repos\tg_bot_constructor\desktop_constructor_app\constructor_app\rc_bot_icons.py"
-
 def name_qrc_to_rc_py(name: str) -> str:
     """
-
+    функция получения пути генерируемого файла ресурсов 'rc_*.py', необходимого для компиляции
     Args:
-        name:
+        name: имя файла с расширением '.qrc'
 
-    Returns:
+    Returns: путь генерируемого файла ресурсов 'rc_*.py', который будет использоваться при компиляции
+
 
     """
     path = Path(name)
@@ -225,16 +177,15 @@ def name_qrc_to_rc_py(name: str) -> str:
 
 
 def generate_rc_file(rc_name: str):
+    """
+    функция, осуществляющая генерацию файла ресурсов 'rc_*.py' в директории с исходным файлом ресурсов
+    Args:
+        rc_name: имя файла с расширением '.qrc'
+
+    Returns: путь генерируемого файла 'rc_*.py', который будет использоваться при компиляции
+
+    """
     rc_py_name = name_qrc_to_rc_py(rc_name)
-    # run_string = 'venv\\Scripts\\pyside6-uic "{input_name}" -o "{out_name}"'.format(
-    #         input_name=ui_name,
-    #         out_name=ui_py_name
-    #     )
-    # print(run_string)
-    # os.system(
-    #     run_string
-    # )
-    #
     subprocess.run(
         [
             pyside6_rcc_exe_path(),
@@ -246,6 +197,14 @@ def generate_rc_file(rc_name: str):
 
 
 def search_rc_files(search_dir: str) -> typing.List[Path]:
+    """
+    функция, осуществляющая поиск файлов ресурсов '.qrc' в заданном расположении
+    Args:
+        search_dir: директория для поиска файлов ресурсов '.qrc'
+
+    Returns: имеющиеся в заданном расположении список файлов ресурсов '.qrc'
+
+    """
     search_dir_path = Path(search_dir)
     files = search_dir_path.glob('**/*.qrc')
     files_list = list(files)

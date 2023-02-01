@@ -1,14 +1,12 @@
-import os
 import subprocess
-
-import sys
-import venv
 from pathlib import Path
 from subprocess import run
 
-from python_venv_execs_paths import OsClass, get_current_os, get_script_dir, get_venv_python_path, get_building_dir, get_executable_path_from_venv
-from python_venv_execs_paths import get_venv_dir
+import venv
+
 from compiling_transl_ui_rc import compile_translations, compile_ui_forms, compile_rc_files
+from python_venv_execs_paths import get_current_os, get_venv_python_path, get_executable_path_from_venv
+from python_venv_execs_paths import get_venv_dir
 
 
 def create_venv(venv_dir: Path):
@@ -36,30 +34,6 @@ def create_venv(venv_dir: Path):
     run([get_venv_python_path(venv_dir), '-m', 'pip', 'install', '-r', 'requirements.txt'])
 
 
-
-
-
-# def get_executable_path_from_venv(win_exe_path: str, lin_exe_path: str) -> Path:
-#     """
-#     define function to determine executable files' paths
-#     Returns: путь к исполняемым файлам в созданном виртуальном окружении
-#
-#     """
-#     assert isinstance(win_exe_path, str)
-#     assert isinstance(lin_exe_path, str)
-#     current_os = get_current_os()
-#     scripts_bin_path = get_venv_python_path(venv_dir).parent
-#     if current_os == OsClass.WINDOWS_CLASS:
-#         result = scripts_bin_path / win_exe_path
-#     elif current_os == OsClass.LINUX_CLASS:
-#         result = scripts_bin_path / lin_exe_path
-#     else:
-#         raise NotImplementedError('Unsupported os')
-#     print(f'scripts (or bin) path: ', scripts_bin_path)
-#     # print(f'Путь к исполняемому файлу: ', result)
-#     return result
-
-
 def pyinstaller_exe_path() -> Path:
     """
     define function to determine the PyInstaller executable file's path
@@ -68,15 +42,6 @@ def pyinstaller_exe_path() -> Path:
     """
     result = get_executable_path_from_venv('pyinstaller.exe', 'pyinstaller')
     return result
-
-# def pyside6_lrelease_exe_path() -> Path:
-#     """
-#     define function to determine the 'pyside6-lrelease' executable file's path
-#     Returns: путь к исполняемому файлу 'pyside6-lrelease' в созданном виртуальном окружении
-#
-#     """
-#     result = get_executable_path_from_venv('pyside6-lrelease.exe', 'pyside6-lrelease')
-#     return result
 
 
 if __name__ == '__main__':
