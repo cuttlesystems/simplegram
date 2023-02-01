@@ -6,7 +6,8 @@ import venv
 from pathlib import Path
 from subprocess import run
 
-from python_and_venv_path import OsClass, get_current_os, get_script_dir, get_venv_python_path, get_building_dir, get_executable_path_from_venv
+from python_venv_execs_paths import OsClass, get_current_os, get_script_dir, get_venv_python_path, get_building_dir, get_executable_path_from_venv
+from python_venv_execs_paths import get_venv_dir
 from compiling_transl_ui_rc import compile_translations
 
 
@@ -82,12 +83,12 @@ if __name__ == '__main__':
     current_os = get_current_os()
     print('current os is: {current_os}'.format(current_os=current_os))
 
-    venv_dir = get_building_dir() / 'venv'
+    venv_dir = get_venv_dir()
     create_venv(venv_dir)
 
     compile_translations()
 
     exit(0)
 
-# непосредственный запуск процесса создания исполняемого файла приложения 'simple_gram' через PyInstaller
+    # непосредственный запуск процесса создания исполняемого файла приложения 'simple_gram' через PyInstaller
     subprocess.run([pyinstaller_exe_path(), 'start_constructor.spec', '-y'])

@@ -11,7 +11,7 @@ import subprocess
 from pathlib import Path
 from subprocess import run
 
-from python_and_venv_path import get_script_dir, get_executable_path_from_venv
+from python_venv_execs_paths import get_script_dir, get_executable_path_from_venv
 
 
 def pyside6_lrelease_exe_path() -> Path:
@@ -85,32 +85,32 @@ def compile_ui_forms():
     print(f'Файлы локализаций: ', localizations)
     # localizations = ['en_US.ts', 'kk_KZ.ts', 'ru_RU.ts']
 
-    # компилирование файлов ui-форм перед запуском процесса создания исполняемого файла приложения 'simple_gram'
-    for localization in localizations:
-        # print(f'localization: ', str(localization))
-        # print(f'split(localization): ', str(localization).split('_man_'))
-        # subprocess.run([pyside6_lrelease_exe_path(), ts_files_path / ('bot_constructor_man_' + 'en_US.ts'),
-        #             ts_files_path / 'bot_constructor_en_US.ts', '-qm', 'bot_constructor_en_US.qm'])
-        # subprocess.run
-        localization_norm_path = Path(os.path.normpath(localization))
-        print(f'localization: ', localization)
-        print(f'localization_norm_path: ', localization_norm_path)
-
-        # localization_norm_path.name
-        # localization_without_man = str(localization_norm_path).split('_man_')[0] + '_' + str(localization_norm_path).split('_man_')[1]
-        localization_without_man = localization_norm_path.parent / \
-                                   str(localization_norm_path.name).replace('_man_', '_')
-        print(f'localization_without_man: ', localization_without_man)
-        # qm_file_name = str(localization_norm_path).split('_man_')[1].split('.')[0] + '.qm'
-        qm_file_name = str(localization_without_man).replace('.ts', '.qm')
-        print(f'qm_file_name: ', qm_file_name)
-
-        subprocess.run(
-            [
-                pyside6_lrelease_exe_path(),
-                ts_files_path / localization_norm_path,
-                localization_without_man,
-                '-qm',
-                qm_file_name
-            ]
-        )
+    # # компилирование файлов ui-форм перед запуском процесса создания исполняемого файла приложения 'simple_gram'
+    # for localization in localizations:
+    #     # print(f'localization: ', str(localization))
+    #     # print(f'split(localization): ', str(localization).split('_man_'))
+    #     # subprocess.run([pyside6_lrelease_exe_path(), ts_files_path / ('bot_constructor_man_' + 'en_US.ts'),
+    #     #             ts_files_path / 'bot_constructor_en_US.ts', '-qm', 'bot_constructor_en_US.qm'])
+    #     # subprocess.run
+    #     localization_norm_path = Path(os.path.normpath(localization))
+    #     print(f'localization: ', localization)
+    #     print(f'localization_norm_path: ', localization_norm_path)
+    #
+    #     # localization_norm_path.name
+    #     # localization_without_man = str(localization_norm_path).split('_man_')[0] + '_' + str(localization_norm_path).split('_man_')[1]
+    #     localization_without_man = localization_norm_path.parent / \
+    #                                str(localization_norm_path.name).replace('_man_', '_')
+    #     print(f'localization_without_man: ', localization_without_man)
+    #     # qm_file_name = str(localization_norm_path).split('_man_')[1].split('.')[0] + '.qm'
+    #     qm_file_name = str(localization_without_man).replace('.ts', '.qm')
+    #     print(f'qm_file_name: ', qm_file_name)
+    #
+    #     subprocess.run(
+    #         [
+    #             pyside6_lrelease_exe_path(),
+    #             ts_files_path / localization_norm_path,
+    #             localization_without_man,
+    #             '-qm',
+    #             qm_file_name
+    #         ]
+    #     )

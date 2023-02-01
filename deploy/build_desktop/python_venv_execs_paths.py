@@ -79,6 +79,11 @@ def get_building_dir():
     return result
 
 
+def get_venv_dir() -> Path:
+    venv_dir = get_building_dir() / 'venv'
+    return venv_dir
+
+
 def get_executable_path_from_venv(win_exe_path: str, lin_exe_path: str) -> Path:
     """
     define function to determine executable files' paths
@@ -88,7 +93,7 @@ def get_executable_path_from_venv(win_exe_path: str, lin_exe_path: str) -> Path:
     assert isinstance(win_exe_path, str)
     assert isinstance(lin_exe_path, str)
     current_os = get_current_os()
-    venv_dir = get_building_dir() / 'venv'
+    venv_dir = get_venv_dir()
     scripts_bin_path = get_venv_python_path(venv_dir).parent
     if current_os == OsClass.WINDOWS_CLASS:
         result = scripts_bin_path / win_exe_path
