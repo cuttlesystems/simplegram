@@ -3,6 +3,8 @@ import typing
 from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import QObject, Slot, Signal, QThread
 
+from common.localisation import tran
+
 from constructor_app.widgets.ui_login_widget import Ui_LoginWidget
 
 class LoginWidget(QWidget):
@@ -14,9 +16,9 @@ class LoginWidget(QWidget):
         self._ui.setupUi(self)
 
         # подключаю кнопку ентерПользователя с переходом на мейнОкно
-        self._ui.goButton.clicked.connect(self._clicked_LogIn)
+        self._ui.enter_button.clicked.connect(self._clicked_login)
 
-    def _clicked_LogIn(self):
+    def _clicked_login(self):
         self.log_in.emit()
 
     def _switch_login(self):
@@ -30,3 +32,6 @@ class LoginWidget(QWidget):
         #                                                   "background-color:#FF5F8F;}")
         #    self._ui.markerActivisionBot.setText(u"Бот не активен")
             self.ActivatedBotSignal.emit(False)
+
+    def _tr(self, text: str) -> str:
+        return tran('BotEditorForm.manual', text)

@@ -42,3 +42,5 @@ class BlockColorScheme:
 
     # цвет части с вариантами в блоке (оттенок дымчатый серый 241,241,241)
     summary_variants_block_color = 0xf1f1f1
+
+    block_brush = 0xffffff

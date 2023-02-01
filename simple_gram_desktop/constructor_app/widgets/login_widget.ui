@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_7">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <spacer name="verticalSpacer_6">
      <property name="orientation">
@@ -45,7 +45,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="state_autorize_block">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -88,7 +88,7 @@ QRadioButton::indicator{
 </string>
               </property>
               <property name="text">
-               <string>Регистрация</string>
+               <string>Create a free account</string>
               </property>
              </widget>
             </item>
@@ -122,7 +122,7 @@ QRadioButton::indicator{
 </string>
               </property>
               <property name="text">
-               <string>Войти в кабинет</string>
+               <string>Sign in</string>
               </property>
               <property name="checked">
                <bool>true</bool>
@@ -130,6 +130,194 @@ QRadioButton::indicator{
              </widget>
             </item>
            </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="background_login">
+         <property name="styleSheet">
+          <string notr="true">QGroupBox{
+	border:none;
+	background: #FFFFFF;
+	border-radius: 16px;
+}</string>
+         </property>
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="font">
+             <font>
+              <pointsize>23</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLabel{
+	text-align: center;
+}</string>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Welcome to a better BOT-systems&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="username_widget">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLineEdit{
+	color: rgb(64,64,64);
+	border: 1px solid rgba(204, 204, 204, 89);
+	border-radius: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+}</string>
+            </property>
+            <property name="text">
+             <string>e-mail</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="username_widget_2">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLineEdit{
+	color: rgb(64,64,64);
+	border: 1px solid rgba(204, 204, 204, 89);
+	border-radius: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+}</string>
+            </property>
+            <property name="text">
+             <string>login</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="password_widget">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLineEdit{
+	color: rgb(64,64,64);
+	border: 1px solid rgba(204, 204, 204, 89);
+	border-radius: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+}</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="password_widget_2">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLineEdit{
+	color: rgb(64,64,64);
+	border: 1px solid rgba(204, 204, 204, 89);
+	border-radius: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+}</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="enter_button">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>36</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+	color:white;
+	border: none;
+	border-radius:16px;
+	background-color: #4DAAFF;
+}
+
+QPushButton:!enabled{
+	background-color: rgba(82,136,193,76);
+}
+
+QPushButton::hover{
+	background-color: #5288C1;
+}</string>
+            </property>
+            <property name="text">
+             <string>Enter -&gt;</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -149,271 +337,6 @@ QRadioButton::indicator{
           </size>
          </property>
         </spacer>
-       </item>
-       <item>
-        <widget class="QStackedWidget" name="stackedWidget">
-         <property name="currentIndex">
-          <number>1</number>
-         </property>
-         <widget class="QWidget" name="registrated_page">
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QGroupBox" name="background_registrated">
-             <property name="styleSheet">
-              <string notr="true">QGroupBox{
-	border:none;
-	background: #FFFFFF;
-	border-radius: 16px;
-}</string>
-             </property>
-             <property name="title">
-              <string/>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_3">
-              <item>
-               <widget class="QLabel" name="label">
-                <property name="font">
-                 <font>
-                  <pointsize>23</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QLabel{
-	text-align: center;
-}</string>
-                </property>
-                <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Добро пожаловать на БОТ-систему&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="username_edit">
-                <property name="styleSheet">
-                 <string notr="true">QLineEdit{
-	color: rgb(64,64,64);
-	border: 1px solid rgba(204, 204, 204, 89);
-	border-radius: 5px;
-}</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="password_edit">
-                <property name="styleSheet">
-                 <string notr="true">QLineEdit{
-	color: rgb(64,64,64);
-	border: 1px solid rgba(204, 204, 204, 89);
-	border-radius: 5px;
-}</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="echoMode">
-                 <enum>QLineEdit::Password</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="enter_button">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>36</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton{
-	color:white;
-	border: none;
-	border-radius:16px;
-	background-color: #4DAAFF;
-}
-
-QPushButton:!enabled{
-	background-color: rgba(82,136,193,76);
-}
-
-QPushButton::hover{
-	background-color: #5288C1;
-}</string>
-                </property>
-                <property name="text">
-                 <string>Enter -&gt;</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="login_page">
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <widget class="QGroupBox" name="background_login">
-             <property name="styleSheet">
-              <string notr="true">QGroupBox{
-	border:none;
-	background: #FFFFFF;
-	border-radius: 16px;
-}</string>
-             </property>
-             <property name="title">
-              <string/>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_5">
-              <item>
-               <widget class="QLabel" name="label_2">
-                <property name="font">
-                 <font>
-                  <pointsize>23</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QLabel{
-	text-align: center;
-}</string>
-                </property>
-                <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;С возвращением на БОТ-систему&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="username_widget">
-                <property name="styleSheet">
-                 <string notr="true">QLineEdit{
-	color: rgb(64,64,64);
-	border: 1px solid rgba(204, 204, 204, 89);
-	border-radius: 5px;
-}</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="password_widget">
-                <property name="styleSheet">
-                 <string notr="true">QLineEdit{
-	color: rgb(64,64,64);
-	border: 1px solid rgba(204, 204, 204, 89);
-	border-radius: 5px;
-}</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="echoMode">
-                 <enum>QLineEdit::Password</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="goButton">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>36</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton{
-	color:white;
-	border: none;
-	border-radius:16px;
-	background-color: #4DAAFF;
-}
-
-QPushButton:!enabled{
-	background-color: rgba(82,136,193,76);
-}
-
-QPushButton::hover{
-	background-color: #5288C1;
-}</string>
-                </property>
-                <property name="text">
-                 <string>Enter -&gt;</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </widget>
        </item>
       </layout>
      </item>

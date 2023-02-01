@@ -2,6 +2,8 @@ import typing
 from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import SIGNAL, SLOT
 
+from common.localisation import tran
+
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
 
 class ClientWidget(QWidget):
@@ -38,6 +40,7 @@ class ClientWidget(QWidget):
     def _start_main_menu(self) ->None:
         #выстравляю страницу главного окна
         self._ui.centrall_pannel_widget.setCurrentIndex(1)
+        self._init_stylesheet_stackedwidget(0)
         #показываю сайдбар и топпанел
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
@@ -46,8 +49,20 @@ class ClientWidget(QWidget):
     def _start_selected_project(self) ->None:
         #выстравляю страницу с информацией о выбранном боте
         self._ui.centrall_pannel_widget.setCurrentIndex(2)
+        self._init_stylesheet_stackedwidget(0)
 
     # инициализация основого окна приложения
     def _start_new_roject(self) ->None:
         #выстравляю страницу добавления новго бота
         self._ui.centrall_pannel_widget.setCurrentIndex(3)
+        self._init_stylesheet_stackedwidget(1)
+
+#toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор qss
+    def _init_stylesheet_stackedwidget(self, state:int) -> None:
+        if (state == 0):
+            self._ui.centrall_pannel_widget.setStyleSheet("QStackedWidget{border: none;background: rgb(241,241,241);}")
+        else:
+            self._ui.centrall_pannel_widget.setStyleSheet("QStackedWidget{border: none;background: rgb(105,105,109);}")
+
+    def _tr(self, text: str) -> str:
+        return tran('BotEditorForm.manual', text)

@@ -4,6 +4,7 @@ from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPalette,QColor,QBrush
 from PySide6.QtCore import QObject, Slot, Signal, QThread
 
+from common.localisation import tran
 
 from constructor_app.widgets.ui_add_new_project_widget import Ui_AddNewProjectWidget
 
@@ -14,8 +15,9 @@ class AddNewProjectWidget(QWidget):
         self._ui = Ui_AddNewProjectWidget()
         self._ui.setupUi(self)
 
-        # подключаю кнопку закрыть добавление проекта с переходом на мейнОкно
+        # подключаю кнопку закрыть добавление проекта и отмена добавления проекта с переходом на мейнОкно
         self._ui.close_button.clicked.connect(self._clicked_сlose)
+        self._ui.cancel_button.clicked.connect(self._clicked_сlose)
 
     def _init_stylesheet(self,night)->None:
         if (night):
@@ -25,3 +27,6 @@ class AddNewProjectWidget(QWidget):
 
     def _clicked_сlose(self):
         self.close_window.emit()
+
+    def _tr(self, text: str) -> str:
+        return tran('BotEditorForm.manual', text)
