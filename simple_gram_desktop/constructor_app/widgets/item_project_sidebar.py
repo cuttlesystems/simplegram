@@ -7,7 +7,6 @@ from common.localisation import tran
 from constructor_app.widgets.ui_item_project_sidebar import Ui_ItemProjectsListWidget
 
 class ItemProjectsListWidget(QWidget):
-
     """
     Надстройка айтема сайдбара
     """
