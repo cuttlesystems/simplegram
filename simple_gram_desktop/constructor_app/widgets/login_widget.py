@@ -21,6 +21,7 @@ class LoginWidget(QWidget):
     def _clicked_login(self):
         self.log_in.emit()
 
+    # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор qss
     def _switch_login(self):
         #if (self._ui.switchActivatedBot.isChecked()):
         #    self._ui.markerActivisionBot.setStyleSheet("QLabel{border-radius:8px; border:none; color:white;"
@@ -34,4 +35,4 @@ class LoginWidget(QWidget):
             self.ActivatedBotSignal.emit(False)
 
     def _tr(self, text: str) -> str:
-        return tran('BotEditorForm.manual', text)
+        return tran('LoginGUI.manual', text)

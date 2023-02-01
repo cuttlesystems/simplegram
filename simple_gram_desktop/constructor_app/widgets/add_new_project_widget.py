@@ -29,4 +29,4 @@ class AddNewProjectWidget(QWidget):
         self.close_window.emit()
 
     def _tr(self, text: str) -> str:
-        return tran('BotEditorForm.manual', text)
+        return tran('NewProjectGUI.manual', text)

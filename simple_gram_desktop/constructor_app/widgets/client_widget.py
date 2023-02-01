@@ -65,4 +65,4 @@ class ClientWidget(QWidget):
             self._ui.centrall_pannel_widget.setStyleSheet("QStackedWidget{border: none;background: rgb(105,105,109);}")
 
     def _tr(self, text: str) -> str:
-        return tran('BotEditorForm.manual', text)
+        return tran('ClientGUI.manual', text)

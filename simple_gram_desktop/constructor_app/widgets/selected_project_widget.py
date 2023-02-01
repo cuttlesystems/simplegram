@@ -16,6 +16,7 @@ class SelectedProjectWidget(QWidget):
         self._ui.switch_activated_bot.clicked.connect(self._switchBot)
         self._init_StyleSheet()
 
+    # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор qss
     def _init_StyleSheet(self):
         self._ui.groupBox.setStyleSheet("QGroupBox{border-radius:22px; border:none; "
                                         "background-color:rgb(255,255,255);}")
@@ -35,4 +36,4 @@ class SelectedProjectWidget(QWidget):
             self.activated_bot_signal.emit(False)
 
     def _tr(self, text: str) -> str:
-        return tran('BotEditorForm.manual', text)
+        return tran('SelectProjectGUI.manual', text)
