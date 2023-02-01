@@ -68,29 +68,21 @@ def compile_translations() -> None:
         qm_file_name = str(localization_without_man.with_suffix('.qm'))
         print(f'qm_file_name: ', qm_file_name)
 
-
+        pyside6_lrelease_command_parameters_list = [
+            pyside6_lrelease_exe_path(),
+            ts_files_path / localization_norm_path,
+            localization_without_man,
+            '-qm',
+            qm_file_name
+        ]
         print(
             f'\nrun pyside6-lrelease with command',
-            [
-                pyside6_lrelease_exe_path(),
-                ts_files_path / localization_norm_path,
-                localization_without_man,
-                '-qm',
-                qm_file_name
-            ],
+            pyside6_lrelease_command_parameters_list,
             '\n'
         )
 
 
-        subprocess.run(
-            [
-                pyside6_lrelease_exe_path(),
-                ts_files_path / localization_norm_path,
-                localization_without_man,
-                '-qm',
-                qm_file_name
-            ]
-        )
+        subprocess.run(pyside6_lrelease_command_parameters_list)
 
 
 def name_ui_to_ui_py(name: str) -> str:
