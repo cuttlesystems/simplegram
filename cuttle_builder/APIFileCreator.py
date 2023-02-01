@@ -10,27 +10,38 @@ class APIFileCreator(FileManager):
         assert isinstance(bot_direcory, str)
         self._bot_directory = bot_direcory
 
-    def create_file_keyboard(self, keyboard_name: str, keyboard_code: str):
-        """create file in specific directory, contains keyboard and register this keyboard in the package
+    def create_app_file(self, code: str) -> None:
+        """
+        Создает app файл (исполняемый файл).
 
         Args:
-            keyboard_name (str): name of keyboard (message_id + _kb)
-            keyboard_code (str): generated code of keyboard
+            code (str): Подготовленный код(содержимое файла)
         """
-        assert isinstance(keyboard_name, str)
-        assert isinstance(keyboard_code, str)
+        assert isinstance(code, str)
 
-        keyboard_code_file = str(
-            Path(self._bot_directory) / 'keyboards' / f'{keyboard_name}.py')
-        self.write_file(keyboard_code_file, keyboard_code)
+        path_to_file = str(
+            Path(self._bot_directory) / 'app.py')
+        self._write_file_owerwrite(path_to_file, code)
 
-    def create_keyboard_file_init(self, keyboard_name: str) -> None:
-        assert isinstance(keyboard_name, str)
+    def create_commands_file(self, code: str) -> None:
+        """
+        Создает файл с кодом функции для отображения команд бота
 
-        import_code = f'\nfrom .{keyboard_name} import {keyboard_name}'
-        keyboard_init_file = str(
-            Path(self._bot_directory) / 'keyboards' / '__init__.py')
-        self.write_into_init(keyboard_init_file, import_code)
+        Args:
+            code (str): Подготовленный код(содержимое файла)
+        """
+        assert isinstance(code, str)
+
+        path_to_file = str(
+            Path(self._bot_directory) / 'on_startup_commands.py')
+        self._write_file_insert(path_to_file, code)
+
+    def create_config_file(self, code) -> None:
+        assert isinstance(code, str)
+
+        config_code_file = str(
+            Path(self._bot_directory) / 'data' / 'config.py')
+        self._write_file_insert(config_code_file, code)
 
     def create_file_handler(self, name: str, code: str) -> None:
         """create file in specific directory, contains handler and register this handler in the package
@@ -44,7 +55,21 @@ class APIFileCreator(FileManager):
 
         handler_code_file = str(
             Path(self._bot_directory) / 'handlers' / f'get_{name}.py')
-        self.write_file(handler_code_file, code)
+        self._write_file_insert(handler_code_file, code)
+
+    def create_file_keyboard(self, keyboard_name: str, keyboard_code: str) -> None:
+        """create file in specific directory, contains keyboard and register this keyboard in the package
+
+        Args:
+            keyboard_name (str): name of keyboard (message_id + _kb)
+            keyboard_code (str): generated code of keyboard
+        """
+        assert isinstance(keyboard_name, str)
+        assert isinstance(keyboard_code, str)
+
+        keyboard_code_file = str(
+            Path(self._bot_directory) / 'keyboards' / f'{keyboard_name}.py')
+        self._write_file_insert(keyboard_code_file, keyboard_code)
 
     def create_handler_file_init(self, name: str) -> None:
         assert isinstance(name, str)
@@ -52,7 +77,15 @@ class APIFileCreator(FileManager):
         import_code = f'from .get_{name} import dp\n'
         handler_init_file = str(
             Path(self._bot_directory) / 'handlers' / '__init__.py')
-        self.write_into_init(handler_init_file, import_code)
+        self._write_into_init(handler_init_file, import_code)
+
+    def create_keyboard_file_init(self, keyboard_name: str) -> None:
+        assert isinstance(keyboard_name, str)
+
+        import_code = f'\nfrom .{keyboard_name} import {keyboard_name}'
+        keyboard_init_file = str(
+            Path(self._bot_directory) / 'keyboards' / '__init__.py')
+        self._write_into_init(keyboard_init_file, import_code)
 
     def create_state_file(self, code: str) -> None:
         """create file in specific directory, contains states class and register this class in the package
@@ -64,43 +97,10 @@ class APIFileCreator(FileManager):
 
         state_code_file = str(
             Path(self._bot_directory) / 'state' / 'states.py')
-        self.write_file(state_code_file, code)
+        self._write_file_insert(state_code_file, code)
 
     def create_state_file_init(self) -> None:
         import_code = 'from .states import States'
         state_init_file = str(
             Path(self._bot_directory) / 'state' / '__init__.py')
-        self.write_into_init(state_init_file, import_code)
-
-    def create_config_file(self, code) -> None:
-        assert isinstance(code, str)
-
-        config_code_file = str(
-            Path(self._bot_directory) / 'data' / 'config.py')
-        self.create_file(config_code_file, code)
-
-    def create_commands_file(self, code: str) -> None:
-        """
-        Создает файл с кодом функции для отображения команд бота
-
-        Args:
-            code (str): Подготовленный код(содержимое файла)
-        """
-        assert isinstance(code, str)
-
-        path_to_file = str(
-            Path(self._bot_directory) / 'on_startup_commands.py')
-        self.write_file(path_to_file, code)
-
-    def create_app_file(self, code: str) -> None:
-        """
-        Создает app файл (исполняемый файл).
-
-        Args:
-            code (str): Подготовленный код(содержимое файла)
-        """
-        assert isinstance(code, str)
-
-        path_to_file = str(
-            Path(self._bot_directory) / 'app.py')
-        self.write_file(path_to_file, code)
+        self._write_into_init(state_init_file, import_code)

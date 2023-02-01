@@ -9,6 +9,9 @@ from constructor_app.settings.login_settings import LoginSettings
 
 
 class LoginSettingsManager:
+
+    _DEFAULT_ADDRESS = 'https://ramasuchka.kz/'
+
     def __init__(self, path_to_storage: Path, key: bytes):
         assert isinstance(path_to_storage, Path)
         assert isinstance(key, bytes)
@@ -22,6 +25,7 @@ class LoginSettingsManager:
             with open(settings_path) as file:
                 data = json.load(file)
                 settings = self._dict_to_settings(data)
+        settings.address = settings.address if settings.address else self._DEFAULT_ADDRESS
         return settings
 
     def write_settings(self, settings: LoginSettings) -> None:
@@ -70,10 +74,10 @@ class LoginSettingsManager:
 
     def _dict_to_settings(self, data: dict) -> LoginSettings:
         assert isinstance(data, dict)
-        password = self._decrypt(data['password'])
+        password = self._decrypt(data.get('password', None))
         settings = LoginSettings()
-        settings.address = data['address']
-        settings.name = data['name']
+        settings.address = data.get('address', self._DEFAULT_ADDRESS)
+        settings.name = data.get('name', None)
         settings.password = password
         settings.save_password = data.get('save_password', True)
         return settings

@@ -196,27 +196,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="106"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="135"/>
+        <source>Load image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="142"/>
+        <source>Remove image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="153"/>
         <source>Keyboard type for variants</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="112"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="159"/>
         <source>Reply</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="119"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="166"/>
         <source>Inline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="144"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="191"/>
         <source>Variable name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="156"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="203"/>
         <source>Next message</source>
         <translation type="unfinished"></translation>
     </message>

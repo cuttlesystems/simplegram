@@ -11,11 +11,13 @@ class BotPropertiesModel(PropertiesModel):
         self._prop_name = ModelProperty(name='Название бота')
         self._prop_token = ModelProperty(name='Токен бота')
         self._prop_description = ModelProperty(name='Описание')
+        self._prop_link = ModelProperty(name='Ссылка на бота')
 
         super().__init__([
             self._prop_name,
             self._prop_token,
-            self._prop_description
+            self._prop_description,
+            self._prop_link
         ])
 
     def get_name(self) -> str:
@@ -45,5 +47,15 @@ class BotPropertiesModel(PropertiesModel):
         self.beginResetModel()
         try:
             self._prop_description.value = value
+        finally:
+            self.endResetModel()
+
+    def get_link(self) -> str:
+        return self._prop_link.value
+
+    def set_link(self, value: str):
+        self.beginResetModel()
+        try:
+            self._prop_link.value = value
         finally:
             self.endResetModel()
