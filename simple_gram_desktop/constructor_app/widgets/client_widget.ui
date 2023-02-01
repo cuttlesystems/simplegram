@@ -213,16 +213,6 @@ background: rgba(255,255,255,25);
 }
 </string>
            </property>
-           <item>
-            <property name="text">
-             <string>My first Bot</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Bot instant</string>
-            </property>
-           </item>
           </widget>
          </item>
          <item>

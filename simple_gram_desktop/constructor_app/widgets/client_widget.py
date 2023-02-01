@@ -1,10 +1,12 @@
 import typing
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget,QListWidgetItem
+from PySide6.QtGui import QPixmap
 from PySide6.QtCore import SIGNAL, SLOT
 
 from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
+from constructor_app.widgets.item_project_sidebar import ItemProjectsListWidget
 
 class ClientWidget(QWidget):
 
@@ -59,6 +61,7 @@ class ClientWidget(QWidget):
         #показываю сайдбар и топпанел
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
+        self._init_projectslist()
 
     # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) ->None:
@@ -73,13 +76,24 @@ class ClientWidget(QWidget):
         #настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(1)
 
-    def _init_stylesheet_stackedwidget(self, state:int) -> None:
+    def _init_stylesheet_stackedwidget(self, state: int) -> None:
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор
         #  qss, доработать функцию изменения nightMode/darkMode и функцию состояния stackedwidget при выбранном окне
         if (state == 0):
-            self._ui.centrall_pannel_widget.setStyleSheet("QStackedWidget{border: none;background: rgb(241,241,241);}")
+            self._ui.centrall_pannel_widget.setStyleSheet(
+                "QStackedWidget{border: none;background: rgb(241,241,241);}")
         else:
-            self._ui.centrall_pannel_widget.setStyleSheet("QStackedWidget{border: none;background: rgb(105,105,109);}")
+            self._ui.centrall_pannel_widget.setStyleSheet(
+                "QStackedWidget{border: none;background: rgb(105,105,109);}")
+
+    def _init_projectslist(self) -> None:
+        #toDo: Добавить подгрузку списка проектов с сервера
+        item = QListWidgetItem()
+        widget = ItemProjectsListWidget()
+        widget.init_item_sidebar(QPixmap(":/icons/widgets/times_icon/newProject.png"), "FirstBot", False)
+        self._ui.projects_list.insertItem(0, item)
+        self._ui.projects_list.setItemWidget(item, widget)
+        #toDo: Настройки высоты айтема пока что оставьте я её поправлю как закончу со всем сайдбаром
 
     def _tr(self, text: str) -> str:
         return tran('ClientWidget.manual', text)
