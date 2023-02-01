@@ -6,93 +6,93 @@
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="14"/>
         <source>Simple Gram</source>
-        <translation type="unfinished"></translation>
+        <translation>Simple Gram</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="33"/>
         <source>Bot stdout output</source>
-        <translation type="unfinished"></translation>
+        <translation>Вывод бота stdout</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="56"/>
         <source>Bot stderr output</source>
-        <translation type="unfinished"></translation>
+        <translation>Вывод бота stderr</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="95"/>
         <source>Bot</source>
-        <translation type="unfinished"></translation>
+        <translation>Бот</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="104"/>
         <source>Block</source>
-        <translation type="unfinished"></translation>
+        <translation>Блок</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="117"/>
         <source>Scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>Схема</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="128"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель инструментов</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="162"/>
         <source>Generate bot</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать бота</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="171"/>
         <source>Start bot</source>
-        <translation type="unfinished"></translation>
+        <translation>Запустить бота</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="180"/>
         <source>Stop bot</source>
-        <translation type="unfinished"></translation>
+        <translation>Остановить бота</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="189"/>
         <source>Add message</source>
-        <translation type="unfinished">Добавить сообщение</translation>
+        <translation>Добавить сообщение</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="198"/>
         <source>Delete message</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить сообщение</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="207"/>
         <source>Mark as start</source>
-        <translation type="unfinished"></translation>
+        <translation>Пометить как начальное</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="216"/>
         <source>Delete variant</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить вариант</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="221"/>
         <source>Manual save</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить вручную</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="230"/>
         <source>Add variant</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить вариант</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="239"/>
         <source>Read logs</source>
-        <translation type="unfinished"></translation>
+        <translation>Прочитать логи</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="248"/>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="251"/>
         <source>Mark as error</source>
-        <translation type="unfinished"></translation>
+        <translation>Пометить как ошибочное</translation>
     </message>
 </context>
 <context>
@@ -172,52 +172,67 @@
     <message>
         <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="14"/>
         <source>Change message</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить сообщение</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="22"/>
         <source>Message text</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст сообщения</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="34"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="37"/>
         <source>Message type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип сообщения</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="40"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="43"/>
         <source>Message with variants</source>
-        <translation type="unfinished"></translation>
+        <translation>Сообщение с вариантами</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="47"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="50"/>
         <source>Message with any input</source>
-        <translation type="unfinished"></translation>
+        <translation>Сообщение с произвольным вводом</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="54"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="57"/>
         <source>Message with jump</source>
-        <translation type="unfinished"></translation>
+        <translation>Сообщение с переходом</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="64"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="135"/>
+        <source>Load image</source>
+        <translation>Загрузить изображение</translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="142"/>
+        <source>Remove image</source>
+        <translation>Удалить изображение</translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="153"/>
         <source>Keyboard type for variants</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип клавиатуры для вариантов</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="70"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="159"/>
         <source>Reply</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="77"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="166"/>
         <source>Inline</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="102"/>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="191"/>
         <source>Variable name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя переменной</translation>
+    </message>
+    <message>
+        <location filename="../widgets/bot_editor/message_editor_dialog.ui" line="203"/>
+        <source>Next message</source>
+        <translation>Следующее сообщение</translation>
     </message>
 </context>
 <context>
@@ -225,52 +240,52 @@
     <message>
         <location filename="../widgets/sign_up_form.ui" line="20"/>
         <source>Sign Up Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма регистрации</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="28"/>
         <source>Email</source>
-        <translation type="unfinished"></translation>
+        <translation>Email</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="41"/>
         <source>Confirm your password here ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Подтвердите пароль здесь...</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="48"/>
         <source>Password</source>
-        <translation type="unfinished">Пароль</translation>
+        <translation>Пароль</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="55"/>
         <source>Enter your email address here ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите свой электронный адрес сюда ...</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="62"/>
         <source>Enter your username here ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите ваше имя пользователя здесь...</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="69"/>
         <source>Username</source>
-        <translation type="unfinished">Логин</translation>
+        <translation>Логин</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="76"/>
         <source>Confirm Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Подтвердить пароль</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="89"/>
         <source>Enter your password here ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите свой пароль здесь...</translation>
     </message>
     <message>
         <location filename="../widgets/sign_up_form.ui" line="126"/>
         <source>Sign up</source>
-        <translation type="unfinished"></translation>
+        <translation>Зарегистрироваться</translation>
     </message>
 </context>
 <context>
@@ -278,17 +293,17 @@
     <message>
         <location filename="../widgets/bot_editor/variant_editor_dialog.ui" line="14"/>
         <source>Variant Editor Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор вариантов</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/variant_editor_dialog.ui" line="22"/>
         <source>Variant (button) text</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст варианта (кнопки)</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/variant_editor_dialog.ui" line="36"/>
         <source>On select this variant go to message</source>
-        <translation type="unfinished"></translation>
+        <translation>При выборе этого варианта перейти к сообщению</translation>
     </message>
 </context>
 </TS>
