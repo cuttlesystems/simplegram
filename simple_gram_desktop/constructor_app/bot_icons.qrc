@@ -11,5 +11,9 @@
         <file>images/stop_bot.svg</file>
         <file>images/logs.svg</file>
         <file>images/error_message.svg</file>
+
+        <file>widgets/times_icon/closeIcon.png</file>
+        <file>widgets/times_icon/logo.png</file>
+        <file>widgets/times_icon/newProject.png</file>
     </qresource>
 </RCC>

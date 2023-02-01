@@ -45,6 +45,9 @@ class BlockGraphicsItem(QGraphicsItem):
     _MESSAGE_WIDTH = 150
     _MESSAGE_HEIGHT = 100
 
+    _NODE_WIDTH = 16
+    _NODE_HEIGHT = 16
+
     _VARIANT_WIDTH = 150
     _VARIANT_HEIGHT = 50
 
@@ -56,6 +59,9 @@ class BlockGraphicsItem(QGraphicsItem):
 
     _BORDER_THICKNESS_NORMAL = 2
     _BORDER_THICKNESS_SELECTED = 3
+
+    _SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE = 5
+    _SUMMARY_VARIANTS_RECT_ROUNDING_RADIUS = 16
 
     _ROUND_RADIUS = 30
     _BLOCK_RECT_EXTEND_SPACE = 25
@@ -153,6 +159,26 @@ class BlockGraphicsItem(QGraphicsItem):
         height = rect.height() + self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE * 2
         return QRectF(x, y, width, height)
 
+    def _summary_variants_block_rect(self) -> QRectF:
+        """
+        Определение области выделенной для вариантов в блоке.
+        Returns:
+            координаты внешней области фигуры
+        """
+        rect = self._message_rect()
+        # обычные варианты + иллюзорный вариант (через который добавляются новые варианты)
+        for variant_index in range(len(self._variants) + 1):
+            rect = rect.united(self._variant_rect(variant_index))
+
+        x = rect.x() - 2*self._SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE
+        y = rect.y() + self._START_MESSAGE_TITLE_HEIGHT + self._MESSAGE_HEIGHT - self._SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE
+
+        width = rect.width() + self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE + 3*self._NODE_WIDTH
+        height = rect.height() - self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE + self._START_MESSAGE_TITLE_HEIGHT - \
+                 self._MESSAGE_HEIGHT - 4*self._SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE
+        return QRectF(x, y, width, height)
+
+
     def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value: typing.Any) -> typing.Any:
         """
         Метод, который позволяет встраиваться в процесс изменения графического элемента (данного блока).
@@ -194,6 +220,11 @@ class BlockGraphicsItem(QGraphicsItem):
 
         # нарисовать сообщение
         self._draw_message(painter)
+
+        painter.setBrush(QColor(self._color_scheme.summary_variants_block_color))
+        painter.setPen(QColor(self._color_scheme.summary_variants_block_color))
+        painter.drawRoundedRect(self._summary_variants_block_rect(), self._SUMMARY_VARIANTS_RECT_ROUNDING_RADIUS,
+                                self._SUMMARY_VARIANTS_RECT_ROUNDING_RADIUS)
 
         # нарисовать все обычные варианты
         for variant_index, variant in enumerate(self._variants):
@@ -416,8 +447,8 @@ class BlockGraphicsItem(QGraphicsItem):
         self._setup_variant_colors(painter, index, is_illusory_variant)
 
         painter.drawRect(self._variant_rect(index))
-
         if not is_illusory_variant:
+            painter.drawEllipse(self._node_rect(index))
             painter.setPen(QColor(self._color_scheme.text_color))
             painter.drawText(self._variant_text_rect(index), cut_string(variant.text, self._MAX_VARIANT_CHARS))
         else:
@@ -432,23 +463,7 @@ class BlockGraphicsItem(QGraphicsItem):
         variant_rect.x() + variant_rect.width() / 2.0 - height
 
     def _get_block_brush(self) -> QBrush:
-        alpha_top_left = 180
-        alpha_right_bottom = 50
-        if self.isSelected():
-            alpha_top_left = 230
-            alpha_right_bottom = 230
-
-        gradient = QLinearGradient(0, 0, 100, 100)
-
-        block_brush_color_top_left = QColor(0xb4e6ce)
-        block_brush_color_top_left.setAlpha(alpha_top_left)
-
-        block_brush_color_right_bottom = QColor(0xaef7d5)
-        block_brush_color_right_bottom.setAlpha(alpha_right_bottom)
-
-        gradient.setColorAt(0.0, block_brush_color_top_left)
-        gradient.setColorAt(1.0, block_brush_color_right_bottom)
-        block_brush = QBrush(gradient)
+        block_brush = QBrush(self._color_scheme.block_brush)
         return block_brush
 
     def _setup_message_colors(self, painter: QtGui.QPainter):
@@ -495,10 +510,18 @@ class BlockGraphicsItem(QGraphicsItem):
     def _variant_rect(self, variant_index: int) -> QRectF:
         dy = self._VARIANT_HEIGHT + self._VARIANT_DISTANCE
         return QRectF(
-            0,
+            0+ self._NODE_WIDTH,
             self._MESSAGE_HEIGHT + self._VARIANT_DISTANCE + dy * variant_index,
             self._VARIANT_WIDTH,
             self._VARIANT_HEIGHT)
+
+    def _node_rect(self, variant_index: int) -> QRectF:
+        dy = self._VARIANT_HEIGHT + self._VARIANT_DISTANCE
+        return QRectF(
+            self._VARIANT_WIDTH + 1.5 * self._NODE_WIDTH + self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE,
+            self._MESSAGE_HEIGHT + self._VARIANT_DISTANCE + dy * variant_index +self._VARIANT_HEIGHT/2-self._NODE_HEIGHT/2,
+            self._NODE_WIDTH,
+            self._NODE_HEIGHT)
 
     def _variant_text_rect(self, variant_index: int) -> QRectF:
         variant_rect = self._variant_rect(variant_index)
@@ -543,7 +566,7 @@ class BlockGraphicsItem(QGraphicsItem):
 
         x = rect.x() - self._BLOCK_RECT_EXTEND_SPACE
         y = rect.y() - self._BLOCK_RECT_EXTEND_SPACE
-        width = rect.width() + 2 * self._BLOCK_RECT_EXTEND_SPACE
+        width = rect.width() + 2 * self._BLOCK_RECT_EXTEND_SPACE + self._NODE_WIDTH*2
         height = rect.height() + 2 * self._BLOCK_RECT_EXTEND_SPACE
         return QRectF(x, y, width, height)
 
@@ -562,3 +585,4 @@ class BlockGraphicsItem(QGraphicsItem):
             self._ERROR_MESSAGE_TITLE_WIDTH,
             self._ERROR_MESSAGE_TITLE_HEIGHT,
         )
+
