@@ -11,12 +11,12 @@
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="33"/>
         <source>Bot stdout output</source>
-        <translation>Бот stdout output</translation>
+        <translation>Вывод бота stdout</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="56"/>
         <source>Bot stderr output</source>
-        <translation>Бот stderr output</translation>
+        <translation>Вывод бота stderr</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor/bot_editor_form.ui" line="95"/>
