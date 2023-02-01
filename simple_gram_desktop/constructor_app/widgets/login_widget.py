@@ -18,6 +18,7 @@ class LoginWidget(QWidget):
 
         # подключаю кнопку ентерПользователя с переходом на мейнОкно
         self._ui.enter_button.clicked.connect(self._clicked_login)
+        # toDO: Добавить функцию инициализации QSS
 
     def _clicked_login(self):
         self.log_in.emit()

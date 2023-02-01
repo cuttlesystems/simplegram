@@ -68,6 +68,6 @@ class MessageSelectorList(QListWidget):
             assert isinstance(current_item, QListWidgetItem)
             current_message = current_item.data(self._DATA_ROLE)
         return current_message
-    
+
     def _tr(self, text: str) -> str:
         return tran('MessageSelectorList.manual', text)

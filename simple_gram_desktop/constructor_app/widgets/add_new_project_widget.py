@@ -18,6 +18,7 @@ class AddNewProjectWidget(QWidget):
         # подключаю кнопку закрыть добавление проекта и отмена добавления проекта с переходом на мейнОкно
         self._ui.close_button.clicked.connect(self._clicked_сlose)
         self._ui.cancel_button.clicked.connect(self._clicked_сlose)
+        # toDO: Добавить функцию инициализации QSS
 
     def _init_stylesheet(self,night)->None:
         # toDO: поменять даркмод режим на изменение qssа и все qss вынести в отдельный файлпроекта или

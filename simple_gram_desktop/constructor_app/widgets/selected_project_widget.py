@@ -15,6 +15,7 @@ class SelectedProjectWidget(QWidget):
         self._ui.setupUi(self)
         self._ui.switch_activated_bot.clicked.connect(self._switchBot)
         self._init_StyleSheet()
+        # toDO: Добавить функцию инициализации QSS
 
     def _init_StyleSheet(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
