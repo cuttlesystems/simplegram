@@ -6,7 +6,6 @@ from PySide6.QtCore import SIGNAL, SLOT
 from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
-from constructor_app.widgets.item_project_sidebar import ItemProjectsListWidget
 
 class ClientWidget(QWidget):
 
@@ -88,12 +87,7 @@ class ClientWidget(QWidget):
 
     def _init_projectslist(self) -> None:
         #toDo: Добавить подгрузку списка проектов с сервера
-        item = QListWidgetItem()
-        widget = ItemProjectsListWidget()
-        widget.init_item_sidebar(QPixmap(":/icons/widgets/times_icon/newProject.png"), "FirstBot", False)
-        self._ui.projects_list.insertItem(0, item)
-        self._ui.projects_list.setItemWidget(item, widget)
-        #toDo: Настройки высоты айтема пока что оставьте я её поправлю как закончу со всем сайдбаром
+        1+1
 
     def _tr(self, text: str) -> str:
         return tran('ClientWidget.manual', text)
