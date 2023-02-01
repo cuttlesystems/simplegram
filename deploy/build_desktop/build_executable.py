@@ -90,7 +90,5 @@ if __name__ == '__main__':
     compile_ui_forms()
     compile_rc_files()
 
-    exit(0)
-
     # непосредственный запуск процесса создания исполняемого файла приложения 'simple_gram' через PyInstaller
     subprocess.run([pyinstaller_exe_path(), 'start_constructor.spec', '-y'])
