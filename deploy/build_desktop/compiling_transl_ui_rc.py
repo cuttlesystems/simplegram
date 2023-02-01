@@ -42,7 +42,7 @@ def pyside6_rcc_exe_path() -> Path:
     return result
 
 
-def compile_translations():
+def compile_translations() -> None:
     """
     компилирование файлов переводов перед запуском процесса создания исполняемого файла приложения 'simple_gram'
     Returns: генерируются файлы переводов '*.qm' по пути
@@ -65,8 +65,22 @@ def compile_translations():
         localization_without_man = localization_norm_path.parent / \
                                    str(localization_norm_path.name).replace('_man_', '_')
         print(f'\nlocalization_without_man: ', localization_without_man)
-        qm_file_name = str(localization_without_man).replace('.ts', '.qm')
+        qm_file_name = str(localization_without_man.with_suffix('.qm'))
         print(f'qm_file_name: ', qm_file_name)
+
+
+        print(
+            f'\nrun pyside6-lrelease with command',
+            [
+                pyside6_lrelease_exe_path(),
+                ts_files_path / localization_norm_path,
+                localization_without_man,
+                '-qm',
+                qm_file_name
+            ],
+            '\n'
+        )
+
 
         subprocess.run(
             [
@@ -96,7 +110,7 @@ def name_ui_to_ui_py(name: str) -> str:
     return str(ui_py_path)
 
 
-def generate_ui_file(ui_name: str):
+def generate_ui_file(ui_name: str) -> None:
     """
     функция, осуществляющая генерацию файла ui-форм 'ui_*_form.py' в директории с исходным файлом
     Args:
@@ -131,7 +145,7 @@ def search_ui_files(search_dir: str) -> typing.List[Path]:
     return files_list
 
 
-def compile_ui_forms():
+def compile_ui_forms() -> None:
     """
     компилирование файлов ui-форм перед запуском процесса создания исполняемого файла приложения 'simple_gram'
     Returns: генерируются файлы ui-форм в директориях
@@ -169,14 +183,20 @@ def name_qrc_to_rc_py(name: str) -> str:
 
     """
     path = Path(name)
+    print(f'path: ', path)
     directory = path.parent
+    print(f'directory: ', directory)
     filename: str = 'rc_' + path.name
+    print(f'filename: ', filename)
     qrc_path = directory / filename
+    print(f'qrc_path: ', qrc_path)
     rc_py_path = qrc_path.with_suffix('.py')
+    print(f'rc_py_path: ', rc_py_path)
+    print(f'string of "rc_py_path": ', str(rc_py_path))
     return str(rc_py_path)
 
 
-def generate_rc_file(rc_name: str):
+def generate_rc_file(rc_name: str) -> None:
     """
     функция, осуществляющая генерацию файла ресурсов 'rc_*.py' в директории с исходным файлом ресурсов
     Args:
@@ -211,7 +231,7 @@ def search_rc_files(search_dir: str) -> typing.List[Path]:
     return files_list
 
 
-def compile_rc_files():
+def compile_rc_files() -> None:
     """
     компилирование файлов ресурсов перед запуском процесса создания исполняемого файла приложения 'simple_gram'
     Returns: генерируются rc-файлы в директории

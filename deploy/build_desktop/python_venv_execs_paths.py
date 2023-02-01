@@ -106,6 +106,4 @@ def get_executable_path_from_venv(win_exe_path: str, lin_exe_path: str) -> Path:
         result = scripts_bin_path / lin_exe_path
     else:
         raise NotImplementedError('Unsupported os')
-    # print(f'scripts (or bin) path: ', scripts_bin_path)
-    # print(f'Путь к исполняемому файлу: ', result)
     return result

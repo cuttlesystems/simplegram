@@ -10,7 +10,6 @@ import sys
 #  небходимо для того, чтобы проходил import, выполняемый строкой ниже
 sys.path.append('.')
 
-#from python_and_venv_path import get_building_dir
 from python_venv_execs_paths import get_building_dir
 
 
