@@ -7,6 +7,19 @@ from common.localisation import tran
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
 
 class ClientWidget(QWidget):
+
+    """
+    Надстройка выводимого пользователю GUI
+    """
+    # индекс окна логина/регистрации
+    _LOGIN_INDEX_PAGE = 0
+    # индекс главного окна приложения
+    _MAIN_MENU_INDEX_PAGE = 1
+    # индекс окна с информацией о выбранном боте
+    _SELECTED_BOT_INDEX_PAGE = 2
+    # инициализация окна с добавлением нового бота
+    _NEW_BOT_INDEX_PAGE = 3
+
     def __init__(self, parent: typing.Optional[QWidget] = None):
         super().__init__(parent)
         print('create ClientWidget')
@@ -28,10 +41,12 @@ class ClientWidget(QWidget):
         #первое открытие приложения, инициализация авторизации
         self._start_login_users()
 
+        # toDO: Добавить функцию инициализации QSS
+
     #инициализация окна авторизации
     def _start_login_users(self) ->None:
         #выстравляю страницу инициализации
-        self._ui.centrall_pannel_widget.setCurrentIndex(0)
+        self._ui.centrall_pannel_widget.setCurrentIndex(self._LOGIN_INDEX_PAGE)
         # прячу сайдбар и топпанел
         self._ui.side_bar.hide()
         self._ui.top_pannel.hide()
@@ -39,22 +54,23 @@ class ClientWidget(QWidget):
     #инициализация основого окна приложения
     def _start_main_menu(self) ->None:
         #выстравляю страницу главного окна
-        self._ui.centrall_pannel_widget.setCurrentIndex(1)
+        self._ui.centrall_pannel_widget.setCurrentIndex(self._MAIN_MENU_INDEX_PAGE)
         self._init_stylesheet_stackedwidget(0)
         #показываю сайдбар и топпанел
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
 
-    # инициализация основого окна приложения
+    # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) ->None:
         #выстравляю страницу с информацией о выбранном боте
-        self._ui.centrall_pannel_widget.setCurrentIndex(2)
+        self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
         self._init_stylesheet_stackedwidget(0)
 
-    # инициализация основого окна приложения
+    # инициализация окна с добавлением нового бота
     def _start_new_roject(self) ->None:
         #выстравляю страницу добавления новго бота
-        self._ui.centrall_pannel_widget.setCurrentIndex(3)
+        self._ui.centrall_pannel_widget.setCurrentIndex(self._NEW_BOT_INDEX_PAGE)
+        #настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(1)
 
     def _init_stylesheet_stackedwidget(self, state:int) -> None:
