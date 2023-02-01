@@ -20,6 +20,8 @@ class AddNewProjectWidget(QWidget):
         self._ui.cancel_button.clicked.connect(self._clicked_сlose)
 
     def _init_stylesheet(self,night)->None:
+        # toDO: поменять даркмод режим на изменение qssа и все qss вынести в отдельный файлпроекта или
+        #  для каждого окна сделать свой первострочный инициализатор qss
         if (night):
             self.setPalette(QBrush(QColor(27,27,27,155)),QPalette.window())
         else:
@@ -29,4 +31,4 @@ class AddNewProjectWidget(QWidget):
         self.close_window.emit()
 
     def _tr(self, text: str) -> str:
-        return tran('NewProjectGUI.manual', text)
+        return tran('AddNewProjectWidget.manual', text)

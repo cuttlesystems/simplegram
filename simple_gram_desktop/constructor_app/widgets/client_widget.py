@@ -57,12 +57,13 @@ class ClientWidget(QWidget):
         self._ui.centrall_pannel_widget.setCurrentIndex(3)
         self._init_stylesheet_stackedwidget(1)
 
-#toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор qss
     def _init_stylesheet_stackedwidget(self, state:int) -> None:
+        # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор
+        #  qss, доработать функцию изменения nightMode/darkMode и функцию состояния stackedwidget при выбранном окне
         if (state == 0):
             self._ui.centrall_pannel_widget.setStyleSheet("QStackedWidget{border: none;background: rgb(241,241,241);}")
         else:
             self._ui.centrall_pannel_widget.setStyleSheet("QStackedWidget{border: none;background: rgb(105,105,109);}")
 
     def _tr(self, text: str) -> str:
-        return tran('ClientGUI.manual', text)
+        return tran('ClientWidget.manual', text)
