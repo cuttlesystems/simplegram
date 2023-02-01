@@ -8,7 +8,7 @@ from subprocess import run
 
 from python_venv_execs_paths import OsClass, get_current_os, get_script_dir, get_venv_python_path, get_building_dir, get_executable_path_from_venv
 from python_venv_execs_paths import get_venv_dir
-from compiling_transl_ui_rc import compile_translations
+from compiling_transl_ui_rc import compile_translations, compile_ui_forms
 
 
 def create_venv(venv_dir: Path):
@@ -87,6 +87,7 @@ if __name__ == '__main__':
     create_venv(venv_dir)
 
     compile_translations()
+    compile_ui_forms()
 
     exit(0)
 
