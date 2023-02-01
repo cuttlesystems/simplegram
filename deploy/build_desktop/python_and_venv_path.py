@@ -77,3 +77,25 @@ def get_building_dir():
     else:
         raise NotImplementedError('Unsupported os')
     return result
+
+
+def get_executable_path_from_venv(win_exe_path: str, lin_exe_path: str) -> Path:
+    """
+    define function to determine executable files' paths
+    Returns: путь к исполняемым файлам в созданном виртуальном окружении
+
+    """
+    assert isinstance(win_exe_path, str)
+    assert isinstance(lin_exe_path, str)
+    current_os = get_current_os()
+    venv_dir = get_building_dir() / 'venv'
+    scripts_bin_path = get_venv_python_path(venv_dir).parent
+    if current_os == OsClass.WINDOWS_CLASS:
+        result = scripts_bin_path / win_exe_path
+    elif current_os == OsClass.LINUX_CLASS:
+        result = scripts_bin_path / lin_exe_path
+    else:
+        raise NotImplementedError('Unsupported os')
+    print(f'scripts (or bin) path: ', scripts_bin_path)
+    # print(f'Путь к исполняемому файлу: ', result)
+    return result
