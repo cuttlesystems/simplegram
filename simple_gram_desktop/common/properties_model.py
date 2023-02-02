@@ -5,6 +5,7 @@ from PySide6 import QtCore
 from PySide6.QtCore import QAbstractTableModel, QModelIndex
 from PySide6.QtGui import Qt
 
+from common.localisation import tran
 from common.model_property import ModelProperty
 
 
@@ -14,15 +15,13 @@ class PropertiesModel(QAbstractTableModel):
     _COLUMN_PROPERTY_NAME = 0
     _COLUMN_PROPERTY_VALUE = 1
 
-    _HEADER_COLUMNS: typing.Dict[int, str] = {
-        0: 'Параметр',
-        1: 'Значение'
-    }
-
     def __init__(self, properties: typing.List[ModelProperty]):
         super().__init__()
         self._properties: typing.List[ModelProperty] = properties
-
+        self._HEADER_COLUMNS: typing.Dict[int, str] = {
+            0: self._tr_prop_model('Parameter'),
+            1: self._tr_prop_model('Value')
+        }
     def rowCount(self, parent: QModelIndex):
         assert isinstance(parent, QModelIndex)
         return len(self._properties)
@@ -82,3 +81,6 @@ class PropertiesModel(QAbstractTableModel):
         if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Horizontal:
             result = self._HEADER_COLUMNS.get(section)
         return result
+
+    def _tr_prop_model(self, mes: str) -> str:
+        return tran('PropertiesModel.manual', mes)
