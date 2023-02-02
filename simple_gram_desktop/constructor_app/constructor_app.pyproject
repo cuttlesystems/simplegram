@@ -16,8 +16,7 @@
         "widgets/client_widget.ui",
         "widgets/login_widget.ui",
         "widgets/add_new_project_widget.ui",
-        "widgets/item_project_sidebar.ui",
+        "widgets/bot_item_sidebar.ui",
         "widgets/selected_project_widget.ui"
-
     ]
 }

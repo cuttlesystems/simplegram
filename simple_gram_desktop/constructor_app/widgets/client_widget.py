@@ -1,5 +1,6 @@
 import typing
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget,QListWidgetItem
+from PySide6.QtGui import QPixmap
 from PySide6.QtCore import SIGNAL, SLOT
 
 from common.localisation import tran
@@ -22,7 +23,6 @@ class ClientWidget(QWidget):
 
     def __init__(self, parent: typing.Optional[QWidget] = None):
         super().__init__(parent)
-        print('create ClientWidget')
 
         self._ui = Ui_ClientWidget()
         self._ui.setupUi(self)
@@ -59,6 +59,7 @@ class ClientWidget(QWidget):
         #показываю сайдбар и топпанел
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
+        self._init_projectslist()
 
     # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) ->None:
@@ -73,13 +74,19 @@ class ClientWidget(QWidget):
         #настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(1)
 
-    def _init_stylesheet_stackedwidget(self, state:int) -> None:
+    def _init_stylesheet_stackedwidget(self, state: int) -> None:
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор
         #  qss, доработать функцию изменения nightMode/darkMode и функцию состояния stackedwidget при выбранном окне
         if (state == 0):
-            self._ui.centrall_pannel_widget.setStyleSheet("QStackedWidget{border: none;background: rgb(241,241,241);}")
+            self._ui.centrall_pannel_widget.setStyleSheet(
+                "QStackedWidget{border: none;background: rgb(241,241,241);}")
         else:
-            self._ui.centrall_pannel_widget.setStyleSheet("QStackedWidget{border: none;background: rgb(105,105,109);}")
+            self._ui.centrall_pannel_widget.setStyleSheet(
+                "QStackedWidget{border: none;background: rgb(105,105,109);}")
+
+    def _init_projectslist(self) -> None:
+        #toDo: Добавить подгрузку списка проектов с сервера
+        self._ui.projects_list.add_bot(QPixmap(":/icons/widgets/times_icon/newProject.png"), "BotNew", False, 0)
 
     def _tr(self, text: str) -> str:
         return tran('ClientWidget.manual', text)

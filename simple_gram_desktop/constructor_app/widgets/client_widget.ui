@@ -184,7 +184,7 @@ color: rgba(255,255,255,100);}</string>
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="projects_list">
+          <widget class="ProjectsListWidget" name="projects_list">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -210,19 +210,8 @@ QListWidget::item:selected{
 border:none;
 color: rgb(255,255,255);
 background: rgba(255,255,255,25);
-}
-</string>
+}</string>
            </property>
-           <item>
-            <property name="text">
-             <string>My first Bot</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Bot instant</string>
-            </property>
-           </item>
           </widget>
          </item>
          <item>
@@ -514,6 +503,11 @@ background: rgb(241,241,241);
    <extends>QWidget</extends>
    <header>constructor_app.widgets.selected_project_widget</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ProjectsListWidget</class>
+   <extends>QListWidget</extends>
+   <header>constructor_app.widgets.projects_list_widget</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -29,13 +29,15 @@ class SelectedProjectWidget(QWidget):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
         #  инициализатор qss и продумать грамотный флаг состояния бота
         if(self._ui.switch_activated_bot.isChecked()):
-            self._ui.marker_state_bot.setStyleSheet("QLabel{border-radius:8px; border:none; color:white;"
-                                                       "background-color:#4DAAFF;}")
+            self._ui.marker_state_bot.setStyleSheet(
+                "QLabel{border-radius:8px; border:none; color:white;"
+                "background-color:#4DAAFF;}")
             self._ui.marker_state_bot.setText(self._tr(u"Bot is enabled"))
             self.activated_bot_signal.emit(True)
         else:
-            self._ui.marker_state_bot.setStyleSheet("QLabel{border-radius:8px; border:none; color:white;"
-                                                       "background-color:#FF5F8F;}")
+            self._ui.marker_state_bot.setStyleSheet(
+                "QLabel{border-radius:8px; border:none; color:white;"
+                "background-color:#FF5F8F;}")
             self._ui.marker_state_bot.setText(self._tr(u"Bot is disabled"))
             self.activated_bot_signal.emit(False)
 
