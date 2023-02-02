@@ -15,15 +15,15 @@ class PropertiesModel(QAbstractTableModel):
     _COLUMN_PROPERTY_NAME = 0
     _COLUMN_PROPERTY_VALUE = 1
 
-    _HEADER_COLUMNS: typing.Dict[int, str] = {
-        0: 'Parameter',
-        1: 'Value'
-    }
+
 
     def __init__(self, properties: typing.List[ModelProperty]):
         super().__init__()
         self._properties: typing.List[ModelProperty] = properties
-
+        self._HEADER_COLUMNS: typing.Dict[int, str] = {
+            0: self._tr('Parameter'),
+            1: self._tr('Value')
+        }
     def rowCount(self, parent: QModelIndex):
         assert isinstance(parent, QModelIndex)
         return len(self._properties)
@@ -81,7 +81,7 @@ class PropertiesModel(QAbstractTableModel):
         result = None
 
         if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Horizontal:
-            result = self._tr(self._HEADER_COLUMNS.get(section))
+            result = self._HEADER_COLUMNS.get(section)
         return result
 
     def _tr(self, mes: str) -> str:
