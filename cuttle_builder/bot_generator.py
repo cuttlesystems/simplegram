@@ -84,7 +84,10 @@ class BotGenerator:
 
     def create_file_handlers(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
+        # вернет переменные, которые найдены в message.text и присутствуют среди всех объявленных переменных
         variables = self._user_message_validator.get_variables_from_text_exist_in_user_variables(message.text)
+        # если переменная из текста сообщения не найдена среди всех заявленных переменных
+        # то добавить к ней фигурные скобки
         text = self._user_message_validator.get_validated_message_text(message.text)
         # Fill in additional functions, if variables are exist, get variables, that use in text
         additional_functions = ''
@@ -185,7 +188,7 @@ class BotGenerator:
 
             keyboard_generation_counter += 1
             imports_generation_counter += 1
-
+        # Получение списка сообщений у которых next_message == message.id (принемаемый на вход функцией).
         previous_messages = self._find_previous_messages(message.id)
         previous_message = previous_messages[0] if previous_messages else None
 
