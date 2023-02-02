@@ -16,3 +16,8 @@ class NoOneMessageException(BotGeneratorException):
 class NoStartMessageException(BotGeneratorException):
     def __init__(self, msg: str):
         super().__init__(msg)
+
+
+class WrongBracketsSyntaxError(BotGeneratorException):
+    def __init__(self, msg: str):
+        super().__init__(msg)

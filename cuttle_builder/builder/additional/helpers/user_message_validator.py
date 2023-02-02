@@ -2,6 +2,7 @@ import re
 from typing import List
 
 from b_logic.data_objects import BotMessage, MessageTypeEnum
+from cuttle_builder.exceptions.bot_gen_exceptions import WrongBracketsSyntaxError
 
 
 class UserMessageValidator:
@@ -17,8 +18,15 @@ class UserMessageValidator:
         Returns:
             (str) text, contains double curly brackets of words, that doesn't exist in user_variables
         """
-        variables: List[str] = self._get_all_variables_from_text(text)
+        # найти и вернуть потенциальные переменные в тексте сообщения
+        # variables: List[str] = self._get_all_variables_from_text(text)
+        variables: List[str] = self._get_all_values_in_brackets(text)
+
+        # добавить фигурные скобки ко всем, объявленным переменным
         all_variables_in_curly_brackets = self._add_curly_brackets_for_user_variables()
+
+        # если переменная из текста сообщения не найдена среди всех заявленных переменных
+        # то добавить к ней фигурные скобки
         for match in variables:
             if match not in all_variables_in_curly_brackets:
                 text = self._replace_matched_substring_in_text(text, match)
@@ -86,3 +94,37 @@ class UserMessageValidator:
             (str) text, contains substring in {curly brackets}
         """
         return text.replace(match, self._add_curly_brackets(match))
+
+    def _get_all_values_in_brackets(self, string: str) -> List[str]:
+        """
+        Возвращает потенциальные переменные из текста сообщения, либо
+        вызывает ошибку если присутствуют лишние фигурные скобки.
+
+        Args:
+            string: текст сообщения.
+
+        Returns:
+            список потенциальных переменных в фигурных скобках.
+        """
+        stack = []
+        result = []
+        start = 0
+        for i, char in enumerate(string):
+            if char == '{':
+                if len(stack) == 0:
+                    start = i + 1
+                    stack.append(char)
+                else:
+                    raise WrongBracketsSyntaxError(
+                        f"Error: Opening bracket after opening bracket in message - {string}")
+            elif char == '}':
+                if not stack:
+                    raise WrongBracketsSyntaxError(
+                        f"Error: Closing bracket without opening bracket in message - {string}")
+                stack.pop()
+                if not stack:
+                    result.append('{' + string[start:i] + '}')
+        if stack:
+            raise WrongBracketsSyntaxError(
+                f"Error: Opening bracket without closing bracket in message - {string}")
+        return result
