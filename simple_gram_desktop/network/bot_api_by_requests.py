@@ -6,16 +6,11 @@ from urllib.error import HTTPError
 import requests
 import urllib.request
 
-from b_logic.bot_api.i_bot_api import IBotApi, BotApiException, SignUpException, CreatingBotException, \
-    GetBotListException, UserAuthenticationException, ChangingBotException, DeletingBotException, \
-    SettingBotStartMessageException, SettingBotErrorMessageException, GettingBotMessagesException, \
-    CreatingMessageException, GettingMessageInformationException, EditingMessageException, DeletingMessageException, \
-    DeletingImageException, GettingMessagesVariantsListException, CreatingVariantException, EditingVariantException, \
-    LinkingVariantWithNextMessageException, DeletingVariantException, GettingBotCommandsException, \
-    CreatingCommandException, BotGenerationException, BotStopException, BotStartupException, \
-    GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException
+from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
     MessageTypeEnum
+from common.localisation import tran
+from utils.image_to_bytes import get_binary_data_from_image_file
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
@@ -69,11 +64,9 @@ class BotApiByRequests(IBotApi):
                 }
             )
             if response.status_code != requests.status_codes.codes.created:
-                raise SignUpException(response)
-                # BotApiException(self._tr('Sign up error: {0}').format(response.text))
+                raise BotApiException(self._tr('Sign up error: {0}').format(response.text))
         except requests.exceptions.ConnectionError as connection_error:
-            raise ConnectionException(str(connection_error))
-            # raise BotApiException(self._tr('Connection error: {0}').format(connection_error))
+            raise BotApiException(self._tr('Connection error: {0}').format(connection_error))
 
     def authentication(self, username: str, password: str) -> None:
         """
@@ -92,12 +85,10 @@ class BotApiByRequests(IBotApi):
                 }
             )
             if response.status_code != requests.status_codes.codes.ok:
-                raise UserAuthenticationException(response)
-                # raise BotApiException(self._tr('User authentication error: {0}').format(response.text))
+                raise BotApiException(self._tr('User authentication error: {0}').format(response.text))
             self._auth_token = json.loads(response.text)['auth_token']
         except requests.exceptions.ConnectionError as connection_error:
-            raise ConnectionException(str(connection_error))
-            # raise BotApiException(self._tr('Connection error: {0}').format(connection_error))
+            raise BotApiException(self._tr('Connection error: {0}').format(connection_error))
 
     def auth_by_token(self, token: str) -> None:
         """
@@ -119,8 +110,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise GetBotListException(response)
-            # raise BotApiException(self._tr('Getting bot list error: {0}').format(response.text))
+            raise BotApiException(self._tr('Error getting list of bots'))
         bots_dict_list: List[dict] = json.loads(response.text)
         bots_list: List[BotDescription] = []
         for bot_dict in bots_dict_list:
@@ -149,10 +139,9 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
-            raise CreatingBotException(response)
-            # raise BotApiException(self._tr('Creating bot error: {0}').format(response.text))
+            raise BotApiException(self._tr('Creating bot error: {0}').format(response.text))
         return self._create_bot_obj_from_data(json.loads(response.text))
-    # -------------------------------------
+
     def get_bot_by_id(self, bot_id: int, with_link: int = 0) -> BotDescription:
         """
         Получить объект бота с заданным идентификатором
@@ -172,8 +161,7 @@ class BotApiByRequests(IBotApi):
             params=params
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise GetBotListException(response)
-            # raise BotApiException(self._tr('Getting bot list error: {0}').format(response.text))
+            raise BotApiException(self._tr('Getting bot list error: {0}').format(response.text))
 
         return self._create_bot_obj_from_data(json.loads(response.text))
 
@@ -186,8 +174,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise ChangingBotException(response)
-            # raise BotApiException(self._tr('Changing bot error: {0}').format(response.text))
+            raise BotApiException(self._tr('Changing bot error: {0}').format(response.text))
 
     def delete_bot(self, bot_id: int) -> None:
         """
@@ -200,8 +187,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.no_content:
-            raise DeletingBotException(response)
-            # raise BotApiException(self._tr('Deleting bot error: {0}'))
+            raise BotApiException(self._tr('Deleting bot error'))
 
     def set_bot_start_message(self, bot: BotDescription, start_message: BotMessage) -> None:
         """
@@ -221,9 +207,8 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise SettingBotStartMessageException(response)
-            # raise BotApiException(self._tr('Settings bot start message error: {0}').format(
-            #     response.text))
+            raise BotApiException(self._tr('Settings bot start message error: {0}').format(
+                response.text))
 
     def set_bot_error_message(self, bot: BotDescription, error_message: BotMessage) -> None:
         """
@@ -244,9 +229,8 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise SettingBotErrorMessageException(response)
-            # raise BotApiException(self._tr('Settings bot error message error: {0}').format(
-            #     response.text))
+            raise BotApiException(self._tr('Settings bot error message error: {0}').format(
+                response.text))
 
     def get_messages(self, bot: BotDescription) -> List[BotMessage]:
         """
@@ -264,8 +248,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise GettingBotMessagesException(response)
-            # raise BotApiException(self._tr('Getting bot messages error: {0}').format(response.text))
+            raise BotApiException(self._tr('Getting bot messages error: {0}').format(response.text))
         messages_list: List[BotMessage] = []
         for message_dict in json.loads(response.text):
             messages_list.append(self._create_bot_message_from_data(message_dict))
@@ -305,8 +288,7 @@ class BotApiByRequests(IBotApi):
             files=self._create_upload_files_message_dict_from_message_obj(message)
         )
         if response.status_code != requests.status_codes.codes.created:
-            raise CreatingMessageException(response)
-            # raise BotApiException(self._tr('Creating message error: {0}').format(response.text))
+            raise BotApiException(self._tr('Creating message error: {0}').format(response.text))
         return self._create_bot_message_from_data(json.loads(response.text))
 
     def get_message_image_by_url(self, message: BotMessage) -> Optional[bytes]:
@@ -326,9 +308,8 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise GettingMessageInformationException(response)
-            # raise BotApiException(
-            #     'Getting message information error: {0}'.format(response.text))
+            raise BotApiException(
+                'Getting message information error: {0}'.format(response.text))
         return self._create_bot_message_from_data(json.loads(response.text))
 
     def change_message(self, message: BotMessage) -> None:
@@ -340,9 +321,8 @@ class BotApiByRequests(IBotApi):
             files=self._create_upload_files_message_dict_from_message_obj(message)
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise EditingMessageException(response)
-            # raise BotApiException(
-            #     self._tr('Editing message error: {0}').format(response.text))
+            raise BotApiException(
+                self._tr('Editing message error: {0}').format(response.text))
 
     def remove_message_image(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
@@ -352,9 +332,8 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise DeletingImageException(response)
-            # raise BotApiException(
-            #     self._tr('Deleting image error: {0}').format(response.text))
+            raise BotApiException(
+                self._tr('Deleting image error: {0}').format(response.text))
 
     def delete_message(self, message: BotMessage):
         assert isinstance(message, BotMessage)
@@ -365,8 +344,7 @@ class BotApiByRequests(IBotApi):
         )
         print(f'delete response {response.status_code}')
         if response.status_code != requests.status_codes.codes.no_content:
-            raise DeletingMessageException(response)
-            # raise BotApiException(self._tr('Deleting message error: {0}').format(response.text))
+            raise BotApiException(self._tr('Deleting message error: {0}').format(response.text))
 
     def get_variants(self, message: BotMessage) -> List[BotVariant]:
         """
@@ -383,9 +361,8 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise GettingMessagesVariantsListException(response)
-            # raise BotApiException(
-            #     self._tr('Getting variants list for message error: {0}').format(response.text))
+            raise BotApiException(
+                self._tr('Getting variants list for message error: {0}').format(response.text))
         variants: List[BotVariant] = []
         variants_dict_list: List[dict] = json.loads(response.text)
         for variant_dict in variants_dict_list:
@@ -412,8 +389,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
-            raise CreatingVariantException(response)
-            # raise BotApiException(self._tr('Creating variant error: {0}').format(response.text))
+            raise BotApiException(self._tr('Creating variant error: {0}').format(response.text))
         return self._create_variant_from_data(json.loads(response.text))
 
     def change_variant(self, variant: BotVariant) -> None:
@@ -430,8 +406,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise EditingVariantException(response)
-            # raise BotApiException(self._tr('Editing variant error: {0}').format(response.text))
+            raise BotApiException(self._tr('Editing variant error: {0}').format(response.text))
 
     def connect_variant(self, variant: BotVariant, message: BotMessage) -> None:
         """
@@ -450,9 +425,8 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise LinkingVariantWithNextMessageException(response)
-            # raise BotApiException(
-            #     self._tr('Linking variant with next message error: {0}').format(response.text))
+            raise BotApiException(
+                self._tr('Linking variant with subsequent message error: {0}').format(response.text))
 
     def delete_variant(self, variant: BotVariant) -> None:
         """
@@ -469,8 +443,7 @@ class BotApiByRequests(IBotApi):
         )
         print(f'delete response {response.status_code}')
         if response.status_code != requests.status_codes.codes.no_content:
-            raise DeletingVariantException(response)
-            # raise BotApiException(self._tr('Deleting variant error: {0}').format(response.text))
+            raise BotApiException(self._tr('Deleting variant error: {0}').format(response.text))
 
     def get_commands(self, bot: BotDescription) -> List[BotCommand]:
         """
@@ -488,8 +461,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise GettingBotCommandsException(response)
-            # raise BotApiException(self._tr('Getting bot commands error: {0}').format(response.text))
+            raise BotApiException(self._tr('Getting bot commands error: {0}').format(response.text))
         commands_list: List[BotCommand] = []
         for command_dict in json.loads(response.text):
             commands_list.append(self._create_command_from_data(command_dict))
@@ -519,8 +491,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.created:
-            raise CreatingCommandException(response)
-            # raise BotApiException(self._tr('Creating command error: {0}').format(response.text))
+            raise BotApiException(self._tr('Creating command error: {0}').format(response.text))
         return self._create_command_from_data(json.loads(response.text))
 
     def generate_bot(self, bot: BotDescription) -> None:
@@ -530,9 +501,8 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise BotGenerationException(response)
-            # raise BotApiException(
-            #     self._tr('Bot generation error: {0}').format(response.text))
+            raise BotApiException(
+                self._tr('Bot generation error: {0}').format(response.text))
 
     def start_bot(self, bot: BotDescription) -> None:
         assert isinstance(bot, BotDescription)
@@ -541,9 +511,8 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise BotStartupException(response)
-            # raise BotApiException(
-            #     self._tr('Bot startup error: {0}').format(response.text))
+            raise BotApiException(
+                self._tr('Bot startup error: {0}').format(response.text))
 
     def stop_bot(self, bot: BotDescription) -> None:
         assert isinstance(bot, BotDescription)
@@ -552,9 +521,8 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise BotStopException(response)
-            # raise BotApiException(
-            #     self._tr('Bot stop error: {0}').format(response.text))
+            raise BotApiException(
+                self._tr('Bot stop error: {0}').format(response.text))
 
     def get_running_bots_info(self) -> List[int]:
         response = requests.get(
@@ -562,9 +530,9 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise GettingRunningBotsInfoException(response)
-            # raise BotApiException(
-            #     self._tr('Getting running bots info error: {0}').format(response.text))
+            raise BotApiException(
+                self._tr('Getting running bots info error: {0}').format(response.text))
+
         return json.loads(response.text)
 
     def get_bot_logs(self, bot: BotDescription) -> BotLogs:
@@ -574,8 +542,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
-            raise ReceivingBotLogsException(response)
-            # raise BotApiException(self._tr('Receiving bot logs error: {0}').format(response.text))
+            raise BotApiException(self._tr('Receiving bot logs error: {0}').format(response.text))
         response_dict = json.loads(response.text)
         logs = BotLogs()
         logs.stderr_lines = response_dict['stderr']

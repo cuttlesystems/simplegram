@@ -5,12 +5,13 @@ from b_logic.data_objects import BotDescription
 from constructor_app.widgets.bot_editor.bot_editor_form import BotEditorForm
 from constructor_app.widgets.login_form import LoginForm
 from constructor_app.widgets.sign_up_form import SignUpForm
+from network.bot_api_by_request_extended import BotApiByRequestsProxy
 
 
 class WindowsManager(QObject):
     def __init__(self):
         super().__init__()
-        bot_api = BotApiByRequests()
+        bot_api = BotApiByRequestsProxy()
         self._login_form = LoginForm(None, bot_api)
         self._bot_editor_form = BotEditorForm(None, bot_api)
         self._sign_up_form = SignUpForm(None, bot_api)
