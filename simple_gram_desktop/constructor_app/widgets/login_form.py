@@ -120,12 +120,7 @@ class LoginForm(QWidget):
             bot_items = []
             self._ui.bot_list_widget.clear()
 
-            # todo: этот try-except временный, пока не добавили get_running_bots_info на сервер, потом убрать
-            try:
-                running_bots = self._bot_api.get_running_bots_info()
-            except BotApiException as exception:
-                print(f'Can not get running bots info: {exception}')
-                running_bots = []
+            running_bots = self._bot_api.get_running_bots_info()
             running_bot_background_color = self.palette().linkVisited()
             for bot in bots:
                 bot_item = QListWidgetItem(bot.bot_name)

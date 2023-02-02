@@ -1,8 +1,11 @@
 import typing
-from PySide6.QtWidgets import QWidget,QListWidgetItem
+
+from PySide6 import QtCore
+from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import SIGNAL, SLOT
 
+from b_logic.bot_api.i_bot_api import BotApiException
 from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
@@ -12,6 +15,8 @@ class ClientWidget(QWidget):
     """
     Надстройка выводимого пользователю GUI
     """
+    _LIST_DATA_ROLE = QtCore.Qt.UserRole + 1
+
     # индекс окна логина/регистрации
     _LOGIN_INDEX_PAGE = 0
     # индекс главного окна приложения
@@ -67,6 +72,7 @@ class ClientWidget(QWidget):
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
         self._init_projectslist()
+        self.__load_bots_list()
 
     # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) ->None:
@@ -103,3 +109,22 @@ class ClientWidget(QWidget):
 
     def _tr(self, text: str) -> str:
         return tran('ClientWidget.manual', text)
+
+    def __load_bots_list(self):
+        try:
+            bots = self._bot_api.get_bots()
+            bot_items = []
+            self._ui.bot_list.clear()
+
+            running_bots = self._bot_api.get_running_bots_info()
+            running_bot_background_color = self.palette().linkVisited()
+            for bot in bots:
+                bot_item = QListWidgetItem(bot.bot_name)
+                if bot.id in running_bots:
+                    bot_item.setBackground(running_bot_background_color)
+                    bot_item.setText(f'{bot.bot_name} --> running')
+                bot_item.setData(self._LIST_DATA_ROLE, bot)
+                bot_items.append(bot_item)
+                self._ui.bot_list.addItem(bot_item)
+        except BotApiException as error:
+            QMessageBox.warning(self, self._tr('Error'), str(error))
