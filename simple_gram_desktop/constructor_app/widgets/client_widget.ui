@@ -184,7 +184,7 @@ color: rgba(255,255,255,100);}</string>
           </widget>
          </item>
          <item>
-          <widget class="ProjectsListWidget" name="projects_list">
+          <widget class="BotListWidget" name="bot_list">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -476,7 +476,13 @@ background: rgb(241,241,241);
          <widget class="AddNewProjectWidget" name="botNewCreator">
           <layout class="QHBoxLayout" name="horizontalLayout_3"/>
          </widget>
-         <widget class="QWidget" name="botRedactorWindow"/>
+         <widget class="QWidget" name="botRedactorWindow">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="BotView" name="graphicsView"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -505,9 +511,14 @@ background: rgb(241,241,241);
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>ProjectsListWidget</class>
+   <class>BotListWidget</class>
    <extends>QListWidget</extends>
-   <header>constructor_app.widgets.projects_list_widget</header>
+   <header>constructor_app.widgets.bot_list_widget</header>
+  </customwidget>
+  <customwidget>
+   <class>BotView</class>
+   <extends>QGraphicsView</extends>
+   <header>constructor_app.graphic_scene.bot_view</header>
   </customwidget>
  </customwidgets>
  <resources>
