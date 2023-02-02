@@ -15,14 +15,12 @@ class PropertiesModel(QAbstractTableModel):
     _COLUMN_PROPERTY_NAME = 0
     _COLUMN_PROPERTY_VALUE = 1
 
-
-
     def __init__(self, properties: typing.List[ModelProperty]):
         super().__init__()
         self._properties: typing.List[ModelProperty] = properties
         self._HEADER_COLUMNS: typing.Dict[int, str] = {
-            0: self._tr('Parameter'),
-            1: self._tr('Value')
+            0: self._tr_prop_model('Parameter'),
+            1: self._tr_prop_model('Value')
         }
     def rowCount(self, parent: QModelIndex):
         assert isinstance(parent, QModelIndex)
@@ -84,5 +82,5 @@ class PropertiesModel(QAbstractTableModel):
             result = self._HEADER_COLUMNS.get(section)
         return result
 
-    def _tr(self, mes: str) -> str:
+    def _tr_prop_model(self, mes: str) -> str:
         return tran('PropertiesModel.manual', mes)
