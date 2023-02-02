@@ -22,7 +22,7 @@ class BotListItemWidget(QWidget):
     # Функция перекелючения/инициализации состояния бота (Бот включен/ бот выключен)
     def change_bot_state(self, state: bool) -> None:
         # toDO: Заготовка для добавления новой фичи - изменение состояния бота
-        #toDO: Перенести либо цвета либо QSS в новую цветовую схему или макросс
+        # toDO: Перенести либо цвета либо QSS в новую цветовую схему или макросс
         if state:
             self._ui.indicator_bot.setStyleSheet(
                 "QLabel{border-radius:8px; border:none; color:white;"
