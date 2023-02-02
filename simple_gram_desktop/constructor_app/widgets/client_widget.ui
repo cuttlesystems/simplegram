@@ -356,7 +356,14 @@ boder:none;
            </spacer>
           </item>
           <item>
-           <widget class="QWidget" name="widget" native="true"/>
+           <widget class="ToolStackWidget" name="tool_stack" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>412</width>
+              <height>52</height>
+             </size>
+            </property>
+           </widget>
           </item>
           <item>
            <spacer name="horizontalSpacer">
@@ -540,6 +547,12 @@ background: rgb(241,241,241);
    <class>BotEditorFormExtended</class>
    <extends>QWidget</extends>
    <header>constructor_app.widgets.bot_editor.bot_editor_form_extended</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ToolStackWidget</class>
+   <extends>QWidget</extends>
+   <header>constructor_app.widgets.tool_stack_widget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
