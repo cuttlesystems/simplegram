@@ -86,7 +86,7 @@ class ClientWidget(QWidget):
 
     def _init_projectslist(self) -> None:
         #toDo: Добавить подгрузку списка проектов с сервера
-        self._ui.projects_list.add_item_sidebar(QPixmap(":/icons/widgets/times_icon/newProject.png"), "BotNew", False, 0)
+        self._ui.projects_list.add_bot(QPixmap(":/icons/widgets/times_icon/newProject.png"), "BotNew", False, 0)
 
     def _tr(self, text: str) -> str:
         return tran('ClientWidget.manual', text)
