@@ -29,6 +29,7 @@ class ClientWidget(QWidget):
 
         self._ui = Ui_ClientWidget()
         self._ui.setupUi(self)
+        self._bot_api = None
 
         #дружу кнопку ентера при авторизации и инициализации мейн окна
         self._ui.loginWindow.log_in.connect(self._start_main_menu)
@@ -57,7 +58,8 @@ class ClientWidget(QWidget):
         self._ui.top_pannel.hide()
 
     #инициализация основого окна приложения
-    def _start_main_menu(self) ->None:
+    def _start_main_menu(self, bot_api) ->None:
+        self._bot_api = bot_api
         #выстравляю страницу главного окна
         self._ui.centrall_pannel_widget.setCurrentIndex(self._MAIN_MENU_INDEX_PAGE)
         self._init_stylesheet_stackedwidget(0)

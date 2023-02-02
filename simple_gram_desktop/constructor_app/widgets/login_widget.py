@@ -14,7 +14,7 @@ from constructor_app.widgets.ui_login_widget import Ui_LoginWidget
 
 class LoginWidget(QWidget):
     # сигнал, что пользователь авторизовался
-    log_in = Signal()
+    log_in = Signal(BotApiByRequests)
     registrated_state_signal = Signal(bool)
     _KEY = b'OCbAwQH4JA9ID-5gJB4nvk4UbNwpHx4wNT5O5VNKcGI='
 
@@ -50,11 +50,9 @@ class LoginWidget(QWidget):
             )
             settings.password = password_edit.text()
             self._application_settings.write_settings(settings)
+            self.log_in.emit(self.bot_api)
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
-        self.log_in.emit()
-
-
 
     def _switch_login(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой
