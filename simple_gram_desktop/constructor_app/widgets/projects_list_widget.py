@@ -10,6 +10,11 @@ class ProjectsListWidget(QListWidget):
     Надстройка айтема сайдбара
     """
 
+    #def __init__(self, parent: typing.Optional[QListWidget] = None):
+    #    super().__init__(parent)
+    #    super.__init_stylesheet()
+        # toDo: Если будет необходимо добавить функцию [night/light]mode
+
     def __init_stylesheet(self):
         # toDo: добавить сигналы hover и селекта
         # toDo: Добавить настройки высоты айтема

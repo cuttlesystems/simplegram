@@ -23,7 +23,6 @@ class ClientWidget(QWidget):
 
     def __init__(self, parent: typing.Optional[QWidget] = None):
         super().__init__(parent)
-        print('create ClientWidget')
 
         self._ui = Ui_ClientWidget()
         self._ui.setupUi(self)
@@ -87,7 +86,7 @@ class ClientWidget(QWidget):
 
     def _init_projectslist(self) -> None:
         #toDo: Добавить подгрузку списка проектов с сервера
-        1+1
+        self._ui.projects_list.add_item_sidebar(QPixmap(":/icons/widgets/times_icon/newProject.png"), "BotNew", False, 0)
 
     def _tr(self, text: str) -> str:
         return tran('ClientWidget.manual', text)

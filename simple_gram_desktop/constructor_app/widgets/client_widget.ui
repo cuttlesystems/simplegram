@@ -210,8 +210,7 @@ QListWidget::item:selected{
 border:none;
 color: rgb(255,255,255);
 background: rgba(255,255,255,25);
-}
-</string>
+}</string>
            </property>
           </widget>
          </item>
