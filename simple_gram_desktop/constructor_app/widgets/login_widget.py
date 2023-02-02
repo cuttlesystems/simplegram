@@ -1,5 +1,6 @@
 import typing
 
+from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox
 from PySide6.QtCore import QObject, Slot, Signal, QThread
 
@@ -27,6 +28,8 @@ class LoginWidget(QWidget):
         settings_path = get_application_data_dir()
         self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
         settings = self._application_settings.read_settings()
+        state = Qt.CheckState.Checked if settings.save_password else Qt.CheckState.Unchecked
+        self._ui.save_my_password.setCheckState(state)
         self._ui.username_edit.setText(settings.name)
         self._ui.password_widget.setText(settings.password)
         self._ui.server_addr_edit.setText(settings.address)
@@ -48,8 +51,12 @@ class LoginWidget(QWidget):
                 password=None,
                 save_password=True
             )
-            settings.password = password_edit.text()
+            if self._ui.save_my_password.checkState() == Qt.CheckState.Checked:
+                settings.password = password_edit.text()
+            else:
+                settings.save_password = False
             self._application_settings.write_settings(settings)
+
             self.log_in.emit(self.bot_api)
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
