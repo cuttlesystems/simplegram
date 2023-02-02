@@ -5,7 +5,7 @@ from PySide6.QtCore import SIGNAL, SLOT
 
 from common.localisation import tran
 
-from constructor_app.widgets.ui_item_project_sidebar import Ui_BotListItemWidget
+from constructor_app.widgets.ui_bot_item_sidebar import Ui_BotListItemWidget
 
 class BotListItemWidget(QWidget):
     """

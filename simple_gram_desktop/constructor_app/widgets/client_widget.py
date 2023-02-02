@@ -20,8 +20,11 @@ class ClientWidget(QWidget):
     _SELECTED_BOT_INDEX_PAGE = 2
     # инициализация окна с добавлением нового бота
     _NEW_BOT_INDEX_PAGE = 3
+    # инициализация окна с редактором бота
+    _BOT_REDACTOR_PAGE = 4
 
     def __init__(self, parent: typing.Optional[QWidget] = None):
+        # toDO: Добавить функцию инициализации QSS
         super().__init__(parent)
 
         self._ui = Ui_ClientWidget()
@@ -33,15 +36,17 @@ class ClientWidget(QWidget):
         self._ui.botNewCreator.close_window.connect(self._start_main_menu)
 
         """Сайдбар"""
-        #дружу кнопку нового проекта и инициализации окна создания бота
-        self._ui.new_project_button.clicked.connect(self._start_new_roject)
+        #дружу кнопку нового проекта и инициализацию окна создания бота
+        self._ui.new_project_button.clicked.connect(self._start_new_project)
+        #дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.bot_list.clicked.connect(self._start_selected_project)
+        #дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.logo_block.clicked.connect(self._start_main_menu)
+        #дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
+        self._ui.botShowWindow.open_bot_in_redactor_signal.connect(self._start_bot_redactor)
 
         #первое открытие приложения, инициализация авторизации
         self._start_login_users()
-
-        # toDO: Добавить функцию инициализации QSS
 
     #инициализация окна авторизации
     def _start_login_users(self) ->None:
@@ -68,11 +73,17 @@ class ClientWidget(QWidget):
         self._init_stylesheet_stackedwidget(0)
 
     # инициализация окна с добавлением нового бота
-    def _start_new_roject(self) ->None:
+    def _start_new_project(self) ->None:
         #выстравляю страницу добавления новго бота
         self._ui.centrall_pannel_widget.setCurrentIndex(self._NEW_BOT_INDEX_PAGE)
         #настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(1)
+
+    def _start_bot_redactor(self) ->None:
+        #выстравляю страницу добавления новго бота
+        self._ui.centrall_pannel_widget.setCurrentIndex(self._BOT_REDACTOR_PAGE)
+        #настраиваю таблицу стилей подложки
+        self._init_stylesheet_stackedwidget(0)
 
     def _init_stylesheet_stackedwidget(self, state: int) -> None:
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор

@@ -9,11 +9,13 @@ from constructor_app.widgets.ui_selected_project_widget import Ui_SelectedProjec
 
 class SelectedProjectWidget(QWidget):
     activated_bot_signal = Signal(bool)
+    open_bot_in_redactor_signal = Signal()
     def __init__(self, parent: typing.Optional[QWidget] = None):
         super().__init__(parent)
         self._ui = Ui_SelectedProjectWidget()
         self._ui.setupUi(self)
         self._ui.switch_activated_bot.clicked.connect(self._switchBot)
+        self._ui.open_in_redactor_button.clicked.connect(self.__bot_editing)
         self._init_StyleSheet()
         # toDO: Добавить функцию инициализации QSS
 
@@ -40,6 +42,10 @@ class SelectedProjectWidget(QWidget):
                 "background-color:#FF5F8F;}")
             self._ui.marker_state_bot.setText(self._tr(u"Bot is disabled"))
             self.activated_bot_signal.emit(False)
+
+    def __bot_editing(self) -> None:
+        #коннект кнопки открытия бота в редакторе и сигналом старта редактирования в основном клиент/менеджерном приложении
+        self.open_bot_in_redactor_signal.emit()
 
     def _tr(self, text: str) -> str:
         return tran('SelectedProjectWidget.manual', text)

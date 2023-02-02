@@ -254,14 +254,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>PropertiesView</class>
-   <extends>QTreeView</extends>
-   <header>common.properties_view</header>
-  </customwidget>
-  <customwidget>
    <class>BotView</class>
    <extends>QGraphicsView</extends>
    <header>constructor_app.graphic_scene.bot_view</header>
+  </customwidget>
+  <customwidget>
+   <class>PropertiesView</class>
+   <extends>QTreeView</extends>
+   <header>common.properties_view</header>
   </customwidget>
  </customwidgets>
  <resources>
