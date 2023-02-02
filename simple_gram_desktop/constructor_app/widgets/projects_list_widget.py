@@ -28,6 +28,11 @@ class ProjectsListWidget(QListWidget):
         self.setItemWidget(item, widget)
 
     def remove_item_sidebar(self, row: int):
-        # toDo: Добавить подгрузку списка проектов с сервера
+        # toDo: Добавить удаление из списка проектов с сервера
         item = self.item(row)
         self.removeItemWidget(item)
+
+    def init_state_sidebar(self, state: bool, row: int):
+        # toDo: Добавить изменение состояние элемента списка sidebar
+        widget = ItemProjectsListWidget()
+        item = self.item(row)
