@@ -1,12 +1,130 @@
 from typing import List, Optional
 from abc import abstractmethod, ABC
 
+import requests
+
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotCommand, BotLogs
 
 
 class BotApiException(Exception):
     def __init__(self, mes: str):
         super().__init__(mes)
+
+
+class BotApiRequestsException(BotApiException):
+    def __init__(self, response: requests.Response):
+        super().__init__(response.text)
+        self.response = response
+
+
+class SignUpException(BotApiRequestsException):
+    pass
+
+
+class ConnectionException(BotApiException):
+    def __init__(self, mes: str):
+        super().__init__(mes)
+        self.mes = mes
+
+
+class UserAuthenticationException(BotApiRequestsException):
+    pass
+
+
+class GetBotListException(BotApiRequestsException):
+    pass
+
+
+class CreatingBotException(BotApiRequestsException):
+    pass
+
+
+class ChangingBotException(BotApiRequestsException):
+    pass
+
+
+class DeletingBotException(BotApiRequestsException):
+    pass
+
+
+class SettingBotStartMessageException(BotApiRequestsException):
+    pass
+
+
+class SettingBotErrorMessageException(BotApiRequestsException):
+    pass
+
+
+class GettingBotMessagesException(BotApiRequestsException):
+    pass
+
+
+class CreatingMessageException(BotApiRequestsException):
+    pass
+
+
+class GettingMessageInformationException(BotApiRequestsException):
+    pass
+
+
+class EditingMessageException(BotApiRequestsException):
+    pass
+
+
+class DeletingImageException(BotApiRequestsException):
+    pass
+
+
+class DeletingMessageException(BotApiRequestsException):
+    pass
+
+
+class GettingMessagesVariantsListException(BotApiRequestsException):
+    pass
+
+
+class CreatingVariantException(BotApiRequestsException):
+    pass
+
+
+class EditingVariantException(BotApiRequestsException):
+    pass
+
+
+class LinkingVariantWithNextMessageException(BotApiRequestsException):
+    pass
+
+
+class DeletingVariantException(BotApiRequestsException):
+    pass
+
+
+class GettingBotCommandsException(BotApiRequestsException):
+    pass
+
+
+class CreatingCommandException(BotApiRequestsException):
+    pass
+
+
+class BotGenerationException(BotApiRequestsException):
+    pass
+
+
+class BotStartupException(BotApiRequestsException):
+    pass
+
+
+class BotStopException(BotApiRequestsException):
+    pass
+
+
+class GettingRunningBotsInfoException(BotApiRequestsException):
+    pass
+
+
+class ReceivingBotLogsException(BotApiRequestsException):
+    pass
 
 
 class IBotApi(ABC):

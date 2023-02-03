@@ -18,6 +18,6 @@
     <message>
         <source>Bot creation error: {0}</source>
         <translation>Bot creation error: {0}</translation>
-    </message>            
+    </message>
 </context>
 </TS>

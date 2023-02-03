@@ -1,3 +1,4 @@
+from common.localisation import tran
 from common.model_property import ModelProperty
 from common.properties_model import PropertiesModel
 
@@ -8,10 +9,10 @@ class BotPropertiesModel(PropertiesModel):
     """
 
     def __init__(self):
-        self._prop_name = ModelProperty(name='Название бота')
-        self._prop_token = ModelProperty(name='Токен бота')
-        self._prop_description = ModelProperty(name='Описание')
-        self._prop_link = ModelProperty(name='Ссылка на бота')
+        self._prop_name = ModelProperty(name=self._tr('Bot name'))
+        self._prop_token = ModelProperty(name=self._tr('Bot token'))
+        self._prop_description = ModelProperty(name=self._tr('Description'))
+        self._prop_link = ModelProperty(name=self._tr('Link to bot'))
 
         super().__init__([
             self._prop_name,
@@ -59,3 +60,6 @@ class BotPropertiesModel(PropertiesModel):
             self._prop_link.value = value
         finally:
             self.endResetModel()
+
+    def _tr(self, mes: str) -> str:
+        return tran('BotPropertiesModel.manual', mes)

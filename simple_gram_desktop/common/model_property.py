@@ -5,4 +5,3 @@ import dataclasses
 class ModelProperty:
     name: str = ''
     value: str = ''
-
