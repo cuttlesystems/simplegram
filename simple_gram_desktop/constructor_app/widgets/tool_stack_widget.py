@@ -1,7 +1,7 @@
 import typing
 
 from PySide6.QtWidgets import QWidget
-from PySide6.QtGui import QPalette,QColor,QBrush
+from PySide6.QtGui import QPalette, QColor, QBrush
 from PySide6.QtCore import QObject, Slot, Signal, QThread
 
 from common.localisation import tran
@@ -75,9 +75,6 @@ class ToolStackWidget(QWidget):
         #  для каждого окна сделать свой первострочный инициализатор qss
         if night:
             self.setPalette(QBrush(QColor(27, 27, 27, 155)), QPalette.window())
-        else:
-            self.setPalette(QBrush(QColor(27, 27, 27, 155)), QPalette.window())
-
 
     def _tr(self, text: str) -> str:
         return tran('AddNewProjectWidget.manual', text)

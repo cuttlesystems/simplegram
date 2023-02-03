@@ -500,11 +500,7 @@ background: rgb(241,241,241);
           <layout class="QHBoxLayout" name="horizontalLayout_3"/>
          </widget>
          <widget class="BotEditorFormExtended" name="botRedactorWindow">
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="BotView" name="graphicsView"/>
-           </item>
-          </layout>
+          <layout class="QHBoxLayout" name="horizontalLayout_4"/>
          </widget>
         </widget>
        </item>
@@ -532,11 +528,6 @@ background: rgb(241,241,241);
    <extends>QWidget</extends>
    <header>constructor_app.widgets.selected_project_widget</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>BotView</class>
-   <extends>QGraphicsView</extends>
-   <header>constructor_app.graphic_scene.bot_view</header>
   </customwidget>
   <customwidget>
    <class>BotListWidget</class>

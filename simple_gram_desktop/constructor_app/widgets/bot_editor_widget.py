@@ -14,12 +14,12 @@ from utils.name_utils import gen_next_name
 from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from constructor_app.graphic_scene.bot_scene import BotScene
 from constructor_app.widgets.bot_editor.message_editor_dialog import MessageEditorDialog
-from constructor_app.widgets.bot_editor.ui_bot_editor_form import Ui_BotEditorForm
+from constructor_app.widgets.ui_bot_editor_widget import Ui_BotEditorWidget
 from constructor_app.widgets.bot_editor.variant_editor_dialog import VariantEditorDialog
 from constructor_app.widgets.bot_properties_model import BotPropertiesModel
 
 
-class BotEditorForm(QMainWindow):
+class BotEditorWidget(QWidget):
     """
     Окно редактора бота
     """
@@ -31,7 +31,7 @@ class BotEditorForm(QMainWindow):
         super().__init__(parent)
         assert isinstance(bot_api, IBotApi)
 
-        self._ui = Ui_BotEditorForm()
+        self._ui = Ui_BotEditorWidget()
         self._ui.setupUi(self)
         self._bot_api = bot_api
         self._bot: typing.Optional[BotDescription] = None
@@ -84,16 +84,16 @@ class BotEditorForm(QMainWindow):
         self._ui.graphics_view.centerOn(scene_rect.x(), scene_rect.y())
 
     def _connect_signals(self):
-        self._ui.action_add_message.triggered.connect(self._on_add_new_message)
-        self._ui.action_add_variant.triggered.connect(self._on_action_add_variant)
-        self._ui.action_delete_message.triggered.connect(self._on_delete_message)
-        self._ui.action_generate_bot.triggered.connect(self._on_generate_bot)
-        self._ui.action_start_bot.triggered.connect(self._on_start_bot)
-        self._ui.action_stop_bot.triggered.connect(self._on_stop_bot)
-        self._ui.action_mark_start.triggered.connect(self._on_mark_as_start_button)
-        self._ui.action_mark_error.triggered.connect(self._on_mark_as_error_button)
-        self._ui.action_delete_variant.triggered.connect(self._on_delete_variant)
-        self._ui.action_read_logs.triggered.connect(self._on_read_bot_logs)
+        #self._ui.action_add_message.triggered.connect(self._on_add_new_message)
+        #self._ui.action_add_variant.triggered.connect(self._on_action_add_variant)
+        #self._ui.action_delete_message.triggered.connect(self._on_delete_message)
+        #self._ui.action_generate_bot.triggered.connect(self._on_generate_bot)
+        #self._ui.action_start_bot.triggered.connect(self._on_start_bot)
+        #self._ui.action_stop_bot.triggered.connect(self._on_stop_bot)
+        #self._ui.action_mark_start.triggered.connect(self._on_mark_as_start_button)
+        #self._ui.action_mark_error.triggered.connect(self._on_mark_as_error_button)
+        #self._ui.action_delete_variant.triggered.connect(self._on_delete_variant)
+        #self._ui.action_read_logs.triggered.connect(self._on_read_bot_logs)
 
         # сигналы, которые испускает сцена подключаем через QtCore.Qt.ConnectionType.QueuedConnection
         # (чтобы завершился обработчик клика)
@@ -114,16 +114,16 @@ class BotEditorForm(QMainWindow):
         """
         self._context_menu_block = QMenu(self)
 
-        self._context_menu_block.addAction(self._ui.action_delete_message)
-        self._context_menu_block.addAction(self._ui.action_mark_start)
-        self._context_menu_block.addSeparator()
-        self._context_menu_block.addAction(self._ui.action_add_variant)
-        self._context_menu_block.addAction(self._ui.action_delete_variant)
+        #self._context_menu_block.addAction(self._ui.action_delete_message)
+        #self._context_menu_block.addAction(self._ui.action_mark_start)
+        #self._context_menu_block.addSeparator()
+        #self._context_menu_block.addAction(self._ui.action_add_variant)
+        #self._context_menu_block.addAction(self._ui.action_delete_variant)
 
         self._ui.graphics_view.setup_block_menu(self._context_menu_block)
 
         self._context_menu_empty = QMenu(self)
-        self._context_menu_empty.addAction(self._ui.action_add_message)
+        #self._context_menu_empty.addAction(self._ui.action_add_message)
 
         self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
 
@@ -328,11 +328,11 @@ class BotEditorForm(QMainWindow):
         if one_selected_block:
             selected_variant = blocks_graphics[0].get_current_variant() is not None
 
-        self._ui.action_delete_message.setEnabled(is_selected_blocks)
-        self._ui.action_delete_variant.setEnabled(selected_variant)
-        self._ui.action_mark_start.setEnabled(one_selected_block)
-        self._ui.action_mark_error.setEnabled(one_selected_block)
-        self._ui.action_add_variant.setEnabled(one_selected_block)
+        #self._ui.action_delete_message.setEnabled(is_selected_blocks)
+        #self._ui.action_delete_variant.setEnabled(selected_variant)
+        #self._ui.action_mark_start.setEnabled(one_selected_block)
+        #self._ui.action_mark_error.setEnabled(one_selected_block)
+        #self._ui.action_add_variant.setEnabled(one_selected_block)
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         self._save_changes()
