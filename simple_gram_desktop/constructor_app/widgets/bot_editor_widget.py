@@ -18,6 +18,7 @@ from constructor_app.widgets.ui_bot_editor_widget import Ui_BotEditorWidget
 from constructor_app.widgets.bot_editor.variant_editor_dialog import VariantEditorDialog
 from constructor_app.widgets.bot_properties_model import BotPropertiesModel
 
+from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 
 class BotEditorWidget(QWidget):
     """
@@ -33,14 +34,13 @@ class BotEditorWidget(QWidget):
     mark_error_setEnabled = Signal(bool)
     add_variant_setEnabled = Signal(bool)
 
-    def __init__(self, parent: typing.Optional[QWidget], bot_api: IBotApi):
+    def __init__(self, parent: typing.Optional[QWidget] = None):
         # toDo: срастить extendedовское определение бота с текущим редактором и убрать botApi как входной параметр
         super().__init__(parent)
-        assert isinstance(bot_api, IBotApi)
 
         self._ui = Ui_BotEditorWidget()
         self._ui.setupUi(self)
-        self._bot_api = bot_api
+        self._bot_api: typing.Optional[IBotApi] = None
         self._bot: typing.Optional[BotDescription] = None
         self._prop_name: typing.Optional[ModelProperty] = None
         self._prop_token: typing.Optional[ModelProperty] = None
@@ -56,6 +56,14 @@ class BotEditorWidget(QWidget):
         self._prepare_and_setup_context_menu()
 
         self._connect_signals()
+
+
+    def set_BotApi(self, bot_api: IBotApi):
+        # toDo: добавить заполнение через IBotApi
+
+        self._bot_api = bot_api
+
+
 
     def set_bot(self, bot: typing.Optional[BotDescription]):
         assert isinstance(bot, BotDescription) or bot is None
@@ -91,17 +99,6 @@ class BotEditorWidget(QWidget):
         self._ui.graphics_view.centerOn(scene_rect.x(), scene_rect.y())
 
     def _connect_signals(self):
-        #self._ui.action_add_message.triggered.connect(self._on_add_new_message)
-        #self._ui.action_add_variant.triggered.connect(self._on_action_add_variant)
-        #self._ui.action_delete_message.triggered.connect(self._on_delete_message)
-        #self._ui.action_generate_bot.triggered.connect(self._on_generate_bot)
-        #self._ui.action_start_bot.triggered.connect(self._on_start_bot)
-        #self._ui.action_stop_bot.triggered.connect(self._on_stop_bot)
-        #self._ui.action_mark_start.triggered.connect(self._on_mark_as_start_button)
-        #self._ui.action_mark_error.triggered.connect(self._on_mark_as_error_button)
-        #self._ui.action_delete_variant.triggered.connect(self._on_delete_variant)
-        #self._ui.action_read_logs.triggered.connect(self._on_read_bot_logs)
-
         # сигналы, которые испускает сцена подключаем через QtCore.Qt.ConnectionType.QueuedConnection
         # (чтобы завершился обработчик клика)
         self._bot_scene.request_add_new_variant.connect(
@@ -122,10 +119,10 @@ class BotEditorWidget(QWidget):
         self._context_menu_block = QMenu(self)
 
         self._context_menu_block.addAction(self.on_delete_message(True))
-        #self._context_menu_block.addAction(self._ui.action_mark_start)
-        #self._context_menu_block.addSeparator()
-        #self._context_menu_block.addAction(self._ui.action_add_variant)
-        #self._context_menu_block.addAction(self._ui.action_delete_variant)
+        self._context_menu_block.addAction(self.on_mark_as_start_button(True))
+        self._context_menu_block.addSeparator()
+        self._context_menu_block.addAction(self.on_action_add_variant(True))
+        self._context_menu_block.addAction(self.on_delete_variant(True))
 
         self._ui.graphics_view.setup_block_menu(self._context_menu_block)
 
@@ -164,23 +161,6 @@ class BotEditorWidget(QWidget):
     def on_apply_button(self, _checked: bool) -> None:
         self._save_changes()
 
-    def on_read_bot_logs(self, _checked: bool) -> None:
-        bot_logs = self._bot_api.get_bot_logs(self._bot)
-        stderr_text = ''.join(bot_logs.stderr_lines)
-        stdout_text = ''.join(bot_logs.stdout_lines)
-        self._ui.stdout_textedit.setText(stdout_text)
-        self._ui.stderr_textedit.setText(stderr_text)
-
-    def on_add_new_message(self, _checked: bool) -> None:
-        position = self._ui.graphics_view.get_context_menu_position()
-        # действие вызвано не через контекстное меню
-        if position is None:
-            # координаты нового сообщения: по центру видимой области редактора
-            actual_position = self._ui.graphics_view.mapToScene(self._ui.graphics_view.get_central_point())
-        else:
-            # координаты нового сообщения: где было показано контекстное меню
-            actual_position = self._ui.graphics_view.mapToScene(position)
-        self._add_new_message(actual_position)
 
     def _add_new_message(self, position: QPointF) -> None:
         assert isinstance(position, QPointF)

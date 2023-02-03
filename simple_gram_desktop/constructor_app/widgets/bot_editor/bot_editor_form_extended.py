@@ -11,5 +11,5 @@ class BotEditorFormExtended(BotEditorWidget):
         bot_api = BotApiByRequests("https://ramasuchka.kz/")
         bot_api.authentication("admin", "adminpass")
         bot = bot_api.get_bot_by_id(73)
-        super().__init__(parent, bot_api)
         self.set_bot(bot)
+        super().__init__(parent, bot_api)

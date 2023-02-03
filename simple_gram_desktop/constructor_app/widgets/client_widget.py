@@ -92,6 +92,13 @@ class ClientWidget(QWidget):
         self._ui.tool_stack.show()
         # настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(0)
+
+        bot_api = BotApiByRequests("https://ramasuchka.kz/")
+        bot_api.authentication("admin", "adminpass")
+        bot = bot_api.get_bot_by_id(73)
+
+        self._ui.botRedactorWindow.set_BotApi(bot_api)
+        self._ui.botRedactorWindow.set_bot(bot)
         # связь окон редактироавания и панели инструментария
         self.__bot_editor_connector()
 
