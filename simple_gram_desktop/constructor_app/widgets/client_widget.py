@@ -1,4 +1,4 @@
-import typing
+from typing import Optional
 
 from PySide6 import QtCore
 from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
@@ -9,6 +9,7 @@ from b_logic.bot_api.i_bot_api import BotApiException, IBotApi
 from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
+
 
 class ClientWidget(QWidget):
 
@@ -28,13 +29,13 @@ class ClientWidget(QWidget):
     # инициализация окна с редактором бота
     _BOT_REDACTOR_PAGE = 4
 
-    def __init__(self, parent: typing.Optional[QWidget] = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         # toDO: Добавить функцию инициализации QSS
         super().__init__(parent)
 
         self._ui = Ui_ClientWidget()
         self._ui.setupUi(self)
-        self._bot_api: IBotApi = None
+        self._bot_api: Optional[IBotApi] = None
 
         #дружу кнопку ентера при авторизации и инициализации мейн окна
         self._ui.loginWindow.log_in.connect(self._start_main_menu)
@@ -63,7 +64,8 @@ class ClientWidget(QWidget):
         self._ui.top_pannel.hide()
 
     #инициализация основого окна приложения
-    def _start_main_menu(self, bot_api) ->None:
+    def _start_main_menu(self, bot_api: IBotApi) ->None:
+        assert isinstance(bot_api, IBotApi)
         self._bot_api = bot_api
         #выстравляю страницу главного окна
         self._ui.centrall_pannel_widget.setCurrentIndex(self._MAIN_MENU_INDEX_PAGE)
@@ -118,13 +120,10 @@ class ClientWidget(QWidget):
 
             # получение списка запущенных ботов
             running_bots = self._bot_api.get_running_bots_info()
-            running_bot_background_color = self.palette().linkVisited()
             for bot in bots:
                 bot_item = QListWidgetItem(bot.bot_name)
                 if bot.id in running_bots:
-                    # если бот в списке запущенных выделить его цветом (выделение цветом не работает в шибокине)
-                    # и добавить надпись --> running
-                    bot_item.setBackground(running_bot_background_color)
+                    # если бот в списке запущенных добавить надпись --> running
                     bot_item.setText(f'{bot.bot_name} --> running')
                 bot_item.setData(self._LIST_DATA_ROLE, bot)
                 self._ui.bot_list.addItem(bot_item)
