@@ -143,7 +143,7 @@ class BotApiByRequestsProxy(BotApiByRequests):
 
     def connect_variant(self, variant: BotVariant, message: BotMessage) -> None:
         try:
-            super().connect_variant(variant)
+            super().connect_variant(variant, message)
         except LinkingVariantWithNextMessageException as e:
             raise BotApiMessageException(
                 self._tr('Linking variant with next message error: {0}').format(e.response.text))
