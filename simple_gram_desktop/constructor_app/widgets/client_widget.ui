@@ -291,9 +291,15 @@ color:rgb(255,255,255);
      </widget>
      <widget class="QGroupBox" name="centrall_panel">
       <property name="styleSheet">
-       <string notr="true">QGroupBox{
+       <string notr="true">/*QGroupBox{
 border:none;
 background: rgb(241,241,241);
+}*/
+QGroupBox{
+/*background: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(57, 178, 146, 255), stop:0.5 rgba(68, 159, 167, 255), stop:1 rgba(82, 136, 193, 255));*/
+background: rgb(241,241,241);
+border:none;
+/*border-image:url(:/icons/widgets/times_icon/background_texture.png);*/
 }</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -464,15 +470,17 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
          <property name="styleSheet">
           <string notr="true">QSteckedWidget{
 border:none;
-background: rgb(241,241,241);
-}</string>
+background: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(57, 178, 146, 255), stop:0.5 rgba(68, 159, 167, 255), stop:1 rgba(82, 136, 193, 255)) }</string>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>1</number>
          </property>
          <widget class="LoginWidget" name="loginWindow">
           <property name="styleSheet">
-           <string notr="true"/>
+           <string notr="true">QStackedWidget{
+background: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(57, 178, 146, 255), stop:0.5 rgba(68, 159, 167, 255), stop:1 rgba(82, 136, 193, 255));
+border-image:url(:/icons/widgets/times_icon/background_texture.png);
+}</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <property name="spacing">

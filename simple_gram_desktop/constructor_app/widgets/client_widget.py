@@ -59,6 +59,7 @@ class ClientWidget(QWidget):
         self._ui.side_bar.hide()
         self._ui.top_pannel.hide()
 
+
     # инициализация основого окна приложения
     def _start_main_menu(self) -> None:
         # выстравляю страницу главного окна
@@ -67,26 +68,52 @@ class ClientWidget(QWidget):
         # показываю сайдбар и топпанел
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
+        self._ui.tool_stack.hide()
         self._init_projectslist()
 
     # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) -> None:
         # выстравляю страницу с информацией о выбранном боте
         self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
+        self._ui.tool_stack.hide()
         self._init_stylesheet_stackedwidget(0)
 
     def _start_new_project(self) -> None:
         # инициализация окна с добавлением нового бота
         # выстравляю страницу добавления новго бота
         self._ui.centrall_pannel_widget.setCurrentIndex(self._NEW_BOT_INDEX_PAGE)
+        self._ui.tool_stack.hide()
         # настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(1)
 
     def _start_bot_redactor(self) -> None:
         # выстравляю страницу добавления новго бота
         self._ui.centrall_pannel_widget.setCurrentIndex(self._BOT_REDACTOR_PAGE)
+        self._ui.tool_stack.show()
         # настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(0)
+        # связь окон редактироавания и панели инструментария
+        self.__bot_editor_connector()
+
+    def __bot_editor_connector(self):
+        # toDo: Засунуть в BotRedactorWindow метод с setToolStack
+        # toDo: Переименовать страницы в StackWidget под общую стилистику
+        self._ui.botRedactorWindow.delete_variant_setEnabled.connect(self._ui.tool_stack.delete_variant_setState)
+        self._ui.botRedactorWindow.delete_message_setEnabled.connect(self._ui.tool_stack.delete_message_setState)
+        self._ui.botRedactorWindow.mark_error_setEnabled.connect(self._ui.tool_stack.mark_error_setState)
+        self._ui.botRedactorWindow.mark_start_setEnabled.connect(self._ui.tool_stack.mark_start_setState)
+        self._ui.botRedactorWindow.add_variant_setEnabled.connect(self._ui.tool_stack.add_variant_setState)
+
+        self._ui.tool_stack.delete_variant_signal.connect(self._ui.botRedactorWindow.on_delete_variant)
+        self._ui.tool_stack.mark_as_start_signal.connect(self._ui.botRedactorWindow.on_mark_as_start_button)
+        self._ui.tool_stack.add_variant_signal.connect(self._ui.botRedactorWindow.on_action_add_variant)
+        self._ui.tool_stack.mark_as_error_signal.connect(self._ui.botRedactorWindow.on_mark_as_error_button)
+        self._ui.tool_stack.add_message_signal.connect(self._ui.botRedactorWindow.on_add_new_message)
+        self._ui.tool_stack.generate_bot_signal.connect(self._ui.botRedactorWindow.on_generate_bot)
+        self._ui.tool_stack.start_bot_signal.connect(self._ui.botRedactorWindow.on_start_bot)
+        self._ui.tool_stack.stop_bot_signal.connect(self._ui.botRedactorWindow.on_stop_bot)
+        self._ui.tool_stack.read_bot_logs_signal.connect(self._ui.botRedactorWindow.on_read_bot_logs)
+        self._ui.tool_stack.delete_message_signal.connect(self._ui.botRedactorWindow.on_delete_message)
 
     def _init_stylesheet_stackedwidget(self, state: int) -> None:
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор
