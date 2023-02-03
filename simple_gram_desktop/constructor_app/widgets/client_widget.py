@@ -1,17 +1,23 @@
-import typing
-from PySide6.QtWidgets import QWidget,QListWidgetItem
+from typing import Optional
+
+from PySide6 import QtCore
+from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import SIGNAL, SLOT
 
+from b_logic.bot_api.i_bot_api import BotApiException, IBotApi
 from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
+
 
 class ClientWidget(QWidget):
 
     """
     Надстройка выводимого пользователю GUI
     """
+    _LIST_DATA_ROLE = QtCore.Qt.UserRole + 1
+
     # индекс окна логина/регистрации
     _LOGIN_INDEX_PAGE = 0
     # индекс главного окна приложения
@@ -23,12 +29,13 @@ class ClientWidget(QWidget):
     # инициализация окна с редактором бота
     _BOT_REDACTOR_PAGE = 4
 
-    def __init__(self, parent: typing.Optional[QWidget] = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         # toDO: Добавить функцию инициализации QSS
         super().__init__(parent)
 
         self._ui = Ui_ClientWidget()
         self._ui.setupUi(self)
+        self._bot_api: Optional[IBotApi] = None
 
         #дружу кнопку ентера при авторизации и инициализации мейн окна
         self._ui.loginWindow.log_in.connect(self._start_main_menu)
@@ -57,7 +64,9 @@ class ClientWidget(QWidget):
         self._ui.top_pannel.hide()
 
     #инициализация основого окна приложения
-    def _start_main_menu(self) ->None:
+    def _start_main_menu(self, bot_api: IBotApi) ->None:
+        assert isinstance(bot_api, IBotApi)
+        self._bot_api = bot_api
         #выстравляю страницу главного окна
         self._ui.centrall_pannel_widget.setCurrentIndex(self._MAIN_MENU_INDEX_PAGE)
         self._init_stylesheet_stackedwidget(0)
@@ -65,6 +74,7 @@ class ClientWidget(QWidget):
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
         self._init_projectslist()
+        self.__load_bots_list()
 
     # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) ->None:
@@ -101,3 +111,21 @@ class ClientWidget(QWidget):
 
     def _tr(self, text: str) -> str:
         return tran('ClientWidget.manual', text)
+
+    def __load_bots_list(self):
+        try:
+            # получение всех ботов юзера из БД
+            bots = self._bot_api.get_bots()
+            self._ui.bot_list.clear()
+
+            # получение списка запущенных ботов
+            running_bots = self._bot_api.get_running_bots_info()
+            for bot in bots:
+                bot_item = QListWidgetItem(bot.bot_name)
+                if bot.id in running_bots:
+                    # если бот в списке запущенных добавить надпись --> running
+                    bot_item.setText(f'{bot.bot_name} --> running')
+                bot_item.setData(self._LIST_DATA_ROLE, bot)
+                self._ui.bot_list.addItem(bot_item)
+        except BotApiException as error:
+            QMessageBox.warning(self, self._tr('Error'), str(error))
