@@ -473,9 +473,9 @@ border:none;
 background: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(57, 178, 146, 255), stop:0.5 rgba(68, 159, 167, 255), stop:1 rgba(82, 136, 193, 255)) }</string>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>1</number>
          </property>
-         <widget class="LoginWidget" name="loginWindow">
+         <widget class="LoginWidget" name="login_page">
           <property name="styleSheet">
            <string notr="true">QStackedWidget{
 background: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(57, 178, 146, 255), stop:0.5 rgba(68, 159, 167, 255), stop:1 rgba(82, 136, 193, 255));
@@ -500,14 +500,14 @@ border-image:url(:/icons/widgets/times_icon/background_texture.png);
            </property>
           </layout>
          </widget>
-         <widget class="QWidget" name="mainWindow">
+         <widget class="QWidget" name="main_page">
           <layout class="QVBoxLayout" name="verticalLayout_5"/>
          </widget>
-         <widget class="SelectedProjectWidget" name="botShowWindow"/>
-         <widget class="AddNewProjectWidget" name="botNewCreator">
+         <widget class="SelectedProjectWidget" name="bot_show_page"/>
+         <widget class="AddNewProjectWidget" name="bot_new_creator_page">
           <layout class="QHBoxLayout" name="horizontalLayout_3"/>
          </widget>
-         <widget class="BotEditorWidget" name="botRedactorWindow">
+         <widget class="BotEditorWidget" name="bot_redactor_page">
           <layout class="QHBoxLayout" name="horizontalLayout_4"/>
          </widget>
         </widget>

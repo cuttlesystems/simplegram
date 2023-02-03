@@ -1,6 +1,6 @@
 import typing
 
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QPushButton
 from PySide6.QtGui import QPalette, QColor, QBrush
 from PySide6.QtCore import QObject, Slot, Signal, QThread
 
@@ -23,6 +23,7 @@ class ToolStackWidget(QWidget):
 
     def __init__(self, parent: typing.Optional[QWidget] = None):
         # toDO: Добавить функцию инициализации QSS
+        # toDO: Добавить инициализацию toolTipов
         super().__init__(parent)
         self._ui = Ui_ToolStackWidget()
         self._ui.setupUi(self)
@@ -40,6 +41,26 @@ class ToolStackWidget(QWidget):
 
         #self._ui.action_manual_save_button.triggered.connect(self._on_apply_button)
         #self._ui.action_read_logs_button.triggered.connect(self._on_read_bot_logs)
+
+    def set_delete_variant_enabled(self, enabled: bool):
+        assert isinstance(enabled, bool)
+        self._ui.delete_variant_button.setEnabled(enabled)
+
+    def set_delete_message_enabled(self, enabled: bool) -> None:
+        assert isinstance(enabled, bool)
+        self._ui.delete_message_button.setEnabled(enabled)
+
+    def set_mark_start_enabled(self, enabled: bool) -> None:
+        assert isinstance(enabled, bool)
+        self._ui.mark_start_message_button.setEnabled(enabled)
+
+    def set_mark_error_enabled(self, enabled: bool) -> None:
+        assert isinstance(enabled, bool)
+        self._ui.mark_error_message_button.setEnabled(enabled)
+
+    def set_add_variant_enabled(self, enabled: bool) -> None:
+        assert isinstance(enabled, bool)
+        self._ui.add_variant_button.setEnabled(enabled)
 
     def _on_add_new_message(self) -> None:
         self.add_message_signal.emit(True)
@@ -76,21 +97,6 @@ class ToolStackWidget(QWidget):
         #  для каждого окна сделать свой первострочный инициализатор qss
         if night:
             self.setPalette(QBrush(QColor(27, 27, 27, 155)), QPalette.window())
-
-    def delete_message_setState(self, state: bool) -> None:
-        self._ui.delete_message_button.setEnabled(state)
-
-    def delete_variant_setState(self, state: bool) -> None:
-        self._ui.delete_message_button.setEnabled(state)
-
-    def mark_start_setState(self, state: bool) -> None:
-        self._ui.mark_start_message_button.setEnabled(state)
-
-    def mark_error_setState(self, state: bool) -> None:
-        self._ui.mark_error_message_button.setEnabled(state)
-
-    def add_variant_setState(self, state: bool) -> None:
-        self._ui.add_variant_button.setEnabled(state)
 
     def _tr(self, text: str) -> str:
         return tran('AddNewProjectWidget.manual', text)
