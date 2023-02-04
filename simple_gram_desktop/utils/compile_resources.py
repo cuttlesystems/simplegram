@@ -21,17 +21,9 @@ def compile_all_resources() -> None:
 
         # временно расширяем путь PYTHONPATH для поиска модулей
         sys.path.append(compile_scripts_dir_str)
-        print(f'compile_scripts_dir path: ', compile_scripts_dir_str)
 
         # это импорт сделанный обходным путем, поэтому тут показывает как будто есть ошибка
         from compiling_transl_ui_rc import compile_translations, compile_ui_forms, compile_rc_files
-        from create_venv import create_venv_in_build_desktop
-
-        """
-        вызов функции проверки существования и создания виртуального окружения в каталоге 'build_desktop'
-        """
-        print('\n--- check \'build_desktop\' directory for \'venv\' existance and creation if it doesn\'t exist ---\n')
-        create_venv_in_build_desktop()
 
         print('--- start resources compilation ---')
         compile_translations()
