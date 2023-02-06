@@ -18,7 +18,7 @@ class SelectedProjectWidget(QWidget):
         super().__init__(parent)
         self._ui = Ui_SelectedProjectWidget()
         self._ui.setupUi(self)
-        self._ui.switch_activated_bot.clicked.connect(self._switchBot)
+        self._ui.switch_activated_bot.clicked.connect(self._switch_bot)
         self._ui.open_in_redactor_button.clicked.connect(self.__bot_editing)
         self._init_StyleSheet()
 
@@ -30,7 +30,7 @@ class SelectedProjectWidget(QWidget):
         self._ui.open_in_redactor_button.setStyleSheet("QPushButton{background-color:rgb(57,178,146);border:none;"
                                                        "color:white;border-radius:8px;}")
 
-    def _switchBot(self):
+    def _switch_bot(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
         #  инициализатор qss и продумать грамотный флаг состояния бота
         if(self._ui.switch_activated_bot.isChecked()):
@@ -50,7 +50,7 @@ class SelectedProjectWidget(QWidget):
         # Set name bot in lineEdit
         self._ui.name_bot_edit.setText(bot.bot_name)
         self._ui.switch_activated_bot.setChecked(bot_state)
-        self._switchBot()
+        self._switch_bot()
 
     def __bot_editing(self) -> None:
         # коннект кнопки открытия бота в редакторе и сигналом старта редактирования в основном клиент/менеджерном

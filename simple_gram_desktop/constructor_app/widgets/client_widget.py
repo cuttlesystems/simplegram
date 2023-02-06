@@ -85,12 +85,15 @@ class ClientWidget(QWidget):
     # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) -> None:
         # выстравляю страницу с информацией о выбранном боте
-        self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
-        self._ui.bot_show_page.set_bot((self._ui.bot_list.itemWidget(
-            self._ui.bot_list.currentItem()).get_bot_item()),
-            self._ui.bot_list.itemWidget(self._ui.bot_list.currentItem()).get_bot_state())
-        self._ui.tool_stack.hide()
-        self._init_stylesheet_stackedwidget(0)
+        try:
+            self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
+            bot = self._ui.bot_list.itemWidget(self._ui.bot_list.currentItem()).get_bot_item()
+            bot_state = self._ui.bot_list.itemWidget(self._ui.bot_list.currentItem()).get_bot_state()
+            self._ui.bot_show_page.set_bot(bot, bot_state)
+            self._ui.tool_stack.hide()
+            self._init_stylesheet_stackedwidget(0)
+        except None:
+            QMessageBox.warning(self, self._tr('Error'), str(self._tr("Selection bot don't found!")))
 
     def _start_new_project(self) -> None:
         # инициализация окна с добавлением нового бота
@@ -101,17 +104,21 @@ class ClientWidget(QWidget):
         self._init_stylesheet_stackedwidget(1)
 
     def _start_bot_redactor(self) -> None:
-        # выстравляю страницу добавления новго бота
-        self._ui.centrall_pannel_widget.setCurrentIndex(self._BOT_REDACTOR_PAGE)
-        self._ui.tool_stack.show()
-        # настраиваю таблицу стилей подложки
-        self._init_stylesheet_stackedwidget(0)
+        try:
+            # выстравляю страницу добавления новго бота
+            self._ui.centrall_pannel_widget.setCurrentIndex(self._BOT_REDACTOR_PAGE)
+            self._ui.tool_stack.show()
+            # настраиваю таблицу стилей подложки
+            self._init_stylesheet_stackedwidget(0)
 
-        bot = self._bot_api.get_bot_by_id(self._ui.bot_list.itemWidget(
-            self._ui.bot_list.currentItem()).get_bot_item().id)
-        self._ui.bot_redactor_page.set_bot_api(self._bot_api)
-        self._ui.bot_redactor_page.setup_tool_stack(self._ui.tool_stack)
-        self._ui.bot_redactor_page.set_bot(bot)
+            bot_id = self._ui.bot_list.itemWidget(self._ui.bot_list.currentItem()).get_bot_item().id
+            bot = self._bot_api.get_bot_by_id(bot_id)
+            self._ui.bot_redactor_page.set_bot_api(self._bot_api)
+            self._ui.bot_redactor_page.setup_tool_stack(self._ui.tool_stack)
+            self._ui.bot_redactor_page.set_bot(bot)
+        except None:
+            QMessageBox.warning(self, self._tr('Error'), str(self._tr("Selection bot don't found!")))
+
 
     def _init_stylesheet_stackedwidget(self, state: int) -> None:
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор
@@ -132,6 +139,7 @@ class ClientWidget(QWidget):
 
     def __load_bots_list(self):
         # toDo:Add method-handler state item in sidebar
+        # toDo:Recode item in sidebar
         try:
             # получение всех ботов юзера из БД
             bots = self._bot_api.get_bots()

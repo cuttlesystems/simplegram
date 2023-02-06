@@ -32,6 +32,7 @@ class BotListWidget(QListWidget):
             "QScrollBar::sub-line{border:1px transparent black; width:2px; background-color: black;}")
 
     def add_bot(self, icon: QPixmap, bot: BotDescription, state: bool):
+        assert isinstance(bot, BotDescription)
         # Заготовква для дальнейшей реализации добавления бота из списка бокового меню
         # toDo: Добавить подгрузку списка проектов с сервера
         row = self.currentRow()

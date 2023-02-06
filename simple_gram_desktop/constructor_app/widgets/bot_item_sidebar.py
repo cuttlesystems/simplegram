@@ -12,8 +12,9 @@ class BotListItemWidget(QWidget):
     """
     Надстройка айтема сайдбара
     """
-    _bot = BotDescription
-    _bot_state = bool
+    _bot: BotDescription
+    _bot_state: bool
+    _FLAG_SIZE = QSize(30, 15)
 
     def __init__(self, parent: typing.Optional[QWidget] = None):
         super().__init__(parent)
@@ -37,9 +38,10 @@ class BotListItemWidget(QWidget):
                 "QLabel{border-radius:6px; border:none; color:white;"
                 "background-color:#FF5F8F;}")
             self._ui.indicator_bot.setText(self._tr("off"))
-        self._ui.indicator_bot.setFixedSize(QSize(30, 15))
+        self._ui.indicator_bot.setFixedSize(self._FLAG_SIZE)
 
     def init_bot_data(self, icon: QPixmap, bot: BotDescription, state: bool) -> None:
+        assert isinstance(bot, BotDescription)
         self._bot = bot
         self._bot_state = state
         self._ui.pixmap_bot.setPixmap(icon)
@@ -47,7 +49,6 @@ class BotListItemWidget(QWidget):
         self._ui.name_bot.setStyleSheet("color:rgba(255,255,255,100);")
         # toDo: Добавить автоматическое сокращение наименования "..."
         self._ui.name_bot.setText(bot.bot_name)
-        self._ui.name_bot.setMinimumWidth(120)
         self._ui.name_bot.setWordWrap(True)
         self.change_bot_state(state)
 
