@@ -5,10 +5,13 @@ from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import SIGNAL, SLOT
 
+
+from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from b_logic.bot_api.i_bot_api import BotApiException, IBotApi
 from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
+from constructor_app.widgets.bot_editor.bot_editor_form import BotEditorForm
 
 
 class ClientWidget(QWidget):
@@ -37,63 +40,76 @@ class ClientWidget(QWidget):
         self._ui.setupUi(self)
         self._bot_api: Optional[IBotApi] = None
 
-        #дружу кнопку ентера при авторизации и инициализации мейн окна
-        self._ui.loginWindow.log_in.connect(self._start_main_menu)
-        #дружу
-        self._ui.botNewCreator.close_window.connect(self._start_main_menu)
+        # дружу кнопку ентера при авторизации и инициализации мейн окна
+        self._ui.login_page.log_in.connect(self._start_main_menu)
+
+        self._ui.bot_new_creator_page.close_window.connect(self._start_main_menu)
 
         """Сайдбар"""
-        #дружу кнопку нового проекта и инициализацию окна создания бота
+        # дружу кнопку нового проекта и инициализацию окна создания бота
         self._ui.new_project_button.clicked.connect(self._start_new_project)
-        #дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
+        # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.bot_list.clicked.connect(self._start_selected_project)
-        #дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
+        # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.logo_block.clicked.connect(self._start_main_menu)
-        #дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
-        self._ui.botShowWindow.open_bot_in_redactor_signal.connect(self._start_bot_redactor)
+        # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
+        self._ui.bot_show_page.open_bot_in_redactor_signal.connect(self._start_bot_redactor)
 
-        #первое открытие приложения, инициализация авторизации
+        # первое открытие приложения, инициализация авторизации
         self._start_login_users()
 
-    #инициализация окна авторизации
-    def _start_login_users(self) ->None:
-        #выстравляю страницу инициализации
+    # инициализация окна авторизации
+    def _start_login_users(self) -> None:
+        # выстравляю страницу инициализации
         self._ui.centrall_pannel_widget.setCurrentIndex(self._LOGIN_INDEX_PAGE)
         # прячу сайдбар и топпанел
         self._ui.side_bar.hide()
         self._ui.top_pannel.hide()
 
     #инициализация основого окна приложения
-    def _start_main_menu(self, bot_api: IBotApi) ->None:
+    def _start_main_menu(self, bot_api: IBotApi) -> None:
         assert isinstance(bot_api, IBotApi)
         self._bot_api = bot_api
         #выстравляю страницу главного окна
         self._ui.centrall_pannel_widget.setCurrentIndex(self._MAIN_MENU_INDEX_PAGE)
         self._init_stylesheet_stackedwidget(0)
-        #показываю сайдбар и топпанел
+        # показываю сайдбар и топпанел
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
+        self._ui.tool_stack.hide()
         self._init_projectslist()
         self.__load_bots_list()
 
     # инициализация окна с информацией о выбранном боте
-    def _start_selected_project(self) ->None:
-        #выстравляю страницу с информацией о выбранном боте
+    def _start_selected_project(self) -> None:
+        # выстравляю страницу с информацией о выбранном боте
         self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
+        self._ui.tool_stack.hide()
         self._init_stylesheet_stackedwidget(0)
 
-    # инициализация окна с добавлением нового бота
-    def _start_new_project(self) ->None:
-        #выстравляю страницу добавления новго бота
+    def _start_new_project(self) -> None:
+        # инициализация окна с добавлением нового бота
+        # выстравляю страницу добавления новго бота
         self._ui.centrall_pannel_widget.setCurrentIndex(self._NEW_BOT_INDEX_PAGE)
-        #настраиваю таблицу стилей подложки
+        self._ui.tool_stack.hide()
+        # настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(1)
 
-    def _start_bot_redactor(self) ->None:
-        #выстравляю страницу добавления новго бота
+    def _start_bot_redactor(self) -> None:
+        # выстравляю страницу добавления новго бота
         self._ui.centrall_pannel_widget.setCurrentIndex(self._BOT_REDACTOR_PAGE)
-        #настраиваю таблицу стилей подложки
+        self._ui.tool_stack.show()
+        # настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(0)
+
+        bot_api = BotApiByRequests("https://ramasuchka.kz/")
+        bot_api.authentication("admin", "adminpass")
+        bot = bot_api.get_bot_by_id(73)
+
+        self._ui.bot_redactor_page.set_bot_api(bot_api)
+        self._ui.bot_redactor_page.setup_tool_stack(self._ui.tool_stack)
+        self._ui.bot_redactor_page.set_bot(bot)
+        # toDo: Переименовать страницы в StackWidget под общую стилистику
 
     def _init_stylesheet_stackedwidget(self, state: int) -> None:
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор
@@ -106,7 +122,7 @@ class ClientWidget(QWidget):
                 "QStackedWidget{border: none;background: rgb(105,105,109);}")
 
     def _init_projectslist(self) -> None:
-        #toDo: Добавить подгрузку списка проектов с сервера
+        # toDo: Добавить подгрузку списка проектов с сервера
         self._ui.bot_list.add_bot(QPixmap(":/icons/widgets/times_icon/newProject.png"), "BotNew", False, 0)
 
     def _tr(self, text: str) -> str:

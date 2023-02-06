@@ -24,9 +24,9 @@ class AddNewProjectWidget(QWidget):
         # toDO: поменять даркмод режим на изменение qssа и все qss вынести в отдельный файлпроекта или
         #  для каждого окна сделать свой первострочный инициализатор qss
         if (night):
-            self.setPalette(QBrush(QColor(27,27,27,155)),QPalette.window())
+            self.setPalette(QBrush(QColor(27, 27, 27, 155)), QPalette.window())
         else:
-            self.setPalette(QBrush(QColor(27,27,27,155)), QPalette.window())
+            self.setPalette(QBrush(QColor(27, 27, 27, 155)), QPalette.window())
 
     def _clicked_сlose(self):
         self.close_window.emit()

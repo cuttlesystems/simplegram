@@ -291,9 +291,15 @@ color:rgb(255,255,255);
      </widget>
      <widget class="QGroupBox" name="centrall_panel">
       <property name="styleSheet">
-       <string notr="true">QGroupBox{
+       <string notr="true">/*QGroupBox{
 border:none;
 background: rgb(241,241,241);
+}*/
+QGroupBox{
+/*background: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(57, 178, 146, 255), stop:0.5 rgba(68, 159, 167, 255), stop:1 rgba(82, 136, 193, 255));*/
+background: rgb(241,241,241);
+border:none;
+/*border-image:url(:/icons/widgets/times_icon/background_texture.png);*/
 }</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -356,7 +362,14 @@ boder:none;
            </spacer>
           </item>
           <item>
-           <widget class="QWidget" name="widget" native="true"/>
+           <widget class="ToolStackWidget" name="tool_stack" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>412</width>
+              <height>52</height>
+             </size>
+            </property>
+           </widget>
           </item>
           <item>
            <spacer name="horizontalSpacer">
@@ -457,15 +470,17 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
          <property name="styleSheet">
           <string notr="true">QSteckedWidget{
 border:none;
-background: rgb(241,241,241);
-}</string>
+background: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(57, 178, 146, 255), stop:0.5 rgba(68, 159, 167, 255), stop:1 rgba(82, 136, 193, 255)) }</string>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>1</number>
          </property>
-         <widget class="LoginWidget" name="loginWindow">
+         <widget class="LoginWidget" name="login_page">
           <property name="styleSheet">
-           <string notr="true"/>
+           <string notr="true">QStackedWidget{
+background: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(57, 178, 146, 255), stop:0.5 rgba(68, 159, 167, 255), stop:1 rgba(82, 136, 193, 255));
+border-image:url(:/icons/widgets/times_icon/background_texture.png);
+}</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <property name="spacing">
@@ -485,19 +500,15 @@ background: rgb(241,241,241);
            </property>
           </layout>
          </widget>
-         <widget class="QWidget" name="mainWindow">
+         <widget class="QWidget" name="main_page">
           <layout class="QVBoxLayout" name="verticalLayout_5"/>
          </widget>
-         <widget class="SelectedProjectWidget" name="botShowWindow"/>
-         <widget class="AddNewProjectWidget" name="botNewCreator">
+         <widget class="SelectedProjectWidget" name="bot_show_page"/>
+         <widget class="AddNewProjectWidget" name="bot_new_creator_page">
           <layout class="QHBoxLayout" name="horizontalLayout_3"/>
          </widget>
-         <widget class="QWidget" name="botRedactorWindow">
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="BotView" name="graphicsView"/>
-           </item>
-          </layout>
+         <widget class="BotEditorWidget" name="bot_redactor_page">
+          <layout class="QHBoxLayout" name="horizontalLayout_4"/>
          </widget>
         </widget>
        </item>
@@ -527,14 +538,21 @@ background: rgb(241,241,241);
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>BotView</class>
-   <extends>QGraphicsView</extends>
-   <header>constructor_app.graphic_scene.bot_view</header>
-  </customwidget>
-  <customwidget>
    <class>BotListWidget</class>
    <extends>QListWidget</extends>
    <header>constructor_app.widgets.bot_list_widget</header>
+  </customwidget>
+  <customwidget>
+   <class>ToolStackWidget</class>
+   <extends>QWidget</extends>
+   <header>constructor_app.widgets.tool_stack_widget</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BotEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>constructor_app.widgets.bot_editor_widget</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
