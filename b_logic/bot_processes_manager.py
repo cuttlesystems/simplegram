@@ -38,3 +38,8 @@ class BotProcessesManagerSingle(metaclass=SingletonBase):
     def remove(self, bot_id: int) -> None:
         assert bot_id in self._processes
         del self._processes[bot_id]
+
+    def find_bot_id_by_process_id(self, process_id: int):
+        for bot_id, process_info in self._processes.items():
+            if process_info.bot_runner.process_id == process_id:
+                return bot_id

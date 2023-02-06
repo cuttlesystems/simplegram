@@ -18,6 +18,8 @@ from rest_framework.request import Request
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
+from utils.notification_sender import NotificationSender
+from utils.notification_sender_to_bot_manager import NotificationSenderToBotManager
 from .utils import check_bot_token_when_generate_bot
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from cuttle_builder.exceptions.bot_gen_exceptions import BotGeneratorException
@@ -106,12 +108,13 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_dir = self._get_bot_dir(bot_id)
 
         self._stop_bot_if_it_run(bot_id)
-
-        runner = BotRunner(bot_dir)
+        notification_sender_to_manager = NotificationSenderToBotManager()
+        runner = BotRunner(bot_dir, notification_sender=notification_sender_to_manager)
 
         process_id = runner.start()
         if process_id is not None:
             bot_process_manager = BotProcessesManagerSingle()
+            notification_sender_to_manager.bot_process_manager = bot_process_manager
             bot_process_manager.register(bot_id, runner)
             result = JsonResponse(
                 {
