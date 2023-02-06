@@ -19,7 +19,7 @@ class ClientWidget(QWidget):
     """
     Надстройка выводимого пользователю GUI
     """
-    _LIST_DATA_ROLE = QtCore.Qt.UserRole + 1
+    #_LIST_DATA_ROLE = QtCore.Qt.UserRole + 1
 
     # индекс окна логина/регистрации
     _LOGIN_INDEX_PAGE = 0
@@ -77,7 +77,6 @@ class ClientWidget(QWidget):
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
         self._ui.tool_stack.hide()
-        self._init_projectslist()
         self.__load_bots_list()
 
     # инициализация окна с информацией о выбранном боте
@@ -102,14 +101,10 @@ class ClientWidget(QWidget):
         # настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(0)
 
-        bot_api = BotApiByRequests("https://ramasuchka.kz/")
-        bot_api.authentication("admin", "adminpass")
-        bot = bot_api.get_bot_by_id(73)
-
-        self._ui.bot_redactor_page.set_bot_api(bot_api)
+        bot = self._bot_api.get_bot_by_id(73)
+        self._ui.bot_redactor_page.set_bot_api(self._bot_api)
         self._ui.bot_redactor_page.setup_tool_stack(self._ui.tool_stack)
         self._ui.bot_redactor_page.set_bot(bot)
-        # toDo: Переименовать страницы в StackWidget под общую стилистику
 
     def _init_stylesheet_stackedwidget(self, state: int) -> None:
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор
@@ -123,25 +118,33 @@ class ClientWidget(QWidget):
 
     def _init_projectslist(self) -> None:
         # toDo: Добавить подгрузку списка проектов с сервера
-        self._ui.bot_list.add_bot(QPixmap(":/icons/widgets/times_icon/newProject.png"), "BotNew", False, 0)
+        self._ui.bot_list.add_bot(QPixmap(":/icons/widgets/times_icon/newProject.png"), "BotNew", False)
 
     def _tr(self, text: str) -> str:
         return tran('ClientWidget.manual', text)
 
     def __load_bots_list(self):
+        # toDo:Add method-handler state item in sidebar
         try:
             # получение всех ботов юзера из БД
             bots = self._bot_api.get_bots()
             self._ui.bot_list.clear()
 
+            height_other_item_in_sidebar = self.height() + self._ui.settings_button.height() + \
+                                           self._ui.logo_block.height() + self._ui.name_splitter_sidebar.height() + \
+                                           self._ui.new_project_button.height()
             # получение списка запущенных ботов
             running_bots = self._bot_api.get_running_bots_info()
             for bot in bots:
-                bot_item = QListWidgetItem(bot.bot_name)
                 if bot.id in running_bots:
-                    # если бот в списке запущенных добавить надпись --> running
-                    bot_item.setText(f'{bot.bot_name} --> running')
-                bot_item.setData(self._LIST_DATA_ROLE, bot)
-                self._ui.bot_list.addItem(bot_item)
+                    bot_item = ([bot.bot_name, True])
+                else:
+                    bot_item = ([bot.bot_name, False])
+                self._ui.bot_list.add_bot(QPixmap(":/icons/widgets/times_icon/newProject.png"), bot_item[0],
+                                          bot_item[1])
+                #if self._ui.bot_list.currentRow() * 40 > self._ui.bot_list.height() & \
+                #        self._ui.bot_list.height() < height_other_item_in_sidebar:
+                #   self._ui.bot_list.setFixedHeight(self._ui.bot_list.currentRow() * 40 - height_other_item_in_sidebar)
+
         except BotApiException as error:
             QMessageBox.warning(self, self._tr('Error'), str(error))
