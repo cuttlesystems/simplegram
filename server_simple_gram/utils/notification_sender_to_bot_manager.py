@@ -11,6 +11,4 @@ class NotificationSenderToBotManager(NotificationSender):
 
     def send_error(self, process_id: int):
         bot_id: int = self.bot_process_manager.find_bot_id_by_process_id(process_id)
-        print(f'bot id: {bot_id}')
-        print(f'bot id: {bot_id}')
-        print(f'bot id: {bot_id}')
+        self.bot_process_manager.mark_process_as_error(bot_id)

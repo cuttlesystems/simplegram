@@ -78,7 +78,7 @@ class BotViewSet(viewsets.ModelViewSet):
 
     def _stop_bot_if_it_run(self, bot_id: int):
         assert isinstance(bot_id, int)
-        runner = BotRunner(None)
+        # runner = BotRunner(None)
         bot_process_manager = BotProcessesManagerSingle()
         # если оказалось, что этого бота уже запускали, то остановим его
         already_started_bot = bot_process_manager.get_process_info(bot_id)
@@ -109,13 +109,14 @@ class BotViewSet(viewsets.ModelViewSet):
 
         self._stop_bot_if_it_run(bot_id)
         notification_sender_to_manager = NotificationSenderToBotManager()
-        runner = BotRunner(bot_dir, notification_sender=notification_sender_to_manager)
+        runner = BotRunner(bot_dir, notification_sender_to_manager)
 
         process_id = runner.start()
         if process_id is not None:
             bot_process_manager = BotProcessesManagerSingle()
-            notification_sender_to_manager.bot_process_manager = bot_process_manager
             bot_process_manager.register(bot_id, runner)
+            notification_sender_to_manager.bot_process_manager = bot_process_manager
+
             result = JsonResponse(
                 {
                     'result': 'Start bot ok',
@@ -150,7 +151,7 @@ class BotViewSet(viewsets.ModelViewSet):
         Returns:
             http ответ результата запуска бота
         """
-        runner = BotRunner(None)
+        # runner = BotRunner(None)
         bot_id_int = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id_int)
         self.check_object_permissions(request, bot)

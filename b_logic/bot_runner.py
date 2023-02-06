@@ -14,7 +14,7 @@ from utils.notification_sender import NotificationSender
 class BotRunner:
     _MAX_LOG_LEN_LINES = 300
 
-    def __init__(self, bot_directory: Optional[Path], notification_sender: NotificationSender):
+    def __init__(self, bot_directory: Optional[Path], notification_sender):
         assert isinstance(bot_directory, Path) or bot_directory is None
         self._bot_directory = bot_directory
 
@@ -31,7 +31,7 @@ class BotRunner:
         self._bot_stdout_log: typing.List[str] = []
         self._bot_stderr_log: typing.List[str] = []
 
-        # self._notification_sender = notification_sender
+        self._notification_sender = notification_sender
 
     def get_bot_stdout(self) -> typing.List[str]:
         """
