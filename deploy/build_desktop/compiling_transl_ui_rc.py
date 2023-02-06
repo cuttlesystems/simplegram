@@ -81,7 +81,6 @@ def compile_translations() -> None:
             '\n'
         )
 
-
         subprocess.run(pyside6_lrelease_command_parameters_list)
 
 
