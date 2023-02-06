@@ -71,6 +71,8 @@ class ClientWidget(QWidget):
 
     #инициализация основого окна приложения
     def _start_main_menu(self, bot_api: IBotApi) -> None:
+        #toDo: Возможно лучше вынести инициализацию BotApi как отдельный метод, а инициализацию окон оставить простой
+        # с перелистыванием, чисткой и связью меж другом
         assert isinstance(bot_api, IBotApi)
         self._bot_api = bot_api
         #выстравляю страницу главного окна
