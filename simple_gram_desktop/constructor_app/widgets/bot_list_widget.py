@@ -1,17 +1,17 @@
 import typing
 
 import PySide6.QtWidgets
-from PySide6.QtWidgets import QListWidget, QListWidgetItem, QScrollBar
+from PySide6.QtWidgets import QListWidget, QListWidgetItem
 from PySide6.QtGui import QPixmap
-from PySide6.QtCore import SIGNAL, SLOT, QSize
+from PySide6.QtCore import SIGNAL, SLOT, QSize, QObject
 
+from b_logic.bot_api.i_bot_api import BotDescription
 from constructor_app.widgets.bot_item_sidebar import BotListItemWidget
 
 class BotListWidget(QListWidget):
     """
     Надстройка айтема сайдбара
     """
-
     def __init__(self, parent: typing.Optional[QListWidget] = None):
         # toDo: Если будет необходимо добавить функцию [night/light]mode
         super().__init__(parent)
@@ -31,14 +31,15 @@ class BotListWidget(QListWidget):
             "QScrollBar::add-line{border:1px transparent black;  width:2px; background-color: black;}"
             "QScrollBar::sub-line{border:1px transparent black; width:2px; background-color: black;}")
 
-    def add_bot(self, icon: QPixmap, name: str, state: bool):
+    def add_bot(self, icon: QPixmap, bot: BotDescription, state: bool):
         # Заготовква для дальнейшей реализации добавления бота из списка бокового меню
         # toDo: Добавить подгрузку списка проектов с сервера
         row = self.currentRow()
         item = QListWidgetItem()
+        #item.setFlags(PySide6.QtCore.QItemSelectionModel.SelectionFlag.)
         widget = BotListItemWidget()
         item.setSizeHint(QSize(210, 40))
-        widget.init_bot_data(icon, name, state)
+        widget.init_bot_data(icon, bot, state)
         self.insertItem(row, item)
         self.setItemWidget(item, widget)
 

@@ -45,6 +45,10 @@ class SelectedProjectWidget(QWidget):
             self._ui.marker_state_bot.setText(self._tr(u"Bot is disabled"))
             self.activated_bot_signal.emit(False)
 
+    def set_bot_name(self, name: str) -> None:
+        # Set name bot in lineEdit
+        self._ui.name_bot_edit.setText(name)
+
     def __bot_editing(self) -> None:
         # коннект кнопки открытия бота в редакторе и сигналом старта редактирования в основном клиент/менеджерном
         # приложении
