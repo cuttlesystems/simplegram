@@ -17,15 +17,19 @@ def pyinstaller_exe_path() -> Path:
 
 
 if __name__ == '__main__':
-    """
-    вызов функции проверки существования и создания виртуального окружения в каталоге 'build_desktop'
-    """
+    # вызов функции проверки существования и создания виртуального окружения в каталоге 'build_desktop'
     print('\n--- check \'build_desktop\' directory for \'venv\' existance and creation if it doesn\'t exist ---\n')
     create_venv_in_build_desktop()
 
+    print('\n--- translations compilation started ---')
     compile_translations()
+    print('--- translations compilation ended ---\n\n')
+    print('--- ui_forms compilation started ---')
     compile_ui_forms()
+    print('--- ui_forms compilation ended ---\n\n')
+    print('--- resources compilation started ---')
     compile_rc_files()
+    print('--- resources compilation ended ---\n\n')
 
     # непосредственный запуск процесса создания исполняемого файла приложения 'simple_gram' через PyInstaller
     subprocess.run([pyinstaller_exe_path(), 'start_constructor.spec', '-y'])

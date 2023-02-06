@@ -7,7 +7,7 @@ from subprocess import run
 
 import venv
 
-from python_venv_execs_paths import get_venv_python_path, get_current_os, get_venv_dir
+from python_venv_execs_paths import get_venv_python_path, get_venv_dir
 
 
 def create_venv(venv_dir: Path):
@@ -22,12 +22,9 @@ def create_venv(venv_dir: Path):
 
     """
     assert isinstance(venv_dir, Path)
-    print(f'Current OS: ', get_current_os())
 
     print(f'venv_dir path: ', venv_dir)
-    print(f'Current OS related directory path: ', venv_dir.parent)
-
-    print(f'get_venv_dir path: ', get_venv_dir())
+    print(f'Current OS related directory path: ', venv_dir.parent, '\n')
 
     if not venv_dir.exists():
         venv_dir.mkdir(exist_ok=True, parents=True)
@@ -38,4 +35,5 @@ def create_venv(venv_dir: Path):
 
 
 def create_venv_in_build_desktop():
+    print(f'get_venv_dir path: ', get_venv_dir())
     create_venv(get_venv_dir())
