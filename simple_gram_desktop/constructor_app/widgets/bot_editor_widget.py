@@ -62,9 +62,9 @@ class BotEditorWidget(QWidget):
         self._connect_signals()
 
 
-    def set_BotApi(self, bot_api: IBotApi):
+    def set_bot_api(self, bot_api: IBotApi):
         # toDo: добавить заполнение через IBotApi
-
+        assert isinstance(bot_api, IBotApi)
         self._bot_api = bot_api
 
 
@@ -299,6 +299,7 @@ class BotEditorWidget(QWidget):
             self._bot_api.delete_message(message)
 
         self._actual_actions_state()
+
     def _on_mark_as_error_button(self, _checked: bool) -> None:
         selected_messages = self._bot_scene.get_selected_messages()
         selected_messages_number = len(selected_messages)

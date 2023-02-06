@@ -67,7 +67,7 @@ class ClientWidget(QWidget):
         self._ui.top_pannel.hide()
 
     #инициализация основого окна приложения
-    def _start_main_menu(self, bot_api: IBotApi) ->None:
+    def _start_main_menu(self, bot_api: IBotApi) -> None:
         assert isinstance(bot_api, IBotApi)
         self._bot_api = bot_api
         #выстравляю страницу главного окна
@@ -106,7 +106,7 @@ class ClientWidget(QWidget):
         bot_api.authentication("admin", "adminpass")
         bot = bot_api.get_bot_by_id(73)
 
-        self._ui.bot_redactor_page.set_BotApi(bot_api)
+        self._ui.bot_redactor_page.set_bot_api(bot_api)
         self._ui.bot_redactor_page.setup_tool_stack(self._ui.tool_stack)
         self._ui.bot_redactor_page.set_bot(bot)
         # toDo: Переименовать страницы в StackWidget под общую стилистику
