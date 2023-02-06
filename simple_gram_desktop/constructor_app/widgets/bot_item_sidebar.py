@@ -13,6 +13,7 @@ class BotListItemWidget(QWidget):
     Надстройка айтема сайдбара
     """
     _bot = BotDescription
+    _bot_state = bool
 
     def __init__(self, parent: typing.Optional[QWidget] = None):
         super().__init__(parent)
@@ -40,6 +41,7 @@ class BotListItemWidget(QWidget):
 
     def init_bot_data(self, icon: QPixmap, bot: BotDescription, state: bool) -> None:
         self._bot = bot
+        self._bot_state = state
         self._ui.pixmap_bot.setPixmap(icon)
         self._ui.pixmap_bot.setScaledContents(True)
         self._ui.name_bot.setStyleSheet("color:rgba(255,255,255,100);")
@@ -51,6 +53,9 @@ class BotListItemWidget(QWidget):
 
     def get_bot_item(self) -> BotDescription:
         return self._bot
+
+    def get_bot_state(self) -> bool:
+        return self._bot_state
 
     def _tr(self, text: str) -> str:
         return tran('ItemProjectsListWidget.manual', text)

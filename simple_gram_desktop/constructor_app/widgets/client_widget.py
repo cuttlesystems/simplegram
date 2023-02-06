@@ -86,8 +86,9 @@ class ClientWidget(QWidget):
     def _start_selected_project(self) -> None:
         # выстравляю страницу с информацией о выбранном боте
         self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
-        self._ui.bot_show_page.set_bot_name((self._ui.bot_list.itemWidget(
-            self._ui.bot_list.currentItem()).get_bot_item().bot_name))
+        self._ui.bot_show_page.set_bot((self._ui.bot_list.itemWidget(
+            self._ui.bot_list.currentItem()).get_bot_item()),
+            self._ui.bot_list.itemWidget(self._ui.bot_list.currentItem()).get_bot_state())
         self._ui.tool_stack.hide()
         self._init_stylesheet_stackedwidget(0)
 
