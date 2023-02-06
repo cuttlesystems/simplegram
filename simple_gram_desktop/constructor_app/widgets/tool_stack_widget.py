@@ -9,7 +9,7 @@ from common.localisation import tran
 from constructor_app.widgets.ui_tool_stack_widget import Ui_ToolStackWidget
 
 class ToolStackWidget(QWidget):
-
+    #toDo: убрать bool
     add_message_signal = Signal(bool)
     add_variant_signal = Signal(bool)
     delete_message_signal = Signal(bool)
