@@ -1,5 +1,6 @@
 from typing import Optional
 
+import requests
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
 from PySide6 import QtGui
@@ -7,12 +8,14 @@ from PySide6.QtCore import Signal, SLOT
 
 
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
-from b_logic.bot_api.i_bot_api import BotApiException, IBotApi
+from b_logic.bot_api.i_bot_api import BotApiException, IBotApi, GetBotListException
 from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
 from constructor_app.widgets.bot_editor.bot_editor_form import BotEditorForm
 from constructor_app.widgets.bot_list_widget import BotExtended
+from network.bot_api_by_request_extended import BotApiMessageException
+
 
 class ClientWidget(QWidget):
 
@@ -42,9 +45,9 @@ class ClientWidget(QWidget):
         self._bot_api: Optional[IBotApi] = None
 
         # дружу кнопку ентера при авторизации и инициализации мейн окна
-        self._ui.login_page.log_in.connect(self._start_main_menu)
+        self._ui.login_page.log_in.connect(self._post_login_initial_botapi)
 
-        self._ui.bot_new_creator_page.close_window.connect(self._start_main_menu)
+        #self._ui.bot_new_creator_page.close_window.connect(self._start_main_menu)
 
         """Сайдбар"""
         # дружу кнопку нового проекта и инициализацию окна создания бота
@@ -53,12 +56,14 @@ class ClientWidget(QWidget):
         self._ui.bot_list.clicked.connect(self._start_selected_project)
         self._ui.bot_list.clicked.connect(self._start_selected_project)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
-        self._ui.logo_block.clicked.connect(self._start_main_menu)
+        #self._ui.logo_block.clicked.connect(self._start_main_menu)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.bot_show_page.open_bot_in_redactor_signal.connect(self._start_bot_redactor)
 
         # первое открытие приложения, инициализация авторизации
         self._start_login_users()
+
+        #self.user
 
     # инициализация окна авторизации
     def _start_login_users(self) -> None:
@@ -74,12 +79,14 @@ class ClientWidget(QWidget):
         self._ui.side_bar.hide()
         self._ui.top_pannel.hide()
 
-    #инициализация основого окна приложения
-    def _start_main_menu(self, bot_api: IBotApi) -> None:
-        #toDo: Возможно лучше вынести инициализацию BotApi как отдельный метод, а инициализацию окон оставить простой
-        # с перелистыванием, чисткой и связью меж другом
+    def _post_login_initial_botapi(self, bot_api: IBotApi) -> None:
         assert isinstance(bot_api, IBotApi)
         self._bot_api = bot_api
+        self.__load_bots_list()
+        self._start_main_menu()
+
+    #инициализация основого окна приложения
+    def _start_main_menu(self) -> None:
         #выстравляю страницу главного окна
         self._ui.centrall_pannel_widget.setCurrentIndex(self._MAIN_MENU_INDEX_PAGE)
         self._init_stylesheet_stackedwidget(0)
@@ -87,23 +94,17 @@ class ClientWidget(QWidget):
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
         self._ui.tool_stack.hide()
-        self.__load_bots_list()
 
     # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) -> None:
         # Set page with info about selected in sidebar bot
-        try:
-            self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
-            bot = self._ui.bot_list.get_current_bot().bot_description  # get BotExtended
-            bot_state = self._ui.bot_list.get_current_bot().bot_state
-            self._ui.bot_show_page.set_bot(bot, bot_state)
-            self._ui.tool_stack.hide()
-
-            # toDo: Postpone init qss in new method autoInitializeStyleSheet
-            self._init_stylesheet_stackedwidget(0)
-        except None:
-            # toDo: Found where created error
-            QMessageBox.warning(self, self._tr('Error'), str(self._tr("Selection bot don't found!")))
+        self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
+        bot = self._ui.bot_list.get_current_bot().bot_description  # get BotExtended
+        bot_state = self._ui.bot_list.get_current_bot().bot_state
+        self._ui.bot_show_page.set_bot(bot, bot_state)
+        self._ui.tool_stack.hide()
+        # toDo: Postpone init qss in new method autoInitializeStyleSheet
+        self._init_stylesheet_stackedwidget(0)
 
     def _start_new_project(self) -> None:
         # инициализация окна с добавлением нового бота
@@ -121,13 +122,16 @@ class ClientWidget(QWidget):
             # настраиваю таблицу стилей подложки
             self._init_stylesheet_stackedwidget(0)
 
-            bot_id = self._ui.bot_list.get_current_bot().bot_description.id
+            bot_id = self._ui.bot_list.get_current_bot().bot_description.id + 30303030
             bot = self._bot_api.get_bot_by_id(bot_id)
             self._ui.bot_redactor_page.set_bot_api(self._bot_api)
             self._ui.bot_redactor_page.setup_tool_stack(self._ui.tool_stack)
             self._ui.bot_redactor_page.set_bot(bot)
-        except None:
-            QMessageBox.warning(self, self._tr('Error'), str(self._tr("Selection bot don't found!")))
+        except requests.exceptions.ConnectionError as e:
+            # toDo: add translate kz, ru
+            QMessageBox.warning(self, self._tr('Error'), self._tr('Connection error: {0}').format(e))
+        except BotApiMessageException as exception:
+            QMessageBox.warning(self, self._tr('Error'), str(exception))
 
     def _init_stylesheet_stackedwidget(self, state: int) -> None:
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор

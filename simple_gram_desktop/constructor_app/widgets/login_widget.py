@@ -12,6 +12,8 @@ from constructor_app.settings.login_settings import LoginSettings
 from constructor_app.settings.login_settings_manager import LoginSettingsManager
 
 from constructor_app.widgets.ui_login_widget import Ui_LoginWidget
+from network.bot_api_by_request_extended import BotApiByRequestsProxy
+
 
 class LoginWidget(QWidget):
     # сигнал, что пользователь авторизовался
@@ -23,7 +25,7 @@ class LoginWidget(QWidget):
         super().__init__(parent)
         self._ui = Ui_LoginWidget()
         self._ui.setupUi(self)
-        self.bot_api = BotApiByRequests()
+        self.bot_api = BotApiByRequestsProxy()
 
         settings_path = get_application_data_dir()
         self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
