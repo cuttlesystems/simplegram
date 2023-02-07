@@ -12,7 +12,7 @@ from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
 from constructor_app.widgets.bot_editor.bot_editor_form import BotEditorForm
-
+from constructor_app.widgets.bot_list_widget import BotExtended
 
 class ClientWidget(QWidget):
 
@@ -134,10 +134,6 @@ class ClientWidget(QWidget):
             self._ui.centrall_pannel_widget.setStyleSheet(
                 "QStackedWidget{border: none;background: rgb(105,105,109);}")
 
-    def _init_projectslist(self) -> None:
-        # toDo: Добавить подгрузку списка проектов с сервера
-        self._ui.bot_list.add_bot(QtGui.QPixmap(":/icons/widgets/times_icon/newProject.png"), "BotNew", False)
-
     def _tr(self, text: str) -> str:
         return tran('ClientWidget.manual', text)
 
@@ -156,7 +152,10 @@ class ClientWidget(QWidget):
                 else:
                     bot_state = False
                 # toDo: Add icons initialization
-                self._ui.bot_list.add_bot(QtGui.QPixmap(":/icons/widgets/times_icon/newProject.png"), bot,
-                                          bot_state)
+                self._ui.bot_list.add_bot(
+                    BotExtended(
+                        bot_icon=QtGui.QPixmap(":/icons/widgets/times_icon/newProject.png"),
+                        bot_description=bot,
+                        bot_state=bot_state))
         except BotApiException as error:
             QMessageBox.warning(self, self._tr('Error'), str(error))

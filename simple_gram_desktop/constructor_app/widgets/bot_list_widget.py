@@ -12,6 +12,7 @@ from constructor_app.widgets.bot_item_sidebar import BotListItemWidget
 @dataclass(slots=True)
 class BotExtended:
     # toDo: Renaming BotExtended
+    bot_icon: QPixmap
     bot_description: BotDescription
     bot_state: bool
 
@@ -41,20 +42,18 @@ class BotListWidget(QListWidget):
             "QScrollBar::add-line{border:1px transparent black;  width:2px; background-color: black;}"
             "QScrollBar::sub-line{border:1px transparent black; width:2px; background-color: black;}")
 
-    def add_bot(self, icon: QPixmap, bot: BotDescription, state: bool):
-        assert isinstance(bot, BotDescription)
-        assert isinstance(icon, QPixmap)
+    def add_bot(self, bot: BotExtended):
+        assert isinstance(bot, BotExtended)
         # Заготовква для дальнейшей реализации добавления бота из списка бокового меню
         row = self.count()
         item = QListWidgetItem()
 
-        bot_buffer = BotExtended(bot_description=bot, bot_state=state)
-        self._bots_list.append(bot_buffer)
+        self._bots_list.append(bot)
 
         widget = BotListItemWidget()
         # toDo: добавить resizeMode
         item.setSizeHint(self._ITEM_SIZE)
-        widget.init_bot_data(icon, bot, state)
+        widget.init_bot_data(bot.bot_icon, bot.bot_description, bot.bot_state)
         self.insertItem(row, item)
         self.setItemWidget(item, widget)
 
@@ -75,7 +74,6 @@ class BotListWidget(QListWidget):
         return self._bots_list
 
     def get_current_bot(self) -> BotExtended:
-        bot_test = self._bots_list
         # take bot in BotDescription and bot_state
         row = self.currentRow()
         bot = self._bots_list[row]
