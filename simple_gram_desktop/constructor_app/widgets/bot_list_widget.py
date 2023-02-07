@@ -1,5 +1,5 @@
 import typing
-
+from typing import List
 import PySide6.QtWidgets
 from PySide6.QtWidgets import QListWidget, QListWidgetItem
 from PySide6.QtGui import QPixmap
@@ -8,10 +8,17 @@ from PySide6.QtCore import SIGNAL, SLOT, QSize, QObject
 from b_logic.bot_api.i_bot_api import BotDescription
 from constructor_app.widgets.bot_item_sidebar import BotListItemWidget
 
+class BotExtended:
+    bot_description: BotDescription
+    bot_state: bool
+
 class BotListWidget(QListWidget):
     """
-    Надстройка айтема сайдбара
+    Надстройка сайдбара
     """
+    _ITEM_SIZE = QSize(210, 40)
+    _bots_list: List[BotExtended] = []
+
     def __init__(self, parent: typing.Optional[QListWidget] = None):
         # toDo: Если будет необходимо добавить функцию [night/light]mode
         super().__init__(parent)
@@ -34,12 +41,18 @@ class BotListWidget(QListWidget):
     def add_bot(self, icon: QPixmap, bot: BotDescription, state: bool):
         assert isinstance(bot, BotDescription)
         # Заготовква для дальнейшей реализации добавления бота из списка бокового меню
-        # toDo: Добавить подгрузку списка проектов с сервера
         row = self.currentRow()
         item = QListWidgetItem()
-        #item.setFlags(PySide6.QtCore.QItemSelectionModel.SelectionFlag.)
+
+        bot_buffer = BotExtended()
+        bot_buffer.bot_state = state
+        bot_buffer.bot_description = bot
+
+        self._bots_list.append(bot_buffer)
+
         widget = BotListItemWidget()
-        item.setSizeHint(QSize(210, 40))
+        # toDo: добавить resizeMode
+        item.setSizeHint(self._ITEM_SIZE)
         widget.init_bot_data(icon, bot, state)
         self.insertItem(row, item)
         self.setItemWidget(item, widget)
@@ -55,3 +68,22 @@ class BotListWidget(QListWidget):
         # toDo: Добавить изменение состояние элемента списка sidebar
         widget = BotListItemWidget()
         item = self.item(row)
+
+    def get_bots(self) -> List[BotExtended]:
+        # take bot in BotDescription and bot_state
+        return self._bots_list
+
+    def get_bot(self, row: int) -> BotDescription:
+        # take bot in BotDescription and bot_state
+        bot = self._bots_list[row].bot_description
+        return bot
+
+    def get_bot_id(self, row: int) -> int:
+        # take bot in BotDescription and bot_state
+        bot_id = self._bots_list[row].bot_description.id
+        return bot_id
+
+    def get_bot_state(self, row: int) -> bool:
+        # take bot in BotDescription and bot_state
+        bot_state = self._bots_list[row].bot_state
+        return bot_state
