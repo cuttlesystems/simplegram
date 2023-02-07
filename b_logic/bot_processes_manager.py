@@ -26,7 +26,8 @@ class BotProcessesManagerSingle(metaclass=SingletonBase):
         assert isinstance(bot_runner, BotRunner)
         process_info = BotProcessInfo(
             bot_id=bot_id,
-            bot_runner=bot_runner
+            bot_runner=bot_runner,
+            is_error=False
         )
         self._processes[bot_id] = process_info
 
@@ -49,3 +50,4 @@ class BotProcessesManagerSingle(metaclass=SingletonBase):
         current_procerss_info = self._processes[bot_id]
         current_procerss_info.is_error = True
         self._processes[bot_id] = current_procerss_info
+        print(self._processes)
