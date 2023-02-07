@@ -101,6 +101,7 @@ class ClientWidget(QWidget):
         self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
         bot = self._ui.bot_list.get_current_bot().bot_description  # get BotExtended
         bot_state = self._ui.bot_list.get_current_bot().bot_state
+        # toDo: Refactoring set_bot(botExtended)
         self._ui.bot_show_page.set_bot(bot, bot_state)
         self._ui.tool_stack.hide()
         # toDo: Postpone init qss in new method autoInitializeStyleSheet
