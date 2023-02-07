@@ -19,7 +19,6 @@ class ClientWidget(QWidget):
     """
     Надстройка выводимого пользователю GUI
     """
-    #_LIST_DATA_ROLE = QtCore.Qt.UserRole + 1
 
     # индекс окна логина/регистрации
     _LOGIN_INDEX_PAGE = 0
@@ -86,15 +85,18 @@ class ClientWidget(QWidget):
 
     # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) -> None:
-        # выстравляю страницу с информацией о выбранном боте
+        # Set page with info about selected in sidebar bot
         try:
             self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
-            bot = self._ui.bot_list.itemWidget(self._ui.bot_list.currentItem()).get_bot_item()
-            bot_state = self._ui.bot_list.itemWidget(self._ui.bot_list.currentItem()).get_bot_state()
+            bot = self._ui.bot_list.get_current_bot().bot_description  # get BotExtended
+            bot_state = self._ui.bot_list.get_current_bot().bot_state
             self._ui.bot_show_page.set_bot(bot, bot_state)
             self._ui.tool_stack.hide()
+
+            # toDo: Postpone init qss in new method autoInitializeStyleSheet
             self._init_stylesheet_stackedwidget(0)
         except None:
+            # toDo: Found where created error
             QMessageBox.warning(self, self._tr('Error'), str(self._tr("Selection bot don't found!")))
 
     def _start_new_project(self) -> None:
@@ -113,7 +115,7 @@ class ClientWidget(QWidget):
             # настраиваю таблицу стилей подложки
             self._init_stylesheet_stackedwidget(0)
 
-            bot_id = self._ui.bot_list.itemWidget(self._ui.bot_list.currentItem()).get_bot_item().id
+            bot_id = self._ui.bot_list.get_current_bot().bot_description.id
             bot = self._bot_api.get_bot_by_id(bot_id)
             self._ui.bot_redactor_page.set_bot_api(self._bot_api)
             self._ui.bot_redactor_page.setup_tool_stack(self._ui.tool_stack)
@@ -153,6 +155,7 @@ class ClientWidget(QWidget):
                     bot_state = True
                 else:
                     bot_state = False
+                # toDo: Add icons initialization
                 self._ui.bot_list.add_bot(QtGui.QPixmap(":/icons/widgets/times_icon/newProject.png"), bot,
                                           bot_state)
         except BotApiException as error:

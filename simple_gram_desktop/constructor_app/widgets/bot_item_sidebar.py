@@ -52,11 +52,5 @@ class BotListItemWidget(QWidget):
         self._ui.name_bot.setWordWrap(True)
         self.change_bot_state(state)
 
-    def get_bot_item(self) -> BotDescription:
-        return self._bot
-
-    def get_bot_state(self) -> bool:
-        return self._bot_state
-
     def _tr(self, text: str) -> str:
         return tran('ItemProjectsListWidget.manual', text)

@@ -1,14 +1,17 @@
 import typing
 from typing import List
-import PySide6.QtWidgets
+from dataclasses import dataclass
+
 from PySide6.QtWidgets import QListWidget, QListWidgetItem
 from PySide6.QtGui import QPixmap
-from PySide6.QtCore import SIGNAL, SLOT, QSize, QObject
+from PySide6.QtCore import QSize
 
 from b_logic.bot_api.i_bot_api import BotDescription
 from constructor_app.widgets.bot_item_sidebar import BotListItemWidget
 
+@dataclass(slots=True)
 class BotExtended:
+    # toDo: Renaming BotExtended
     bot_description: BotDescription
     bot_state: bool
 
@@ -40,14 +43,12 @@ class BotListWidget(QListWidget):
 
     def add_bot(self, icon: QPixmap, bot: BotDescription, state: bool):
         assert isinstance(bot, BotDescription)
+        assert isinstance(icon, QPixmap)
         # Заготовква для дальнейшей реализации добавления бота из списка бокового меню
-        row = self.currentRow()
+        row = self.count()
         item = QListWidgetItem()
 
-        bot_buffer = BotExtended()
-        bot_buffer.bot_state = state
-        bot_buffer.bot_description = bot
-
+        bot_buffer = BotExtended(bot_description=bot, bot_state=state)
         self._bots_list.append(bot_buffer)
 
         widget = BotListItemWidget()
@@ -65,7 +66,7 @@ class BotListWidget(QListWidget):
 
     #Заготовква для дальнейшей реализации изменения состояния бота
     def bot_state_changed(self, state: bool, row: int):
-        # toDo: Добавить изменение состояние элемента списка sidebar
+        # toDo: Add checkabled for item sidebar and server
         widget = BotListItemWidget()
         item = self.item(row)
 
@@ -73,17 +74,9 @@ class BotListWidget(QListWidget):
         # take bot in BotDescription and bot_state
         return self._bots_list
 
-    def get_bot(self, row: int) -> BotDescription:
+    def get_current_bot(self) -> BotExtended:
+        bot_test = self._bots_list
         # take bot in BotDescription and bot_state
-        bot = self._bots_list[row].bot_description
+        row = self.currentRow()
+        bot = self._bots_list[row]
         return bot
-
-    def get_bot_id(self, row: int) -> int:
-        # take bot in BotDescription and bot_state
-        bot_id = self._bots_list[row].bot_description.id
-        return bot_id
-
-    def get_bot_state(self, row: int) -> bool:
-        # take bot in BotDescription and bot_state
-        bot_state = self._bots_list[row].bot_state
-        return bot_state
