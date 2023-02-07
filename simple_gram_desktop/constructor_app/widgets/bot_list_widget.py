@@ -68,5 +68,8 @@ class BotListWidget(QListWidget):
     def get_current_bot(self) -> Optional[BotExtended]:
         # take bot in BotDescription and bot_state
         row = self.currentRow()
-        bot = self._bots_list[row]
+        if row < 0:
+            bot = None
+        else:
+            bot = self._bots_list[row]
         return bot

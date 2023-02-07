@@ -99,8 +99,10 @@ class ClientWidget(QWidget):
     def _start_selected_project(self) -> None:
         # Set page with info about selected in sidebar bot
         self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
-        bot = self._ui.bot_list.get_current_bot().bot_description  # get BotExtended
-        bot_state = self._ui.bot_list.get_current_bot().bot_state
+        bot_extended: BotExtended = self._ui.bot_list.get_current_bot()
+        assert bot_extended is not None
+        bot = bot_extended.bot_description
+        bot_state = bot_extended.bot_state
         # toDo: Refactoring set_bot(botExtended)
         self._ui.bot_show_page.set_bot(bot, bot_state)
         self._ui.tool_stack.hide()
@@ -124,10 +126,10 @@ class ClientWidget(QWidget):
             self._init_stylesheet_stackedwidget(0)
 
             # Получаем текущего выбранного бота из списка и говорим что он не может быть None
-            bot = self._ui.bot_list.get_current_bot()
-            assert bot is not None
+            bot_extended = self._ui.bot_list.get_current_bot()
+            assert bot_extended is not None
 
-            bot_id = self._ui.bot_list.get_current_bot().bot_description.id
+            bot_id = bot_extended.bot_description.id
             bot = self._bot_api.get_bot_by_id(bot_id)
             self._ui.bot_redactor_page.set_bot_api(self._bot_api)
             self._ui.bot_redactor_page.setup_tool_stack(self._ui.tool_stack)

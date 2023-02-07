@@ -23,7 +23,7 @@ class BotListItemWidget(QWidget):
         # toDO: Добавить функцию инициализации QSS
 
     # Функция перекелючения/инициализации состояния бота (Бот включен/ бот выключен)
-    def change_bot_state(self, state: bool) -> None:
+    def _change_bot_state(self, state: bool) -> None:
         # toDO: Заготовка для добавления новой фичи - изменение состояния бота
         # toDO: Перенести либо цвета либо QSS в новую цветовую схему или макросс
         if state:
@@ -47,7 +47,7 @@ class BotListItemWidget(QWidget):
         # toDo: Добавить автоматическое сокращение наименования "..."
         self._ui.name_bot.setText(bot.bot_description.bot_name)
         self._ui.name_bot.setWordWrap(True)
-        self.change_bot_state(bot.bot_state)
+        self._change_bot_state(bot.bot_state)
 
     def _tr(self, text: str) -> str:
         return tran('ItemProjectsListWidget.manual', text)
