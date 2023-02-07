@@ -13,6 +13,7 @@ from constructor_app.settings.login_settings_manager import LoginSettingsManager
 
 from constructor_app.widgets.ui_login_widget import Ui_LoginWidget
 
+
 class LoginWidget(QWidget):
     # сигнал, что пользователь авторизовался
     log_in = Signal(BotApiByRequests)
@@ -31,12 +32,16 @@ class LoginWidget(QWidget):
         self._set_login_mode()
 
         # подключаю кнопку ентерПользователя с переходом на мейнОкно
-        self._ui.login_button.clicked.connect(self._clicked_login)
+        self._ui.login_button.clicked.connect(self._clicked_login_button)
         # toDO: Добавить функцию инициализации QSS
-        # подключаю
+
+        # подключаю кнопку регистрации
+        self._ui.sign_up_user_button.clicked.connect(self._clicked_sign_up_button)
+
+        # подключаю переключатель логин/регистрация
         self._ui.registrate_radiobutton.toggled.connect(self._toggled_registration)
 
-    def _clicked_login(self):
+    def _clicked_login_button(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
         username_edit: QLineEdit = self._ui.username_edit
         password_edit: QLineEdit = self._ui.password_edit
@@ -59,6 +64,35 @@ class LoginWidget(QWidget):
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
 
+    def _clicked_sign_up_button(self):
+        server_addr: QLineEdit = self._ui.server_addr_edit
+        username: QLineEdit = self._ui.username_edit
+        email: QLineEdit = self._ui.email_edit
+        password: QLineEdit = self._ui.password_edit
+        confirm_password: QLineEdit = self._ui.confirm_password_edit
+        required_fields = [server_addr, username, email, password, confirm_password]
+        for field in required_fields:
+            if not field.text():
+                QMessageBox.warning(self,
+                                    'Empty field error',
+                                    f'{field.placeholderText()}. This field should not be empty.')
+                return
+        if password.text() == confirm_password.text():
+            try:
+                self.bot_api.set_suite(server_addr.text())
+                self.bot_api.sign_up(
+                    username=username.text(),
+                    email=email.text(),
+                    password=password.text()
+                )
+                QMessageBox.information(self, 'Success', f'User {username.text()} created successfully')
+                # если пользователь успешно создан переключиться в режим логин
+                self._ui.login_radiobutton.setChecked(True)
+            except BotApiException as bot_api_exception:
+                QMessageBox.critical(self, 'Error', str(bot_api_exception))
+        else:
+            QMessageBox.warning(self, 'Password error', 'Passwords did not match')
+
     def _switch_login(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой
         #  первострочный инициализатор qss и доработать режим входа/регистрации
@@ -76,13 +110,11 @@ class LoginWidget(QWidget):
     def _toggled_registration(self):
         if self._ui.registrate_radiobutton.isChecked():
             self._set_registration_mode()
-
         elif self._ui.login_radiobutton.isChecked():
             self._set_login_mode()
 
     def _set_registration_mode(self):
         # скрыть ненужные и показать нужные поля
-        self._ui.server_addr_edit.hide()
         self._ui.email_edit.show()
         self._ui.confirm_password_edit.show()
         self._ui.save_my_password.hide()
@@ -97,7 +129,6 @@ class LoginWidget(QWidget):
 
     def _set_login_mode(self):
         # скрыть ненужные и показать нужные поля
-        self._ui.server_addr_edit.show()
         self._ui.email_edit.hide()
         self._ui.confirm_password_edit.hide()
         self._ui.save_my_password.show()
