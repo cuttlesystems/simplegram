@@ -25,23 +25,21 @@ class LoginWidget(QWidget):
         self._ui.setupUi(self)
         self.bot_api = BotApiByRequests()
 
+        # заполнение полей данными при логине
         settings_path = get_application_data_dir()
         self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
-        settings = self._application_settings.read_settings()
-        state = Qt.CheckState.Checked if settings.save_password else Qt.CheckState.Unchecked
-        self._ui.save_my_password.setCheckState(state)
-        self._ui.username_edit.setText(settings.name)
-        self._ui.password_widget.setText(settings.password)
-        self._ui.server_addr_edit.setText(settings.address)
+        self._set_login_mode()
 
         # подключаю кнопку ентерПользователя с переходом на мейнОкно
-        self._ui.enter_button.clicked.connect(self._clicked_login)
+        self._ui.login_button.clicked.connect(self._clicked_login)
         # toDO: Добавить функцию инициализации QSS
+        # подключаю
+        self._ui.registrate_radiobutton.toggled.connect(self._toggled_registration)
 
     def _clicked_login(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
         username_edit: QLineEdit = self._ui.username_edit
-        password_edit: QLineEdit = self._ui.password_widget
+        password_edit: QLineEdit = self._ui.password_edit
         try:
             self.bot_api.set_suite(server_addr_edit.text())
             self.bot_api.authentication(username_edit.text(), password_edit.text())
@@ -74,6 +72,45 @@ class LoginWidget(QWidget):
         #                                                   "background-color:#FF5F8F;}")
         #    self._ui.markerActivisionBot.setText(u"Бот не активен")
         self.registrated_state_signal.emit(False)
+
+    def _toggled_registration(self):
+        if self._ui.registrate_radiobutton.isChecked():
+            self._set_registration_mode()
+
+        elif self._ui.login_radiobutton.isChecked():
+            self._set_login_mode()
+
+    def _set_registration_mode(self):
+        # скрыть ненужные и показать нужные поля
+        self._ui.server_addr_edit.hide()
+        self._ui.email_edit.show()
+        self._ui.confirm_password_edit.show()
+        self._ui.save_my_password.hide()
+        self._ui.login_button.hide()
+        self._ui.sign_up_user_button.show()
+
+        # отчистить поля от информации
+        self._ui.email_edit.clear()
+        self._ui.username_edit.clear()
+        self._ui.password_edit.clear()
+        self._ui.confirm_password_edit.clear()
+
+    def _set_login_mode(self):
+        # скрыть ненужные и показать нужные поля
+        self._ui.server_addr_edit.show()
+        self._ui.email_edit.hide()
+        self._ui.confirm_password_edit.hide()
+        self._ui.save_my_password.show()
+        self._ui.login_button.show()
+        self._ui.sign_up_user_button.hide()
+
+        # заполнить поля сохраненными данными
+        settings = self._application_settings.read_settings()
+        state = Qt.CheckState.Checked if settings.save_password else Qt.CheckState.Unchecked
+        self._ui.save_my_password.setCheckState(state)
+        self._ui.username_edit.setText(settings.name)
+        self._ui.password_edit.setText(settings.password)
+        self._ui.server_addr_edit.setText(settings.address)
 
     def _tr(self, text: str) -> str:
         return tran('LoginWidget.manual', text)
