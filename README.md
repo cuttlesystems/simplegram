@@ -8,7 +8,7 @@
 
 [Данные для тестирования телеграмм бота](./docs/telegabot_info.md)
 
-[Настройки офисной сети](.docs/net_settings.md)
+[Настройки офисной сети](./docs/net_settings.md)
 
 [Инструкция по осуществлению *deploy'я* обновлённого *docker*-контейнера](./docs/deploy_from_ubuntu.md)
 
