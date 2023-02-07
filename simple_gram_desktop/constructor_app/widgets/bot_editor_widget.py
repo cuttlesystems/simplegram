@@ -2,8 +2,8 @@
 import typing
 
 from PySide6 import QtGui, QtCore
-from PySide6.QtCore import Signal, QPointF
-from PySide6.QtGui import QPainter
+from PySide6.QtCore import Signal, QPointF, QRect
+from PySide6.QtGui import QPainter, QBrush, QColor
 from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
