@@ -1,8 +1,8 @@
 import typing
 
-from PySide6.QtGui import Qt
+from PySide6.QtGui import Qt, QPaintEvent, QPixmap, QPainter, QLinearGradient, QColor, QBrush
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox
-from PySide6.QtCore import QObject, Slot, Signal, QThread
+from PySide6.QtCore import QObject, Slot, Signal, QThread, QSize, QPoint, QRect
 
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from b_logic.bot_api.i_bot_api import BotApiException
@@ -12,6 +12,8 @@ from constructor_app.settings.login_settings import LoginSettings
 from constructor_app.settings.login_settings_manager import LoginSettingsManager
 
 from constructor_app.widgets.ui_login_widget import Ui_LoginWidget
+from network.bot_api_by_request_extended import BotApiByRequestsProxy
+
 
 class LoginWidget(QWidget):
     # сигнал, что пользователь авторизовался
@@ -23,7 +25,7 @@ class LoginWidget(QWidget):
         super().__init__(parent)
         self._ui = Ui_LoginWidget()
         self._ui.setupUi(self)
-        self.bot_api = BotApiByRequests()
+        self.bot_api = BotApiByRequestsProxy()
 
         settings_path = get_application_data_dir()
         self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
@@ -37,6 +39,7 @@ class LoginWidget(QWidget):
         # подключаю кнопку ентерПользователя с переходом на мейнОкно
         self._ui.enter_button.clicked.connect(self._clicked_login)
         # toDO: Добавить функцию инициализации QSS
+        self.installEventFilter(self)
 
     def _clicked_login(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
@@ -74,6 +77,21 @@ class LoginWidget(QWidget):
         #                                                   "background-color:#FF5F8F;}")
         #    self._ui.markerActivisionBot.setText(u"Бот не активен")
         self.registrated_state_signal.emit(False)
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        # toDo: If this will be used in the future, then put the colors in the parameters
+        qp = QPainter(self)
+        background = QLinearGradient()
+        background.setStart(QPoint(self.width()/2, 0))
+        background.setFinalStop(QPoint(self.width()/2, self.height()))
+        background.setColorAt(0, QColor(57, 178, 146))
+        background.setColorAt(0.5, QColor(68, 159, 167))
+        background.setColorAt(1, QColor(82, 136, 193))
+        qp.setBrush(QBrush(background))
+        qp.drawRect(QRect(0, 0, self.width(), self.height()))
+        #qp.drawPixmap(0, 0, QPixmap(":icons/widgets/times_icon/background_texture.png").scaled(self.size()))
+        qp.end()
+
 
     def _tr(self, text: str) -> str:
         return tran('LoginWidget.manual', text)
