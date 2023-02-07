@@ -64,6 +64,12 @@ class ClientWidget(QWidget):
     def _start_login_users(self) -> None:
         # выстравляю страницу инициализации
         self._ui.centrall_pannel_widget.setCurrentIndex(self._LOGIN_INDEX_PAGE)
+        # toDo: Тут можно было бы доработать centrall_pannel_widget таким образом, чтобы можно было написать
+        #  self._ui.centrall_pannel_widget.show_redactor_page(). А _BOT_REDACTOR_PAGE будет инкапсулирован в
+        #  класс centrall_pannel_widget. Если еще centrall_pannel_widget не является кастомным типом,
+        #  то про этот рефакторинг пока только в todo можем написать.
+
+
         # прячу сайдбар и топпанел
         self._ui.side_bar.hide()
         self._ui.top_pannel.hide()
@@ -123,11 +129,10 @@ class ClientWidget(QWidget):
         except None:
             QMessageBox.warning(self, self._tr('Error'), str(self._tr("Selection bot don't found!")))
 
-
     def _init_stylesheet_stackedwidget(self, state: int) -> None:
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор
         #  qss, доработать функцию изменения nightMode/darkMode и функцию состояния stackedwidget при выбранном окне
-        if (state == 0):
+        if state == 0:
             self._ui.centrall_pannel_widget.setStyleSheet(
                 "QStackedWidget{border: none;background: rgb(241,241,241);}")
         else:
