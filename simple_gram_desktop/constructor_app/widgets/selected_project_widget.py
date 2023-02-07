@@ -6,6 +6,7 @@ from PySide6.QtCore import QObject, Slot, Signal
 from common.localisation import tran
 
 from constructor_app.widgets.ui_selected_project_widget import Ui_SelectedProjectWidget
+from b_logic.bot_api.i_bot_api import BotDescription
 
 class SelectedProjectWidget(QWidget):
 
@@ -17,7 +18,7 @@ class SelectedProjectWidget(QWidget):
         super().__init__(parent)
         self._ui = Ui_SelectedProjectWidget()
         self._ui.setupUi(self)
-        self._ui.switch_activated_bot.clicked.connect(self._switchBot)
+        self._ui.switch_activated_bot.clicked.connect(self._switch_bot)
         self._ui.open_in_redactor_button.clicked.connect(self.__bot_editing)
         self._init_StyleSheet()
 
@@ -29,7 +30,7 @@ class SelectedProjectWidget(QWidget):
         self._ui.open_in_redactor_button.setStyleSheet("QPushButton{background-color:rgb(57,178,146);border:none;"
                                                        "color:white;border-radius:8px;}")
 
-    def _switchBot(self):
+    def _switch_bot(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
         #  инициализатор qss и продумать грамотный флаг состояния бота
         if(self._ui.switch_activated_bot.isChecked()):
@@ -44,6 +45,12 @@ class SelectedProjectWidget(QWidget):
                 "background-color:#FF5F8F;}")
             self._ui.marker_state_bot.setText(self._tr(u"Bot is disabled"))
             self.activated_bot_signal.emit(False)
+
+    def set_bot(self, bot: BotDescription, bot_state: bool) -> None:
+        # Set name bot in lineEdit
+        self._ui.name_bot_edit.setText(bot.bot_name)
+        self._ui.switch_activated_bot.setChecked(bot_state)
+        self._switch_bot()
 
     def __bot_editing(self) -> None:
         # коннект кнопки открытия бота в редакторе и сигналом старта редактирования в основном клиент/менеджерном

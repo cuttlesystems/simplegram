@@ -61,13 +61,10 @@ class BotEditorWidget(QWidget):
 
         self._connect_signals()
 
-
     def set_bot_api(self, bot_api: IBotApi):
         # toDo: добавить заполнение через IBotApi
         assert isinstance(bot_api, IBotApi)
         self._bot_api = bot_api
-
-
 
     def set_bot(self, bot: typing.Optional[BotDescription]):
         assert isinstance(bot, BotDescription) or bot is None

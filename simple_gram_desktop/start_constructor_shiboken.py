@@ -5,7 +5,7 @@ from utils.compile_resources import compile_all_resources
 
 if __name__ == "__main__":
     # сначала нужно скомпилировать все ресурсы
-    # compile_all_resources()
+    compile_all_resources()
 
     # и потом можно выполнить импорты, поскольку они могут появиться после компиляции
     import constructor_app.rc_bot_icons
