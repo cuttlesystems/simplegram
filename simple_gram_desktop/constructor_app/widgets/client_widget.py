@@ -34,8 +34,6 @@ class ClientWidget(QWidget):
     # инициализация окна с редактором бота
     _BOT_REDACTOR_PAGE = 4
 
-    selected_bot_id = Signal(int)
-
     def __init__(self, parent: Optional[QWidget] = None):
         # toDO: Добавить функцию инициализации QSS
         super().__init__(parent)
