@@ -6,14 +6,13 @@ from PySide6.QtCore import SIGNAL, SLOT, QSize
 from common.localisation import tran
 
 from constructor_app.widgets.ui_bot_item_sidebar import Ui_BotListItemWidget
-from b_logic.bot_api.i_bot_api import BotDescription
+from constructor_app.widgets.bot_extended import BotExtended
+
 
 class BotListItemWidget(QWidget):
     """
     Надстройка айтема сайдбара
     """
-    _bot: BotDescription
-    _bot_state: bool
     _FLAG_SIZE = QSize(30, 15)
 
     def __init__(self, parent: typing.Optional[QWidget] = None):
@@ -40,17 +39,15 @@ class BotListItemWidget(QWidget):
             self._ui.indicator_bot.setText(self._tr("off"))
         self._ui.indicator_bot.setFixedSize(self._FLAG_SIZE)
 
-    def init_bot_data(self, icon: QPixmap, bot: BotDescription, state: bool) -> None:
-        assert isinstance(bot, BotDescription)
-        self._bot = bot
-        self._bot_state = state
-        self._ui.pixmap_bot.setPixmap(icon)
+    def init_bot_data(self,  bot: BotExtended) -> None:
+        assert isinstance(bot, BotExtended)
+        self._ui.pixmap_bot.setPixmap(bot.bot_icon)
         self._ui.pixmap_bot.setScaledContents(True)
         self._ui.name_bot.setStyleSheet("color:rgba(255,255,255,100);")
         # toDo: Добавить автоматическое сокращение наименования "..."
-        self._ui.name_bot.setText(bot.bot_name)
+        self._ui.name_bot.setText(bot.bot_description.bot_name)
         self._ui.name_bot.setWordWrap(True)
-        self.change_bot_state(state)
+        self.change_bot_state(bot.bot_state)
 
     def _tr(self, text: str) -> str:
         return tran('ItemProjectsListWidget.manual', text)

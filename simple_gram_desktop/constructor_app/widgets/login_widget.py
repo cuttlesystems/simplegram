@@ -82,14 +82,14 @@ class LoginWidget(QWidget):
         # toDo: If this will be used in the future, then put the colors in the parameters
         qp = QPainter(self)
         background = QLinearGradient()
-        background.setStart(QPoint(0, 0))
-        background.setFinalStop(QPoint(self.width(), self.height()))
+        background.setStart(QPoint(self.width()/2, 0))
+        background.setFinalStop(QPoint(self.width()/2, self.height()))
         background.setColorAt(0, QColor(57, 178, 146))
         background.setColorAt(0.5, QColor(68, 159, 167))
         background.setColorAt(1, QColor(82, 136, 193))
         qp.setBrush(QBrush(background))
         qp.drawRect(QRect(0, 0, self.width(), self.height()))
-        qp.drawPixmap(0, 0, QPixmap(":icons/widgets/times_icon/background_texture.png").scaled(self.size()))
+        #qp.drawPixmap(0, 0, QPixmap(":icons/widgets/times_icon/background_texture.png").scaled(self.size()))
         qp.end()
 
 

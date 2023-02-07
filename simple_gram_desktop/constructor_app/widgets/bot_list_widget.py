@@ -1,20 +1,12 @@
 import typing
-from typing import List
-from dataclasses import dataclass
+from typing import List, Optional
 
 from PySide6.QtWidgets import QListWidget, QListWidgetItem
-from PySide6.QtGui import QPixmap
 from PySide6.QtCore import QSize
 
-from b_logic.bot_api.i_bot_api import BotDescription
+from constructor_app.widgets.bot_extended import BotExtended
 from constructor_app.widgets.bot_item_sidebar import BotListItemWidget
 
-@dataclass(slots=True)
-class BotExtended:
-    # toDo: Renaming BotExtended
-    bot_icon: QPixmap
-    bot_description: BotDescription
-    bot_state: bool
 
 class BotListWidget(QListWidget):
     """
@@ -53,7 +45,7 @@ class BotListWidget(QListWidget):
         widget = BotListItemWidget()
         # toDo: добавить resizeMode
         item.setSizeHint(self._ITEM_SIZE)
-        widget.init_bot_data(bot.bot_icon, bot.bot_description, bot.bot_state)
+        widget.init_bot_data(bot)
         self.insertItem(row, item)
         self.setItemWidget(item, widget)
 
@@ -73,7 +65,7 @@ class BotListWidget(QListWidget):
         # take bot in BotDescription and bot_state
         return self._bots_list
 
-    def get_current_bot(self) -> BotExtended:
+    def get_current_bot(self) -> Optional[BotExtended]:
         # take bot in BotDescription and bot_state
         row = self.currentRow()
         bot = self._bots_list[row]

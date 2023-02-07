@@ -13,7 +13,7 @@ from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
 from constructor_app.widgets.bot_editor.bot_editor_form import BotEditorForm
-from constructor_app.widgets.bot_list_widget import BotExtended
+from constructor_app.widgets.bot_extended import BotExtended
 from network.bot_api_by_request_extended import BotApiMessageException
 
 
@@ -123,7 +123,11 @@ class ClientWidget(QWidget):
             # настраиваю таблицу стилей подложки
             self._init_stylesheet_stackedwidget(0)
 
-            bot_id = self._ui.bot_list.get_current_bot().bot_description.id + 30303030
+            # Получаем текущего выбранного бота из списка и говорим что он не может быть None
+            bot = self._ui.bot_list.get_current_bot()
+            assert bot is not None
+
+            bot_id = self._ui.bot_list.get_current_bot().bot_description.id
             bot = self._bot_api.get_bot_by_id(bot_id)
             self._ui.bot_redactor_page.set_bot_api(self._bot_api)
             self._ui.bot_redactor_page.setup_tool_stack(self._ui.tool_stack)
