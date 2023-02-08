@@ -241,7 +241,7 @@ class BotGenerator:
         assert isinstance(keyboard_type, ButtonTypesEnum)
         variants = self._get_variants_of_message(message_id)
         if len(variants) == 0:
-            return None
+            return 'ReplyKeyboardRemove()'
         keyboard_name = self._get_keyboard_name_for_message(message_id)
 
         # imports and keyboard
@@ -383,7 +383,10 @@ class BotGenerator:
         assert isinstance(handler_type, ButtonTypesEnum)
         assert isinstance(additional_functions, str)
 
-        import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
+        if kb != 'ReplyKeyboardRemove()':
+            import_keyboard = 'from keyboards import {0}'.format(kb)
+        else:
+            import_keyboard = 'from aiogram.types import ReplyKeyboardRemove'
         extended_imports += '\n' + import_keyboard
         full_command = f'Command(\'{command}\')' if command != '' else command
 
@@ -437,7 +440,7 @@ class BotGenerator:
         keyboard_name = f'keyboard_for_message_id_{message_id}'
         variants = self._get_variants_of_message(message_id)
         if len(variants) == 0:
-            keyboard_name = None
+            keyboard_name = 'ReplyKeyboardRemove()'
         return keyboard_name
 
     def _get_message_object_by_id(self, message_id: int) -> Optional[BotMessage]:
