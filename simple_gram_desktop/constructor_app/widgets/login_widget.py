@@ -27,24 +27,26 @@ class LoginWidget(QWidget):
         self._ui.setupUi(self)
         self.bot_api = BotApiByRequestsProxy()
 
+        # заполнение полей данными при логине
         settings_path = get_application_data_dir()
         self._application_settings = LoginSettingsManager(settings_path, key=self._KEY)
-        settings = self._application_settings.read_settings()
-        state = Qt.CheckState.Checked if settings.save_password else Qt.CheckState.Unchecked
-        self._ui.save_my_password.setCheckState(state)
-        self._ui.username_edit.setText(settings.name)
-        self._ui.password_widget.setText(settings.password)
-        self._ui.server_addr_edit.setText(settings.address)
+        self._set_login_mode()
 
         # подключаю кнопку ентерПользователя с переходом на мейнОкно
-        self._ui.enter_button.clicked.connect(self._clicked_login)
+        self._ui.login_button.clicked.connect(self._clicked_login_button)
         # toDO: Добавить функцию инициализации QSS
         self.installEventFilter(self)
 
-    def _clicked_login(self):
+        # подключаю кнопку регистрации
+        self._ui.sign_up_user_button.clicked.connect(self._clicked_sign_up_button)
+
+        # подключаю переключатель логин/регистрация
+        self._ui.registrate_radiobutton.toggled.connect(self._toggled_registration)
+
+    def _clicked_login_button(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
         username_edit: QLineEdit = self._ui.username_edit
-        password_edit: QLineEdit = self._ui.password_widget
+        password_edit: QLineEdit = self._ui.password_edit
         try:
             self.bot_api.set_suite(server_addr_edit.text())
             self.bot_api.authentication(username_edit.text(), password_edit.text())
@@ -64,6 +66,35 @@ class LoginWidget(QWidget):
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
 
+    def _clicked_sign_up_button(self):
+        server_addr: QLineEdit = self._ui.server_addr_edit
+        username: QLineEdit = self._ui.username_edit
+        email: QLineEdit = self._ui.email_edit
+        password: QLineEdit = self._ui.password_edit
+        confirm_password: QLineEdit = self._ui.confirm_password_edit
+        required_fields = [server_addr, username, email, password, confirm_password]
+        for field in required_fields:
+            if not field.text():
+                QMessageBox.warning(self,
+                                    'Empty field error',
+                                    f'{field.placeholderText()}. This field should not be empty.')
+                return
+        if password.text() == confirm_password.text():
+            try:
+                self.bot_api.set_suite(server_addr.text())
+                self.bot_api.sign_up(
+                    username=username.text(),
+                    email=email.text(),
+                    password=password.text()
+                )
+                QMessageBox.information(self, 'Success', f'User {username.text()} created successfully')
+                # если пользователь успешно создан переключиться в режим логин
+                self._ui.login_radiobutton.setChecked(True)
+            except BotApiException as bot_api_exception:
+                QMessageBox.critical(self, 'Error', str(bot_api_exception))
+        else:
+            QMessageBox.warning(self, 'Password error', 'Passwords did not match')
+
     def _switch_login(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой
         #  первострочный инициализатор qss и доработать режим входа/регистрации
@@ -77,6 +108,42 @@ class LoginWidget(QWidget):
         #                                                   "background-color:#FF5F8F;}")
         #    self._ui.markerActivisionBot.setText(u"Бот не активен")
         self.registrated_state_signal.emit(False)
+
+    def _toggled_registration(self):
+        if self._ui.registrate_radiobutton.isChecked():
+            self._set_registration_mode()
+        elif self._ui.login_radiobutton.isChecked():
+            self._set_login_mode()
+
+    def _set_registration_mode(self):
+        # скрыть ненужные и показать нужные поля
+        self._ui.email_edit.show()
+        self._ui.confirm_password_edit.show()
+        self._ui.save_my_password.hide()
+        self._ui.login_button.hide()
+        self._ui.sign_up_user_button.show()
+
+        # отчистить поля от информации
+        self._ui.email_edit.clear()
+        self._ui.username_edit.clear()
+        self._ui.password_edit.clear()
+        self._ui.confirm_password_edit.clear()
+
+    def _set_login_mode(self):
+        # скрыть ненужные и показать нужные поля
+        self._ui.email_edit.hide()
+        self._ui.confirm_password_edit.hide()
+        self._ui.save_my_password.show()
+        self._ui.login_button.show()
+        self._ui.sign_up_user_button.hide()
+
+        # заполнить поля сохраненными данными
+        settings = self._application_settings.read_settings()
+        state = Qt.CheckState.Checked if settings.save_password else Qt.CheckState.Unchecked
+        self._ui.save_my_password.setCheckState(state)
+        self._ui.username_edit.setText(settings.name)
+        self._ui.password_edit.setText(settings.password)
+        self._ui.server_addr_edit.setText(settings.address)
 
     def paintEvent(self, event: QPaintEvent) -> None:
         # toDo: If this will be used in the future, then put the colors in the parameters
