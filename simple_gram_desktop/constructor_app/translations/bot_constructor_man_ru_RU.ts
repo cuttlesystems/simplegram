@@ -99,18 +99,6 @@
 <context>
     <name>BotApiByRequests.manual</name>
     <message>
-        <source>Parameter</source>
-        <translation>Параметр</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation>Значение</translation>
-    </message>
-</context>
-
-<context>
-    <name>BotApiByRequests.manual</name>
-    <message>
         <source>Sign up error: {0}</source>
         <translation>Ошибка регистрации: {0}</translation>
     </message>
