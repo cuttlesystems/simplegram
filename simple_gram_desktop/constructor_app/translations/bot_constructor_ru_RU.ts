@@ -143,12 +143,12 @@
     <message>
         <location filename="../widgets/bot_editor_widget.ui" line="32"/>
         <source>Bot stdout output</source>
-        <translation type="unfinished">Вывод бота stdout</translation>
+        <translation>Вывод бота stdout</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor_widget.ui" line="55"/>
         <source>Bot stderr output</source>
-        <translation type="unfinished">Вывод бота stderr</translation>
+        <translation>Вывод бота stderr</translation>
     </message>
 </context>
 <context>
