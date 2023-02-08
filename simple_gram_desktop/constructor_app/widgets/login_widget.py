@@ -72,14 +72,18 @@ class LoginWidget(QWidget):
         email: QLineEdit = self._ui.email_edit
         password: QLineEdit = self._ui.password_edit
         confirm_password: QLineEdit = self._ui.confirm_password_edit
-        required_fields = [server_addr, username, email, password, confirm_password]
+        required_fields: typing.List[QLineEdit] = [server_addr, email, username, password, confirm_password]
+        unfilled_field: typing.Optional[QLineEdit] = None
         for field in required_fields:
             if not field.text():
-                QMessageBox.warning(self,
-                                    'Empty field error',
-                                    f'{field.placeholderText()}. This field should not be empty.')
-                return
-        if password.text() == confirm_password.text():
+                unfilled_field = field
+                break
+        if unfilled_field is not None:
+            QMessageBox.warning(self,
+                                self._tr('Empty field error'),
+                                self._tr('{field}. This field should not be empty.').format(field=unfilled_field.placeholderText())
+                                )
+        elif password.text() == confirm_password.text():
             try:
                 self.bot_api.set_suite(server_addr.text())
                 self.bot_api.sign_up(
@@ -158,7 +162,6 @@ class LoginWidget(QWidget):
         qp.drawRect(QRect(0, 0, self.width(), self.height()))
         #qp.drawPixmap(0, 0, QPixmap(":icons/widgets/times_icon/background_texture.png").scaled(self.size()))
         qp.end()
-
 
     def _tr(self, text: str) -> str:
         return tran('LoginWidget.manual', text)
