@@ -78,7 +78,6 @@ class BotViewSet(viewsets.ModelViewSet):
 
     def _stop_bot_if_it_run(self, bot_id: int):
         assert isinstance(bot_id, int)
-        # runner = BotRunner(None)
         bot_process_manager = BotProcessesManagerSingle()
         # если оказалось, что этого бота уже запускали, то остановим его
         already_started_bot = bot_process_manager.get_process_info(bot_id)
@@ -156,18 +155,15 @@ class BotViewSet(viewsets.ModelViewSet):
         self.check_object_permissions(request, bot)
         bot_processes_manager = BotProcessesManagerSingle()
         bot_process = bot_processes_manager.get_process_info(bot_id_int)
-        print(bot_process)
-        is_error = bot_processes_manager.get_process_info(bot_id_int).is_error if bot_process is not None else None
-
         if bot_process is not None:
+            is_error = bot_processes_manager.get_process_info(bot_id_int).is_error
             if bot_process.bot_runner.stop():
                 bot_processes_manager.remove(bot_id_int)
                 result = JsonResponse(
                     {
                         'result': 'Bot stopped is ok',
                         'bot_id': bot_id_int,
-                        'process_id': bot_process.bot_runner.process_id,
-                        # 'is_error': is_error
+                        'process_id': bot_process.bot_runner.process_id
                     },
                     status=requests.codes.ok
                 )

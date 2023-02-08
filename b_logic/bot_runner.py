@@ -14,7 +14,7 @@ from utils.notification_sender import NotificationSender
 class BotRunner:
     _MAX_LOG_LEN_LINES = 300
 
-    def __init__(self, bot_directory: Optional[Path], notification_sender):
+    def __init__(self, bot_directory: Optional[Path], notification_sender: NotificationSender):
         assert isinstance(bot_directory, Path) or bot_directory is None
         self._bot_directory = bot_directory
 
