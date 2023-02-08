@@ -223,4 +223,37 @@
         <translation>Ошибка при получении логов бота: {0}</translation>
     </message>
 </context>
+
+<context>
+    <name>LoginWidget.manual</name>
+    <message>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
+        <source>Empty field error</source>
+        <translation>Поле не заполнено</translation>
+    </message>
+    <message>
+        <source>{field}. This field should not be empty.</source>
+        <translation>{field}. Это поле не может быть пустым.</translation>
+    </message>
+    <message>
+        <source>Success</source>
+        <translation>Успех</translation>
+    </message>
+    <message>
+        <source>User {username} created successfully.</source>
+        <translation>Пользователь {username} успешно создан.</translation>
+    </message>
+    <message>
+        <source>Password error</source>
+        <translation>Ошибка пароля</translation>
+    </message>
+    <message>
+        <source>Passwords did not match.</source>
+        <translation>Пароли не совпадают.</translation>
+    </message>
+</context>
+
 </TS>
