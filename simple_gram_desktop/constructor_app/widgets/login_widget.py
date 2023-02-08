@@ -91,13 +91,16 @@ class LoginWidget(QWidget):
                     email=email.text(),
                     password=password.text()
                 )
-                QMessageBox.information(self, 'Success', f'User {username.text()} created successfully')
+                QMessageBox.information(self,
+                                        self._tr('Success'),
+                                        self._tr('User {username} created successfully.').format(username=username.text())
+                                        )
                 # если пользователь успешно создан переключиться в режим логин
                 self._ui.login_radiobutton.setChecked(True)
             except BotApiException as bot_api_exception:
-                QMessageBox.critical(self, 'Error', str(bot_api_exception))
+                QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
         else:
-            QMessageBox.warning(self, 'Password error', 'Passwords did not match')
+            QMessageBox.warning(self, self._tr('Password error'), self._tr('Passwords did not match.'))
 
     def _switch_login(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой
