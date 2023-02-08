@@ -74,10 +74,7 @@ class BotRunner:
                     # вывод данных в текстовом формате
                     universal_newlines=True
                 )
-                _, error = bot_process.communicate()
-                if error:
-                    return None
-
+                
                 self._process_id = bot_process.pid
 
                 # создадим потоки для считывания данных из stdout и stderr
