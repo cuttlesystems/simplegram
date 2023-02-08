@@ -49,9 +49,9 @@ class ClientWidget(QWidget):
         self._ui.new_project_button.clicked.connect(self._start_new_project)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.bot_list.clicked.connect(self._start_selected_project)
-        self._ui.bot_list.clicked.connect(self._start_selected_project)
+        self._ui.bot_new_creator_page.close_window.connect(self._start_main_menu_slot)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
-        #self._ui.logo_block.clicked.connect(self._start_main_menu)
+        # self._ui.logo_block.clicked.connect(self._start_main_menu)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.bot_show_page.open_bot_in_redactor_signal.connect(self._start_bot_redactor)
 
@@ -84,7 +84,10 @@ class ClientWidget(QWidget):
         self.__load_bots_list()
         self._start_main_menu()
 
-    #инициализация основого окна приложения
+    def _start_main_menu_slot(self) -> None:
+        # инициализация основого окна приложения
+        self._start_main_menu()
+
     def _start_main_menu(self) -> None:
         #выстравляю страницу главного окна
         self._ui.centrall_pannel_widget.setCurrentIndex(self._MAIN_MENU_INDEX_PAGE)

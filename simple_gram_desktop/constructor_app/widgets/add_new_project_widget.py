@@ -25,6 +25,9 @@ class AddNewProjectWidget(QWidget):
 
         # toDO: Добавить функцию инициализации QSS
         self._ui.background_father_widget.installEventFilter(self)
+        self._ui.about_bot_edit.installEventFilter(self)
+        self._ui.token_bot_edit.installEventFilter(self)
+
         self.setMouseTracking(True)
 
     def _init_stylesheet(self, night) -> None:
@@ -44,11 +47,24 @@ class AddNewProjectWidget(QWidget):
     def eventFilter(self, obj: QObject, event: QtCore.QEvent) -> bool:
         if obj == self._ui.background_father_widget:
             if (event.type() == QtCore.QEvent.Type.HoverLeave):
-                self._ui.background_father_widget.setStyleSheet("QGroupBox{"
-                                                                "border: none;"
-                                                                "border-radius: 16px;"
-                                                                "background-color: rgba(255,255,255,180);"
-                                                                "}")
+                self._ui.background_father_widget.setStyleSheet(
+                    "QGroupBox{"
+                    "border: none;"
+                    "border-radius: 16px;"
+                    "background-color: rgba(255,255,255,180);}")
+                self._ui.token_bot_edit.setStyleSheet(
+                    "QLineEdit{"
+                    "border: 1px solid rgba(55,55,55,128);"
+                    "color: rgba(55,55,55,128); "
+                    "border-radius:8px; "
+                    "background-color: transparent;}")
+                self._ui.about_bot_edit.setStyleSheet(
+                    "QLineEdit{"
+                    "border: 1px solid rgba(55,55,55,128);"
+                    "color: rgba(55,55,55,128); "
+                    "border-radius:8px; "
+                    "background-color: transparent;}")
+
                 self.setFocus()
             if (event.type() == QtCore.QEvent.Type.HoverEnter):
                 self._ui.background_father_widget.setStyleSheet("QGroupBox{"
@@ -56,19 +72,87 @@ class AddNewProjectWidget(QWidget):
                                                                 "border-radius: 16px;"
                                                                 "background-color: rgb(255,255,255);"
                                                                 "}")
+                self._ui.token_bot_edit.setStyleSheet(
+                    "QLineEdit{"
+                    "border: 1px solid #CCCCCC;"
+                    "color: #CCCCCC; "
+                    "border-radius:8px; "
+                    "background-color: transparent;}")
+                self._ui.about_bot_edit.setStyleSheet(
+                    "QLineEdit{"
+                    "border: 1px solid #CCCCCC;"
+                    "color: #CCCCCC; "
+                    "border-radius:8px; "
+                    "background-color: transparent;}")
+            return False
+        elif obj == self._ui.token_bot_edit:
+            if (event.type() == QtCore.QEvent.Type.HoverEnter):
+                self._ui.token_bot_edit.setStyleSheet(
+                    "QLineEdit{"
+                    "border: 1px solid rgba(82,136,193, 102);"
+                    "color: rgb(82,136,193); "
+                    "border-radius:8px; "
+                    "background-color: transparent;}")
+            if (event.type() == QtCore.QEvent.Type.HoverLeave):
+                self._ui.token_bot_edit.setStyleSheet(
+                    "QLineEdit{"
+                    "border: 1px solid #CCCCCC;"
+                    "color: #CCCCCC; "
+                    "border-radius:8px; "
+                    "background-color: transparent;}")
+            return False
+        elif obj == self._ui.about_bot_edit:
+            if (event.type() == QtCore.QEvent.Type.HoverEnter):
+                self._ui.about_bot_edit.setStyleSheet(
+                    "QLineEdit{"
+                    "border: 1px solid rgba(82,136,193, 102);"
+                    "color: rgb(82,136,193); "
+                    "border-radius:8px; "
+                    "background-color: transparent;}")
+            if (event.type() == QtCore.QEvent.Type.HoverLeave):
+                self._ui.about_bot_edit.setStyleSheet(
+                    "QLineEdit{"
+                    "border: 1px solid #CCCCCC;"
+                    "color:#CCCCCC; "
+                    "border-radius:8px; "
+                    "background-color: transparent;}")
             return False
         return QWidget.eventFilter(self, obj, event)
+
+    def _token_check(self) -> str:
+        token_bot_str = ''
+        if self._ui.token_bot_edit != "Token bot's":
+            token_bot_str = self._ui.token_bot_edit.text()
+        return token_bot_str
+
+    def _about_check(self) -> str:
+        about_bot_str = ''
+        if self._ui.about_bot_edit != "About bot's":
+            about_bot_str = self._ui.token_bot_edit.text()
+        return about_bot_str
 
     def _add_new_bot(self):
         try:
             bot = self._bot_api.create_bot(
                 bot_name=self._ui.name_bot.text(),
-                bot_token=self._ui.token_bot_edit.text(),
-                bot_description=self._ui.about_bot_edit.text()
+                bot_token=self._about_check(),
+                bot_description=self._token_check()
             )
             QMessageBox.information(self, 'created', 'created')
         except Exception as error:
             QMessageBox.warning(self, self._tr('Error'), self._tr('Bot creation error: {0}').format(error))
+
+    def sending_new_bot_in_sidebar(self):
+        #try:
+        #    bot = self._bot_api.create_bot(
+        #        bot_name=self._ui.name_bot.text(),
+        #        bot_token=self._about_check(),
+        #        bot_description=self._token_check()
+        #    )
+        #    QMessageBox.information(self, 'created', 'created')
+        #except Exception as error:
+        #    QMessageBox.warning(self, self._tr('Error'), self._tr('Bot creation error: {0}').format(error))
+        pass
 
 
     def _tr(self, text: str) -> str:

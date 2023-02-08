@@ -88,14 +88,14 @@ background-color: rgba(255,255,255,220);
              <widget class="QPushButton" name="icon_bot_button">
               <property name="minimumSize">
                <size>
-                <width>54</width>
-                <height>54</height>
+                <width>77</width>
+                <height>77</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>54</width>
-                <height>54</height>
+                <width>77</width>
+                <height>77</height>
                </size>
               </property>
               <property name="text">
@@ -107,8 +107,8 @@ background-color: rgba(255,255,255,220);
               </property>
               <property name="iconSize">
                <size>
-                <width>47</width>
-                <height>47</height>
+                <width>77</width>
+                <height>77</height>
                </size>
               </property>
              </widget>
@@ -117,17 +117,35 @@ background-color: rgba(255,255,255,220);
              <layout class="QVBoxLayout" name="verticalLayout">
               <item>
                <widget class="QLineEdit" name="name_bot">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>150</width>
                   <height>30</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">QLineEdit{
-border: none;
-color: black;
-background-color: transparent;
+border:none;
+color: #373737;
+border-radius:8px;
+background-color: white;
+}
+QLineEdit::hover{
+border:none;
+color: #black;
+border-radius:8px;
+background-color: 373737;
 }</string>
                 </property>
                 <property name="text">
@@ -167,10 +185,15 @@ background-color: transparent;
               <height>50</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true">QLineEdit{
-border:1px solid #CCCCCC;
-color: #CCCCCC;
+border:1px solid #373737;
+color: #373737;
 border-radius:8px;
 background-color: transparent;
 }</string>
@@ -188,10 +211,15 @@ background-color: transparent;
               <height>50</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true">QLineEdit{
-border:1px solid #CCCCCC;
-color: #CCCCCC;
+border:1px solid#373737;
+color: #373737;
 border-radius:8px;
 background-color: transparent;
 }</string>
