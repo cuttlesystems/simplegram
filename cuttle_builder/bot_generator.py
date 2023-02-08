@@ -383,7 +383,11 @@ class BotGenerator:
         assert isinstance(handler_type, ButtonTypesEnum)
         assert isinstance(additional_functions, str)
 
-        import_keyboard = 'from keyboards import {0}'.format(kb) if kb else ''
+        if kb is not None:
+            import_keyboard = 'from keyboards import {0}'.format(kb)
+        else:
+            kb = 'ReplyKeyboardRemove()'
+            import_keyboard = 'from aiogram.types import ReplyKeyboardRemove'
         extended_imports += '\n' + import_keyboard
         full_command = f'Command(\'{command}\')' if command != '' else command
 
