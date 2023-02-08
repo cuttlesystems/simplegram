@@ -60,10 +60,11 @@
          </property>
          <property name="styleSheet">
           <string notr="true">QGroupBox{
-	border:none;
-	background: #FFFFFF;
-	border-radius: 16px;
-}</string>
+border-radius: 16px;
+border:none;
+background-color: rgba(255,255,255,220);
+}
+</string>
          </property>
          <property name="title">
           <string/>
@@ -126,6 +127,7 @@
                  <string notr="true">QLineEdit{
 border: none;
 color: black;
+background-color: transparent;
 }</string>
                 </property>
                 <property name="text">
@@ -170,6 +172,7 @@ color: black;
 border:1px solid #CCCCCC;
 color: #CCCCCC;
 border-radius:8px;
+background-color: transparent;
 }</string>
             </property>
             <property name="text">
@@ -190,6 +193,7 @@ border-radius:8px;
 border:1px solid #CCCCCC;
 color: #CCCCCC;
 border-radius:8px;
+background-color: transparent;
 }</string>
             </property>
             <property name="text">
@@ -300,9 +304,13 @@ color:white;
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-	background: transparent;
 	border: none;
-}</string>
+}
+
+QPushButton:hover{
+	border:1px solid grey;
+}
+</string>
          </property>
          <property name="text">
           <string/>

@@ -2,17 +2,14 @@ from typing import Optional
 
 import requests
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
+from PySide6.QtWidgets import QWidget, QMessageBox
 from PySide6 import QtGui
 from PySide6.QtCore import Signal, SLOT
 
-
-from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from b_logic.bot_api.i_bot_api import BotApiException, IBotApi, GetBotListException
 from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
-from constructor_app.widgets.bot_editor.bot_editor_form import BotEditorForm
 from constructor_app.widgets.bot_extended import BotExtended
 from network.bot_api_by_request_extended import BotApiMessageException
 
@@ -61,7 +58,12 @@ class ClientWidget(QWidget):
         # первое открытие приложения, инициализация авторизации
         self._start_login_users()
 
-        #self.user
+
+        self._ui.user_widget.addItem(QtGui.QPixmap(":/icons/widgets/times_icon/user_icon.png"), self._tr("Profile"))
+        self._ui.user_widget.addItem(QtGui.QPixmap(":/icons/widgets/times_icon/exit_account_icon.png"),
+                                     self._tr("Exit"))
+
+
 
     # инициализация окна авторизации
     def _start_login_users(self) -> None:
@@ -70,8 +72,7 @@ class ClientWidget(QWidget):
         # toDo: Тут можно было бы доработать centrall_pannel_widget таким образом, чтобы можно было написать
         #  self._ui.centrall_pannel_widget.show_redactor_page(). А _BOT_REDACTOR_PAGE будет инкапсулирован в
         #  класс centrall_pannel_widget. Если еще centrall_pannel_widget не является кастомным типом,
-        #  то про этот рефакторинг пока только в todo можем написать.
-
+        #  то про этот рефакторинг пока только в комментарии.
 
         # прячу сайдбар и топпанел
         self._ui.side_bar.hide()
@@ -100,7 +101,9 @@ class ClientWidget(QWidget):
         bot_extended: BotExtended = self._ui.bot_list.get_current_bot()
         assert bot_extended is not None
         bot = bot_extended.bot_description
+        self._ui.bot_show_page.set_bot_api(self._bot_api)
         bot_state = bot_extended.bot_state
+
         # toDo: Refactoring set_bot(botExtended)
         self._ui.bot_show_page.set_bot(bot, bot_state)
         self._ui.tool_stack.hide()
