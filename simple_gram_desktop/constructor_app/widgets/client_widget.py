@@ -114,6 +114,7 @@ class ClientWidget(QWidget):
         # инициализация окна с добавлением нового бота
         # выстравляю страницу добавления новго бота
         self._ui.centrall_pannel_widget.setCurrentIndex(self._NEW_BOT_INDEX_PAGE)
+        self._ui.bot_new_creator_page.set_bot_api(self._bot_api)
         self._ui.tool_stack.hide()
         # настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(1)

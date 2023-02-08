@@ -184,7 +184,9 @@ class LoginForm(QWidget):
         self.__load_bots_list()
         try:
             bot = self._bot_api.create_bot(
-                self.__get_unique_bot_name('Новый Cuttle Systems бот'), '', '')
+                bot_name=self.__get_unique_bot_name('Новый Cuttle Systems бот'),
+                bot_token='',
+                bot_description='')
         except BotApiException as error:
             QMessageBox.warning(self, self._tr('Error'), self._tr('Bot creation error: {0}').format(error))
         # теперь обновим список ботов, чтобы увидеть нового созданного бота в списке
