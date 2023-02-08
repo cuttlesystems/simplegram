@@ -190,7 +190,7 @@
     <message>
         <location filename="../widgets/client_widget.ui" line="457"/>
         <source>User</source>
-        <translation type="unfinished"></translation>
+        <translation>Қолданушыны</translation>
     </message>
 </context>
 <context>
@@ -271,7 +271,7 @@
     <message>
         <location filename="../widgets/login_widget.ui" line="91"/>
         <source>Create a free account</source>
-        <translation type="unfinished"></translation>
+        <translation>Тіркелу формасы</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="125"/>
@@ -286,42 +286,42 @@
     <message>
         <location filename="../widgets/login_widget.ui" line="207"/>
         <source>Enter your server address</source>
-        <translation type="unfinished"></translation>
+        <translation>Серверге қосылу сілтемесі</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="232"/>
         <source>Enter your email address</source>
-        <translation type="unfinished"></translation>
+        <translation>Өзіңіздің email-ыңызды енгізіңіз</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="263"/>
         <source>Enter your username</source>
-        <translation type="unfinished"></translation>
+        <translation>Пайдаланушы атын енгізіңіз</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="291"/>
         <source>Enter your password</source>
-        <translation type="unfinished"></translation>
+        <translation>Құпия сөзді енгізіңіз</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="319"/>
         <source>Confirm your password</source>
-        <translation type="unfinished"></translation>
+        <translation>Құпия сөзді растау</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="326"/>
         <source>Save my password</source>
-        <translation type="unfinished">Құпия сөзді сақтау</translation>
+        <translation>Құпия сөзді сақтау</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="371"/>
         <source>Sign up -&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Тіркелу</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="403"/>
         <source>Log in -&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Қосылу</translation>
     </message>
 </context>
 <context>
@@ -402,7 +402,7 @@
     <message>
         <location filename="../widgets/selected_project_widget.ui" line="135"/>
         <source>New BOT</source>
-        <translation type="unfinished"></translation>
+        <translation>Ботты жасау</translation>
     </message>
     <message>
         <location filename="../widgets/selected_project_widget.ui" line="207"/>
@@ -412,7 +412,7 @@
     <message>
         <location filename="../widgets/selected_project_widget.ui" line="331"/>
         <source>Open in redactor -&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ботты ашу</translation>
     </message>
 </context>
 <context>
