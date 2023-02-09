@@ -52,7 +52,6 @@ class ClientWidget(QWidget):
         self._ui.new_project_button.clicked.connect(self._start_new_project)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.bot_list.clicked.connect(self._start_selected_project)
-        self._ui.bot_list.clicked.connect(self._start_selected_project)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         #self._ui.logo_block.clicked.connect(self._start_main_menu)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота

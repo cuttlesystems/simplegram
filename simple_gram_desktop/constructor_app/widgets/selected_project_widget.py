@@ -10,6 +10,8 @@ from common.localisation import tran
 from constructor_app.widgets.ui_selected_project_widget import Ui_SelectedProjectWidget
 from b_logic.bot_api.i_bot_api import BotDescription, IBotApi
 
+DEFAULT_BOT_AVATAR_ICON_PATH: str = ":icons/widgets/times_icon/newProject.png"
+
 
 class SelectedProjectWidget(QWidget):
 
@@ -57,6 +59,8 @@ class SelectedProjectWidget(QWidget):
         assert isinstance(bot_state, bool)
         self._bot = bot
 
+        # Установка дефолтной аватарки бота или фотки из БД, если есть.
+        self._ui.icon_bot_button.setIcon(QtGui.QPixmap(DEFAULT_BOT_AVATAR_ICON_PATH))
         if bot.bot_profile_photo is not None:
             self._show_image(self._bot_api.get_image_data_by_url(bot.bot_profile_photo))
 
