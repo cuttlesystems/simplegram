@@ -20,6 +20,7 @@
         <translation>Бот жасаудан қате: {0}</translation>
     </message>
 </context>
+
 <context>
     <name>BotEditorForm.manual</name>
     <message>
@@ -47,11 +48,10 @@
         <translation>Қате хабары ретінде орнату үшін тек бір хабарды таңдаңыз</translation>
     </message>
     <message>
-        <source>Select only one message to set is as start message</source>
+        <source>Select only one message to set as start message</source>
         <translation>Бастапқы хабар ретінде орнату үшін тек бір хабарды таңдаңыз</translation>
     </message>
 </context>
-
 
 <context>
     <name>BotPropertiesModel.manual</name>
@@ -88,18 +88,6 @@
 <context>
     <name>BotApiByRequests.manual</name>
     <message>
-        <source>Parameter</source>
-        <translation>Параметр</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation>Мәні</translation>
-    </message>
-</context>
-
-<context>
-    <name>BotApiByRequests.manual</name>
-    <message>
         <source>Sign up error: {0}</source>
         <translation>Тіркелуден қате: {0}</translation>
     </message>
@@ -118,10 +106,6 @@
     <message>
         <source>Creating bot error: {0}</source>
         <translation>Ботты жасаудан қате: {0}</translation>
-    </message>
-    <message>
-        <source>Getting bot list error: {0}</source>
-        <translation>Боттар тізімін алудан қате: {0}</translation>
     </message>
     <message>
         <source>Changing bot error: {0}</source>
@@ -165,11 +149,11 @@
     </message>
     <message>
         <source>Getting variants list for message error: {0}</source>
-        <translation>Хабардың ұсқалар тізімін алудан қате: {0}</translation>
+        <translation>Хабардың нұсқалар тізімін алудан қате: {0}</translation>
     </message>
     <message>
         <source>Creating variant error: {0}</source>
-        <translation>Ошибка при создании варианта: {0}</translation>
+        <translation>Нұсқаны жасаудан қате: {0}</translation>
     </message>
     <message>
         <source>Editing variant error: {0}</source>
