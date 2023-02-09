@@ -5,6 +5,8 @@ import time
 import PyInstaller.config
 import os
 import sys
+import json
+from application_type_enum import ApplicationTypeEnum
 
 # обходное решение для добавления текущей директории в 'PYTHONPATH'
 #  небходимо для того, чтобы проходил import, выполняемый строкой ниже
@@ -32,6 +34,45 @@ def application_project_dir() -> Path:
     return spec_file_dir() / Path('..') / '..' / 'simple_gram_desktop'
 
 
+def read_specfileconf() -> ApplicationTypeEnum:
+    """
+    read content of 'specfileconf.json' file
+    """
+    with open('specfileconf.json', 'rt', encoding='utf-8') as conffile:
+        specfileconf_content = json.load(conffile)
+        application_type = ApplicationTypeEnum(specfileconf_content['application_type'])
+        print(f'\nconffile: {conffile}')
+        print(f'specfileconf_content: {specfileconf_content}')
+        print(f'application_type: {application_type}')
+        return application_type
+
+
+def filename_to_build() -> str:
+    """
+    define the filename of application used to build an executable
+    """
+    application_type = read_specfileconf()
+    if application_type == ApplicationTypeEnum.CLASSIC:
+        filename = 'start_constructor.py'
+    elif application_type == ApplicationTypeEnum.SHIBOKEN:
+        filename = 'start_constructor_shiboken.py'
+    print(f'\nFilename of application to build an executable: {filename}\n')
+    return filename
+
+
+def suffix_for_app_and_folder_name() -> str:
+    """
+    define suffix for 'simple_gram' application executable name and it's folder name
+    """
+    application_type = read_specfileconf()
+    if application_type == ApplicationTypeEnum.CLASSIC:
+        suffix = '_chamomile'
+    elif application_type == ApplicationTypeEnum.SHIBOKEN:
+        suffix = '_shiboken'
+    print(f'\nSuffix for \'simple_gram\' application executable name and it\'s folder name: {suffix}\n')
+    return suffix
+
+
 # working and destination directories for executable file creation
 build_dir = get_building_dir() / 'build'
 dist_dir = get_building_dir() / 'dist'
@@ -47,7 +88,7 @@ PyInstaller.config.CONF['distpath'] = str(dist_dir)
 
 
 a = Analysis(
-    [application_project_dir() / 'start_constructor.py'],
+    [application_project_dir() / filename_to_build()],
     pathex=[
         application_project_dir(),
     ],
@@ -72,7 +113,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='simple_gram_'+time.strftime("%Y_%m_%d__%H_%M_%S"),
+    name=f'simple_gram{suffix_for_app_and_folder_name()}_'+time.strftime("%Y_%m_%d__%H_%M_%S"),
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -94,4 +135,4 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='simple_gram')
+               name=f'simple_gram{suffix_for_app_and_folder_name()}')
