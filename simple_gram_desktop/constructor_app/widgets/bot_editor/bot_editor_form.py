@@ -287,7 +287,7 @@ class BotEditorForm(QMainWindow):
             QMessageBox.warning(
                 self,
                 self._tr('Error'),
-                self._tr('Select only one message to set is as start message'))
+                self._tr('Select only one message to set as start message'))
 
     def _on_mark_as_error_button(self, _checked: bool) -> None:
         selected_messages = self._bot_scene.get_selected_messages()
