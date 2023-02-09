@@ -39,7 +39,8 @@ class BotProcessesManagerSingle(metaclass=SingletonBase):
 
     def remove(self, bot_id: int) -> None:
         assert bot_id in self._processes
-        self._processes.pop(bot_id, None)
+        if bot_id in self._processes:
+            del self._processes[bot_id]
 
     def find_bot_id_by_process_id(self, process_id: int):
         for bot_id, process_info in self._processes.items():
@@ -50,4 +51,3 @@ class BotProcessesManagerSingle(metaclass=SingletonBase):
         current_procerss_info = self._processes[bot_id]
         current_procerss_info.is_error = True
         self._processes[bot_id] = current_procerss_info
-        print(self._processes)

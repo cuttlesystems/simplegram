@@ -114,8 +114,7 @@ class BotViewSet(viewsets.ModelViewSet):
         if process_id is not None:
             bot_process_manager = BotProcessesManagerSingle()
             bot_process_manager.register(bot_id, runner)
-            notification_sender_to_manager.bot_process_manager = bot_process_manager
-
+            notification_sender_to_manager.set_process_manager(bot_process_manager)
             result = JsonResponse(
                 {
                     'result': 'Start bot ok',
@@ -157,7 +156,15 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_process = bot_processes_manager.get_process_info(bot_id_int)
         if bot_process is not None:
             is_error = bot_processes_manager.get_process_info(bot_id_int).is_error
-            if bot_process.bot_runner.stop():
+            if is_error:
+                result = JsonResponse(
+                    {
+                        'result': 'There are errors when bot is running, next time fix error before start'
+                    },
+                    status=requests.codes.conflict
+                )
+                bot_processes_manager.remove(bot_id_int)
+            elif bot_process.bot_runner.stop():
                 bot_processes_manager.remove(bot_id_int)
                 result = JsonResponse(
                     {
@@ -166,13 +173,6 @@ class BotViewSet(viewsets.ModelViewSet):
                         'process_id': bot_process.bot_runner.process_id
                     },
                     status=requests.codes.ok
-                )
-            elif is_error:
-                result = JsonResponse(
-                    {
-                        'result': 'There are errors when bot is running, check the logs, fix errors and restart the bot'
-                    },
-                    status=requests.codes.conflict
                 )
 
             else:
@@ -185,9 +185,9 @@ class BotViewSet(viewsets.ModelViewSet):
         else:
             result = JsonResponse(
                 {
-                    'result': 'Can not stop bot because bot is not started'
+                    'result': 'Bot stopped is ok'
                 },
-                status=requests.codes.conflict
+                status=requests.codes.ok
             )
         return result
 
@@ -272,7 +272,7 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_processes_manager = BotProcessesManagerSingle()
         bot_info = bot_processes_manager.get_process_info(bot_id)
         if bot_info is not None:
-            is_error = bot_processes_manager.get_process_info(bot_id).is_error
+            is_error = bot_info.is_error
             result_dict['is_started'] = True
             result_dict['process_id'] = bot_info.bot_runner.process_id
             result_dict['bot_id'] = bot_info.bot_id
