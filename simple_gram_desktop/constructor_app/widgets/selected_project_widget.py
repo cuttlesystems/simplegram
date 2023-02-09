@@ -1,12 +1,15 @@
 import typing
 
+from PySide6 import QtGui
 from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import QObject, Slot, Signal
 
+from b_logic.utils.image_to_bytes import get_binary_data_from_image_file
 from common.localisation import tran
 
 from constructor_app.widgets.ui_selected_project_widget import Ui_SelectedProjectWidget
-from b_logic.bot_api.i_bot_api import BotDescription
+from b_logic.bot_api.i_bot_api import BotDescription, IBotApi
+
 
 class SelectedProjectWidget(QWidget):
 
@@ -21,6 +24,8 @@ class SelectedProjectWidget(QWidget):
         self._ui.switch_activated_bot.clicked.connect(self._switch_bot)
         self._ui.open_in_redactor_button.clicked.connect(self.__bot_editing)
         self._init_StyleSheet()
+        self._bot_api: typing.Optional[IBotApi] = None
+        self._bot: typing.Optional[BotDescription] = None
 
     def _init_StyleSheet(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
@@ -48,14 +53,31 @@ class SelectedProjectWidget(QWidget):
 
     def set_bot(self, bot: BotDescription, bot_state: bool) -> None:
         # Set name bot in lineEdit
+        assert isinstance(bot, BotDescription)
+        assert isinstance(bot_state, bool)
+        self._bot = bot
+
+        if bot.bot_profile_photo is not None:
+            self._show_image(self._bot_api.get_image_data_by_url(bot.bot_profile_photo))
+
         self._ui.name_bot_edit.setText(bot.bot_name)
         self._ui.switch_activated_bot.setChecked(bot_state)
         self._switch_bot()
+
+    def set_bot_api(self, bot_api: IBotApi):
+        self._bot_api = bot_api
 
     def __bot_editing(self) -> None:
         # коннект кнопки открытия бота в редакторе и сигналом старта редактирования в основном клиент/менеджерном
         # приложении
         self.open_bot_in_redactor_signal.emit()
+
+    def _show_image(self, image_data: typing.Optional[bytes]) -> None:
+        assert isinstance(image_data, typing.Optional[bytes])
+        if image_data is not None:
+            image = QtGui.QImage()
+            image.loadFromData(image_data)
+            self._ui.icon_bot_button.setIcon(QtGui.QPixmap(image))
 
     def _tr(self, text: str) -> str:
         return tran('SelectedProjectWidget.manual', text)

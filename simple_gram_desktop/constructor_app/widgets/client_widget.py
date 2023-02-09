@@ -96,6 +96,7 @@ class ClientWidget(QWidget):
     # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) -> None:
         # Set page with info about selected in sidebar bot
+        self._ui.bot_show_page.set_bot_api(self._bot_api)
         self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
         bot_extended: BotExtended = self._ui.bot_list.get_current_bot()
         assert bot_extended is not None
