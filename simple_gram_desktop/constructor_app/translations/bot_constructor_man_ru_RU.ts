@@ -31,7 +31,7 @@
         <translation>Ошибка изменения варианта: {0}</translation>
     </message>
     <message>
-        <source>Select only one message to set is as start message</source>
+        <source>Select only one message to set is start message</source>
         <translation>Выберите только одно сообщнеие для того, чтобы установить его как стартовое</translation>
     </message>
     <message>
@@ -49,10 +49,6 @@
     <message>
         <source>Please select only one block for add variant</source>
         <translation>Пожалуйста, выберите только один блок для варианта</translation>
-    </message>
-    <message>
-        <source>Variant changing error: {0}</source>
-        <translation>Ошибка изменения вараинта: {0}</translation>
     </message>
     <message>
         <source>Select only one message to set as error message</source>
@@ -117,10 +113,6 @@
     <message>
         <source>Creating bot error: {0}</source>
         <translation>Ошибка при создании бота: {0}</translation>
-    </message>
-    <message>
-        <source>Getting bot list error: {0}</source>
-        <translation>Ошибка при получении списка бота: {0}</translation>
     </message>
     <message>
         <source>Changing bot error: {0}</source>

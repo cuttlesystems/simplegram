@@ -47,7 +47,7 @@
         <translation>Қате хабары ретінде орнату үшін тек бір хабарды таңдаңыз</translation>
     </message>
     <message>
-        <source>Select only one message to set is as start message</source>
+        <source>Select only one message to set is start message</source>
         <translation>Бастапқы хабар ретінде орнату үшін тек бір хабарды таңдаңыз</translation>
     </message>
 </context>
@@ -106,10 +106,6 @@
     <message>
         <source>Creating bot error: {0}</source>
         <translation>Ботты жасаудан қате: {0}</translation>
-    </message>
-    <message>
-        <source>Getting bot list error: {0}</source>
-        <translation>Боттар тізімін алудан қате: {0}</translation>
     </message>
     <message>
         <source>Changing bot error: {0}</source>
