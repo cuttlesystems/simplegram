@@ -2,6 +2,7 @@ from typing import Optional
 
 import requests
 from PySide6 import QtCore, QtWidgets
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
 from PySide6 import QtGui
 from PySide6.QtCore import Signal, SLOT
@@ -10,6 +11,8 @@ from PySide6.QtCore import Signal, SLOT
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from b_logic.bot_api.i_bot_api import BotApiException, IBotApi, GetBotListException
 from common.localisation import tran
+from constructor_app.utils.get_image_from_bytes import get_pixmap_image_from_bytes
+from constructor_app.widgets.selected_project_widget import DEFAULT_BOT_AVATAR_ICON_PATH
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
 from constructor_app.widgets.bot_editor.bot_editor_form import BotEditorForm
@@ -166,9 +169,12 @@ class ClientWidget(QWidget):
                 else:
                     bot_state = False
                 # toDo: Add icons initialization
+                bot_icon = QPixmap(DEFAULT_BOT_AVATAR_ICON_PATH)
+                if bot.bot_profile_photo is not None:
+                    bot_icon = get_pixmap_image_from_bytes(self._bot_api.get_image_data_by_url(bot.bot_profile_photo))
                 self._ui.bot_list.add_bot(
                     BotExtended(
-                        bot_icon=QtGui.QPixmap(":/icons/widgets/times_icon/newProject.png"),
+                        bot_icon=bot_icon,
                         bot_description=bot,
                         bot_state=bot_state))
         except BotApiException as error:
