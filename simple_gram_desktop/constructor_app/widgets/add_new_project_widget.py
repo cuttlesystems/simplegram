@@ -62,9 +62,16 @@ class AddNewProjectWidget(QWidget):
         self._ui.background_father_widget.installEventFilter(self)
         self._ui.about_bot_edit.installEventFilter(self)
         self._ui.token_bot_edit.installEventFilter(self)
+        self._ui.name_bot_edit.installEventFilter(self)
         self.installEventFilter(self)
 
         self.setMouseTracking(True)
+
+    def set_all_bot(self, bot_list: List[BotExtended]):
+        self._bot_list = bot_list
+
+    def set_bot_api(self, bot_api: IBotApi):
+        self._bot_api = bot_api
 
     def init_placeholder_text_line(self):
         self._ui.token_bot_edit.setPlaceholderText(DefaultText.token.value)
@@ -85,12 +92,6 @@ class AddNewProjectWidget(QWidget):
         self._ui.name_bot_edit.setStyleSheet(
             self._get_line_style(StatedStylesheet.miss)
         )
-
-    def set_all_bot(self, bot_list: List[BotExtended]):
-        self._bot_list = bot_list
-
-    def set_bot_api(self, bot_api: IBotApi):
-        self._bot_api = bot_api
 
     def _get_group_style(self, state: StatedStylesheet) -> str:
         assert isinstance(state, StatedStylesheet)
@@ -208,7 +209,7 @@ class AddNewProjectWidget(QWidget):
     def _add_new_bot(self):
         try:
             name_bot = self._line_check(self._ui.name_bot_edit)
-            bot = self._bot_api.create_bot(
+            self._bot_api.create_bot(
                 bot_name=self.__get_unique_bot_name(name_bot),
                 bot_token=self._line_check(self._ui.token_bot_edit),
                 bot_description=self._line_check(self._ui.about_bot_edit)
