@@ -174,5 +174,5 @@ class BotRunner:
                 if line != '':
                     self._add_stderr_line(line)
                     print('bot err: ', line.rstrip())
-        self._notification_sender.send_error_or_terminated_notification(self._process_id)
+        self._notification_sender.send_terminated_notification(self._process_id)
         print('reader stderr end')

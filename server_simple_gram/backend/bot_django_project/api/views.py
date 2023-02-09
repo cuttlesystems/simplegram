@@ -155,15 +155,16 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_processes_manager = BotProcessesManagerSingle()
         bot_process = bot_processes_manager.get_process_info(bot_id_int)
         if bot_process is not None:
-            is_error = bot_processes_manager.get_process_info(bot_id_int).is_error
+            is_error = bot_process.is_terminated
             if is_error:
+                bot_processes_manager.remove(bot_id_int)
                 result = JsonResponse(
                     {
-                        'result': 'There are errors when bot is running, next time fix error before start'
+                        'result': 'There are errors when bot is running, next time fix error before start',
+                        'bot_id': bot_id_int
                     },
                     status=requests.codes.conflict
                 )
-                bot_processes_manager.remove(bot_id_int)
             elif bot_process.bot_runner.stop():
                 bot_processes_manager.remove(bot_id_int)
                 result = JsonResponse(
@@ -174,18 +175,19 @@ class BotViewSet(viewsets.ModelViewSet):
                     },
                     status=requests.codes.ok
                 )
-
             else:
                 result = JsonResponse(
                     {
-                        'result': 'Bot stop error'
+                        'result': 'Bot stop error',
+                        'bot_id': bot_id_int,
                     },
                     status=requests.codes.internal_server_error
                 )
         else:
             result = JsonResponse(
                 {
-                    'result': 'Bot stopped is ok'
+                    'result': 'Bot stopped is ok',
+                    'bot_id': bot_id_int,
                 },
                 status=requests.codes.ok
             )
@@ -272,11 +274,11 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_processes_manager = BotProcessesManagerSingle()
         bot_info = bot_processes_manager.get_process_info(bot_id)
         if bot_info is not None:
-            is_error = bot_info.is_error
+            is_error = bot_info.is_terminated
             result_dict['is_started'] = True
             result_dict['process_id'] = bot_info.bot_runner.process_id
             result_dict['bot_id'] = bot_info.bot_id
-            result_dict['is_error'] = is_error
+            result_dict['is_terminated'] = is_error
         return JsonResponse(result_dict, status=requests.codes.ok)
 
     @action(
@@ -327,7 +329,7 @@ class BotViewSet(viewsets.ModelViewSet):
 
         bot_processes_manager = BotProcessesManagerSingle()
         all_running_bots = bot_processes_manager.get_all_processes_info()
-        all_running_bots_id_list = [bot.bot_id for bot in all_running_bots.values() if not bot.is_error]
+        all_running_bots_id_list = [bot.bot_id for bot in all_running_bots.values() if not bot.is_terminated]
 
         all_running_user_bots = set(user_bots_id_list).intersection(set(all_running_bots_id_list))
         return Response(

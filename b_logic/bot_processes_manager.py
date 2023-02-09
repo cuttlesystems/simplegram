@@ -9,7 +9,7 @@ from common_utils.singlethon import SingletonBase
 class BotProcessInfo:
     bot_id: int
     bot_runner: BotRunner
-    is_error: bool
+    is_terminated: bool
 
 
 class BotProcessesManagerSingle(metaclass=SingletonBase):
@@ -27,7 +27,7 @@ class BotProcessesManagerSingle(metaclass=SingletonBase):
         process_info = BotProcessInfo(
             bot_id=bot_id,
             bot_runner=bot_runner,
-            is_error=False
+            is_terminated=False
         )
         self._processes[bot_id] = process_info
 
@@ -49,5 +49,5 @@ class BotProcessesManagerSingle(metaclass=SingletonBase):
 
     def mark_process_as_error(self, bot_id: int):
         current_procerss_info = self._processes[bot_id]
-        current_procerss_info.is_error = True
+        current_procerss_info.is_terminated = True
         self._processes[bot_id] = current_procerss_info
