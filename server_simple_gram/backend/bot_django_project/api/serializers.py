@@ -36,7 +36,8 @@ class BotSerializer(serializers.ModelSerializer):
             'description',
             'owner',
             'start_message',
-            'error_message'
+            'error_message',
+            'profile_photo'
         )
 
     validators = [
@@ -48,10 +49,10 @@ class BotSerializer(serializers.ModelSerializer):
         ]
 
 
-class OneBotSerializer(BotSerializer):
+class BotSerializerWithBotLink(BotSerializer):
     bot_link = serializers.SerializerMethodField()
 
-    def get_bot_link(self, obj):
+    def get_bot_link(self, obj: Bot):
         return get_bot_link(obj.token)
 
     class Meta:
@@ -64,6 +65,7 @@ class OneBotSerializer(BotSerializer):
             'owner',
             'start_message',
             'error_message',
+            'profile_photo',
             'bot_link'
         )
 

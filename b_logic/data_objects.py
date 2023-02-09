@@ -29,6 +29,8 @@ class BotDescription:
     _start_message_id: Optional[int] = None
     _error_message_id: Optional[int] = None
     bot_link: Optional[str] = None
+    bot_profile_photo: Optional[str] = None
+    profile_photo_filename: Optional[str] = None
 
     @property
     def start_message_id(self) -> Optional[int]:

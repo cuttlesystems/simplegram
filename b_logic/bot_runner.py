@@ -78,7 +78,6 @@ class BotRunner:
                     # вывод данных в текстовом формате
                     universal_newlines=True
                 )
-
                 self._process_id = bot_process.pid
 
                 # создадим потоки для считывания данных из stdout и stderr

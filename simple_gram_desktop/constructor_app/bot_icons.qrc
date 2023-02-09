@@ -15,5 +15,6 @@
         <file>widgets/times_icon/closeIcon.png</file>
         <file>widgets/times_icon/logo.png</file>
         <file>widgets/times_icon/newProject.png</file>
+        <file>widgets/times_icon/background_texture.png</file>
     </qresource>
 </RCC>

@@ -23,7 +23,7 @@ from utils.notification_sender_to_bot_manager import NotificationSenderToBotMana
 from .utils import check_bot_token_when_generate_bot
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from cuttle_builder.exceptions.bot_gen_exceptions import BotGeneratorException
-from .serializers import (BotSerializer, OneBotSerializer, MessageSerializer, MessageSerializerWithVariants,
+from .serializers import (BotSerializer, BotSerializerWithBotLink, MessageSerializer, MessageSerializerWithVariants,
                           VariantSerializer, CommandSerializer)
 from bots.models import Bot, Message, Variant, Command
 from .mixins import RetrieveUpdateDestroyViewSet
@@ -61,7 +61,7 @@ class BotViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.request.query_params.get(BOT_WITH_LINK) == '1':
-            return OneBotSerializer
+            return BotSerializerWithBotLink
         return BotSerializer
 
     def get_queryset(self) -> QuerySet:

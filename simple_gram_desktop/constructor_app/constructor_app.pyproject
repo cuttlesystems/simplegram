@@ -17,6 +17,10 @@
         "widgets/login_widget.ui",
         "widgets/add_new_project_widget.ui",
         "widgets/bot_item_sidebar.ui",
-        "widgets/selected_project_widget.ui"
+        "widgets/selected_project_widget.ui",
+        "widgets/bot_editor_widget.ui",
+        "widgets/tool_stack_widget.ui",
+        "widgets/settings_widget.ui",
+        "widgets/user_popup_widget.ui"
     ]
 }

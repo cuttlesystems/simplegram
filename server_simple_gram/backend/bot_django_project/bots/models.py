@@ -50,6 +50,11 @@ class Bot(models.Model):
         related_name='error_message_bot',
         null=True
     )
+    profile_photo = models.ImageField(
+        upload_to='bot_profile_images/',
+        null=True,
+        blank=True
+    )
 
     class Meta:
         ordering = ['id']

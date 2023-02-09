@@ -6,7 +6,7 @@ from urllib.error import HTTPError
 import requests
 import urllib.request
 
-from b_logic.bot_api.i_bot_api import IBotApi, BotApiException, SignUpException, CreatingBotException, \
+from b_logic.bot_api.i_bot_api import IBotApi, SignUpException, CreatingBotException, \
     GetBotListException, UserAuthenticationException, ChangingBotException, DeletingBotException, \
     SettingBotStartMessageException, SettingBotErrorMessageException, GettingBotMessagesException, \
     CreatingMessageException, GettingMessageInformationException, EditingMessageException, DeletingMessageException, \
@@ -16,6 +16,7 @@ from b_logic.bot_api.i_bot_api import IBotApi, BotApiException, SignUpException,
     GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
     MessageTypeEnum
+from b_logic.utils.image_to_bytes import get_binary_data_from_image_file
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
@@ -152,7 +153,7 @@ class BotApiByRequests(IBotApi):
             raise CreatingBotException(response)
             # raise BotApiException(self._tr('Creating bot error: {0}').format(response.text))
         return self._create_bot_obj_from_data(json.loads(response.text))
-    # -------------------------------------
+
     def get_bot_by_id(self, bot_id: int, with_link: int = 0) -> BotDescription:
         """
         Получить объект бота с заданным идентификатором
@@ -183,6 +184,7 @@ class BotApiByRequests(IBotApi):
         response = requests.patch(
             url=self._suite_url + f'api/bots/{bot.id}/',
             json=bot_dict,
+            files=self._create_upload_files_bot_dict_from_bot_obj(bot),
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
@@ -606,6 +608,14 @@ class BotApiByRequests(IBotApi):
             'error_message': bot_obj.error_message_id
         }
 
+    def _create_upload_files_bot_dict_from_bot_obj(self, bot: BotDescription) -> dict:
+        assert isinstance(bot, BotDescription)
+        upload_files_bot_dict = dict()
+        if bot.bot_profile_photo and bot.profile_photo_filename:
+            file_data = get_binary_data_from_image_file(bot.bot_profile_photo)
+            upload_files_bot_dict['profile_photo'] = (bot.profile_photo_filename, file_data)
+        return upload_files_bot_dict
+
     def _create_bot_obj_from_data(self, bot_dict: dict) -> BotDescription:
         """Создает объект класса BotDescription из входящих данных"""
         bot_description = BotDescription()
@@ -615,6 +625,7 @@ class BotApiByRequests(IBotApi):
         bot_description.bot_description = bot_dict['description']
         bot_description.start_message_id = bot_dict['start_message']
         bot_description.error_message_id = bot_dict['error_message']
+        bot_description.bot_profile_photo = bot_dict['profile_photo']
         bot_description.bot_link = bot_dict.get('bot_link')
         return bot_description
 
@@ -625,8 +636,6 @@ class BotApiByRequests(IBotApi):
         bot_message.text = message_dict['text']
         bot_message.keyboard_type = ButtonTypesEnum(message_dict['keyboard_type'])
 
-        # todo: с этими полями надо разобраться, похоже,
-        #  там передается url путь, который надо сначала получить
         bot_message.photo = message_dict['photo']
         bot_message.video = message_dict['video']
         bot_message.file = message_dict['file']
@@ -698,6 +707,3 @@ class BotApiByRequests(IBotApi):
             'description': command_obj.description
         }
         return command_dict
-
-    def _tr(self, mes: str) -> str:
-        return tran('BotApiByRequests.manual', mes)
