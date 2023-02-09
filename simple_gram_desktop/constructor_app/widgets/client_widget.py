@@ -1,12 +1,10 @@
 from typing import Optional
 
 import requests
-from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QWidget, QMessageBox
 from PySide6 import QtGui
-from PySide6.QtCore import Signal, SLOT
 
-from b_logic.bot_api.i_bot_api import BotApiException, IBotApi, GetBotListException
+from b_logic.bot_api.i_bot_api import BotApiException, IBotApi
 from common.localisation import tran
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
@@ -50,9 +48,7 @@ class ClientWidget(QWidget):
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.bot_list.clicked.connect(self._start_selected_project)
         self._ui.bot_new_creator_page.close_window.connect(self._start_main_menu_slot)
-        # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
-        # self._ui.logo_block.clicked.connect(self._start_main_menu)
-        # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
+        self._ui.bot_new_creator_page.new_bot_added.connect(self.__update_bot_list)
         self._ui.bot_show_page.open_bot_in_redactor_signal.connect(self._start_bot_redactor)
 
         # первое открытие приложения, инициализация авторизации
@@ -117,6 +113,7 @@ class ClientWidget(QWidget):
         # инициализация окна с добавлением нового бота
         # выстравляю страницу добавления новго бота
         self._ui.centrall_pannel_widget.setCurrentIndex(self._NEW_BOT_INDEX_PAGE)
+        self._ui.bot_new_creator_page.set_all_bot(self._ui.bot_list.get_bots())
         self._ui.bot_new_creator_page.set_bot_api(self._bot_api)
         self._ui.tool_stack.hide()
         # настраиваю таблицу стилей подложки
@@ -178,5 +175,12 @@ class ClientWidget(QWidget):
                         bot_icon=QtGui.QPixmap(":/icons/widgets/times_icon/newProject.png"),
                         bot_description=bot,
                         bot_state=bot_state))
+        except BotApiException as error:
+            QMessageBox.warning(self, self._tr('Error'), str(error))
+
+    def __update_bot_list(self):
+        try:
+            self._ui.bot_list.clear()
+            self.__load_bots_list()
         except BotApiException as error:
             QMessageBox.warning(self, self._tr('Error'), str(error))

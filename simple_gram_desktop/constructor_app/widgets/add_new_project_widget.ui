@@ -116,7 +116,7 @@ background-color: rgba(255,255,255,220);
             <item>
              <layout class="QVBoxLayout" name="verticalLayout">
               <item>
-               <widget class="QLineEdit" name="name_bot">
+               <widget class="QLineEdit" name="name_bot_edit">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
@@ -135,21 +135,10 @@ background-color: rgba(255,255,255,220);
                  </font>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">QLineEdit{
-border:none;
-color: #373737;
-border-radius:8px;
-background-color: white;
-}
-QLineEdit::hover{
-border:none;
-color: #black;
-border-radius:8px;
-background-color: 373737;
-}</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
-                 <string>Новый бот</string>
+                 <string>Новый Cuttle Systems бот</string>
                 </property>
                </widget>
               </item>
@@ -191,15 +180,10 @@ background-color: 373737;
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLineEdit{
-border:1px solid #373737;
-color: #373737;
-border-radius:8px;
-background-color: transparent;
-}</string>
+             <string notr="true"/>
             </property>
             <property name="text">
-             <string>Token bot's</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -217,15 +201,10 @@ background-color: transparent;
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLineEdit{
-border:1px solid#373737;
-color: #373737;
-border-radius:8px;
-background-color: transparent;
-}</string>
+             <string notr="true"/>
             </property>
             <property name="text">
-             <string>About bot's</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -263,6 +242,13 @@ background-color: transparent;
 border:none;
 border-radius: 8px;
 background-color: #FF5F8F;
+color:white;
+}
+
+QPushButton{
+border:none;
+border-radius: 8px;
+background-color: #ff5f78;
 color:white;
 }</string>
               </property>
@@ -303,6 +289,12 @@ color:white;
 border:none;
 border-radius: 8px;
 background-color: #39B292;
+color:white;
+}
+QPushButton::hover{
+border:none;
+border-radius: 8px;
+background-color: #39c292;
 color:white;
 }</string>
               </property>
