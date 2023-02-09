@@ -88,18 +88,6 @@
 <context>
     <name>BotApiByRequests.manual</name>
     <message>
-        <source>Parameter</source>
-        <translation>Параметр</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation>Мәні</translation>
-    </message>
-</context>
-
-<context>
-    <name>BotApiByRequests.manual</name>
-    <message>
         <source>Sign up error: {0}</source>
         <translation>Тіркелуден қате: {0}</translation>
     </message>
@@ -210,6 +198,38 @@
     <message>
         <source>Receiving bot logs error: {0}</source>
         <translation>Ошибка при получении логов бота: {0}</translation>
+    </message>
+</context>
+
+<context>
+    <name>LoginWidget.manual</name>
+    <message>
+        <source>Error</source>
+        <translation>Қате</translation>
+    </message>
+    <message>
+        <source>Empty field error</source>
+        <translation>Бос орын толтырылмаған</translation>
+    </message>
+    <message>
+        <source>{field}. This field should not be empty.</source>
+        <translation>{field}. Бұл орын бос бола алмайды.</translation>
+    </message>
+    <message>
+        <source>Success</source>
+        <translation>Сәтті</translation>
+    </message>
+    <message>
+        <source>User {username} created successfully.</source>
+        <translation>{username} Қолданушы сәтті қосылды.</translation>
+    </message>
+    <message>
+        <source>Password error</source>
+        <translation>Құпиясөзден қате</translation>
+    </message>
+    <message>
+        <source>Passwords did not match.</source>
+        <translation>Құпиясөздер сәйкес келмейді.</translation>
     </message>
 </context>
 </TS>
