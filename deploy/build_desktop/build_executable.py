@@ -60,11 +60,7 @@ def build_executable_app(app_type: ApplicationTypeEnum):
     compile_rc_files()
     print('--- resources compilation ended ---\n\n')
 
-    # params = {
-    #     'application_type': app_type.value
-    # }
-    # with open('specfileconf.json', 'wt') as conffile:
-    #     json.dump(params, conffile)
+    # write 'application_type' into 'specfileconf.json' file
     write_specfileconf(app_type)
 
     # непосредственный запуск процесса создания исполняемого файла приложения 'simple_gram' через PyInstaller
