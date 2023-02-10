@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QDialog, QFileDialog
 from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotMessage, ButtonTypesEnum, MessageTypeEnum, BotDescription
 from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
-from utils.image_to_bytes import get_binary_data_from_image_file
+from b_logic.utils.image_to_bytes import get_binary_data_from_image_file
 
 
 class MessageEditorDialog(QDialog):
@@ -49,7 +49,7 @@ class MessageEditorDialog(QDialog):
         # отображаем изображение для сообщения
         self._ui.message_image.clear()
         if message.photo:
-            self._show_image(self._bot_api.get_message_image_by_url(message))
+            self._show_image(self._bot_api.get_image_data_by_url(message.photo))
 
         # задаем тип сообщения
         self._ui.message_variants_radio.setChecked(message.message_type == MessageTypeEnum.VARIANTS)

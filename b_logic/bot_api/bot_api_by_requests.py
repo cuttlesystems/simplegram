@@ -6,7 +6,7 @@ from urllib.error import HTTPError
 import requests
 import urllib.request
 
-from b_logic.bot_api.i_bot_api import IBotApi, BotApiException, SignUpException, CreatingBotException, \
+from b_logic.bot_api.i_bot_api import IBotApi, SignUpException, CreatingBotException, \
     GetBotListException, UserAuthenticationException, ChangingBotException, DeletingBotException, \
     SettingBotStartMessageException, SettingBotErrorMessageException, GettingBotMessagesException, \
     CreatingMessageException, GettingMessageInformationException, EditingMessageException, DeletingMessageException, \
@@ -16,7 +16,7 @@ from b_logic.bot_api.i_bot_api import IBotApi, BotApiException, SignUpException,
     GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
     MessageTypeEnum
-from utils.image_to_bytes import get_binary_data_from_image_file
+from b_logic.utils.image_to_bytes import get_binary_data_from_image_file
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
@@ -311,10 +311,9 @@ class BotApiByRequests(IBotApi):
             # raise BotApiException(self._tr('Creating message error: {0}').format(response.text))
         return self._create_bot_message_from_data(json.loads(response.text))
 
-    def get_message_image_by_url(self, message: BotMessage) -> Optional[bytes]:
-        assert isinstance(message, BotMessage)
+    def get_image_data_by_url(self, url: Optional[str]) -> Optional[bytes]:
+        assert isinstance(url, Optional[str])
         try:
-            url = message.photo
             image_data = urllib.request.urlopen(url).read()
         except HTTPError as image_not_found_error:
             print(f'----------->Image not found: {image_not_found_error}')

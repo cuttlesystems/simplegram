@@ -7,8 +7,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap, Qt
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox, QListWidgetItem
 
-from b_logic.bot_api.bot_api_by_requests import BotApiException
-from b_logic.bot_api.i_bot_api import IBotApi
+from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
 from b_logic.data_objects import BotDescription
 from common.localisation import tran
 from utils.name_utils import gen_next_name
