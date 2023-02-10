@@ -49,7 +49,7 @@ class MessageEditorDialog(QDialog):
         # отображаем изображение для сообщения
         self._ui.message_image.clear()
         if message.photo:
-            self._show_image(self._bot_api.get_message_image_by_url(message))
+            self._show_image(self._bot_api.get_image_data_by_url(message.photo))
 
         # задаем тип сообщения
         self._ui.message_variants_radio.setChecked(message.message_type == MessageTypeEnum.VARIANTS)

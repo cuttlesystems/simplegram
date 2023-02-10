@@ -79,7 +79,7 @@ class BotApiByDjangoORM(IBotApi):
                        keyboard_type: ButtonTypesEnum, x: int, y: int) -> BotMessage:
         raise NotImplementedError('Метод не определен!')
 
-    def get_message_image_by_url(self, message: BotMessage) -> Optional[bytes]:
+    def get_image_data_by_url(self, url: Optional[str]) -> Optional[bytes]:
         raise NotImplementedError('Метод не определен!')
 
     def get_one_message(self, message_id: int) -> BotMessage:

@@ -279,12 +279,12 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def get_message_image_by_url(self, message: BotMessage) -> Optional[bytes]:
+    def get_image_data_by_url(self, url: Optional[str]) -> Optional[bytes]:
         """
-        Получает изображение из сообщения.
+        Получает изображение из url.
 
         Args:
-            message: сообщение, у которого есть фото
+            url: url изображения
 
         Returns:
             изображение в виде байт-кода

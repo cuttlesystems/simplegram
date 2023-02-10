@@ -2,6 +2,7 @@ from typing import Optional
 
 import requests
 from PySide6 import QtCore, QtWidgets
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
 from PySide6 import QtGui
 from PySide6.QtCore import Signal, SLOT
@@ -10,6 +11,8 @@ from PySide6.QtCore import Signal, SLOT
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from b_logic.bot_api.i_bot_api import BotApiException, IBotApi, GetBotListException
 from common.localisation import tran
+from constructor_app.utils.get_image_from_bytes import get_pixmap_image_from_bytes
+from constructor_app.widgets.selected_project_widget import DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
 from constructor_app.widgets.bot_editor.bot_editor_form import BotEditorForm
@@ -52,12 +55,14 @@ class ClientWidget(QWidget):
         self._ui.new_project_button.clicked.connect(self._start_new_project)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.bot_list.clicked.connect(self._start_selected_project)
-        self._ui.bot_list.clicked.connect(self._start_selected_project)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         #self._ui.logo_block.clicked.connect(self._start_main_menu)
         # дружу нажатие по сайдбару и инициализацию окна с шапкой выбранного бота
         self._ui.bot_show_page.open_bot_in_redactor_signal.connect(self._start_bot_redactor)
-
+        self._ui.bot_show_page.activated_bot_signal.connect(self.__load_bots_list)
+        # перезагрузка бот-листа при смене аватарки бота (наверное лучше не менять весь бот-лист
+        # а поменять только аватарку у конкретного элемента)
+        self._ui.bot_show_page.bot_avatar_changed_signal.connect(self.__load_bots_list)
         # первое открытие приложения, инициализация авторизации
         self._start_login_users()
 
@@ -96,6 +101,7 @@ class ClientWidget(QWidget):
     # инициализация окна с информацией о выбранном боте
     def _start_selected_project(self) -> None:
         # Set page with info about selected in sidebar bot
+        self._ui.bot_show_page.set_bot_api(self._bot_api)
         self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
         bot_extended: BotExtended = self._ui.bot_list.get_current_bot()
         assert bot_extended is not None
@@ -166,9 +172,14 @@ class ClientWidget(QWidget):
                 else:
                     bot_state = False
                 # toDo: Add icons initialization
+                if bot.bot_profile_photo is not None:
+                    image_data = self._bot_api.get_image_data_by_url(bot.bot_profile_photo)
+                    bot_icon = get_pixmap_image_from_bytes(image_data)
+                else:
+                    bot_icon = QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH)
                 self._ui.bot_list.add_bot(
                     BotExtended(
-                        bot_icon=QtGui.QPixmap(":/icons/widgets/times_icon/newProject.png"),
+                        bot_icon=bot_icon,
                         bot_description=bot,
                         bot_state=bot_state))
         except BotApiException as error:

@@ -311,10 +311,9 @@ class BotApiByRequests(IBotApi):
             # raise BotApiException(self._tr('Creating message error: {0}').format(response.text))
         return self._create_bot_message_from_data(json.loads(response.text))
 
-    def get_message_image_by_url(self, message: BotMessage) -> Optional[bytes]:
-        assert isinstance(message, BotMessage)
+    def get_image_data_by_url(self, url: Optional[str]) -> Optional[bytes]:
+        assert isinstance(url, Optional[str])
         try:
-            url = message.photo
             image_data = urllib.request.urlopen(url).read()
         except HTTPError as image_not_found_error:
             print(f'----------->Image not found: {image_not_found_error}')
