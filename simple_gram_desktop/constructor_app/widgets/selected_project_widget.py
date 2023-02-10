@@ -11,7 +11,7 @@ from constructor_app.utils.get_image_from_bytes import get_pixmap_image_from_byt
 from constructor_app.widgets.ui_selected_project_widget import Ui_SelectedProjectWidget
 from b_logic.bot_api.i_bot_api import BotDescription, IBotApi
 
-DEFAULT_BOT_AVATAR_ICON_PATH: str = ":icons/widgets/times_icon/newProject.png"
+DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH: str = ":icons/widgets/times_icon/newProject.png"
 
 
 class SelectedProjectWidget(QWidget):
@@ -61,11 +61,12 @@ class SelectedProjectWidget(QWidget):
         self._bot = bot
 
         # Установка дефолтной аватарки бота или фотки из БД, если есть.
-        self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_PATH))
         if bot.bot_profile_photo is not None:
             image_data: Optional[bytes] = self._bot_api.get_image_data_by_url(bot.bot_profile_photo)
             image: Optional[QPixmap] = get_pixmap_image_from_bytes(image_data)
             self._ui.icon_bot_button.setIcon(image)
+        else:
+            self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
 
         self._ui.name_bot_edit.setText(bot.bot_name)
         self._ui.switch_activated_bot.setChecked(bot_state)
