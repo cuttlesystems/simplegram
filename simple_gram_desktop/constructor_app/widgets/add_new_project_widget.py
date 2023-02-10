@@ -22,13 +22,6 @@ class StatedStylesheet(Enum):
     FOCUS = 3
     NORMAL = 4
 
-
-class DefaultText(Enum):
-    ABOUT = "About bot"
-    TOKEN = "Token bot"
-    NAME = "New Cuttle Systems bot"
-
-
 @dataclass(slots=True, frozen=True)
 class BlockColorScheme:
     color_group_hover = "rgb(255,255,255)"
@@ -74,8 +67,8 @@ class AddNewProjectWidget(QWidget):
         self._bot_api = bot_api
 
     def init_placeholder_text_line(self):
-        self._ui.token_bot_edit.setPlaceholderText(DefaultText.TOKEN.value)
-        self._ui.about_bot_edit.setPlaceholderText(DefaultText.ABOUT.value)
+        self._ui.token_bot_edit.setPlaceholderText("Token bot")
+        self._ui.about_bot_edit.setPlaceholderText("About bot")
 
     def _init_stylesheet(self, night: bool) -> None:
         # toDO: поменять даркмод режим на изменение qssа и все qss вынести в отдельный файлпроекта или
@@ -96,13 +89,13 @@ class AddNewProjectWidget(QWidget):
     def _get_group_style(self, state: StatedStylesheet) -> str:
         assert isinstance(state, StatedStylesheet)
         group_style = ''
-        if state.value == 1:
+        if state == StatedStylesheet.HOVER:
             group_style = (
                 "QGroupBox{border: none; border-radius: 16px; background-color: " +
                 BlockColorScheme.color_group_hover
                 + ";}"
             )
-        elif state.value == 2:
+        elif state == StatedStylesheet.MISS:
             group_style = (
                 "QGroupBox{border: none; border-radius: 16px; background-color: " +
                 BlockColorScheme.color_group_miss
@@ -113,25 +106,25 @@ class AddNewProjectWidget(QWidget):
     def _get_line_style(self, state: StatedStylesheet) -> str:
         assert isinstance(state, StatedStylesheet)
         line_style = ''
-        if state.value == 1:
+        if state == StatedStylesheet.HOVER:
             line_style = (
                 "QLineEdit{border: 1px solid " + BlockColorScheme.color_line_hover + "; "
                 "color: " + BlockColorScheme.color_line_hover + "; "
                 "border-radius:8px; background-color: transparent;}"
             )
-        elif state.value == 2:
+        elif state == StatedStylesheet.MISS:
             line_style = (
                 "QLineEdit{border: 1px solid " + BlockColorScheme.color_line_miss + "; "
                 "color: " + BlockColorScheme.color_line_miss + "; "
                 "border-radius:8px; background-color: transparent;}"
             )
-        elif state.value == 3:
+        elif state == StatedStylesheet.FOCUS:
             line_style = (
                 "QLineEdit{border: 1px solid " + BlockColorScheme.color_line_focus + "; "
                 "color: " + BlockColorScheme.color_line_focus + "; "
                 "border-radius:8px; background-color: transparent;}"
             )
-        elif state.value == 4:
+        elif state == StatedStylesheet.NORMAL:
             line_style = (
                 "QLineEdit{border: 1px solid " + BlockColorScheme.color_line_normal + "; "
                 "color: " + BlockColorScheme.color_line_normal + "; "
@@ -178,10 +171,10 @@ class AddNewProjectWidget(QWidget):
 
     def _line_check(self, obj: QObject) -> str:
         if obj == self._ui.name_bot_edit:
-            result_str = DefaultText.NAME
+            result_str = "New Cuttle Systems bot"
         else:
             result_str = None
-        if obj.text() != (DefaultText.name and ''):
+        if obj.text() != ("New Cuttle Systems bot" and ''):
             result_str = self._ui.name_bot_edit.text()
         return result_str
 
