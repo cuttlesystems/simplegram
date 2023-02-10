@@ -66,6 +66,7 @@ class AddNewProjectWidget(QWidget):
         self._bot_list = None
 
     def set_all_bot(self, bot_list: List[BotExtended]):
+        assert all(isinstance(bot, BotExtended) for bot in bot_list)
         self._bot_list = bot_list
 
     def set_bot_api(self, bot_api: IBotApi):

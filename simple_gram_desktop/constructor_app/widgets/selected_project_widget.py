@@ -6,14 +6,10 @@ from PySide6.QtWidgets import QWidget, QFileDialog
 from PySide6.QtCore import QObject, Slot, Signal
 from PySide6.QtGui import QPainter
 
-from b_logic.utils.image_to_bytes import get_binary_data_from_image_file
-from common.localisation import tran
 from constructor_app.utils.get_image_from_bytes import get_pixmap_image_from_bytes
 
 from constructor_app.widgets.ui_selected_project_widget import Ui_SelectedProjectWidget
 
-from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum
 from common.localisation import tran
 from common.model_property import ModelProperty
 from constructor_app.graphic_scene.bot_scene import BotScene
@@ -101,15 +97,12 @@ class SelectedProjectWidget(QWidget):
         else:
             self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
 
+        # toDo: понять что мы блин натворили
         self._ui.name_bot_edit.setText(self._bot.bot_name)
         self._ui.name_bot_edit.setText(bot.bot_name)
         self._ui.switch_activated_bot.setChecked(bot_state)
         self._init_state_bot()
 
-    def set_bot_api(self, bot_api: IBotApi):
-        self._bot_api = bot_api
-
-        assert isinstance(bot, BotDescription) or bot is None
         self._init_preview_bot()
         self._bot = self._bot_api.get_bot_by_id(bot_id=bot.id, with_link=1)
         self._bot_scene.set_bot_scene(self._bot)
@@ -130,6 +123,9 @@ class SelectedProjectWidget(QWidget):
 
         self._bot_api.generate_bot(self._bot)
         self._load_bot_scene()
+
+    def set_bot_api(self, bot_api: IBotApi):
+        self._bot_api = bot_api
 
     def __bot_editing(self) -> None:
         # коннект кнопки открытия бота в редакторе и сигналом старта редактирования в основном клиент/менеджерном
