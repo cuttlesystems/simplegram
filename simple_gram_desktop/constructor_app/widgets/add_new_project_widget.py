@@ -17,16 +17,16 @@ from constructor_app.widgets.bot_extended import BotExtended
 
 
 class StatedStylesheet(Enum):
-    hover = 1
-    miss = 2
-    focus = 3
-    normal = 4
+    HOVER = 1
+    MISS = 2
+    FOCUS = 3
+    NORMAL = 4
 
 
 class DefaultText(Enum):
-    about = "Token bot"
-    token = "About bot"
-    name = "Новый Cuttle Systems бот"
+    ABOUT = "About bot"
+    TOKEN = "Token bot"
+    NAME = "New Cuttle Systems bot"
 
 
 @dataclass(slots=True, frozen=True)
@@ -74,23 +74,23 @@ class AddNewProjectWidget(QWidget):
         self._bot_api = bot_api
 
     def init_placeholder_text_line(self):
-        self._ui.token_bot_edit.setPlaceholderText(DefaultText.token.value)
-        self._ui.about_bot_edit.setPlaceholderText(DefaultText.about.value)
+        self._ui.token_bot_edit.setPlaceholderText(DefaultText.TOKEN.value)
+        self._ui.about_bot_edit.setPlaceholderText(DefaultText.ABOUT.value)
 
     def _init_stylesheet(self, night: bool) -> None:
         # toDO: поменять даркмод режим на изменение qssа и все qss вынести в отдельный файлпроекта или
         #  для каждого окна сделать свой первострочный инициализатор qss
         self._ui.background_father_widget.setStyleSheet(
-            self._get_group_style(StatedStylesheet.miss)
+            self._get_group_style(StatedStylesheet.MISS)
         )
         self._ui.token_bot_edit.setStyleSheet(
-            self._get_line_style(StatedStylesheet.miss)
+            self._get_line_style(StatedStylesheet.MISS)
         )
         self._ui.about_bot_edit.setStyleSheet(
-            self._get_line_style(StatedStylesheet.miss)
+            self._get_line_style(StatedStylesheet.MISS)
         )
         self._ui.name_bot_edit.setStyleSheet(
-            self._get_line_style(StatedStylesheet.miss)
+            self._get_line_style(StatedStylesheet.MISS)
         )
 
     def _get_group_style(self, state: StatedStylesheet) -> str:
@@ -146,10 +146,10 @@ class AddNewProjectWidget(QWidget):
         if obj == self._ui.background_father_widget:
             if event.type() == QtCore.QEvent.Type.HoverLeave:
                 if self._check_lines_not_focus():
-                    self._group_set_style(StatedStylesheet.miss)
+                    self._group_set_style(StatedStylesheet.MISS)
             elif event.type() == QtCore.QEvent.Type.HoverEnter:
                 if self._check_lines_not_focus():
-                    self._group_set_style(StatedStylesheet.hover)
+                    self._group_set_style(StatedStylesheet.HOVER)
 
         elif obj == self._ui.token_bot_edit:
             self._line_filter(event.type(), obj)
@@ -168,17 +168,17 @@ class AddNewProjectWidget(QWidget):
 
     def _line_filter(self, event: QtCore.QEvent.Type, obj: QObject) -> None:
         if event == QtCore.QEvent.Type.HoverEnter and not obj.hasFocus():
-            obj.setStyleSheet(self._get_line_style(StatedStylesheet.hover))
+            obj.setStyleSheet(self._get_line_style(StatedStylesheet.HOVER))
         elif event == QtCore.QEvent.Type.HoverLeave and not obj.hasFocus():
-            obj.setStyleSheet(self._get_line_style(StatedStylesheet.normal))
+            obj.setStyleSheet(self._get_line_style(StatedStylesheet.NORMAL))
         elif event == QtCore.QEvent.Type.FocusIn:
-            obj.setStyleSheet(self._get_line_style(StatedStylesheet.focus))
+            obj.setStyleSheet(self._get_line_style(StatedStylesheet.FOCUS))
         elif event == QtCore.QEvent.Type.FocusOut:
-            obj.setStyleSheet(self._get_line_style(StatedStylesheet.normal))
+            obj.setStyleSheet(self._get_line_style(StatedStylesheet.NORMAL))
 
     def _line_check(self, obj: QObject) -> str:
         if obj == self._ui.name_bot_edit:
-            result_str = DefaultText.name
+            result_str = DefaultText.NAME
         else:
             result_str = None
         if obj.text() != (DefaultText.name and ''):
@@ -188,8 +188,8 @@ class AddNewProjectWidget(QWidget):
     def _group_set_style(self, state: StatedStylesheet):
         test = state
         self._ui.background_father_widget.setStyleSheet(self._get_group_style(state))
-        if state == StatedStylesheet.hover:
-            state = StatedStylesheet.normal
+        if state == StatedStylesheet.HOVER:
+            state = StatedStylesheet.NORMAL
         self._ui.token_bot_edit.setStyleSheet(self._get_line_style(state))
         self._ui.about_bot_edit.setStyleSheet(self._get_line_style(state))
         self._ui.name_bot_edit.setStyleSheet(self._get_line_style(state))
