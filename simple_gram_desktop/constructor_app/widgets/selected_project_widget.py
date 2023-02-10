@@ -172,10 +172,10 @@ class SelectedProjectWidget(QWidget):
     def _init_preview_bot(self) -> None:
 
         # toDo: Подумать и переделать подгрузку скрина бот-сцены на
-        self._bot: typing.Optional[BotDescription] = None
-        self._prop_name: typing.Optional[ModelProperty] = None
-        self._prop_token: typing.Optional[ModelProperty] = None
-        self._prop_description: typing.Optional[ModelProperty] = None
+        self._bot: Optional[BotDescription] = None
+        self._prop_name: Optional[ModelProperty] = None
+        self._prop_token: Optional[ModelProperty] = None
+        self._prop_description: Optional[ModelProperty] = None
 
         self._bot_scene = BotScene(self)
         self._ui.bot_view.setScene(self._bot_scene)
