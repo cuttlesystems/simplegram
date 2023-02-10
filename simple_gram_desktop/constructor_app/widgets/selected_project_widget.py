@@ -48,10 +48,12 @@ class SelectedProjectWidget(QWidget):
     def _init_StyleSheet(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
         #  инициализатор qss
-        self._ui.background.setStyleSheet("QGroupBox{border-radius:22px; border:none; "
-                                        "background-color:rgb(255,255,255);}")
-        self._ui.open_in_redactor_button.setStyleSheet("QPushButton{background-color:rgb(57,178,146);border:none;"
-                                                       "color:white;border-radius:8px;}")
+        self._ui.background.setStyleSheet(
+            "QGroupBox{border-radius:22px; border:none; "
+            "background-color:rgb(255,255,255);}")
+        self._ui.open_in_redactor_button.setStyleSheet(
+            "QPushButton{background-color:rgb(57,178,146);border:none;"
+            "color:white;border-radius:8px;}")
 
     def _switch_bot(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
@@ -100,7 +102,6 @@ class SelectedProjectWidget(QWidget):
             self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
 
         self._ui.name_bot_edit.setText(self._bot.bot_name)
-        #self._bot_scene.clear_scene()
         self._ui.name_bot_edit.setText(bot.bot_name)
         self._ui.switch_activated_bot.setChecked(bot_state)
         self._init_state_bot()
