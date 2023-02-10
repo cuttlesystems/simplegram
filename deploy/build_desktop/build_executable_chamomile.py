@@ -7,4 +7,4 @@ from build_executable import build_executable_app
 
 
 if __name__ == '__main__':
-    build_executable_app(ApplicationTypeEnum.CLASSIC)
+    build_executable_app(ApplicationTypeEnum.CHAMOMILE)

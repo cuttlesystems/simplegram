@@ -18,6 +18,24 @@ def pyinstaller_exe_path() -> Path:
     return result
 
 
+def write_specfileconf(app_type: ApplicationTypeEnum):
+    """
+    write 'application_type' into 'specfileconf.json' file
+    Args:
+        app_type: ApplicationTypeEnum
+
+    Returns: 'specfileconf.json' file with 'simple_gram' application type as content
+
+    """
+    assert isinstance(app_type, ApplicationTypeEnum)
+    params = {
+        'application_type': app_type.value
+    }
+    with open('specfileconf.json', 'wt') as conffile:
+        json.dump(params, conffile)
+    print(f'\n--- The application type was written into \'specfileconf.json\', content: \n      {params} ---')
+
+
 def build_executable_app(app_type: ApplicationTypeEnum):
     """
     define function to build app executable file
@@ -42,11 +60,14 @@ def build_executable_app(app_type: ApplicationTypeEnum):
     compile_rc_files()
     print('--- resources compilation ended ---\n\n')
 
-    params = {
-        'application_type': app_type.value
-    }
-    with open('specfileconf.json', 'wt') as conffile:
-        json.dump(params, conffile)
+    # params = {
+    #     'application_type': app_type.value
+    # }
+    # with open('specfileconf.json', 'wt') as conffile:
+    #     json.dump(params, conffile)
+    write_specfileconf(app_type)
 
     # непосредственный запуск процесса создания исполняемого файла приложения 'simple_gram' через PyInstaller
+    print('\n--- building app executable started ---')
     subprocess.run([pyinstaller_exe_path(), 'start_constructor.spec', '-y'])
+    print('--- building app executable ended ---\n\n')

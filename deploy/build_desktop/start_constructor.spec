@@ -5,8 +5,9 @@ import time
 import PyInstaller.config
 import os
 import sys
-import json
+#import json
 from application_type_enum import ApplicationTypeEnum
+from build_executable_utils import read_specfileconf, filename_to_build
 
 # обходное решение для добавления текущей директории в 'PYTHONPATH'
 #  небходимо для того, чтобы проходил import, выполняемый строкой ниже
@@ -34,30 +35,32 @@ def application_project_dir() -> Path:
     return spec_file_dir() / Path('..') / '..' / 'simple_gram_desktop'
 
 
-def read_specfileconf() -> ApplicationTypeEnum:
-    """
-    read content of 'specfileconf.json' file
-    """
-    with open('specfileconf.json', 'rt', encoding='utf-8') as conffile:
-        specfileconf_content = json.load(conffile)
-        application_type = ApplicationTypeEnum(specfileconf_content['application_type'])
-        print(f'\nconffile: {conffile}')
-        print(f'specfileconf_content: {specfileconf_content}')
-        print(f'application_type: {application_type}')
-        return application_type
-
-
-def filename_to_build() -> str:
-    """
-    define the filename of application used to build an executable
-    """
-    application_type = read_specfileconf()
-    if application_type == ApplicationTypeEnum.CLASSIC:
-        filename = 'start_constructor.py'
-    elif application_type == ApplicationTypeEnum.SHIBOKEN:
-        filename = 'start_constructor_shiboken.py'
-    print(f'\nFilename of application to build an executable: {filename}\n')
-    return filename
+#def read_specfileconf() -> ApplicationTypeEnum:
+#    """
+#    read content of 'specfileconf.json' file
+#    """
+#    with open('specfileconf.json', 'rt', encoding='utf-8') as conffile:
+#        specfileconf_content = json.load(conffile)
+#        application_type = ApplicationTypeEnum(specfileconf_content['application_type'])
+#        print(f'\nconffile: {conffile}')
+#        print(f'specfileconf_content: {specfileconf_content}')
+#        print(f'application_type: {application_type}')
+#        return application_type
+#
+#
+#def filename_to_build() -> str:
+#    """
+#    define the filename of application used to build an executable
+#    """
+#    application_type = read_specfileconf()
+#    if application_type == ApplicationTypeEnum.CHAMOMILE:
+#        filename = 'start_constructor.py'
+#    elif application_type == ApplicationTypeEnum.SHIBOKEN:
+#        filename = 'start_constructor_shiboken.py'
+#    else:
+#        raise NotImplementedError(f'Unsupported application type: {application_type}')
+#    print(f'\nFilename of application to build an executable: \'{filename}\'\n')
+#    return filename
 
 
 def suffix_for_app_and_folder_name() -> str:
@@ -65,12 +68,98 @@ def suffix_for_app_and_folder_name() -> str:
     define suffix for 'simple_gram' application executable name and it's folder name
     """
     application_type = read_specfileconf()
-    if application_type == ApplicationTypeEnum.CLASSIC:
+    if application_type == ApplicationTypeEnum.CHAMOMILE:
         suffix = '_chamomile'
     elif application_type == ApplicationTypeEnum.SHIBOKEN:
         suffix = '_shiboken'
-    print(f'\nSuffix for \'simple_gram\' application executable name and it\'s folder name: {suffix}\n')
+    else:
+        raise NotImplementedError(f'Unsupported application type: {application_type}')
+    print(f'\nSuffix for \'simple_gram\' application executable name and it\'s folder name: \'{suffix}\'\n')
     return suffix
+
+
+def app_and_folder_name_without_time_label() -> str:
+    """
+    define 'simple_gram' application executable name and it's folder name without time label
+    """
+    app_and_folder_name_with_no_time = f'simple_gram{suffix_for_app_and_folder_name()}'
+    print(
+        f'\n\'simple_gram\' application executable name and it\'s folder name without time label: '
+        f'\'{app_and_folder_name_with_no_time}\'\n'
+    )
+#    print(
+#        '\n\'simple_gram\' application executable name and it\'s folder name without time label: ',
+#        app_and_folder_name_with_no_time,
+#        '\n'
+#    )
+    return app_and_folder_name_with_no_time
+
+
+#def app_and_folder_name_without_time_label() -> str:
+#    """
+#    define 'simple_gram' application executable name and it's folder name without time label
+#    """
+#    application_type = read_specfileconf()
+#    if application_type == ApplicationTypeEnum.CHAMOMILE:
+#        app_and_folder_name_with_no_time = 'start_constructor.py'
+#    elif application_type == ApplicationTypeEnum.SHIBOKEN:
+#        app_and_folder_name_with_no_time = f'simple_gram{suffix_for_app_and_folder_name()}'
+#    else:
+#        raise NotImplementedError(f'Unsupported application type: {application_type}')
+#    print(
+#        f'\n\'simple_gram\' application executable name and it\'s folder name without time label:
+#         {app_and_folder_name_with_no_time}\n'
+#    )
+#    return app_and_folder_name_with_no_time
+
+
+def time_suffix_for_app_and_folder_name() -> str:
+    """
+    create current time suffix for file/folder name
+    """
+    time_suffix = '_'+time.strftime("%Y_%m_%d__%H_%M_%S")
+    return time_suffix
+
+
+def app_and_folder_name_with_time_label_suffix() -> str:
+    """
+    define 'simple_gram' application executable name and it's folder name with time label suffix
+    """
+    app_and_folder_name_with_time = f'{app_and_folder_name_without_time_label()}{time_suffix_for_app_and_folder_name()}'
+    print(
+        f'\n\'simple_gram\' application executable name and it\'s folder name with time label: '
+        f'\'{app_and_folder_name_with_time}\'\n'
+    )
+#    print(
+#        '\n\'simple_gram\' application executable name and it\'s folder name with time label: ',
+#        app_and_folder_name_with_time,
+#        '\n'
+#    )
+#    print(
+#        f'\n\'simple_gram\' application executable name and it\'s folder name with time label: '
+#        f'{app_and_folder_name_with_time}\n'
+#    )
+    return app_and_folder_name_with_time
+
+
+#def app_and_folder_name_with_time_label_suffix() -> str:
+#    """
+#    define 'simple_gram' application executable name and it's folder name with time label suffix
+#    """
+#    application_type = read_specfileconf()
+#    if application_type == ApplicationTypeEnum.CHAMOMILE:
+#        app_and_folder_name_with_time = 'start_constructor.py'
+#    elif application_type == ApplicationTypeEnum.SHIBOKEN:
+#        app_and_folder_name_with_time = 'start_constructor_shiboken.py'
+#        f'simple_gram{suffix_for_app_and_folder_name()}{time_suffix_for_app_and_folder_name()}'
+#        app_and_folder_name_without_time_label
+#    else:
+#        raise NotImplementedError(f'Unsupported application type: {application_type}')
+#    print(
+#        f'\n\'simple_gram\' application executable name and it\'s folder name with time label:
+#         {app_and_folder_name_with_time}\n'
+#    )
+#    return app_and_folder_name_with_time
 
 
 # working and destination directories for executable file creation
@@ -113,7 +202,9 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name=f'simple_gram{suffix_for_app_and_folder_name()}_'+time.strftime("%Y_%m_%d__%H_%M_%S"),
+#    name=f'simple_gram{suffix_for_app_and_folder_name()}_'+time.strftime("%Y_%m_%d__%H_%M_%S"),
+#    name=f'simple_gram{suffix_for_app_and_folder_name()}{time_suffix_for_app_and_folder_name()}',
+    name=app_and_folder_name_with_time_label_suffix(),
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -135,4 +226,5 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name=f'simple_gram{suffix_for_app_and_folder_name()}')
+#               name=f'simple_gram{suffix_for_app_and_folder_name()}')
+               name=app_and_folder_name_without_time_label())
