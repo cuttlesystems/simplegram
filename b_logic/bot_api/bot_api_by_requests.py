@@ -553,6 +553,7 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
+            print(response)
             raise BotStopException(response)
             # raise BotApiException(
             #     self._tr('Bot stop error: {0}').format(response.text))

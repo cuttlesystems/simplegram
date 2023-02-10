@@ -8,11 +8,13 @@ from threading import Thread
 from typing import Optional
 import psutil
 
+from utils.notification_sender import NotificationSender
+
 
 class BotRunner:
     _MAX_LOG_LEN_LINES = 300
 
-    def __init__(self, bot_directory: Optional[Path]):
+    def __init__(self, bot_directory: Optional[Path], notification_sender: NotificationSender):
         assert isinstance(bot_directory, Path) or bot_directory is None
         self._bot_directory = bot_directory
 
@@ -28,6 +30,8 @@ class BotRunner:
         # строки из stdout и stdin из запущенного процесса бота
         self._bot_stdout_log: typing.List[str] = []
         self._bot_stderr_log: typing.List[str] = []
+
+        self._notification_sender = notification_sender
 
     def get_bot_stdout(self) -> typing.List[str]:
         """
@@ -169,6 +173,5 @@ class BotRunner:
                 if line != '':
                     self._add_stderr_line(line)
                     print('bot err: ', line.rstrip())
-
+        self._notification_sender.send_terminated_notification(self._process_id)
         print('reader stderr end')
-
