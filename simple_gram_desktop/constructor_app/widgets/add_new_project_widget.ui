@@ -138,7 +138,7 @@ background-color: rgba(255,255,255,220);
                  <string notr="true"/>
                 </property>
                 <property name="text">
-                 <string>Новый Cuttle Systems бот</string>
+                 <string>New Cuttle Systems bot</string>
                 </property>
                </widget>
               </item>

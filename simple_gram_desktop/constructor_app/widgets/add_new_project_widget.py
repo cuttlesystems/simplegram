@@ -36,8 +36,10 @@ class BlockColorScheme:
 class AddNewProjectWidget(QWidget):
     close_window = Signal()
     new_bot_added = Signal()
-    _bot_api: IBotApi
-    _bot_list: List[BotExtended]
+
+    _bot_api: Optional[IBotApi]
+    _bot_list: Optional[List[BotExtended]]
+
     def __init__(self, parent: typing.Optional[QWidget] = None):
         super().__init__(parent)
         self._ui = Ui_AddNewProjectWidget()
@@ -59,6 +61,9 @@ class AddNewProjectWidget(QWidget):
         self.installEventFilter(self)
 
         self.setMouseTracking(True)
+
+        self._bot_api = None
+        self._bot_list = None
 
     def set_all_bot(self, bot_list: List[BotExtended]):
         self._bot_list = bot_list
@@ -179,7 +184,6 @@ class AddNewProjectWidget(QWidget):
         return result_str
 
     def _group_set_style(self, state: StatedStylesheet):
-        test = state
         self._ui.background_father_widget.setStyleSheet(self._get_group_style(state))
         if state == StatedStylesheet.HOVER:
             state = StatedStylesheet.NORMAL
@@ -190,9 +194,7 @@ class AddNewProjectWidget(QWidget):
     def __get_all_bots(self) -> typing.List[BotDescription]:
         all_bots = []
         for index in range(len(self._bot_list)):
-            bot: BotDescription = self._bot_list[index].bot_description
-            assert isinstance(bot, BotDescription)
-            all_bots.append(bot)
+            all_bots.append(self._bot_list[index].bot_description)
         return all_bots
 
     def __get_unique_bot_name(self, base_name: str) -> str:

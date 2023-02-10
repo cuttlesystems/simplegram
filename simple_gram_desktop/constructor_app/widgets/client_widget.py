@@ -59,9 +59,6 @@ class ClientWidget(QWidget):
         self._ui.user_widget.addItem(QtGui.QPixmap(":/icons/widgets/times_icon/exit_account_icon.png"),
                                      self._tr("Exit"))
 
-
-
-    # инициализация окна авторизации
     def _start_login_users(self) -> None:
         # выстравляю страницу инициализации
         self._ui.centrall_pannel_widget.setCurrentIndex(self._LOGIN_INDEX_PAGE)
@@ -121,7 +118,7 @@ class ClientWidget(QWidget):
 
     def _start_bot_redactor(self) -> None:
         try:
-            # выстравляю страницу добавления новго бота
+            # выставляю страницу добавления нового бота
             self._ui.centrall_pannel_widget.setCurrentIndex(self._BOT_REDACTOR_PAGE)
             self._ui.tool_stack.show()
             # настраиваю таблицу стилей подложки

@@ -18,5 +18,16 @@
         <file>widgets/times_icon/background_texture.png</file>
         <file>widgets/times_icon/user_icon.png</file>
         <file>widgets/times_icon/exit_account_icon.png</file>
+        <file>widgets/times_icon/error_image.png</file>
+
+        <file>widgets/times_icon/add_variant.png</file>
+        <file>widgets/times_icon/add_message.png</file>
+        <file>widgets/times_icon/delete_message.png</file>
+        <file>widgets/times_icon/delete_variant.png</file>
+        <file>widgets/times_icon/first_message.png</file>
+        <file>widgets/times_icon/logs.png</file>
+        <file>widgets/times_icon/error_message.png</file>
+        <file>widgets/times_icon/start_bot.png</file>
+        <file>widgets/times_icon/stop_bot.png</file>
     </qresource>
 </RCC>
