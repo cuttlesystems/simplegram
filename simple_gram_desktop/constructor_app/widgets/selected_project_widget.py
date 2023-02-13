@@ -90,6 +90,7 @@ class SelectedProjectWidget(QWidget):
         self._bot = bot
 
         # Установка дефолтной аватарки бота или фотки из БД, если есть.
+        # toDo: Добавить функцию инициализации иконки из стартерпака иконок заказанных у дизайнера
         if self._bot.bot_profile_photo is not None:
             image_data: Optional[bytes] = self._bot_api.get_image_data_by_url(self._bot.bot_profile_photo)
             image: Optional[QPixmap] = get_pixmap_image_from_bytes(image_data)
