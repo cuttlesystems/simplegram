@@ -16,11 +16,33 @@
         <translation>Пожалуйста, заполните поле с адресом сервера. Например: https://ramasuchka.kz/</translation>
     </message>
     <message>
+        <source>New Cuttle Systems bot</source>
+        <translation>Новый Cuttle Systems бот</translation>
+    </message>
+    <message>
         <source>Bot creation error: {0}</source>
         <translation>Ошибка создания бота: {0}</translation>
     </message>
 </context>
-
+<context>
+    <name>SelectedProjectWidget.manual</name>
+    <message>
+        <source>Bot is enabled</source>
+        <translation>Бот запущен</translation>
+    </message>
+    <message>
+        <source>Bot is disabled</source>
+        <translation>Бот не запущен</translation>
+    </message>
+    <message>
+        <source>Open file</source>
+        <translation>Открыть файл</translation>
+    </message>
+    <message>
+        <source>Images {0};;All files (*.*)</source>
+        <translation>Изображения {0};;Все файлы (*.*)</translation>
+    </message>
+</context>
 <context>
     <name>BotEditorForm.manual</name>
     <message>
@@ -32,6 +54,10 @@
         <translation>Ошибка изменения варианта: {0}</translation>
     </message>
     <message>
+        <source>Select only one message to set is as start message</source>
+        <translation>Выберите только одно сообщение для того, чтобы установить его как стартовое</translation>
+    </message>
+    <message>
         <source>New bot message</source>
         <translation>Новое сообщение</translation>
     </message>
@@ -40,8 +66,16 @@
         <translation>Новый вариант</translation>
     </message>
     <message>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
         <source>Please select only one block for add variant</source>
         <translation>Пожалуйста, выберите только один блок для варианта</translation>
+    </message>
+    <message>
+        <source>Variant changing error: {0}</source>
+        <translation>Ошибка изменения варианта: {0}</translation>
     </message>
     <message>
         <source>Select only one message to set as error message</source>
@@ -106,6 +140,10 @@
     <message>
         <source>Creating bot error: {0}</source>
         <translation>Ошибка при создании бота: {0}</translation>
+    </message>
+    <message>
+        <source>Getting bot list error: {0}</source>
+        <translation>Ошибка при получении списка бота: {0}</translation>
     </message>
     <message>
         <source>Changing bot error: {0}</source>
@@ -226,6 +264,22 @@
     <message>
         <source>Passwords did not match.</source>
         <translation>Пароли не совпадают.</translation>
+    </message>
+</context>
+
+<context>
+    <name>AddNewProjectWidget.manual</name>
+    <message>
+        <source>Token bot</source>
+        <translation>Токен бота</translation>
+    </message>
+    <message>
+        <source>About bot</source>
+        <translation>Описание бота</translation>
+    </message>
+        <message>
+        <source>Bot name cannot be empty</source>
+        <translation>Имя бота обязательно для заполнения</translation>
     </message>
 </context>
 

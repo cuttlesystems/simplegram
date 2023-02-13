@@ -76,7 +76,6 @@ class BotEditorWidget(QWidget):
             self._prop_model.set_token(self._bot.bot_token)
             self._prop_model.set_description(self._bot.bot_description)
             self._prop_model.set_link(self._bot.bot_link)
-
         else:
             self._prop_model.set_name('')
             self._prop_model.set_token('')
@@ -132,20 +131,13 @@ class BotEditorWidget(QWidget):
         """
         Создать, подготовить и установить контекстное меню для блока и пустой области
         """
-        # self._context_menu_block = QMenu(self)
-        #
-        # self._context_menu_block.addAction(self.on_delete_message(True))
-        # self._context_menu_block.addAction(self.on_mark_as_start_button(True))
-        # self._context_menu_block.addSeparator()
-        # self._context_menu_block.addAction(self.on_action_add_variant(True))
-        # self._context_menu_block.addAction(self.on_delete_variant(True))
-        #
-        # self._ui.graphics_view.setup_block_menu(self._context_menu_block)
-        #
-        # self._context_menu_empty = QMenu(self)
-        # #self._context_menu_empty.addAction(self._ui.action_add_message)
-        #
-        # self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
+
+       # self._context_menu_empty = QMenu(self)
+       # self._context_menu_empty.addAction(self._on_add_new_message)
+       # self.action_add_message.setObjectName(u"action_add_message")
+       # icon3 = QIcon()
+       # icon3.addFile(u":/icons/images/add_message.svg", QSize(), QIcon.Normal, QIcon.Off)
+       # self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -154,14 +146,14 @@ class BotEditorWidget(QWidget):
             variants = self._bot_api.get_variants(message)
             self._bot_scene.add_message(message, variants)
 
-    def _on_generate_bot(self, _checked: bool):
+    def _on_generate_bot(self):
         try:
             self._save_changes()
             self._bot_api.generate_bot(self._bot)
         except Exception as e:
             self._process_exception(e)
 
-    def _on_read_bot_logs(self, _checked: bool) -> None:
+    def _on_read_bot_logs(self) -> None:
         bot_logs = self._bot_api.get_bot_logs(self._bot)
         stderr_text = ''.join(bot_logs.stderr_lines)
         stdout_text = ''.join(bot_logs.stdout_lines)
@@ -174,9 +166,8 @@ class BotEditorWidget(QWidget):
         for message in scene_messages:
             self._bot_api.change_message(message)
 
-    def on_apply_button(self, _checked: bool) -> None:
+    def on_apply_button(self) -> None:
         self._save_changes()
-
 
     def _add_new_message(self, position: QPointF) -> None:
         assert isinstance(position, QPointF)
@@ -225,7 +216,7 @@ class BotEditorWidget(QWidget):
 
         self._actual_actions_state()
 
-    def _on_action_add_variant(self, _toggled: bool):
+    def _on_action_add_variant(self):
         self._add_variant()
 
     def _on_bot_scene_add_new_variant(self, _message: BotMessage, _variants: typing.List[BotVariant]):
@@ -277,19 +268,19 @@ class BotEditorWidget(QWidget):
                     self._tr('Variant changing error: {0}').format(str(exception))
                 )
 
-    def _on_start_bot(self, _checked: bool):
+    def _on_start_bot(self):
         try:
             self._bot_api.start_bot(self._bot)
         except Exception as e:
             self._process_exception(e)
 
-    def _on_stop_bot(self, _checked: bool):
+    def _on_stop_bot(self):
         try:
             self._bot_api.stop_bot(self._bot)
         except Exception as e:
             self._process_exception(e)
 
-    def _on_delete_message(self, _checked: bool):
+    def _on_delete_message(self):
         messages_for_delete = self._bot_scene.get_selected_messages()
         self._bot_scene.delete_messages(messages_for_delete)
         for message in messages_for_delete:
@@ -297,7 +288,7 @@ class BotEditorWidget(QWidget):
 
         self._actual_actions_state()
 
-    def _on_mark_as_error_button(self, _checked: bool) -> None:
+    def _on_mark_as_error_button(self) -> None:
         selected_messages = self._bot_scene.get_selected_messages()
         selected_messages_number = len(selected_messages)
         if selected_messages_number == 1:
@@ -320,7 +311,7 @@ class BotEditorWidget(QWidget):
                 self._tr('Error'),
                 self._tr('Select only one message to set as error message'))
 
-    def _on_delete_variant(self, _checked: bool):
+    def _on_delete_variant(self):
         deleted_variant: typing.Optional[BotVariant] = None
         block_with_deleted_variant: typing.Optional[BlockGraphicsItem] = None
         block_graphics = self._bot_scene.get_selected_blocks_graphics()
@@ -336,7 +327,7 @@ class BotEditorWidget(QWidget):
 
         self._actual_actions_state()
 
-    def _on_mark_as_start_button(self, _checked: bool) -> None:
+    def _on_mark_as_start_button(self) -> None:
         selected_messages = self._bot_scene.get_selected_messages()
         selected_messages_number = len(selected_messages)
         if selected_messages_number == 1:
@@ -359,7 +350,7 @@ class BotEditorWidget(QWidget):
                 self._tr('Error'),
                 self._tr('Select only one message to set as start message'))
 
-    def _on_add_new_message(self, _checked: bool) -> None:
+    def _on_add_new_message(self) -> None:
         position = self._ui.graphics_view.get_context_menu_position()
         # действие вызвано не через контекстное меню
         if position is None:

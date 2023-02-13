@@ -21,12 +21,12 @@
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="176"/>
         <source>Token bot&apos;s</source>
-        <translation type="unfinished"></translation>
+        <translation>Токен бота</translation>
     </message>
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="196"/>
         <source>About bot&apos;s</source>
-        <translation type="unfinished"></translation>
+        <translation>Описание бота</translation>
     </message>
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="238"/>

@@ -53,6 +53,12 @@
       <number>0</number>
      </property>
      <widget class="QGroupBox" name="side_bar">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="styleSheet">
        <string notr="true">QGroupBox{
 background-color: #171717;
@@ -324,7 +330,7 @@ border:none;*/
        <item>
         <widget class="QGroupBox" name="top_pannel">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -332,12 +338,6 @@ border:none;*/
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>65</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
            <height>65</height>
           </size>
          </property>
@@ -450,13 +450,14 @@ QComboBox::down-arrow {
 QComboBox::down-arrow:on { /* shift the arrow when popup is open */
     top: 1px;
     left: 1px;
+}
+
+QComboBox QAbstractItemView {
+    border: 2px solid darkgray;
+    selection-background-color: lightgray;
+	width: 150px;
 }</string>
             </property>
-            <item>
-             <property name="text">
-              <string>User</string>
-             </property>
-            </item>
            </widget>
           </item>
          </layout>
