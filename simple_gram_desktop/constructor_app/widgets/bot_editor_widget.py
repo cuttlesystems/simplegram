@@ -131,20 +131,13 @@ class BotEditorWidget(QWidget):
         """
         Создать, подготовить и установить контекстное меню для блока и пустой области
         """
-        # self._context_menu_block = QMenu(self)
-        #
-        # self._context_menu_block.addAction(self.on_delete_message(True))
-        # self._context_menu_block.addAction(self.on_mark_as_start_button(True))
-        # self._context_menu_block.addSeparator()
-        # self._context_menu_block.addAction(self.on_action_add_variant(True))
-        # self._context_menu_block.addAction(self.on_delete_variant(True))
-        #
-        # self._ui.graphics_view.setup_block_menu(self._context_menu_block)
-        #
-        # self._context_menu_empty = QMenu(self)
-        # #self._context_menu_empty.addAction(self._ui.action_add_message)
-        #
-        # self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
+
+       # self._context_menu_empty = QMenu(self)
+       # self._context_menu_empty.addAction(self._on_add_new_message)
+       # self.action_add_message.setObjectName(u"action_add_message")
+       # icon3 = QIcon()
+       # icon3.addFile(u":/icons/images/add_message.svg", QSize(), QIcon.Normal, QIcon.Off)
+       # self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -175,7 +168,6 @@ class BotEditorWidget(QWidget):
 
     def on_apply_button(self) -> None:
         self._save_changes()
-
 
     def _add_new_message(self, position: QPointF) -> None:
         assert isinstance(position, QPointF)

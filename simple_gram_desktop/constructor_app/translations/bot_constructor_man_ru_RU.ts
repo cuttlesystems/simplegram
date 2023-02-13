@@ -16,6 +16,10 @@
         <translation>Пожалуйста, заполните поле с адресом сервера. Например: https://ramasuchka.kz/</translation>
     </message>
     <message>
+        <source>New Cuttle Systems bot</source>
+        <translation>Новый Cuttle Systems бот</translation>
+    </message>
+    <message>
         <source>Bot creation error: {0}</source>
         <translation>Ошибка создания бота: {0}</translation>
     </message>
@@ -32,7 +36,7 @@
     </message>
     <message>
         <source>Select only one message to set is as start message</source>
-        <translation>Выберите только одно сообщнеие для того, чтобы установить его как стартовое</translation>
+        <translation>Выберите только одно сообщение для того, чтобы установить его как стартовое</translation>
     </message>
     <message>
         <source>New bot message</source>
@@ -52,7 +56,7 @@
     </message>
     <message>
         <source>Variant changing error: {0}</source>
-        <translation>Ошибка изменения вараинта: {0}</translation>
+        <translation>Ошибка изменения варианта: {0}</translation>
     </message>
     <message>
         <source>Select only one message to set as error message</source>

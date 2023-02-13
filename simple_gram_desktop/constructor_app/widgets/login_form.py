@@ -183,7 +183,7 @@ class LoginForm(QWidget):
         self.__load_bots_list()
         try:
             bot = self._bot_api.create_bot(
-                bot_name=self.__get_unique_bot_name('Новый Cuttle Systems бот'),
+                bot_name=self.__get_unique_bot_name(self._tr('New Cuttle Systems bot')),
                 bot_token='',
                 bot_description='')
         except BotApiException as error:
