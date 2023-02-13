@@ -105,11 +105,13 @@ class BotGenerator:
         keyboard_type = message.keyboard_type
         is_init_created = False
         additional_functions_under_answer = ''
-        if message.message_type.GOTO == MessageTypeEnum.GOTO:
+        # print(message.message_type)
+        if message.message_type == MessageTypeEnum.GOTO:
             next_message = self._get_message_object_by_id(message.id)
-            imports_for_handler += f'from .get_{next_message.id} import dp\n'
+            imports_for_handler += self._tab_from_new_line(f'from .get_{next_message.id} import sdf\n')
             next_message_handler_name = self._get_handler_name_for_message(next_message.id)
             additional_functions_under_answer = f'await {next_message_handler_name}(message, state)'
+            print(imports_for_handler)
 
         # создать файл с изображением в директории бота и вернуть адрес
         if message.photo is not None:
@@ -374,8 +376,8 @@ class BotGenerator:
 
     def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                               state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                              kb: str, handler_type: ButtonTypesEnum, extended_imports,
-                              additional_functions_from_top_of_answer, additional_functions_under_answer) -> str:
+                              kb: str, handler_type: ButtonTypesEnum, extended_imports: str,
+                              additional_functions_from_top_of_answer: str, additional_functions_under_answer: str) -> str:
         """Подготовка данных и выбор генерируемого хэндлера в зависимости от типа клавиатуры
 
         Args:
@@ -406,7 +408,7 @@ class BotGenerator:
         if handler_type == ButtonTypesEnum.REPLY:
             message_handler = create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                            state_to_set_name, text_of_answer, image_answer, kb,
-                                                           additional_functions_from_top_of_answer)
+                                                           additional_functions_from_top_of_answer, additional_functions_under_answer)
         elif handler_type == ButtonTypesEnum.INLINE:
             message_handler = create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                             state_to_set_name, text_of_answer, image_answer, kb,

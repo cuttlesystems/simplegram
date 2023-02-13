@@ -5,7 +5,8 @@ from cuttle_builder.builder.additional.file_read_write.read_file import read_fil
 
 
 def create_handler(imports: str, handler_text: str, name: str, state_content: str,
-                   send_content: str, handler_sample_name: str, additional_functions: str) -> str:
+                   send_content: str, handler_sample_name: str, additional_functions_from_top_of_answer: str,
+                   additional_functions_under_answer: str) -> str:
     """Генерирует код хэндлера, подставляя значения в шаблон
 
     Args:
@@ -15,7 +16,7 @@ def create_handler(imports: str, handler_text: str, name: str, state_content: st
         state_content (str): Строка кода с переходом в нужное состояние
         send_content (str): Контент с ответом пользователю
         handler_sample_name (str): Шаблон для подстановки данных
-        additional_functions (str): дополнительные функции хендлера
+        additional_functions_from_top_of_answer (str): дополнительные функции хендлера
 
     Returns:
         str: Сгенерированный код
@@ -28,8 +29,9 @@ def create_handler(imports: str, handler_text: str, name: str, state_content: st
     code = code.format(imports=imports,
                        handler_params=handler_text,
                        handler_name=name,
-                       additional_functions=additional_functions,
+                       additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
                        state_to_set=state_content,
-                       answer_content=send_content)
+                       answer_content=send_content,
+                       additional_functions_under_answer=additional_functions_under_answer)
     code = code.replace('\t', '    ')
     return code
