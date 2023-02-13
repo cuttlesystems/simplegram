@@ -35,48 +35,6 @@ def application_project_dir() -> Path:
     return spec_file_dir() / Path('..') / '..' / 'simple_gram_desktop'
 
 
-#def suffix_for_app_and_folder_name(application_type: ApplicationTypeEnum) -> str:
-#    """
-#    define suffix for 'simple_gram' application executable name and it's folder name
-#    """
-#    if application_type == ApplicationTypeEnum.CHAMOMILE:
-#        suffix = '_chamomile'
-#    elif application_type == ApplicationTypeEnum.SHIBOKEN:
-#        suffix = '_shiboken'
-#    else:
-#        raise NotImplementedError(f'Unsupported application type: {application_type}')
-#    return suffix
-#
-#
-#def app_and_folder_name_without_time_label(app_type: ApplicationTypeEnum) -> str:
-#    """
-#    define 'simple_gram' application executable name and it's folder name without time label
-#    """
-#    app_and_folder_name_with_no_time = f'simple_gram{suffix_for_app_and_folder_name(app_type)}'
-#    return app_and_folder_name_with_no_time
-#
-#
-#def time_suffix_for_app_and_folder_name() -> str:
-#    """
-#    create current time suffix for file/folder name
-#    """
-#    time_suffix = '_' + time.strftime("%Y_%m_%d__%H_%M_%S")
-#    return time_suffix
-#
-#
-#def app_and_folder_name_with_time_label_suffix(app_type: ApplicationTypeEnum) -> str:
-#    """
-#    define 'simple_gram' application executable name or it's folder name with time label suffix
-#    """
-#    app_and_folder_name_with_time = \
-#        f'{app_and_folder_name_without_time_label(app_type)}{time_suffix_for_app_and_folder_name()}'
-#    print(
-#        f'\n\'simple_gram\' application executable name with application type suffix and time label: '
-#        f'\'{app_and_folder_name_with_time}\'\n'
-#    )
-#    return app_and_folder_name_with_time
-
-
 # working and destination directories for executable file creation
 build_dir = get_building_dir() / 'build'
 dist_dir = get_building_dir() / 'dist'
