@@ -90,14 +90,14 @@ class BotGenerator:
         # то добавить к ней фигурные скобки
         text = self._user_message_validator.get_validated_message_text(message.text)
         # Fill in additional functions, if variables are exist, get variables, that use in text
-        additional_functions = ''
+        additional_functions_from_top_of_answer = ''
         if len(variables) != 0:
             variable_string_sequence = ", ".join(variables)
             variable_value_string_sequence = ', '.join([f"variables.get('{variable}', '')" for variable in variables])
-            additional_functions += self._tab_from_new_line('variables = await state.get_data()')
-            additional_functions += \
+            additional_functions_from_top_of_answer += self._tab_from_new_line('variables = await state.get_data()')
+            additional_functions_from_top_of_answer += \
                 self._tab_from_new_line(f'{variable_string_sequence} = {variable_value_string_sequence}')
-
+        additional_functions_under_answer = 'await '
         keyboard_generation_counter = 0
         imports_generation_counter = 0
         imports_for_handler = self._get_imports_sample('handler_import')
@@ -132,7 +132,8 @@ class BotGenerator:
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_start_handler,
-                additional_functions=additional_functions
+                additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
+                additional_functions_under_answer=''
             )
             self._file_manager.create_file_handler(str(message.id), start_handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -155,7 +156,8 @@ class BotGenerator:
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_handler,
-                additional_functions=additional_functions
+                additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
+                additional_functions_under_answer=''
             )
             self._file_manager.create_file_handler(str(message.id), error_handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -181,7 +183,8 @@ class BotGenerator:
                 kb=keyboard_name,
                 handler_type=current_message_of_variant.keyboard_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
-                additional_functions=additional_functions
+                additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
+                additional_functions_under_answer=''
             )
             self._file_manager.create_file_handler(str(message.id), handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -202,7 +205,7 @@ class BotGenerator:
             # Создание хэндлера для команды /previous_message.variable
             update_state_data = f'await state.update_data({previous_message.variable}=message.text)' \
                 if previous_message.variable else ''
-            additional_functions = self._tab_from_new_line(update_state_data) + additional_functions
+            additional_functions_from_top_of_answer = self._tab_from_new_line(update_state_data) + additional_functions_from_top_of_answer
             handler_code = self._create_state_handler(
                 command='',
                 prev_state=self._get_handler_name_for_message(previous_message.id),
@@ -213,7 +216,8 @@ class BotGenerator:
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
-                additional_functions=additional_functions
+                additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
+                additional_functions_under_answer=''
             )
             self._file_manager.create_file_handler(str(message.id), handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -362,8 +366,8 @@ class BotGenerator:
 
     def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                               state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                              kb: str, handler_type: ButtonTypesEnum, extended_imports: str = '',
-                              additional_functions: str = '') -> str:
+                              kb: str, handler_type: ButtonTypesEnum, extended_imports,
+                              additional_functions_from_top_of_answer, additional_functions_under_answer) -> str:
         """Подготовка данных и выбор генерируемого хэндлера в зависимости от типа клавиатуры
 
         Args:
@@ -381,7 +385,7 @@ class BotGenerator:
             str: generated code for handler with state and handled text
         """
         assert isinstance(handler_type, ButtonTypesEnum)
-        assert isinstance(additional_functions, str)
+        assert isinstance(additional_functions_from_top_of_answer, str)
 
         if kb is not None:
             import_keyboard = 'from keyboards import {0}'.format(kb)
@@ -393,12 +397,12 @@ class BotGenerator:
 
         if handler_type == ButtonTypesEnum.REPLY:
             message_handler = create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
-                                                state_to_set_name, text_of_answer, image_answer, kb,
-                                                additional_functions)
+                                                           state_to_set_name, text_of_answer, image_answer, kb,
+                                                           additional_functions_from_top_of_answer)
         elif handler_type == ButtonTypesEnum.INLINE:
             message_handler = create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
-                                                 state_to_set_name, text_of_answer, image_answer, kb,
-                                                 additional_functions)
+                                                            state_to_set_name, text_of_answer, image_answer, kb,
+                                                            additional_functions_from_top_of_answer)
         return message_handler
 
     def _find_previous_messages(self, message_id: int) -> typing.List[BotMessage]:
