@@ -180,7 +180,7 @@ class AddNewProjectWidget(QWidget):
             result_str = "New Cuttle Systems bot"
         else:
             result_str = None
-        if obj.text() != ("New Cuttle Systems bot" and ''):
+        if obj.text() != '':
             result_str = self._ui.name_bot_edit.text()
         return result_str
 
@@ -193,9 +193,7 @@ class AddNewProjectWidget(QWidget):
         self._ui.name_bot_edit.setStyleSheet(self._get_line_style(state))
 
     def __get_all_bots(self) -> typing.List[BotDescription]:
-        all_bots = []
-        for index in range(len(self._bot_list)):
-            all_bots.append(self._bot_list[index].bot_description)
+        all_bots = [bot.bot_description for bot in self._bot_list]
         return all_bots
 
     def __get_unique_bot_name(self, base_name: str) -> str:
