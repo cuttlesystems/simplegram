@@ -1,10 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
 from pathlib import Path
 from enum import Enum
-import time
 import PyInstaller.config
 import os
 import sys
+from application_type_enum import ApplicationTypeEnum
+from build_executable_utils import read_specfileconf, filename_to_build
+from build_executable_utils import suffix_for_app_and_folder_name, app_and_folder_name_without_time_label
+from build_executable_utils import time_suffix_for_app_and_folder_name, app_and_folder_name_with_time_label_suffix
 
 # обходное решение для добавления текущей директории в 'PYTHONPATH'
 #  небходимо для того, чтобы проходил import, выполняемый строкой ниже
@@ -45,9 +48,11 @@ PyInstaller.config.CONF['workpath'] = str(build_dir)
 # define destination directory for executable file creation
 PyInstaller.config.CONF['distpath'] = str(dist_dir)
 
+app_type = read_specfileconf()
+
 
 a = Analysis(
-    [application_project_dir() / 'start_constructor.py'],
+    [application_project_dir() / filename_to_build(app_type)],
     pathex=[
         application_project_dir(),
     ],
@@ -72,7 +77,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='simple_gram_'+time.strftime("%Y_%m_%d__%H_%M_%S"),
+    name=app_and_folder_name_with_time_label_suffix(app_type),
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -94,4 +99,4 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='simple_gram')
+               name=app_and_folder_name_without_time_label(app_type))

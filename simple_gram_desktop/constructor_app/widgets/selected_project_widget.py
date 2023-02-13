@@ -87,7 +87,8 @@ class SelectedProjectWidget(QWidget):
         # Set name bot in lineEdit
         assert isinstance(bot, BotDescription)
         assert isinstance(bot_state, bool)
-        self._bot = bot
+        # обновляем информацию о боте для корректного отображения картинки
+        self._bot = self._bot_api.get_bot_by_id(bot.id)
 
         # Установка дефолтной аватарки бота или фотки из БД, если есть.
         # toDo: Добавить функцию инициализации иконки из стартерпака иконок заказанных у дизайнера
@@ -147,9 +148,6 @@ class SelectedProjectWidget(QWidget):
             self._bot.bot_profile_photo = full_path_to_file
             self._bot.profile_photo_filename = os.path.basename(full_path_to_file)
             self._bot_api.change_bot(self._bot)
-
-            # обновляем информацию о боте для корректного отображения картинки
-            self._bot = self._bot_api.get_bot_by_id(self._bot.id)
 
             # отправляем сигнал на обновление бот_листа
             self.bot_avatar_changed_signal.emit()

@@ -348,7 +348,7 @@ class BotEditorWidget(QWidget):
             QMessageBox.warning(
                 self,
                 self._tr('Error'),
-                self._tr('Select only one message to set is as start message'))
+                self._tr('Select only one message to set as start message'))
 
     def _on_add_new_message(self) -> None:
         position = self._ui.graphics_view.get_context_menu_position()
