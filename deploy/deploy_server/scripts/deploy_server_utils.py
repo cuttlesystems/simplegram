@@ -10,6 +10,8 @@ import json
 
 from subprocess import run
 
+import docker
+
 
 @dataclass(slots=True)
 class DockerRegistryCredentials:
@@ -18,7 +20,14 @@ class DockerRegistryCredentials:
     password: str
 
 
-def write_dockerregistrycredentials():
+@dataclass(slots=True)
+class BackendServerCredentials:
+    backend_server_ip: str
+    username: str
+    password: str
+
+
+def write_dockerregistrycredentials() -> None:
     """
     write docker registry credentials into 'dockerregistrycredentials.json' file
     Returns: 'dockerregistrycredentials.json' file with credentials to login into
@@ -132,6 +141,109 @@ def get_docker_registry_credentials() -> DockerRegistryCredentials:
     return docker_registry_credentials
 
 
+def write_backend_server_credentials() -> None:
+    """
+    write application backend server credentials into 'backendservercredentials.json' file
+    Returns: 'backendservercredentials.json' file with credentials to establish SSH connection
+                with remote server where the application backend is deployed
+
+    """
+    backend_server_credentials = BackendServerCredentials(
+        backend_server_ip=input(
+            '\nEnter backend server ip (push \'Enter\' for default - \"185.146.3.196 ramashechka.kz\"): '
+        ),
+        username=input(
+            'Enter username to login into remote server (push \'Enter\' for default - \"ubuntu\"): '
+        ),
+        password=input(
+            'Enter password to login into remote server (push \'Enter\' for default - \"bZ@gfkgou2qg\"): '
+        )
+    )
+    if backend_server_credentials.backend_server_ip == '':
+        backend_server_credentials.backend_server_ip = '185.146.3.196'
+    if backend_server_credentials.username == '':
+        backend_server_credentials.username = 'ubuntu'
+    if backend_server_credentials.password == '':
+        backend_server_credentials.password = 'bZ@gfkgou2qg'
+    assert isinstance(backend_server_credentials, BackendServerCredentials)
+    params = {
+        'backend_server_ip': backend_server_credentials.backend_server_ip,
+        'username': backend_server_credentials.username,
+        'password': backend_server_credentials.password
+    }
+    with open('backendservercredentials.json', 'wt') as conffile:
+        json.dump(params, conffile)
+    print(
+        f'\n--- Credentials to establish SSH connection were written into \'backendservercredentials.json\','
+        f' content: \n      {params} ---'
+    )
+
+
+def read_backend_server_credentials() -> BackendServerCredentials:
+    """
+    read application backend server credentials from 'backendservercredentials.json' file
+    Returns: read credentials to establish SSH connection with remote server where the application backend is deployed
+                from 'backendservercredentials.json' file if this file exists or
+                outputs the message that one should create file with credentials if
+                there is no 'backendservercredentials.json' file
+
+    """
+    with open('backendservercredentials.json', 'rt', encoding='utf-8') as conffile:
+        backend_server_credentials = json.load(conffile)
+        # backend_server_ip = backend_server_credentials['backend_server_ip']
+        # username = backend_server_credentials['username']
+        # password = backend_server_credentials['password']
+
+        backend_server_credentials = BackendServerCredentials(
+            backend_server_ip=backend_server_credentials['backend_server_ip'],
+            username=backend_server_credentials['username'],
+            password=backend_server_credentials['password'],
+        )
+        print(f'\nconffile: {conffile}')
+        # print(f'\nconffile content - \'backend_server_credentials\' instance:\n'
+        #       f'{backend_server_credentials}')
+        # print(f'\nbackendservercredentials_content: {backend_server_credentials}')
+        # print(f'\nCredentials to establish SSH connection with remote server')
+        # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
+        # print(f'username: {backend_server_credentials.username}')
+        # print(f'password: {backend_server_credentials.password}')
+
+        return backend_server_credentials
+
+
+def get_backend_server_credentials() -> BackendServerCredentials:
+    """
+
+    :return:
+    """
+    backend_server_credentials_json_file_name = 'backendservercredentials.json'
+    # путь для проверки существования файла 'backendservercredentials.json'
+    #  (с данными для установления соединения по SSH с удалённым сервером)
+    #  в директории "..\deploy\deploy_server\scripts"
+    search_dir_path = Path(__file__).parent
+    backend_server_credentials_json_file_path = Path(search_dir_path) / backend_server_credentials_json_file_name
+
+    print(f'\n\'backendservercredentials.json\' file search path: {search_dir_path}')
+    # print(f'Current file name: {search_dir_path.name}')
+    print(f'\'backendservercredentials.json\' file path: {backend_server_credentials_json_file_path}')
+    if os.path.exists(backend_server_credentials_json_file_path):
+        backend_server_credentials = read_backend_server_credentials()
+        print(f'\n\'backendservercredentials.json\' file already exists in search path')
+        # print(f'\nCredentials to establish SSH connection with remote server')
+        # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
+        # print(f'username: {backend_server_credentials.username}')
+        # print(f'password: {backend_server_credentials.password}')
+    else:
+        write_backend_server_credentials()
+        backend_server_credentials = read_backend_server_credentials()
+        print(f'\n\'backendservercredentials.json\' file saved')
+        print(f'\nCredentials to establish SSH connection with remote server')
+        print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
+        print(f'username: {backend_server_credentials.username}')
+        print(f'password: {backend_server_credentials.password}')
+    return backend_server_credentials
+
+
 def docreg_login_locally():
     # get_docker_registry_credentials()
     # print(f'{get_docker_registry_credentials}')
@@ -179,3 +291,24 @@ def docreg_login_remotely():
     :return:
     """
     # ssh ubuntu@185.146.3.196 'bash -s '$(cat ~/scripts/docreg_password.txt)' '$(cat ~/scripts/docreg_password.txt)'' -- < ~/scripts/docreg_login.sh
+
+    # Create a client connecting to Docker daemon via SSH
+    client = docker.DockerClient(
+        base_url=f'ssh://{get_backend_server_credentials().username}@{get_backend_server_credentials().backend_server_ip}',
+        use_ssh_client=True
+    )
+
+    print(f'SSH connection to remote server established')
+    print(f'application backend server ip: {get_backend_server_credentials().backend_server_ip}')
+    print(f'username: {get_backend_server_credentials().username}')
+
+    print(
+        f'\nprivate docker registry logging in remotely with credentials saved to'
+        f'\'dockerregistrycredentials.json\' file to pull docker image'
+    )
+    # print(f'private docker registry server url: {get_docker_registry_credentials.docker_registry_server_url}')
+    client.login(username='admin', password='admin', registry='https://ramasuchka.kz:4443')
+    print(
+        f'\nSuccessfully logged in to private docker registry from the remote server - '
+        f'{get_backend_server_credentials().backend_server_ip}'
+    )

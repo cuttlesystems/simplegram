@@ -5,7 +5,8 @@ from pathlib import Path
 import shutil
 
 from get_repo_to_deploy_from import get_repo_to_deploy
-from scripts.deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally
+from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally
+from deploy_server_utils import docreg_login_remotely
 
 
 def check_git_python_is_installed() -> bool:
@@ -19,7 +20,40 @@ def check_git_python_is_installed() -> bool:
 
 def install_git_module() -> None:
     run(['pip', 'install', 'gitpython'])
-    print(f'gitpython module is installed')
+    print(f'\'gitpython\' module is installed')
+
+
+def check_docker_is_installed() -> bool:
+    try:
+        import docker
+        is_installed = True
+    except ImportError:
+        is_installed = False
+    return is_installed
+
+
+def install_docker_module() -> None:
+    run(['pip', 'install', 'docker'])
+    print(f'\'docker\' module is installed')
+
+
+def check_paramiko_is_installed() -> bool:
+    """
+    define function to check whether the 'paramiko' package
+    which is used to enable ssh:// support for Docker daemon connection
+    :return:
+    """
+    try:
+        import paramiko
+        is_installed = True
+    except ImportError:
+        is_installed = False
+    return is_installed
+
+
+def install_paramiko_module() -> None:
+    run(['pip', 'install', 'paramiko'])
+    print(f'\'paramiko\' module is installed')
 
 
 if __name__ == '__main__':
@@ -30,10 +64,21 @@ if __name__ == '__main__':
     # run([get_venv_python_path(venv_dir), '-m', 'pip', 'install', '--upgrade', 'pip'])
     # run(['../venv/Scripts/python.exe', '-m', 'pip', 'install', '--upgrade', 'pip'])
     run([f'{system_python_path}', '-m', 'pip', 'install', '--upgrade', 'pip'])
-    print(f'\ngit module is installed: {check_git_python_is_installed()}')
+    print(f'\n\'git\' module is installed: {check_git_python_is_installed()}')
+    print(f'\n\'docker\' module is installed: {check_docker_is_installed()}')
+    print(f'\n\'paramiko\' module is installed: {check_paramiko_is_installed()}')
 
+    # install 'GitPython' module if not installed yet
     if not check_git_python_is_installed():
         install_git_module()
+
+    # install 'docker' module if not installed yet
+    if not check_docker_is_installed():
+        install_docker_module()
+
+    # install 'paramiko' module if not installed yet
+    if not check_paramiko_is_installed():
+        install_paramiko_module()
 
     # from subprocess import Popen, PIPE
     result = subprocess.Popen(['pip', 'list'], text=True, stdout=subprocess.PIPE)
@@ -157,3 +202,7 @@ if __name__ == '__main__':
 
     # private docker registry logging out locally
     docreg_logout_locally()
+
+    # private docker registry logging in remotely with credentials saved to
+    #  'dockerregistrycredentials.json' file to pull docker image
+    docreg_login_remotely()
