@@ -81,7 +81,7 @@ class SelectedProjectWidget(QWidget):
             self._ui.marker_state_bot.setStyleSheet(
                 "QLabel{border-radius:8px; border:none; color:white;"
                 "background-color:#FF5F8F;}")
-            self._ui.marker_state_bot.setText(self._tr(u"Bot is disabled"))
+            self._ui.marker_state_bot.setText(self._tr("Bot is disabled"))
 
     def set_bot(self, bot: BotDescription, bot_state: bool) -> None:
         # Set name bot in lineEdit
@@ -137,7 +137,7 @@ class SelectedProjectWidget(QWidget):
             parent=self,
             caption=self._tr('Open file'),
             dir='',
-            filter=f'Images {self._IMAGE_ALLOWED_FORMATS};;All files (*.*)'
+            filter=self._tr('Images {0};;All files (*.*)').format(self._IMAGE_ALLOWED_FORMATS)
         )
         if len(file_info[0]) > 0:
             full_path_to_file: str = file_info[0]

@@ -23,6 +23,7 @@
         <source>Bot creation error: {0}</source>
         <translation>Ошибка создания бота: {0}</translation>
     </message>
+</context>
 <context>
     <name>SelectedProjectWidget.manual</name>
     <message>
@@ -36,6 +37,10 @@
     <message>
         <source>Open file</source>
         <translation>Открыть файл</translation>
+    </message>
+    <message>
+        <source>Images {0};;All files (*.*)</source>
+        <translation>Изображения {0};;Все файлы (*.*)</translation>
     </message>
 </context>
 <context>
