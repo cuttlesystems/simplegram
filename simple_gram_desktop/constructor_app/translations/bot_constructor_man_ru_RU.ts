@@ -23,6 +23,20 @@
         <source>Bot creation error: {0}</source>
         <translation>Ошибка создания бота: {0}</translation>
     </message>
+<context>
+    <name>SelectedProjectWidget.manual</name>
+    <message>
+        <source>Bot is enabled</source>
+        <translation>Бот запущен</translation>
+    </message>
+    <message>
+        <source>Bot is disabled</source>
+        <translation>Бот не запущен</translation>
+    </message>
+    <message>
+        <source>Open file</source>
+        <translation>Открыть файл</translation>
+    </message>
 </context>
 <context>
     <name>BotEditorForm.manual</name>
@@ -257,6 +271,10 @@
     <message>
         <source>About bot</source>
         <translation>Описание бота</translation>
+    </message>
+        <message>
+        <source>Bot name cannot be empty</source>
+        <translation>Имя бота обязательно для заполнения</translation>
     </message>
 </context>
 

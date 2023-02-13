@@ -554,7 +554,7 @@ class BotApiByRequests(IBotApi):
         )
         if response.status_code != requests.status_codes.codes.ok:
             raise BotStopException(response)
-            # raise BotApiException(
+            #raise BotApiException(
             #     self._tr('Bot stop error: {0}').format(response.text))
 
     def get_running_bots_info(self) -> List[int]:

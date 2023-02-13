@@ -167,6 +167,7 @@ class AddNewProjectWidget(QWidget):
         return result
 
     def _line_filter(self, event: QtCore.QEvent.Type, obj: QObject) -> None:
+        # toDo: Добавить typing.cast и ассерт что это qwidget
         if event == QtCore.QEvent.Type.HoverEnter and not obj.hasFocus():
             obj.setStyleSheet(self._get_line_style(StatedStylesheetEnum.HOVER))
         elif event == QtCore.QEvent.Type.HoverLeave and not obj.hasFocus():

@@ -58,14 +58,14 @@ class SelectedProjectWidget(QWidget):
             self._ui.marker_state_bot.setStyleSheet(
                 "QLabel{border-radius:8px; border:none; color:white;"
                 "background-color:#4DAAFF;}")
-            self._ui.marker_state_bot.setText(self._tr(u"Bot is enabled"))
+            self._ui.marker_state_bot.setText(self._tr("Bot is enabled"))
             self._bot_api.start_bot(self._bot)
             self.activated_bot_signal.emit()
         else:
             self._ui.marker_state_bot.setStyleSheet(
                 "QLabel{border-radius:8px; border:none; color:white;"
                 "background-color:#FF5F8F;}")
-            self._ui.marker_state_bot.setText(self._tr(u"Bot is disabled"))
+            self._ui.marker_state_bot.setText(self._tr("Bot is disabled"))
             self._bot_api.stop_bot(self._bot)
             self.activated_bot_signal.emit()
 
@@ -76,7 +76,7 @@ class SelectedProjectWidget(QWidget):
             self._ui.marker_state_bot.setStyleSheet(
                 "QLabel{border-radius:8px; border:none; color:white;"
                 "background-color:#4DAAFF;}")
-            self._ui.marker_state_bot.setText(self._tr(u"Bot is enabled"))
+            self._ui.marker_state_bot.setText(self._tr("Bot is enabled"))
         else:
             self._ui.marker_state_bot.setStyleSheet(
                 "QLabel{border-radius:8px; border:none; color:white;"
@@ -136,7 +136,7 @@ class SelectedProjectWidget(QWidget):
     def _set_bot_image(self, checked: bool) -> None:
         file_info = QFileDialog.getOpenFileName(
             parent=self,
-            caption='Open file',
+            caption=self._tr('Open file'),
             dir='',
             filter=f'Images {self._IMAGE_ALLOWED_FORMATS};;All files (*.*)'
         )
