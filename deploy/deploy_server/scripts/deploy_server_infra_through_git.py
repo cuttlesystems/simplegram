@@ -5,7 +5,8 @@ from pathlib import Path
 import shutil
 
 from get_repo_to_deploy_from import get_repo_to_deploy
-from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally
+from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally, \
+    add_key_to_known_hosts, gen_ssh_key_pair
 from deploy_server_utils import docreg_login_remotely
 
 
@@ -203,6 +204,10 @@ if __name__ == '__main__':
     # private docker registry logging out locally
     docreg_logout_locally()
 
+    # add_key_to_known_hosts()
+
     # private docker registry logging in remotely with credentials saved to
     #  'dockerregistrycredentials.json' file to pull docker image
-    docreg_login_remotely()
+    # docreg_login_remotely()
+
+    gen_ssh_key_pair()

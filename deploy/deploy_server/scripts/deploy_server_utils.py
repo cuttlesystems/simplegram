@@ -290,6 +290,8 @@ def docreg_login_remotely():
 
     :return:
     """
+    add_key_to_known_hosts()
+
     # ssh ubuntu@185.146.3.196 'bash -s '$(cat ~/scripts/docreg_password.txt)' '$(cat ~/scripts/docreg_password.txt)'' -- < ~/scripts/docreg_login.sh
 
     # Create a client connecting to Docker daemon via SSH
@@ -312,3 +314,135 @@ def docreg_login_remotely():
         f'\nSuccessfully logged in to private docker registry from the remote server - '
         f'{get_backend_server_credentials().backend_server_ip}'
     )
+
+
+# def add_key_to_known_hosts() -> None:
+#     """
+#
+#     :return:
+#     """
+#     # получение пути к директории пользователя
+#     user_path = Path('~').expanduser()
+#     print(f'Path to user directory: {user_path}')
+#
+#     # path to 'known_hosts' file
+#     path_to_known_hosts = Path(user_path) / '.ssh' / 'known_hosts'
+#     print(f'Path to \'known_hosts\' file: {path_to_known_hosts}')
+#
+#     # ssh-keygen -f "/home/user/.ssh/known_hosts" -R "git@gitlab.praktikum-services.ru"
+#     # add correct host key in '<user_path>/.ssh/known_hosts' file
+#     run(
+#         [
+#             f'ssh-keygen',
+#             '-f',
+#             f'{path_to_known_hosts}',
+#             '-R',
+#             # f'{get_backend_server_credentials().backend_server_ip}'
+#             f'185.146.3.196'
+#         ]
+#     )
+#     print(f'host key in \'{path_to_known_hosts}\' file')
+
+# ssh-copy-id -i ~/.ssh/id_rsa.pub git@gitlab.praktikum-services.ru
+def add_pub_key_to_remote_server() -> None:
+    """
+
+    :return:
+    """
+    # получение пути к директории пользователя
+    user_path = Path('~').expanduser()
+    print(f'Path to user directory: {user_path}')
+
+    # path to 'known_hosts' file
+    path_to_known_hosts = Path(user_path) / '.ssh' / 'known_hosts'
+    print(f'Path to \'known_hosts\' file: {path_to_known_hosts}')
+
+    # ssh-keygen -f "/home/user/.ssh/known_hosts" -R "git@gitlab.praktikum-services.ru"
+    # add correct host key in '<user_path>/.ssh/known_hosts' file
+    run(
+        [
+            f'ssh-copy-id',
+            '-i',
+            f'{path_to_known_hosts}',
+            '-R',
+            f'{get_backend_server_credentials().username}@{get_backend_server_credentials().backend_server_ip}'
+        ]
+    )
+
+
+def get_rsa_pub_key_directory_path() -> Path:
+    """
+    define function to get an RSA key directory path - '<user_path>/.ssh'
+    :return:
+    """
+    # path to user directory
+    user_path = Path('~').expanduser()
+    print(f'Path to user directory: {user_path}')
+
+    # path to '<user_path>/.ssh' directory
+    rsa_pub_key_directory_path = Path(user_path) / '.ssh'
+    print(f'Path to \'<user_path>/.ssh\' directory: {rsa_pub_key_directory_path}')
+    return rsa_pub_key_directory_path
+
+
+def get_rsa_pub_key_path() -> Path:
+    """
+    define function to get an RSA key path - '<user_path>/.ssh/id_rsa'
+    :return:
+
+    """
+    # path to RSA key - '<user_path>/.ssh/id_rsa'
+    rsa_pub_key_path = Path(get_rsa_pub_key_directory_path()) / 'id_rsa'
+    print(f'Path to \'<user_path>/.ssh/id_rsa\' file: {rsa_pub_key_path}')
+    return rsa_pub_key_path
+
+
+def rsa_pub_key_present() -> bool:
+    """
+    define function to check if there is an RSA key already present in '<user_path>/.ssh' directory
+    :return: bool
+                'True' if RSA key is already present in '<user_path>/.ssh' directory
+                'False' if there's no RSA key '<user_path>/.ssh' directory
+    """
+    if 'id_rsa' in os.listdir(get_rsa_pub_key_directory_path()):
+        return True
+    else:
+        return False
+
+
+def show(msg):
+    """
+    define function to print debug messages and script process notifications
+    :param msg: str
+    :return: local print( ) function
+
+    """
+    print(msg)
+
+
+def gen_ssh_key_pair() -> None:
+    """
+    define function to generate SSH key pair if it doesn't exist
+    :return: SSH key pair
+    """
+    os.chdir(get_rsa_pub_key_directory_path())
+    if rsa_pub_key_present():
+        show(f'SSH key is already present in \'<user_path>/.ssh\' directory')
+    else:
+        # generate SSH key pair
+        # subprocess.call('ssh-keygen', shell=True)
+        # ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y
+        run(
+            [
+                'ssh-keygen',
+                # '-q',
+                '-t',
+                'rsa',
+                '-N',
+                '',
+                '-f',
+                f'{get_rsa_pub_key_path()}'
+                # '<<<',
+                # 'y'
+            ]
+        )
