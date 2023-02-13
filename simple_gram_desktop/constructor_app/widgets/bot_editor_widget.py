@@ -216,7 +216,7 @@ class BotEditorWidget(QWidget):
 
         self._actual_actions_state()
 
-    def _on_action_add_variant(self, _toggled: bool):
+    def _on_action_add_variant(self):
         self._add_variant()
 
     def _on_bot_scene_add_new_variant(self, _message: BotMessage, _variants: typing.List[BotVariant]):

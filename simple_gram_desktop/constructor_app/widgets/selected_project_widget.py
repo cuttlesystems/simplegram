@@ -122,7 +122,6 @@ class SelectedProjectWidget(QWidget):
             self._prop_model.set_description('')
             self._prop_model.set_link('')
 
-        self._bot_api.generate_bot(self._bot)
         self._load_bot_scene()
 
     def set_bot_api(self, bot_api: IBotApi):

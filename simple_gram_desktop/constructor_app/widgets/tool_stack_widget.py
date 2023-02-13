@@ -94,28 +94,28 @@ class ToolStackWidget(QWidget):
         assert isinstance(enabled, bool)
         self._ui.add_variant_button.setEnabled(enabled)
 
-    def _on_add_new_message(self) -> None:
+    def _on_add_new_message(self, _toggled: bool) -> None:
         self.add_message_signal.emit()
 
-    def _on_action_add_variant(self) -> None:
+    def _on_action_add_variant(self, _toggled: bool) -> None:
         self.add_variant_signal.emit()
 
-    def _on_delete_message(self) -> None:
+    def _on_delete_message(self, _toggled: bool) -> None:
         self.delete_message_signal.emit()
 
-    def _on_generate_bot(self) -> None:
+    def _on_generate_bot(self, _toggled: bool) -> None:
         self.generate_bot_signal.emit()
 
-    def _on_mark_as_start(self) -> None:
+    def _on_mark_as_start(self, _toggled: bool) -> None:
         self.mark_as_start_signal.emit()
 
-    def _on_mark_as_error(self) -> None:
+    def _on_mark_as_error(self, _toggled: bool) -> None:
         self.mark_as_error_signal.emit()
 
-    def _on_delete_variant(self) -> None:
+    def _on_delete_variant(self, _toggled: bool) -> None:
         self.delete_variant_signal.emit()
 
-    def _on_read_bot_logs(self) -> None:
+    def _on_read_bot_logs(self, _toggled: bool) -> None:
         self.read_bot_logs_signal.emit()
 
     def _init_stylesheet(self, night: bool) -> None:
