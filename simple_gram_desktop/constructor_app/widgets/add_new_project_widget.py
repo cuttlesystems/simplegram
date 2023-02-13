@@ -79,29 +79,30 @@ class AddNewProjectWidget(QWidget):
     def _init_stylesheet(self, night: bool) -> None:
         # toDO: поменять даркмод режим на изменение qssа и все qss вынести в отдельный файлпроекта или
         #  для каждого окна сделать свой первострочный инициализатор qss
+        # toDO: доработать где возможно повторения
         self._ui.background_father_widget.setStyleSheet(
-            self._get_group_style(StatedStylesheet.MISS)
+            self._get_group_style(StatedStylesheetEnum.MISS)
         )
         self._ui.token_bot_edit.setStyleSheet(
-            self._get_line_style(StatedStylesheet.MISS)
+            self._get_line_style(StatedStylesheetEnum.MISS)
         )
         self._ui.about_bot_edit.setStyleSheet(
-            self._get_line_style(StatedStylesheet.MISS)
+            self._get_line_style(StatedStylesheetEnum.MISS)
         )
         self._ui.name_bot_edit.setStyleSheet(
-            self._get_line_style(StatedStylesheet.MISS)
+            self._get_line_style(StatedStylesheetEnum.MISS)
         )
 
-    def _get_group_style(self, state: StatedStylesheet) -> str:
-        assert isinstance(state, StatedStylesheet)
+    def _get_group_style(self, state: StatedStylesheetEnum) -> str:
+        assert isinstance(state, StatedStylesheetEnum)
         group_style = ''
-        if state == StatedStylesheet.HOVER:
+        if state == StatedStylesheetEnum.HOVER:
             group_style = (
                 "QGroupBox{border: none; border-radius: 16px; background-color: " +
                 BlockColorScheme.color_group_hover
                 + ";}"
             )
-        elif state == StatedStylesheet.MISS:
+        elif state == StatedStylesheetEnum.MISS:
             group_style = (
                 "QGroupBox{border: none; border-radius: 16px; background-color: " +
                 BlockColorScheme.color_group_miss
@@ -109,28 +110,28 @@ class AddNewProjectWidget(QWidget):
             )
         return group_style
 
-    def _get_line_style(self, state: StatedStylesheet) -> str:
-        assert isinstance(state, StatedStylesheet)
+    def _get_line_style(self, state: StatedStylesheetEnum) -> str:
+        assert isinstance(state, StatedStylesheetEnum)
         line_style = ''
-        if state == StatedStylesheet.HOVER:
+        if state == StatedStylesheetEnum.HOVER:
             line_style = (
                 "QLineEdit{border: 1px solid " + BlockColorScheme.color_line_hover + "; "
                 "color: " + BlockColorScheme.color_line_hover + "; "
                 "border-radius:8px; background-color: transparent;}"
             )
-        elif state == StatedStylesheet.MISS:
+        elif state == StatedStylesheetEnum.MISS:
             line_style = (
                 "QLineEdit{border: 1px solid " + BlockColorScheme.color_line_miss + "; "
                 "color: " + BlockColorScheme.color_line_miss + "; "
                 "border-radius:8px; background-color: transparent;}"
             )
-        elif state == StatedStylesheet.FOCUS:
+        elif state == StatedStylesheetEnum.FOCUS:
             line_style = (
                 "QLineEdit{border: 1px solid " + BlockColorScheme.color_line_focus + "; "
                 "color: " + BlockColorScheme.color_line_focus + "; "
                 "border-radius:8px; background-color: transparent;}"
             )
-        elif state == StatedStylesheet.NORMAL:
+        elif state == StatedStylesheetEnum.NORMAL:
             line_style = (
                 "QLineEdit{border: 1px solid " + BlockColorScheme.color_line_normal + "; "
                 "color: " + BlockColorScheme.color_line_normal + "; "
@@ -145,10 +146,10 @@ class AddNewProjectWidget(QWidget):
         if obj == self._ui.background_father_widget:
             if event.type() == QtCore.QEvent.Type.HoverLeave:
                 if self._check_lines_not_focus():
-                    self._group_set_style(StatedStylesheet.MISS)
+                    self._group_set_style(StatedStylesheetEnum.MISS)
             elif event.type() == QtCore.QEvent.Type.HoverEnter:
                 if self._check_lines_not_focus():
-                    self._group_set_style(StatedStylesheet.HOVER)
+                    self._group_set_style(StatedStylesheetEnum.HOVER)
 
         elif obj == self._ui.token_bot_edit:
             self._line_filter(event.type(), obj)
@@ -167,13 +168,13 @@ class AddNewProjectWidget(QWidget):
 
     def _line_filter(self, event: QtCore.QEvent.Type, obj: QObject) -> None:
         if event == QtCore.QEvent.Type.HoverEnter and not obj.hasFocus():
-            obj.setStyleSheet(self._get_line_style(StatedStylesheet.HOVER))
+            obj.setStyleSheet(self._get_line_style(StatedStylesheetEnum.HOVER))
         elif event == QtCore.QEvent.Type.HoverLeave and not obj.hasFocus():
-            obj.setStyleSheet(self._get_line_style(StatedStylesheet.NORMAL))
+            obj.setStyleSheet(self._get_line_style(StatedStylesheetEnum.NORMAL))
         elif event == QtCore.QEvent.Type.FocusIn:
-            obj.setStyleSheet(self._get_line_style(StatedStylesheet.FOCUS))
+            obj.setStyleSheet(self._get_line_style(StatedStylesheetEnum.FOCUS))
         elif event == QtCore.QEvent.Type.FocusOut:
-            obj.setStyleSheet(self._get_line_style(StatedStylesheet.NORMAL))
+            obj.setStyleSheet(self._get_line_style(StatedStylesheetEnum.NORMAL))
 
     def _line_check(self, obj: QObject) -> str:
         if obj == self._ui.name_bot_edit:
@@ -184,10 +185,10 @@ class AddNewProjectWidget(QWidget):
             result_str = self._ui.name_bot_edit.text()
         return result_str
 
-    def _group_set_style(self, state: StatedStylesheet):
+    def _group_set_style(self, state: StatedStylesheetEnum):
         self._ui.background_father_widget.setStyleSheet(self._get_group_style(state))
-        if state == StatedStylesheet.HOVER:
-            state = StatedStylesheet.NORMAL
+        if state == StatedStylesheetEnum.HOVER:
+            state = StatedStylesheetEnum.NORMAL
         self._ui.token_bot_edit.setStyleSheet(self._get_line_style(state))
         self._ui.about_bot_edit.setStyleSheet(self._get_line_style(state))
         self._ui.name_bot_edit.setStyleSheet(self._get_line_style(state))
