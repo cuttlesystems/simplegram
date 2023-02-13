@@ -343,33 +343,6 @@ def docreg_login_remotely():
 #     )
 #     print(f'host key in \'{path_to_known_hosts}\' file')
 
-# ssh-copy-id -i ~/.ssh/id_rsa.pub git@gitlab.praktikum-services.ru
-def add_pub_key_to_remote_server() -> None:
-    """
-
-    :return:
-    """
-    # получение пути к директории пользователя
-    user_path = Path('~').expanduser()
-    print(f'Path to user directory: {user_path}')
-
-    # path to 'known_hosts' file
-    path_to_known_hosts = Path(user_path) / '.ssh' / 'known_hosts'
-    print(f'Path to \'known_hosts\' file: {path_to_known_hosts}')
-
-    # ssh-keygen -f "/home/user/.ssh/known_hosts" -R "git@gitlab.praktikum-services.ru"
-    # add correct host key in '<user_path>/.ssh/known_hosts' file
-    run(
-        [
-            f'ssh-copy-id',
-            '-i',
-            f'{path_to_known_hosts}',
-            '-R',
-            f'{get_backend_server_credentials().username}@{get_backend_server_credentials().backend_server_ip}'
-        ]
-    )
-
-
 def get_rsa_pub_key_directory_path() -> Path:
     """
     define function to get an RSA key directory path - '<user_path>/.ssh'
@@ -446,3 +419,27 @@ def gen_ssh_key_pair() -> None:
                 # 'y'
             ]
         )
+
+
+def add_pub_key_to_remote_server() -> None:
+    """
+    # ssh-copy-id -i ~/.ssh/id_rsa.pub git@gitlab.praktikum-services.ru
+    :return:
+
+    """
+    # path to 'pub' file
+    rsa_pub_key_pub_path = Path(get_rsa_pub_key_path().with_suffix('.pub'))
+    print(f'Path to \'<user_path>/.ssh/id_rsa.pub\' file: {rsa_pub_key_pub_path}')
+
+    # ssh-copy-id -i ~/.ssh/id_rsa.pub git@gitlab.praktikum-services.ru
+    run(
+        [
+            f'ssh-copy-id',
+            '-i',
+            # f'{rsa_pub_key_pub_path}',
+            f'C:\\Users\\saifs\\.ssh\\id_rsa.pub',
+            # f'{get_backend_server_credentials().username}@{get_backend_server_credentials().backend_server_ip}'
+            f'ubuntu@185.146.3.196'
+        ]
+    )
+    print(f'\n\'id_rsa.pub\' file added to remote server')
