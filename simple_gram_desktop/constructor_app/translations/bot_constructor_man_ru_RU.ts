@@ -244,4 +244,16 @@
     </message>
 </context>
 
+<context>
+    <name>AddNewProjectWidget.manual</name>
+    <message>
+        <source>Token bot</source>
+        <translation>Токен бота</translation>
+    </message>
+    <message>
+        <source>About bot</source>
+        <translation>Описание бота</translation>
+    </message>
+</context>
+
 </TS>

@@ -73,8 +73,8 @@ class AddNewProjectWidget(QWidget):
         self._bot_api = bot_api
 
     def init_placeholder_text_line(self):
-        self._ui.token_bot_edit.setPlaceholderText("Token bot")
-        self._ui.about_bot_edit.setPlaceholderText("About bot")
+        self._ui.token_bot_edit.setPlaceholderText(self._tr("Token bot"))
+        self._ui.about_bot_edit.setPlaceholderText(self._tr("About bot"))
 
     def _init_stylesheet(self, night: bool) -> None:
         # toDO: поменять даркмод режим на изменение qssа и все qss вынести в отдельный файлпроекта или
@@ -176,15 +176,6 @@ class AddNewProjectWidget(QWidget):
         elif event == QtCore.QEvent.Type.FocusOut:
             obj.setStyleSheet(self._get_line_style(StatedStylesheetEnum.NORMAL))
 
-    def _line_check(self, obj: QObject) -> str:
-        if obj == self._ui.name_bot_edit:
-            result_str = "New Cuttle Systems bot"
-        else:
-            result_str = None
-        if obj.text() != '':
-            result_str = self._ui.name_bot_edit.text()
-        return result_str
-
     def _group_set_style(self, state: StatedStylesheetEnum):
         self._ui.background_father_widget.setStyleSheet(self._get_group_style(state))
         if state == StatedStylesheetEnum.HOVER:
@@ -203,14 +194,19 @@ class AddNewProjectWidget(QWidget):
 
     def _add_new_bot(self):
         try:
-            name_bot = self._line_check(self._ui.name_bot_edit)
-            self._bot_api.create_bot(
-                bot_name=self.__get_unique_bot_name(name_bot),
-                bot_token=self._line_check(self._ui.token_bot_edit),
-                bot_description=self._line_check(self._ui.about_bot_edit)
-            )
-            QMessageBox.information(self, 'created', 'created')
-            self.new_bot_added.emit()
+            name_bot = self._ui.name_bot_edit.text()
+            if name_bot != '':
+                self._bot_api.create_bot(
+                    bot_name=self.__get_unique_bot_name(name_bot),
+                    bot_token=self._ui.token_bot_edit.text(),
+                    bot_description=self._ui.about_bot_edit.text()
+                )
+                # toDO: Перенести на кастомное диалоговое окно
+                QMessageBox.information(self, 'created', 'created')
+                self.new_bot_added.emit()
+            else:
+                # toDO: Перенести на кастомное диалоговое окно
+                QMessageBox.warning(self, 'Error', self._tr('Bot name cannot be empty'))
         except BotApiMessageException as error:
             QMessageBox.warning(self, self._tr('Error'), self._tr('Bot creation error: {0}').format(error))
 
