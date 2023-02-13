@@ -4,7 +4,8 @@ import typing
 import os
 from pathlib import Path
 
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand, \
+    MessageTypeEnum
 from cuttle_builder.builder.additional.helpers.user_message_validator import UserMessageValidator
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
@@ -97,12 +98,19 @@ class BotGenerator:
             additional_functions_from_top_of_answer += self._tab_from_new_line('variables = await state.get_data()')
             additional_functions_from_top_of_answer += \
                 self._tab_from_new_line(f'{variable_string_sequence} = {variable_value_string_sequence}')
-        additional_functions_under_answer = 'await '
+
         keyboard_generation_counter = 0
         imports_generation_counter = 0
         imports_for_handler = self._get_imports_sample('handler_import')
         keyboard_type = message.keyboard_type
         is_init_created = False
+        additional_functions_under_answer = ''
+        if message.message_type.GOTO == MessageTypeEnum.GOTO:
+            next_message = self._get_message_object_by_id(message.id)
+            imports_for_handler += f'from .get_{next_message.id} import dp\n'
+            next_message_handler_name = self._get_handler_name_for_message(next_message.id)
+            additional_functions_under_answer = f'await {next_message_handler_name}(message, state)'
+
         # создать файл с изображением в директории бота и вернуть адрес
         if message.photo is not None:
             image = self.create_image_file_in_bot_directory(
@@ -133,7 +141,7 @@ class BotGenerator:
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_start_handler,
                 additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
-                additional_functions_under_answer=''
+                additional_functions_under_answer=additional_functions_under_answer
             )
             self._file_manager.create_file_handler(str(message.id), start_handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -157,7 +165,7 @@ class BotGenerator:
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_handler,
                 additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
-                additional_functions_under_answer=''
+                additional_functions_under_answer=additional_functions_under_answer
             )
             self._file_manager.create_file_handler(str(message.id), error_handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -184,7 +192,7 @@ class BotGenerator:
                 handler_type=current_message_of_variant.keyboard_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
                 additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
-                additional_functions_under_answer=''
+                additional_functions_under_answer=additional_functions_under_answer
             )
             self._file_manager.create_file_handler(str(message.id), handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
@@ -217,7 +225,7 @@ class BotGenerator:
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
                 additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
-                additional_functions_under_answer=''
+                additional_functions_under_answer=additional_functions_under_answer
             )
             self._file_manager.create_file_handler(str(message.id), handler_code)
             is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
