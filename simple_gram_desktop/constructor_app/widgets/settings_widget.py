@@ -1,8 +1,10 @@
 from typing import Optional
 
 from PySide6.QtWidgets import QWidget
+from PySide6.QtCore import Qt
 
 from constructor_app.widgets.ui_settings_widget import Ui_SettingsWidget
+
 
 class SettingsWidget(QWidget):
     """
@@ -16,11 +18,13 @@ class SettingsWidget(QWidget):
         self._ui = Ui_SettingsWidget()
         self._ui.setupUi(self)
 
-        self.setWindowFlags(Qt.FramelessWindowHint |                #Отключаем оформление окна
-                             Qt.Tool |                              #Отменяем показ в качестве отдельного окна
-                             Qt.WindowStaysOnTopHint)               #Устанавливаем поверх всех окон
-        self.setAttribute(Qt.WA_TranslucentBackground)              #Указываем, что фон будет прозрачным
-        self.setAttribute(Qt.WA_ShowWithoutActivating)
+        # Отключаем оформление окна
+        # Отменяем показ в качестве отдельного окна
+        # Устанавливаем поверх всех окон
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool | Qt.WindowType.WindowStaysOnTopHint)
+        # Указываем, что фон будет прозрачным
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating)
 
 
 
