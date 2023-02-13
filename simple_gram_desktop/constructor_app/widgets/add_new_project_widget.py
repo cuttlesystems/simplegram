@@ -16,7 +16,7 @@ from network.bot_api_by_request_extended import BotApiMessageException, BotDescr
 from constructor_app.widgets.bot_extended import BotExtended
 
 
-class StatedStylesheet(Enum):
+class StatedStylesheetEnum(Enum):
     HOVER = 1
     MISS = 2
     FOCUS = 3
