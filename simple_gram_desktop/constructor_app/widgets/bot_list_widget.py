@@ -51,7 +51,7 @@ class BotListWidget(QListWidget):
 
     def remove_bot(self, row: int):
         # Заготовква для дальнейшей реализации удаления бота из списка бокового меню
-        # toDo: Добавить удаление из списка проектов с сервера
+        # toDo: Добавить удаление со списка
         item = self.item(row)
         self.removeItemWidget(item)
 
@@ -73,3 +73,7 @@ class BotListWidget(QListWidget):
         else:
             bot = self._bots_list[row]
         return bot
+
+    def clear(self) -> None:
+        self._bots_list.clear()
+        super().clear()
