@@ -4,6 +4,7 @@
 
 @dp.message_handler({handler_params})
 async def handler_message_{handler_name}(message: types.Message, state: FSMContext):
-    {additional_functions} # additional functions
+    {additional_functions_from_top_of_answer} # additional functions
     {state_to_set}  # set state
     {answer_content}  # send message
+    {additional_functions_under_answer} # additional functions
