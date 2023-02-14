@@ -166,7 +166,7 @@ class LoginWidget(QWidget):
         # toDo: If this will be used in the future, then put the colors in the parameters
         qp = QPainter(self)
         try:
-            if self._background != None and self._image != None:
+            if self._background is not None and self._image is not None:
                 qp.setPen(QtGui.QPen(QColor(0, 0, 0, 0), 1))
                 qp.setBrush(QBrush(self._background))
                 qp.drawRect(QRect(0, 0, self.width(), self.height()))
