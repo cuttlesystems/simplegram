@@ -81,6 +81,37 @@
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>32</width>
+     <height>32</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_add_message"/>
+   <addaction name="action_delete_message"/>
+   <addaction name="separator"/>
+   <addaction name="action_add_variant"/>
+   <addaction name="action_delete_variant"/>
+   <addaction name="separator"/>
+   <addaction name="action_mark_start"/>
+   <addaction name="action_mark_error"/>
+   <addaction name="separator"/>
+   <addaction name="action_generate_bot"/>
+   <addaction name="action_start_bot"/>
+   <addaction name="action_stop_bot"/>
+   <addaction name="action_read_logs"/>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -121,37 +152,6 @@
    <addaction name="menuMessage"/>
    <addaction name="menuScheme"/>
    <addaction name="menuBit"/>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>32</width>
-     <height>32</height>
-    </size>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="action_add_message"/>
-   <addaction name="action_delete_message"/>
-   <addaction name="separator"/>
-   <addaction name="action_add_variant"/>
-   <addaction name="action_delete_variant"/>
-   <addaction name="separator"/>
-   <addaction name="action_mark_start"/>
-   <addaction name="action_mark_error"/>
-   <addaction name="separator"/>
-   <addaction name="action_generate_bot"/>
-   <addaction name="action_start_bot"/>
-   <addaction name="action_stop_bot"/>
-   <addaction name="action_read_logs"/>
   </widget>
   <action name="action_generate_bot">
    <property name="icon">

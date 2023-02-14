@@ -116,6 +116,8 @@ class BotEditorForm(QMainWindow):
         """
         self._context_menu_block = QMenu(self)
 
+        
+
         self._context_menu_block.addAction(self._ui.action_delete_message)
         self._context_menu_block.addAction(self._ui.action_mark_start)
         self._context_menu_block.addSeparator()

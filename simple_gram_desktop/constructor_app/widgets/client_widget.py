@@ -36,8 +36,8 @@ class ClientWidget(QWidget):
     # инициализация окна с редактором бота
     _BOT_REDACTOR_PAGE = 4
 
-    # временная переменная надо придумать адекватное решение
-    _MAX_SIZE_EDITOR_STACKED_WIDGET = 3
+    # максимальное значение страниц/виджетов в стеке редактора
+    _MAX_SIZE_EDITOR_STACKED_WIDGET = 1
 
     def __init__(self, parent: Optional[QWidget] = None):
         # toDO: Добавить функцию инициализации QSS
@@ -69,6 +69,8 @@ class ClientWidget(QWidget):
             QtGui.QPixmap(":/icons/widgets/times_icon/user_icon.png"), self._tr("Profile"))
         self._ui.user_widget.addItem(
             QtGui.QPixmap(":/icons/widgets/times_icon/exit_account_icon.png"), self._tr("Log out"))
+
+        self._bot_editor_index: Optional[int] = None
 
     def _start_login_users(self) -> None:
         # выстравляю страницу инициализации
@@ -148,11 +150,13 @@ class ClientWidget(QWidget):
             bot_editor.set_bot_api(self._bot_api)
             bot_editor.setup_tool_stack(self._ui.tool_stack)
             bot_editor.set_bot(bot)
-            if self._ui.bot_editor_stacked.count() == self._MAX_SIZE_EDITOR_STACKED_WIDGET:
-                count_widget = self._ui.bot_editor_stacked.widget(self._ui.bot_editor_stacked.count()-1)
-                count_widget.save_bot()
+
+            if self._bot_editor_index is not None:
+                count_widget = self._ui.bot_editor_stacked.widget(self._bot_editor_index)
+                count_widget.forced_close_bot()
                 self._ui.bot_editor_stacked.removeWidget(count_widget)
-            self._ui.bot_editor_stacked.addWidget(bot_editor)
+
+            self._bot_editor_index = self._ui.bot_editor_stacked.addWidget(bot_editor)
             self._ui.bot_editor_stacked.setCurrentIndex(self._ui.bot_editor_stacked.count()-1)
         except requests.exceptions.ConnectionError as e:
             # toDo: add translate kz, ru
