@@ -107,10 +107,10 @@ class BotGenerator:
         additional_functions_under_answer = ''
         # print(message.message_type)
         if message.message_type == MessageTypeEnum.GOTO:
-            next_message = self._get_message_object_by_id(message.id)
-            imports_for_handler += self._tab_from_new_line(f'from .get_{next_message.id} import sdf\n')
+            next_message = self._get_message_object_by_id(message.next_message_id)
             next_message_handler_name = self._get_handler_name_for_message(next_message.id)
-            additional_functions_under_answer = f'await {next_message_handler_name}(message, state)'
+            imports_for_handler += self._tab_from_new_line(f'from .get_{next_message.id} import handler_message_{next_message_handler_name}\n')
+            additional_functions_under_answer = f'await handler_message_{next_message_handler_name}(message, state)'
             print(imports_for_handler)
 
         # создать файл с изображением в директории бота и вернуть адрес
@@ -412,7 +412,7 @@ class BotGenerator:
         elif handler_type == ButtonTypesEnum.INLINE:
             message_handler = create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                             state_to_set_name, text_of_answer, image_answer, kb,
-                                                            additional_functions_from_top_of_answer)
+                                                            additional_functions_from_top_of_answer, additional_functions_under_answer)
         return message_handler
 
     def _find_previous_messages(self, message_id: int) -> typing.List[BotMessage]:
