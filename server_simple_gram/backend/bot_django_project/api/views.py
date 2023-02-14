@@ -18,8 +18,8 @@ from rest_framework.request import Request
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
-from utils.notification_sender import NotificationSender
-from utils.notification_sender_to_bot_manager import NotificationSenderToBotManager
+from process_manager_utils.notification_sender import NotificationSender
+from process_manager_utils.notification_sender_to_bot_manager import NotificationSenderToBotManager
 from .utils import check_bot_token_when_generate_bot
 from cuttle_builder.bot_generator_db import BotGeneratorDb
 from cuttle_builder.exceptions.bot_gen_exceptions import BotGeneratorException

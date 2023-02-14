@@ -1,7 +1,7 @@
 from typing import Optional
 
 from b_logic.bot_processes_manager import BotProcessesManagerSingle
-from utils.notification_sender import NotificationSender
+from process_manager_utils.notification_sender import NotificationSender
 
 
 class NotificationSenderToBotManager(NotificationSender):

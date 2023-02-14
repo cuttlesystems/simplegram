@@ -166,3 +166,16 @@ class Command(models.Model):
     def __str__(self):
         string = f'Command_id {self.id}: {self.command}'
         return cut_string(string, MAX_CHARS)
+
+
+class StartedBotsStorage(models.Model):
+    bots_list = models.TextField('Started bots')
+    created_at = models.DateTimeField('Creation date', auto_now_add=True)
+
+    class Meta:
+        get_latest_by = ['created_at']
+        verbose_name = 'Started bots storage'
+
+    def __str__(self):
+        string = f'Started bots: {self.bots_list}'
+        return cut_string(string, MAX_CHARS)
