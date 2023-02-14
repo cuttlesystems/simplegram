@@ -48,9 +48,6 @@ class LoginWidget(QWidget):
         self._image: typing.Optional[QPixmap] = None
         self._background: typing.Optional[QLinearGradient] = None
 
-        # self.setStyleSheet("#LoginWidget{ border-image: url(:/icons/widgets/times_icon/background_texture.png);}")
-        self._count_paint = 0
-
     def _clicked_login_button(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
         username_edit: QLineEdit = self._ui.username_edit
@@ -154,8 +151,8 @@ class LoginWidget(QWidget):
     def resizeEvent(self, event: PySide6.QtGui.QResizeEvent) -> None:
         # toDo: If this will be used in the future, then put the colors in the parameters
         self._background = QLinearGradient()
-        self._background.setStart(QPoint(int(self.width()/2), 0))
-        self._background.setFinalStop(QPoint(int(self.width()/2), self.height()))
+        self._background.setStart(QPoint(int(self.width() / 2), 0))
+        self._background.setFinalStop(QPoint(int(self.width() / 2), self.height()))
         self._background.setColorAt(0, QColor(57, 178, 146))
         self._background.setColorAt(0.5, QColor(68, 159, 167))
         self._background.setColorAt(1, QColor(82, 136, 193))
