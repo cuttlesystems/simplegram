@@ -75,7 +75,15 @@
        </layout>
       </widget>
      </widget>
-     <widget class="BotView" name="graphics_view"/>
+     <widget class="BotView" name="graphics_view">
+      <property name="styleSheet">
+       <string notr="true">QGraphicsView
+{
+border:none;
+background:transparent;
+}</string>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>

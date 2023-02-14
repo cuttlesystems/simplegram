@@ -16,6 +16,7 @@ from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
 from constructor_app.widgets.bot_extended import BotExtended
 from network.bot_api_by_request_extended import BotApiMessageException
 from constructor_app.widgets.selected_project_widget import SelectedProjectWidget
+from constructor_app.widgets.bot_editor_widget import BotEditorWidget
 
 
 class ClientWidget(QWidget):
@@ -34,6 +35,9 @@ class ClientWidget(QWidget):
     _NEW_BOT_INDEX_PAGE = 3
     # инициализация окна с редактором бота
     _BOT_REDACTOR_PAGE = 4
+
+    # временная переменная надо придумать адекватное решение
+    _MAX_SIZE_EDITOR_STACKED_WIDGET = 3
 
     def __init__(self, parent: Optional[QWidget] = None):
         # toDO: Добавить функцию инициализации QSS
@@ -61,10 +65,10 @@ class ClientWidget(QWidget):
         # первое открытие приложения, инициализация авторизации
         self._start_login_users()
 
-
-        self._ui.user_widget.addItem(QtGui.QPixmap(":/icons/widgets/times_icon/user_icon.png"), self._tr("Profile"))
-        self._ui.user_widget.addItem(QtGui.QPixmap(":/icons/widgets/times_icon/exit_account_icon.png"),
-                                     self._tr("Exit"))
+        self._ui.user_widget.addItem(
+            QtGui.QPixmap(":/icons/widgets/times_icon/user_icon.png"), self._tr("Profile"))
+        self._ui.user_widget.addItem(
+            QtGui.QPixmap(":/icons/widgets/times_icon/exit_account_icon.png"), self._tr("Log out"))
 
     def _start_login_users(self) -> None:
         # выстравляю страницу инициализации
@@ -117,7 +121,7 @@ class ClientWidget(QWidget):
 
     def _start_new_project(self) -> None:
         # инициализация окна с добавлением нового бота
-        # выстравляю страницу добавления новго бота
+        # выставляю страницу добавления нового бота
         self._ui.centrall_pannel_widget.setCurrentIndex(self._NEW_BOT_INDEX_PAGE)
         self._ui.bot_new_creator_page.set_all_bot(self._ui.bot_list.get_bots())
         self._ui.bot_new_creator_page.set_bot_api(self._bot_api)
@@ -139,9 +143,17 @@ class ClientWidget(QWidget):
 
             bot_id = bot_extended.bot_description.id
             bot = self._bot_api.get_bot_by_id(bot_id)
-            self._ui.bot_redactor_page.set_bot_api(self._bot_api)
-            self._ui.bot_redactor_page.setup_tool_stack(self._ui.tool_stack)
-            self._ui.bot_redactor_page.set_bot(bot)
+
+            bot_editor = BotEditorWidget()
+            bot_editor.set_bot_api(self._bot_api)
+            bot_editor.setup_tool_stack(self._ui.tool_stack)
+            bot_editor.set_bot(bot)
+            if self._ui.bot_editor_stacked.count() == self._MAX_SIZE_EDITOR_STACKED_WIDGET:
+                count_widget = self._ui.bot_editor_stacked.widget(self._ui.bot_editor_stacked.count()-1)
+                count_widget.save_bot()
+                self._ui.bot_editor_stacked.removeWidget(count_widget)
+            self._ui.bot_editor_stacked.addWidget(bot_editor)
+            self._ui.bot_editor_stacked.setCurrentIndex(self._ui.bot_editor_stacked.count()-1)
         except requests.exceptions.ConnectionError as e:
             # toDo: add translate kz, ru
             QMessageBox.warning(self, self._tr('Error'), self._tr('Connection error: {0}').format(e))

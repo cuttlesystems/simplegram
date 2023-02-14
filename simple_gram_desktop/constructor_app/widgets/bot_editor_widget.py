@@ -21,6 +21,7 @@ from constructor_app.widgets.bot_properties_model import BotPropertiesModel
 
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 
+
 class BotEditorWidget(QWidget):
     """
     Окно редактора бота
@@ -406,6 +407,10 @@ class BotEditorWidget(QWidget):
         self._tool_stack_widget.set_mark_start_enabled(one_selected_block)
         self._tool_stack_widget.set_mark_error_enabled(one_selected_block)
         self._tool_stack_widget.set_add_variant_enabled(one_selected_block)
+
+    def save_bot(self) -> None:
+        self._save_changes()
+        self.close_bot.emit()
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         self._save_changes()
