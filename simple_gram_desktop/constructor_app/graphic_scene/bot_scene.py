@@ -9,7 +9,7 @@ from b_logic.data_objects import BotMessage, BotVariant, BotDescription
 from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from constructor_app.graphic_scene.colors.scene_color_scheme import SceneColorScheme
 
-from constructor_app.widgets.block_widget import BlockWidget
+
 class BotScene(QGraphicsScene):
     """
     Сцена для отображения редактора бота

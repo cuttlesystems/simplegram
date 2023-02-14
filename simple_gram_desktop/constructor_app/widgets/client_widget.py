@@ -152,9 +152,9 @@ class ClientWidget(QWidget):
             bot_editor.set_bot(bot)
 
             if self._bot_editor_index is not None:
-                count_widget = self._ui.bot_editor_stacked.widget(self._bot_editor_index)
-                count_widget.forced_close_bot()
-                self._ui.bot_editor_stacked.removeWidget(count_widget)
+                closed_bot_editor_widget = self._ui.bot_editor_stacked.widget(self._bot_editor_index)
+                closed_bot_editor_widget.forced_close_bot()
+                self._ui.bot_editor_stacked.removeWidget(closed_bot_editor_widget)
 
             self._bot_editor_index = self._ui.bot_editor_stacked.addWidget(bot_editor)
             self._ui.bot_editor_stacked.setCurrentIndex(self._ui.bot_editor_stacked.count()-1)
