@@ -3,7 +3,7 @@ import typing
 
 from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal, QPointF, QRect
-from PySide6.QtGui import QPainter, QBrush, QColor
+from PySide6.QtGui import QPainter, QBrush, QColor, QAction
 from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
@@ -20,6 +20,7 @@ from constructor_app.widgets.bot_editor.variant_editor_dialog import VariantEdit
 from constructor_app.widgets.bot_properties_model import BotPropertiesModel
 
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
+
 
 class BotEditorWidget(QWidget):
     """
@@ -60,6 +61,11 @@ class BotEditorWidget(QWidget):
         self._prepare_and_setup_context_menu()
 
         self._connect_signals()
+
+        self._menu_scheme: QMenu() = None
+        self._menu_message: QMenu() = None
+        self._menu_variant: QMenu() = None
+
 
     def set_bot_api(self, bot_api: IBotApi):
         # toDo: добавить заполнение через IBotApi
@@ -132,12 +138,6 @@ class BotEditorWidget(QWidget):
         Создать, подготовить и установить контекстное меню для блока и пустой области
         """
 
-       # self._context_menu_empty = QMenu(self)
-       # self._context_menu_empty.addAction(self._on_add_new_message)
-       # self.action_add_message.setObjectName(u"action_add_message")
-       # icon3 = QIcon()
-       # icon3.addFile(u":/icons/images/add_message.svg", QSize(), QIcon.Normal, QIcon.Off)
-       # self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()
@@ -406,6 +406,10 @@ class BotEditorWidget(QWidget):
         self._tool_stack_widget.set_mark_start_enabled(one_selected_block)
         self._tool_stack_widget.set_mark_error_enabled(one_selected_block)
         self._tool_stack_widget.set_add_variant_enabled(one_selected_block)
+
+    def forced_close_bot(self) -> None:
+        self._save_changes()
+        self.close_bot.emit()
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         self._save_changes()

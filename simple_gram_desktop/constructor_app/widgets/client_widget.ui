@@ -477,7 +477,7 @@ border:none;
 background: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(57, 178, 146, 255), stop:0.5 rgba(68, 159, 167, 255), stop:1 rgba(82, 136, 193, 255)) }</string>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>4</number>
          </property>
          <widget class="LoginWidget" name="login_page">
           <property name="styleSheet">
@@ -511,8 +511,27 @@ border-image:url(:/icons/widgets/times_icon/background_texture.png);
          <widget class="AddNewProjectWidget" name="bot_new_creator_page">
           <layout class="QHBoxLayout" name="horizontalLayout_3"/>
          </widget>
-         <widget class="BotEditorWidget" name="bot_redactor_page">
-          <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+         <widget class="QWidget" name="bot_redactor_page">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QStackedWidget" name="bot_editor_stacked"/>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>
@@ -550,12 +569,6 @@ border-image:url(:/icons/widgets/times_icon/background_texture.png);
    <class>ToolStackWidget</class>
    <extends>QWidget</extends>
    <header>constructor_app.widgets.tool_stack_widget</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>BotEditorWidget</class>
-   <extends>QWidget</extends>
-   <header>constructor_app.widgets.bot_editor_widget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

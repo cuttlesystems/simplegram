@@ -75,7 +75,16 @@
        </layout>
       </widget>
      </widget>
-     <widget class="BotView" name="graphics_view"/>
+     <widget class="BotView" name="graphics_view">
+      <property name="styleSheet">
+       <string notr="true">QGraphicsView{
+border:1px solid rgb(191,191,191);
+background:transparent;
+background-color: rgb(41,42,47);
+background-image: url(:/icons/widgets/times_icon/texture_scene.png)
+}</string>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>
