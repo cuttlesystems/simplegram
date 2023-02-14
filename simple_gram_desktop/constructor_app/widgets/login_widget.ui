@@ -108,7 +108,9 @@ margin-bottom:15px;
             <item>
              <widget class="QRadioButton" name="login_radiobutton">
               <property name="styleSheet">
-               <string notr="true">QRadioButton{}
+               <string notr="true">QRadioButton{
+text-align: center;
+}
 
 QRadioButton:checked{color:#292A2F;}
 

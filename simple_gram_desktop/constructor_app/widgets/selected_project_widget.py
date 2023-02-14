@@ -40,7 +40,6 @@ class SelectedProjectWidget(QWidget):
         self._bot: Optional[BotDescription] = None
         self._bot_scene: Optional[BotScene] = None
 
-
     def _init_StyleSheet(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
         #  инициализатор qss

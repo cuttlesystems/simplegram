@@ -1,8 +1,10 @@
 import typing
 
-from PySide6.QtGui import Qt, QPaintEvent, QPixmap, QPainter, QLinearGradient, QColor, QBrush
+import PySide6
+from PySide6 import QtGui
+from PySide6.QtGui import QPaintEvent, QPixmap, QPainter, QLinearGradient, QColor, QBrush, QPalette, QResizeEvent
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox
-from PySide6.QtCore import QObject, Slot, Signal, QThread, QSize, QPoint, QRect
+from PySide6.QtCore import QObject, Slot, Signal, QThread, QSize, QPoint, QRect, Qt
 
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from b_logic.bot_api.i_bot_api import BotApiException
@@ -42,6 +44,9 @@ class LoginWidget(QWidget):
 
         # подключаю переключатель логин/регистрация
         self._ui.registrate_radiobutton.toggled.connect(self._toggled_registration)
+
+        self._image: typing.Optional[QPixmap] = None
+        self._background: typing.Optional[QLinearGradient] = None
 
     def _clicked_login_button(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
@@ -105,15 +110,6 @@ class LoginWidget(QWidget):
     def _switch_login(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой
         #  первострочный инициализатор qss и доработать режим входа/регистрации
-        #if (self._ui.switchActivatedBot.isChecked()):
-        #    self._ui.markerActivisionBot.setStyleSheet("QLabel{border-radius:8px; border:none; color:white;"
-        #                                                   "background-color:#4DAAFF;}")
-        #    self._ui.markerActivisionBot.setText(u"Бот запущен")
-        #    self.ActivatedBotSignal.emit(True)
-        #else:
-        #    self._ui.markerActivisionBot.setStyleSheet("QLabel{border-radius:8px; border:none; color:white;"
-        #                                                   "background-color:#FF5F8F;}")
-        #    self._ui.markerActivisionBot.setText(u"Бот не активен")
         self.registrated_state_signal.emit(False)
 
     def _toggled_registration(self):
@@ -152,19 +148,28 @@ class LoginWidget(QWidget):
         self._ui.password_edit.setText(settings.password)
         self._ui.server_addr_edit.setText(settings.address)
 
+    def resizeEvent(self, event: PySide6.QtGui.QResizeEvent) -> None:
+        # toDo: If this will be used in the future, then put the colors in the parameters
+        self._background = QLinearGradient()
+        self._background.setStart(QPoint(int(self.width() / 2), 0))
+        self._background.setFinalStop(QPoint(int(self.width() / 2), self.height()))
+        self._background.setColorAt(0, QColor(57, 178, 146))
+        self._background.setColorAt(0.5, QColor(68, 159, 167))
+        self._background.setColorAt(1, QColor(82, 136, 193))
+
+        self._image = QPixmap(":icons/widgets/times_icon/background_texture.png").scaled(self.size())
+
     def paintEvent(self, event: QPaintEvent) -> None:
         # toDo: If this will be used in the future, then put the colors in the parameters
         qp = QPainter(self)
-        background = QLinearGradient()
-        background.setStart(QPoint(self.width()/2, 0))
-        background.setFinalStop(QPoint(self.width()/2, self.height()))
-        background.setColorAt(0, QColor(57, 178, 146))
-        background.setColorAt(0.5, QColor(68, 159, 167))
-        background.setColorAt(1, QColor(82, 136, 193))
-        qp.setBrush(QBrush(background))
-        qp.drawRect(QRect(0, 0, self.width(), self.height()))
-        #qp.drawPixmap(0, 0, QPixmap(":icons/widgets/times_icon/background_texture.png").scaled(self.size()))
-        qp.end()
+        try:
+            if self._background is not None and self._image is not None:
+                qp.setPen(QtGui.QPen(QColor(0, 0, 0, 0), 1))
+                qp.setBrush(QBrush(self._background))
+                qp.drawRect(QRect(0, 0, self.width(), self.height()))
+                qp.drawPixmap(0, 0, self._image)
+        finally:
+            qp.end()
 
     def _tr(self, text: str) -> str:
         return tran('LoginWidget.manual', text)
