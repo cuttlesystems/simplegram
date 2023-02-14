@@ -1,5 +1,6 @@
 import typing
 
+import PySide6
 from PySide6 import QtGui
 from PySide6.QtGui import QPaintEvent, QPixmap, QPainter, QLinearGradient, QColor, QBrush, QPalette, QResizeEvent
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox
@@ -44,15 +45,11 @@ class LoginWidget(QWidget):
         # подключаю переключатель логин/регистрация
         self._ui.registrate_radiobutton.toggled.connect(self._toggled_registration)
 
-        #size = self.size()
-        ##QPixmap(":/icons/widgets/times_icon/background_texture.png").scaled(size, Qt.AspectRatioMode.IgnoreAspectRatio)
-        #background_img = QBrush(QColor(0, 0, 0))
-        #palette = QPalette()
-        #palette.setBrush(QtGui.QPalette.ColorGroup.Normal, QtGui.QPalette.ColorRole.Window, background_img)
-        #self.setPalette(palette)
+        self._image: typing.Optional[QPixmap] = None
+        self._background: typing.Optional[QLinearGradient] = None
 
         # self.setStyleSheet("#LoginWidget{ border-image: url(:/icons/widgets/times_icon/background_texture.png);}")
-
+        self._count_paint = 0
 
     def _clicked_login_button(self):
         server_addr_edit: QLineEdit = self._ui.server_addr_edit
@@ -154,20 +151,28 @@ class LoginWidget(QWidget):
         self._ui.password_edit.setText(settings.password)
         self._ui.server_addr_edit.setText(settings.address)
 
+    def resizeEvent(self, event: PySide6.QtGui.QResizeEvent) -> None:
+        # toDo: If this will be used in the future, then put the colors in the parameters
+        self._background = QLinearGradient()
+        self._background.setStart(QPoint(self.width()/2, 0))
+        self._background.setFinalStop(QPoint(self.width()/2, self.height()))
+        self._background.setColorAt(0, QColor(57, 178, 146))
+        self._background.setColorAt(0.5, QColor(68, 159, 167))
+        self._background.setColorAt(1, QColor(82, 136, 193))
+
+        self._image = QPixmap(":icons/widgets/times_icon/background_texture.png").scaled(self.size())
+
     def paintEvent(self, event: QPaintEvent) -> None:
         # toDo: If this will be used in the future, then put the colors in the parameters
         qp = QPainter(self)
-        background = QLinearGradient()
-        background.setStart(QPoint(self.width()/2, 0))
-        background.setFinalStop(QPoint(self.width()/2, self.height()))
-        background.setColorAt(0, QColor(57, 178, 146))
-        background.setColorAt(0.5, QColor(68, 159, 167))
-        background.setColorAt(1, QColor(82, 136, 193))
-        qp.setBrush(QBrush(background))
-        qp.drawRect(QRect(0, 0, self.width(), self.height()))
-        pixmap = QPixmap(":icons/widgets/times_icon/background_texture.png")
-        qp.drawPixmap(0, 0, QPixmap(":icons/widgets/times_icon/background_texture.png").scaled(self.size()))
-        qp.end()
+        try:
+            if self._background != None and self._image != None:
+                qp.setPen(QtGui.QPen(QColor(0, 0, 0, 0), 1))
+                qp.setBrush(QBrush(self._background))
+                qp.drawRect(QRect(0, 0, self.width(), self.height()))
+                qp.drawPixmap(0, 0, self._image)
+        finally:
+            qp.end()
 
     def _tr(self, text: str) -> str:
         return tran('LoginWidget.manual', text)
