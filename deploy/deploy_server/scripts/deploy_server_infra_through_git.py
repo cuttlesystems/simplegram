@@ -6,6 +6,7 @@ import shutil
 
 from get_repo_to_deploy_from import get_repo_to_deploy
 from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally
+from deploy_server_utils import get_postgres_env_file_path
 from deploy_server_utils import move_rsa_pub_key_to_remote
 # from deploy_server_utils import rsa_key_based_connect
 from deploy_server_utils import get_backend_server_credentials, gen_ssh_key_pair
@@ -112,8 +113,10 @@ if __name__ == '__main__':
     import git
     from git import Repo
 
-    # define parameters for a request
+    # define parameters for a request to GitHub
+    # Personal Access Token (PAT) for authorization in GitHub repo
     token = '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'
+    # organization in GitHub the repository belongs to
     owner = 'cuttlesystems'
     # repo = 'tg_bot_constructor'
     path = 'README.md'
@@ -123,7 +126,7 @@ if __name__ == '__main__':
         # repo = git.Repo(project_dir)
         print(f'\nproject_dir: ', project_dir)
         print(f'\nLocal repository: ', repo)
-        # URL 4 cloning a private repo using HTTPS with gitpython
+        # URL 4 cloning a private repo using HTTPS with GitPython
         HTTPS_REMOTE_URL = f'https://{token}:x-oauth-basic@github.com/{owner}/{repo}'
         print(f'\nURL 4 cloning a private repo using HTTPS with gitpython: {HTTPS_REMOTE_URL}')
         Repo.clone_from(
@@ -192,13 +195,25 @@ if __name__ == '__main__':
         origin.pull()
         print(f'\nGit pull from \'{origin}/{branch}\' completed\n')
 
+    # get values from '.env' file
+    # echo
+    # 'DB_ENGINE=django.db.backends.postgresql
+    # DB_NAME=bot_constructor
+    # POSTGRES_USER=postgres
+    # POSTGRES_PASSWORD=zarFad-huqdit-qavry0
+    # DB_HOST=172.21.0.1
+    # DB_PORT=5432
+    # DOMAIN_HOST=ramasuchka.kz
+    # HOST_PROTOCOL=https' > ./$GH_REPO/deploy/deploy_server/infra/.env
+    # echo ""
+    # echo "'.env-файл' создан в директории '$GH_REPO/deploy/deploy_server/infra/'"
+    # echo ""
+    postgres_env_file_path = get_postgres_env_file_path()
+    print(f'postgres_env_file path: {postgres_env_file_path}')
+
+    exit(0)
     # get credentials saved to 'dockerregistrycredentials.json' file to log in private docker registry
     docker_registry_credentials = get_docker_registry_credentials()
-
-    # private docker registry logging in remotely through 'ssh' and
-    #  with 2 command line parameters (without '--password-stdin') to pull docker image to the server
-    #  for 'simple_gram' application background image deployment
-    # docreg_login_remotely()
 
     # private docker registry logging in locally with credentials
     #  saved to 'dockerregistrycredentials.json' file to push docker image
@@ -209,6 +224,7 @@ if __name__ == '__main__':
 
     # add_key_to_known_hosts()
     # rsa_key_based_connect()
+
     # generate SSH key pair before remote Docker daemon usage if keys don't exist yet
     gen_ssh_key_pair()
 
@@ -218,6 +234,16 @@ if __name__ == '__main__':
     # credentials to establish SSH connection with remote server where the application backend is deployed
     backend_server_credentials = get_backend_server_credentials()
 
-    # private docker registry logging in remotely with credentials saved to
+    # private docker registry logging in remotely through DockerClient with credentials saved to
     #  'dockerregistrycredentials.json' file to pull docker image
     docreg_login_remotely(backend_server_credentials)
+
+    # build with '--no-cache' option 'infra-web' image
+    # ./ scripts / build_no_cache_infra_web_image.sh
+    # #!/bin/bash
+    # cd ~/tg_bot_constructor/deploy/deploy_server/infra/
+    # sudo docker-compose build --no-cache web
+    # exit 0
+
+    # local docker registry login with '--password-stdin' to push docker image
+    # ./ scripts / docreg_login_locally.sh $(cat ~ / scripts / docreg_password.txt) < ~ / scripts / docreg_password.txt

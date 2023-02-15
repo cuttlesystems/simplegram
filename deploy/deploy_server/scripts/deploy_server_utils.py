@@ -28,6 +28,26 @@ class BackendServerCredentials:
     password: str
 
 
+@dataclass(slots=True)
+class PostgresEnvVariables:
+    DB_ENGINE: str
+    DB_NAME: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    DB_HOST: str
+    DB_PORT: str
+    DOMAIN_HOST: str
+    HOST_PROTOCOL: str
+    # 'DB_ENGINE=django.db.backends.postgresql
+    # DB_NAME=bot_constructor
+    # POSTGRES_USER=postgres
+    # POSTGRES_PASSWORD=zarFad-huqdit-qavry0
+    # DB_HOST=172.21.0.1
+    # DB_PORT=5432
+    # DOMAIN_HOST=ramasuchka.kz
+    # HOST_PROTOCOL=https'
+
+
 def get_docker_registry_credentials_json_file_path() -> Path:
     """
 
@@ -506,3 +526,128 @@ def move_rsa_pub_key_to_remote() -> None:
     )
     ssh_stdin.close()
 
+
+def get_postgres_env_file_path() -> Path:
+    """
+    define function to get '.env' file (with postgres environment variables) path
+    :return:
+        '.env' file path
+    """
+    postgres_env_file_name = '.env'
+    # путь для проверки существования файла '.env'
+    #  (с переменными оружения для функционирования базы данных postgres)
+    #  в директории "..\deploy\deploy_server\infra"
+    search_dir_path = Path(__file__).parent.parent / 'infra'
+    postgres_env_file_path = search_dir_path / postgres_env_file_name
+
+    print(f'\n\'.env\' file search path: {search_dir_path}')
+    print(f'Current file name: {search_dir_path.name}')
+    print(f'\'.env\' file path: {postgres_env_file_path}')
+    return postgres_env_file_path
+
+
+def write_postgres_env_variables() -> None:
+    """
+    write postgres environment variables into '.env' file
+    Returns:
+        '.env' file with postgres environment variables for postgresDB functionality
+
+    """
+    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<----------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    postgres_env_variables = PostgresEnvVariables(
+        DB_ENGINE=input(
+            '\nEnter \'DB_ENGINE\' value (push \'Enter\' for default - \"django.db.backends.postgresql\"): '
+        ),
+        DB_NAME=input(
+            'Enter \'DB_NAME\' value (push \'Enter\' for default - \"bot_constructor\"): '
+        ),
+        POSTGRES_USER=input(
+            'Enter \'POSTGRES_USER\' value (push \'Enter\' for default - \"postgres\"): '
+        ),
+        POSTGRES_PASSWORD=input(
+            'Enter \'POSTGRES_PASSWORD\' value (push \'Enter\' for default - \"zarFad-huqdit-qavry0\"): '
+        ),
+        DB_HOST=input(
+            'Enter \'DB_HOST\' value (push \'Enter\' for default - \"172.21.0.1\"): '
+        ),
+        DB_PORT=input(
+            'Enter \'DB_PORT\' value (push \'Enter\' for default - \"5432\"): '
+        ),
+        DOMAIN_HOST=input(
+            'Enter \'DOMAIN_HOST\' value (push \'Enter\' for default - \"ramasuchka.kz\"): '
+        ),
+        HOST_PROTOCOL=input(
+            'Enter \'HOST_PROTOCOL\' value (push \'Enter\' for default - \"https\"): '
+        )
+    )
+    if postgres_env_variables.DB_ENGINE == '':
+        postgres_env_variables.DB_ENGINE = 'django.db.backends.postgresql'
+    if postgres_env_variables.DB_NAME == '':
+        postgres_env_variables.DB_NAME = 'bot_constructor'
+    if postgres_env_variables.POSTGRES_USER == '':
+        postgres_env_variables.POSTGRES_USER = 'postgres'
+    if postgres_env_variables.POSTGRES_PASSWORD == '':
+        postgres_env_variables.POSTGRES_PASSWORD = 'zarFad-huqdit-qavry0'
+    if postgres_env_variables.DB_HOST == '':
+        postgres_env_variables.DB_HOST = '172.21.0.1'
+    if postgres_env_variables.DB_PORT == '':
+        postgres_env_variables.DB_PORT = '5432'
+    if postgres_env_variables.DOMAIN_HOST == '':
+        postgres_env_variables.DOMAIN_HOST = 'ramasuchka.kz'
+    if postgres_env_variables.HOST_PROTOCOL == '':
+        postgres_env_variables.HOST_PROTOCOL = 'https'
+    assert isinstance(postgres_env_variables, PostgresEnvVariables)
+    params = {
+        'DB_ENGINE': postgres_env_variables.DB_ENGINE,
+        'DB_NAME': postgres_env_variables.DB_NAME,
+        'POSTGRES_USER': postgres_env_variables.POSTGRES_USER,
+        'POSTGRES_PASSWORD': postgres_env_variables.POSTGRES_PASSWORD,
+        'DB_HOST': postgres_env_variables.DB_HOST,
+        'DB_PORT': postgres_env_variables.DB_PORT,
+        'DOMAIN_HOST': postgres_env_variables.DOMAIN_HOST,
+        'HOST_PROTOCOL': postgres_env_variables.HOST_PROTOCOL
+    }
+    with open(get_postgres_env_file_path(), 'wt', encoding='utf-8') as envfile:
+        json.dump(params, envfile)
+    print(
+        f'\n---------------------------------------------------------\n'
+        f'postgres environment variables were written into '
+        f'\'{get_postgres_env_file_path()}\',\n'
+        f'content: {params}'
+        f'\n---------------------------------------------------------\n'
+    )
+
+
+def read_postgres_env_variables() -> PostgresEnvVariables:
+    """
+    read postgres environment variables from '.env' file
+    Returns:
+        postgres environment variables' values from '.env' file needed for postgresDB functionality
+
+    """
+    with open(get_postgres_env_file_path(), 'rt', encoding='utf-8') as envfile:
+        postgres_env_variables = json.load(envfile)
+    # backend_server_ip = backend_server_credentials['backend_server_ip']
+    # username = backend_server_credentials['username']
+    # password = backend_server_credentials['password']
+
+    postgres_env_variables = PostgresEnvVariables(
+        DB_ENGINE=postgres_env_variables['DB_ENGINE'],
+        DB_NAME=postgres_env_variables['DB_NAME'],
+        POSTGRES_USER=postgres_env_variables['POSTGRES_USER'],
+        POSTGRES_PASSWORD=postgres_env_variables['POSTGRES_USER'],
+        DB_HOST=postgres_env_variables['POSTGRES_USER'],
+        DB_PORT=postgres_env_variables['POSTGRES_USER'],
+        DOMAIN_HOST=postgres_env_variables['POSTGRES_USER'],
+        HOST_PROTOCOL=postgres_env_variables['POSTGRES_USER']
+    )
+    # print(f'\nconffile: {conffile}')
+    # print(f'\nconffile content - \'backend_server_credentials\' instance:\n'
+    #       f'{backend_server_credentials}')
+    # print(f'\nbackendservercredentials_content: {backend_server_credentials}')
+    # print(f'\nCredentials to establish SSH connection with remote server')
+    # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
+    # print(f'username: {backend_server_credentials.username}')
+    # print(f'password: {backend_server_credentials.password}')
+
+    return postgres_env_variables
