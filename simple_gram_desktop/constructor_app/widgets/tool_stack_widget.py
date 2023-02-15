@@ -1,9 +1,9 @@
 import typing
 
-from PySide6.QtWidgets import QWidget, QPushButton
-from PySide6.QtGui import QPalette, QColor, QBrush, QPaintEvent, QPainter
-from PySide6.QtCore import QObject, Slot, Signal, QThread, QRect
-
+from PySide6.QtWidgets import QWidget
+from PySide6.QtGui import QPalette, QColor, QBrush, QPaintEvent, QPainter, QAction
+from PySide6.QtCore import QObject, Signal, QRect
+from PySide6 import QtGui, QtWidgets
 from dataclasses import dataclass
 
 from common.localisation import tran
@@ -45,8 +45,6 @@ class ToolStackWidget(QWidget):
         self._ui.add_variant_button.clicked.connect(self._on_action_add_variant)
         self._ui.delete_message_button.clicked.connect(self._on_delete_message)
         self._ui.generate_bot_button.clicked.connect(self._on_generate_bot)
-        #self._ui.start_bot_button.clicked.connect(self._on_start_bot)
-        #self._ui.stop_bot_button.clicked.connect(self._on_stop_bot)
         self._ui.switch_bot.stateChanged.connect(self._switch_toggle)
         self._ui.mark_start_message_button.clicked.connect(self._on_mark_as_start)
         self._ui.mark_error_message_button.clicked.connect(self._on_mark_as_error)
@@ -54,6 +52,15 @@ class ToolStackWidget(QWidget):
 
         #self._ui.action_manual_save_button.triggered.connect(self._on_apply_button)
         #self._ui.action_read_logs_button.triggered.connect(self._on_read_bot_logs)
+
+        # toDo: посмотреть почему он выеживался на _tr()
+        #self._add_message_action: QAction = QtGui.QAction(
+        #    self._ui.add_message_button.icon(), 'Add new message', self)
+        #self._ui.add_variant_button.insertAction(0, self._add_message_action)
+        #self._add_message_action.triggered.connect(lambda:
+        #                                           QtWidgets.QMessageBox.warning(self, "Gugabuga", "tatatatata"))
+        #self._add_message_action.triggered.connect(self._on_add_new_message)
+        #self._ui.add_variant_button.clicked.connect()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         # toDo: If this will be used in the future, then put the colors in the parameters
