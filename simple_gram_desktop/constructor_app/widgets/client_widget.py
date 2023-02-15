@@ -59,16 +59,17 @@ class ClientWidget(QWidget):
         self._ui.bot_new_creator_page.new_bot_added.connect(self.__load_bots_list)
         self._ui.bot_show_page.open_bot_in_redactor_signal.connect(self._start_bot_redactor)
         self._ui.bot_show_page.activated_bot_signal.connect(self.__load_bots_list)
+        self._ui.log_out_button.clicked.connect(self._logout_account)
         # перезагрузка бот-листа при смене аватарки бота (наверное лучше не менять весь бот-лист
         # а поменять только аватарку у конкретного элемента)
         self._ui.bot_show_page.bot_avatar_changed_signal.connect(self.__load_bots_list)
         # первое открытие приложения, инициализация авторизации
         self._start_login_users()
 
-        self._ui.user_widget.addItem(
-            QtGui.QPixmap(":/icons/widgets/times_icon/user_icon.png"), self._tr("Profile"))
-        self._ui.user_widget.addItem(
-            QtGui.QPixmap(":/icons/widgets/times_icon/exit_account_icon.png"), self._tr("Log out"))
+        #self._ui.user_widget.addItem(
+        #    QtGui.QPixmap(":/icons/widgets/times_icon/user_icon.png"), self._tr("Profile"))
+        #self._ui.user_widget.addItem(
+        #    QtGui.QPixmap(":/icons/widgets/times_icon/exit_account_icon.png"), self._tr("Log out"))
 
         self._bot_editor_index: Optional[int] = None
 
@@ -130,6 +131,10 @@ class ClientWidget(QWidget):
         self._ui.tool_stack.hide()
         # настраиваю таблицу стилей подложки
         self._init_stylesheet_stackedwidget(1)
+
+    def _logout_account(self) -> None:
+        # toDO: добавить реализацию выхода для сервера
+        self._start_login_users()
 
     def _start_bot_redactor(self) -> None:
         try:

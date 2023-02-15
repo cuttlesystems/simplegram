@@ -35,8 +35,6 @@ def stop_all_running_bots_before_autoreload(sender, **kwargs) -> None:
     logger_django.info_logging('Before autoreload.')
     process_manager = BotProcessesManagerSingle()
     all_running_processes = process_manager.get_all_processes_info()
-    all_running_bots_list = [bot.bot_id for bot in all_running_processes.values() if not bot.is_terminated]
-    logger_django.info_logging(f'Running bots: {all_running_bots_list}')
     if len(all_running_processes) > 0:
         for process in all_running_processes.values():
             process.bot_runner.stop()
