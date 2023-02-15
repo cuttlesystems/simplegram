@@ -208,7 +208,6 @@ class BotEditorWidget(QWidget):
         self.__read_bot_logs()
 
     def __read_bot_logs(self) -> None:
-
         bot_logs = self._bot_api.get_bot_logs(self._bot)
         stderr_text = ''.join(bot_logs.stderr_lines)
         stdout_text = ''.join(bot_logs.stdout_lines)
