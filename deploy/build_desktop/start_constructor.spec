@@ -7,7 +7,7 @@ import sys
 
 # обходное решение для добавления текущей директории в 'PYTHONPATH'
 #  небходимо для того, чтобы проходили выполняемые ниже import'ы
-sys.path.append('.')
+sys.path.append(SPECPATH)
 
 from python_venv_execs_paths import get_building_dir
 
