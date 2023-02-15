@@ -260,10 +260,10 @@ def get_backend_server_credentials() -> BackendServerCredentials:
     # print(f'\'backendservercredentials.json\' file path: {backend_server_credentials_json_file_path}')
     if os.path.exists(get_backend_server_credentials_json_file_path()):
         backend_server_credentials = read_backend_server_credentials()
-        print(
-                f'\n\'backendservercredentials.json\' file already exists in search path:\n'
-                f'{get_backend_server_credentials_json_file_path().parent}'
-        )
+        # print(
+        #         f'\n\'backendservercredentials.json\' file already exists in search path:\n'
+        #         f'{get_backend_server_credentials_json_file_path().parent}'
+        # )
         # print(f'\nCredentials to establish SSH connection with remote server')
         # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
         # print(f'username: {backend_server_credentials.username}')
@@ -326,7 +326,7 @@ def docreg_login_remotely(backend_server_credentials: BackendServerCredentials):
     :return:
     """
     # ssh ubuntu@185.146.3.196 'bash -s '$(cat ~/scripts/docreg_password.txt)' '$(cat ~/scripts/docreg_password.txt)'' -- < ~/scripts/docreg_login.sh
-    print('Check')
+    # print('\nCheck')
 
     # # Load SSH host keys.
     # ssh_client.load_system_host_keys()
@@ -337,7 +337,7 @@ def docreg_login_remotely(backend_server_credentials: BackendServerCredentials):
         use_ssh_client=True
     )
 
-    print(f'SSH connection to remote server established')
+    # print(f'\nSSH connection to remote server established')
     # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
     # print(f'username: {backend_server_credentials.username}')
 
@@ -345,11 +345,13 @@ def docreg_login_remotely(backend_server_credentials: BackendServerCredentials):
         f'\nprivate docker registry logging in remotely with credentials saved to'
         f'\'dockerregistrycredentials.json\' file to pull docker image'
     )
-    # print(f'private docker registry server url: {docker_registry_credentials.docker_registry_server_url}')
+
     docker_client.login(username='admin', password='admin', registry='https://ramasuchka.kz:4443')
     print(
-        f'\nSuccessfully logged in to private docker registry from the remote server - '
-        # f'{backend_server_credentials.backend_server_ip}'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'\nSuccessfully logged in to private docker registry on the remote server - '
+        f'{backend_server_credentials.backend_server_ip}'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
     )
 
 
@@ -360,24 +362,25 @@ def get_rsa_pub_key_directory_path() -> Path:
     """
     # path to user directory
     user_path = Path('~').expanduser()
-    print(f'Path to user directory: {user_path}')
+    # print(f'Path to user directory: {user_path}')
 
     # path to '<user_path>/.ssh' directory
     rsa_pub_key_directory_path = user_path / '.ssh'
-    print(f'Path to \'<user_path>/.ssh\' directory: {rsa_pub_key_directory_path}')
+    # print(f'Path to \'<user_path>/.ssh\' directory: {rsa_pub_key_directory_path}')
     return rsa_pub_key_directory_path
 
 
-def get_rsa_pub_key_path() -> Path:
+def get_rsa_key_path() -> Path:
     """
     define function to get an RSA key path - '<user_path>/.ssh/id_rsa'
     :return:
 
     """
     # path to RSA key - '<user_path>/.ssh/id_rsa'
-    rsa_pub_key_path = get_rsa_pub_key_directory_path() / 'id_rsa'
-    print(f'Path to \'<user_path>/.ssh/id_rsa\' file: {rsa_pub_key_path}')
-    return rsa_pub_key_path
+    rsa_private_key_path = get_rsa_pub_key_directory_path() / 'id_rsa'
+    # print(f'Path to \'<user_path>/.ssh\' directory: {rsa_private_key_path.parent}')
+    # print(f'Path to \'<user_path>/.ssh/id_rsa\' file: {rsa_private_key_path}')
+    return rsa_private_key_path
 
 
 def rsa_pub_key_is_present() -> bool:
@@ -410,7 +413,9 @@ def gen_ssh_key_pair() -> None:
     """
     os.chdir(get_rsa_pub_key_directory_path())
     if rsa_pub_key_is_present():
-        show(f'SSH pub key is already present in \'{get_rsa_pub_key_directory_path()}\' directory')
+        show(f'\nSSH pub key is already present in \'{get_rsa_pub_key_directory_path()}\' directory')
+        # print(f'Path to \'<user_path>/.ssh\' directory: {rsa_private_key_path.parent}')
+        # print(f'Path to \'<user_path>/.ssh/id_rsa\' file: {rsa_private_key_path}')
     else:
         # generate SSH key pair
         # subprocess.call('ssh-keygen', shell=True)
@@ -424,7 +429,7 @@ def gen_ssh_key_pair() -> None:
                 '-N',
                 '',
                 '-f',
-                f'{get_rsa_pub_key_path()}'
+                f'{get_rsa_key_path()}'
                 # '<<<',
                 # 'y'
             ]
@@ -434,6 +439,10 @@ def gen_ssh_key_pair() -> None:
 
 
 def rsa_key_based_connect():
+    """
+
+    :return:
+    """
     import paramiko
     ssh_client = paramiko.SSHClient()
 
@@ -443,8 +452,8 @@ def rsa_key_based_connect():
     # transport = ssh_client.get_transport()
     host = f'{get_backend_server_credentials().backend_server_ip}'
     special_account = f'{get_backend_server_credentials().username}'
-    # password = f'{get_backend_server_credentials().password}'
-    private_key = paramiko.RSAKey.from_private_key_file(f'{get_rsa_pub_key_path()}')
+    password = f'{get_backend_server_credentials().password}'
+    private_key = paramiko.RSAKey.from_private_key_file(f'{get_rsa_key_path()}')
 
     # client = paramiko.SSHClient()
     policy = paramiko.AutoAddPolicy()
@@ -452,8 +461,48 @@ def rsa_key_based_connect():
 
     # ssh_client.connect(host, disabled_algorithms={'keys': ['rsa-sha2-256', 'rsa-sha2-512']}, username=special_account, pkey=private_key, look_for_keys=False)
     # ssh_client.connect(host, username=special_account, password=password, pkey=private_key)
-    ssh_client.connect(host, username=special_account, pkey=private_key)
-    print(f'\nSSH connection established: {ssh_client}')
+    # ssh_client.connect(host, username=special_account, pkey=private_key, look_for_keys=True)
+    ssh_client.connect(host, username=special_account, password=password)
+    print(f'\nSSH connection to remote server established: {ssh_client}')
     return ssh_client
 
+
+def move_rsa_pub_key_to_remote() -> None:
+    """
+
+    :return:
+    """
+    rsa_pub_key_path = get_rsa_key_path().with_suffix('.pub')
+    print(f'Path to public rsa key \'<user_path>/.ssh/id_rsa.pub\' file: {rsa_pub_key_path}')
+    with open(f'{rsa_pub_key_path}', 'rt', encoding='utf-8') as rsa_pub_key_content_file:
+        rsa_pub_key_content = rsa_pub_key_content_file.read()
+        # backend_server_ip = backend_server_credentials['backend_server_ip']
+        # username = backend_server_credentials['username']
+        # password = backend_server_credentials['password']
+
+        # backend_server_credentials = BackendServerCredentials(
+        #     backend_server_ip=backend_server_credentials['backend_server_ip'],
+        #     username=backend_server_credentials['username'],
+        #     password=backend_server_credentials['password'],
+        # )
+        print(f'\nrsa_pub_key_content file: {rsa_pub_key_content_file}')
+        print(f'\nrsa_pub_key_content:\n'
+              f'{rsa_pub_key_content}')
+        # print(f'\nconffile content - \'backend_server_credentials\' instance:\n'
+        #       f'{backend_server_credentials}')
+        # print(f'\nbackendservercredentials_content: {backend_server_credentials}')
+        # print(f'\nCredentials to establish SSH connection with remote server')
+        # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
+        # print(f'username: {backend_server_credentials.username}')
+        # print(f'password: {backend_server_credentials.password}')
+
+        # return backend_server_credentials
+    # работает строка ниже
+    # command = f'sudo echo "{backend_server_credentials}" >> ~/.ssh/authorized_keys'
+    # command = str('sudo echo b >> ~/test.txt')
+    # command = 'echo {backend_server_credentials} >> ~/.ssh/authorized_keys'.format(backend_server_credentials=backend_server_credentials)
+    ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect().exec_command(
+        f'echo "{rsa_pub_key_content}" >> ~/.ssh/authorized_keys'
+    )
+    ssh_stdin.close()
 

@@ -5,8 +5,8 @@ from pathlib import Path
 import shutil
 
 from get_repo_to_deploy_from import get_repo_to_deploy
-from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally, \
-    rsa_key_based_connect
+from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally
+from deploy_server_utils import move_rsa_pub_key_to_remote
 # from deploy_server_utils import rsa_key_based_connect
 from deploy_server_utils import get_backend_server_credentials, gen_ssh_key_pair
 # from deploy_server_utils import add_pub_key_to_remote_server
@@ -56,7 +56,7 @@ def check_paramiko_is_installed() -> bool:
 
 
 def install_paramiko_module() -> None:
-    run(['pip', 'install', 'paramiko==2.8.0'])
+    run(['pip', 'install', 'paramiko'])
     print(f'\'paramiko\' module is installed')
 
 
@@ -212,12 +212,12 @@ if __name__ == '__main__':
     # generate SSH key pair before remote Docker daemon usage if keys don't exist yet
     gen_ssh_key_pair()
 
+    # add_pub_key_to_remote_server()
+    move_rsa_pub_key_to_remote()
+
     # credentials to establish SSH connection with remote server where the application backend is deployed
     backend_server_credentials = get_backend_server_credentials()
 
     # private docker registry logging in remotely with credentials saved to
     #  'dockerregistrycredentials.json' file to pull docker image
-    # docreg_login_remotely()
-
-    # add_pub_key_to_remote_server()
-    rsa_key_based_connect()
+    docreg_login_remotely(backend_server_credentials)
