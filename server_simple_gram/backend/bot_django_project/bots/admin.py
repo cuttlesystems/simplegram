@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from common_utils.read_info_commit import read_info_from_file_about_commit
-from .models import Bot, Message, Variant, Command, StartedBotsStorage
+from .models import Bot, Message, Variant, Command
 
 admin.site.site_header = read_info_from_file_about_commit()
 admin.site.index_title = 'Bot constructor'
@@ -37,4 +37,3 @@ admin.site.register(Bot, BotAdmin)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(Variant, VariantAdmin)
 admin.site.register(Command, CommandAdmin)
-admin.site.register(StartedBotsStorage, StartedBotsAdmin)

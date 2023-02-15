@@ -4,7 +4,6 @@ from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from bot_constructor.log_configs import logger_django
 from bot_constructor.settings import BOTS_DIR
 from b_logic.bot_runner import BotRunner
-from bots.started_bots_manage.started_bots_storage_manager import StartedBotsStorageManager
 from process_manager_utils.notification_sender_to_bot_manager import NotificationSenderToBotManager
 
 
@@ -40,20 +39,17 @@ def stop_all_running_bots_before_autoreload(sender, **kwargs) -> None:
     if len(all_running_processes) > 0:
         for process in all_running_processes.values():
             process.bot_runner.stop()
-    started_bots_storage_manager = StartedBotsStorageManager()
-    started_bots_storage_manager.save_data(all_running_bots_list)
 
 
 def start_all_launched_bots(sender, **kwargs) -> None:
     """
-    Запуск всех остановленных перед autoreload ботов.
+    Запуск всех ботов, которые должны быть запущены.
     Args:
         sender: Отправитель сигнала. Обязательный аргумент.
         **kwargs: Произвольные аргументы. Обязательный аргумент.
     """
-    logger_django.info_logging('After autoreload.')
-    started_bots_storage_manager = StartedBotsStorageManager()
-    started_bots_list = started_bots_storage_manager.load_data()
+    # получить список ботов из бд которые должны быть запущены
+    started_bots_list = []
     if started_bots_list is not None and len(started_bots_list) > 0:
         logger_django.info_logging(f'Bots need to start: {started_bots_list}')
         for bot_id in started_bots_list:

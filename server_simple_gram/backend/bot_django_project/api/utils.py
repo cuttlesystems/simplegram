@@ -1,8 +1,8 @@
-from django.utils.autoreload import file_changed, autoreload_started
+from django.utils.autoreload import file_changed, autoreload_started, StatReloader
 
 from api.exceptions import InvalidBotTokenWhenGenerateBot
 from bots.models import Bot
-from bots.started_bots_manage.restart_bot_manage import stop_all_running_bots_before_autoreload, start_all_launched_bots
+from bots.started_bots_managing.restart_bots_manage import stop_all_running_bots_before_autoreload, start_all_launched_bots
 
 
 # Сигнал file_changed испускается при обнаружении изменений в коде на запущенном сервере
