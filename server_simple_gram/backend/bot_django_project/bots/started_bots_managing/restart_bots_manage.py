@@ -4,6 +4,7 @@ from b_logic.bot_processes_manager import BotProcessesManagerSingle
 from bot_constructor.log_configs import logger_django
 from bot_constructor.settings import BOTS_DIR
 from b_logic.bot_runner import BotRunner
+from bots.models import Bot
 from process_manager_utils.notification_sender_to_bot_manager import NotificationSenderToBotManager
 
 
@@ -48,9 +49,8 @@ def start_all_launched_bots(sender, **kwargs) -> None:
         sender: Отправитель сигнала. Обязательный аргумент.
         **kwargs: Произвольные аргументы. Обязательный аргумент.
     """
-    # получить список ботов из бд которые должны быть запущены
-    started_bots_list = []
-    if started_bots_list is not None and len(started_bots_list) > 0:
+    started_bots_list: list = Bot.objects.filter(must_be_started=True).values_list('id', flat=True)
+    if len(started_bots_list) > 0:
         logger_django.info_logging(f'Bots need to start: {started_bots_list}')
         for bot_id in started_bots_list:
             bot_dir = get_bot_dir(bot_id)

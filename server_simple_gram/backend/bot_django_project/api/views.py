@@ -85,6 +85,18 @@ class BotViewSet(viewsets.ModelViewSet):
             already_started_bot.bot_runner.stop()
             bot_process_manager.remove(bot_id)
 
+    def _set_bot_must_be_started_value(self, bot: Bot, must_be_started: bool) -> None:
+        """
+        Устанавливает значение в поле бота must_be_started.
+        Args:
+            bot: Экземпляр бота из БД.
+            must_be_started: True или False.
+        """
+        assert isinstance(bot, Bot)
+        assert isinstance(must_be_started, bool)
+        bot.must_be_started = must_be_started
+        bot.save()
+
     @action(
         methods=['POST'],
         detail=True,
@@ -124,6 +136,8 @@ class BotViewSet(viewsets.ModelViewSet):
                 status=requests.codes.ok
             )
             logger_django.info_logging(f'Bot {bot_id} started. Process id: {process_id}')
+
+            self._set_bot_must_be_started_value(bot=bot, must_be_started=True)
         else:
             result = JsonResponse(
                 {
@@ -151,6 +165,8 @@ class BotViewSet(viewsets.ModelViewSet):
         """
         bot_id_int = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id_int)
+        if bot.must_be_started:
+            self._set_bot_must_be_started_value(bot=bot, must_be_started=False)
         self.check_object_permissions(request, bot)
         bot_processes_manager = BotProcessesManagerSingle()
         bot_process = bot_processes_manager.get_process_info(bot_id_int)
