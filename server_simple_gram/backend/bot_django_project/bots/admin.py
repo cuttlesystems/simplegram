@@ -8,7 +8,7 @@ admin.site.index_title = 'Bot constructor'
 
 
 class BotAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'owner', 'start_message']
+    list_display = ['id', 'must_be_started', 'name', 'owner', 'start_message']
     list_filter = ('owner',)
 
 
@@ -27,6 +27,10 @@ class CommandAdmin(admin.ModelAdmin):
     list_display = ['id', 'bot', 'command', 'description']
     list_editable = ['command', 'description']
     list_filter = ('bot',)
+
+
+class StartedBotsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'bots_list', 'created_at']
 
 
 admin.site.register(Bot, BotAdmin)
