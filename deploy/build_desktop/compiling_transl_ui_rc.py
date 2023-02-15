@@ -9,7 +9,7 @@ import subprocess
 import typing
 from pathlib import Path
 
-from python_venv_execs_paths import get_script_dir, get_executable_path_from_venv
+from python_venv_execs_paths import get_project_dir, get_executable_path_from_venv
 
 
 def pyside6_lrelease_exe_path() -> Path:
@@ -49,8 +49,8 @@ def compile_translations() -> None:
             'D:/Git Repos/tg_bot_constructor/simple_gram_desktop/constructor_app/translations/bot_constructor_*.qm'
 
     """
-    ts_files_path = get_script_dir() / '..' / '..' / 'simple_gram_desktop' / 'constructor_app' / 'translations'
-    print(f'get_script_dir: ', get_script_dir())
+    ts_files_path = get_project_dir() / '..' / '..' / 'simple_gram_desktop' / 'constructor_app' / 'translations'
+    print(f'get_script_dir: ', get_project_dir())
 
     localizations = list(ts_files_path.glob('**/*_man_*.ts'))
     print(f'\ntranslation files path: ', ts_files_path)
@@ -144,7 +144,7 @@ def compile_ui_forms() -> None:
         'D:/Git Repos/tg_bot_constructor/simple_gram_desktop/constructor_app/widgets/bot_editor/ui_*_form.py'
 
     """
-    simple_gram_desktop_project_path = os.path.normpath(get_script_dir() / '..' / '..' / 'simple_gram_desktop')
+    simple_gram_desktop_project_path = os.path.normpath(get_project_dir() / '..' / '..' / 'simple_gram_desktop')
     search_dirs = [
         Path(simple_gram_desktop_project_path) / 'common',
         Path(simple_gram_desktop_project_path) / 'constructor_app',
@@ -229,7 +229,7 @@ def compile_rc_files() -> None:
         'D:/Git Repos/tg_bot_constructor/simple_gram_desktop/constructor_app/widgets/bot_editor/rc_*.py'
 
     """
-    simple_gram_desktop_project_path = os.path.normpath(get_script_dir() / '..' / '..' / 'simple_gram_desktop')
+    simple_gram_desktop_project_path = os.path.normpath(get_project_dir() / '..' / '..' / 'simple_gram_desktop')
     search_dirs = [
         Path(simple_gram_desktop_project_path) / 'constructor_app'
     ]

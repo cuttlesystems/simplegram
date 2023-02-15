@@ -36,6 +36,24 @@ def write_specfileconf(app_type: ApplicationTypeEnum):
     print(f'\n--- The application type was written into \'specfileconf.json\', content: \n      {params} ---')
 
 
+def get_start_constructor_spec_file_path() -> Path:
+    """
+    define function to get 'start_constructor.spec' file path
+    :return:
+        'start_constructor.spec' file path
+
+    """
+    start_constructor_spec_file_name = 'start_constructor.spec'
+    # путь для проверки существования файла 'start_constructor.spec'
+    #  (с конфигурационными данными для сборки исполняемого файла приложения с помощью PyInstaller)
+    #  в директории "..\deploy\build_desktop"
+    search_dir_path = Path(__file__).parent
+    start_constructor_spec_file_path = search_dir_path / start_constructor_spec_file_name
+    print(f'\nDirectory for \'start_constructor.spec\' file search path:\n{search_dir_path}')
+    print(f'\n\'start_constructor.spec\' file search path:\n{start_constructor_spec_file_path}\n')
+    return start_constructor_spec_file_path
+
+
 def build_executable_app(app_type: ApplicationTypeEnum):
     """
     define function to build app executable file
@@ -65,5 +83,5 @@ def build_executable_app(app_type: ApplicationTypeEnum):
 
     # непосредственный запуск процесса создания исполняемого файла приложения 'simple_gram' через PyInstaller
     print('\n--- building app executable started ---')
-    subprocess.run([pyinstaller_exe_path(), 'start_constructor.spec', '-y'])
-    print('--- building app executable ended ---\n\n')
+    subprocess.run([pyinstaller_exe_path(), get_start_constructor_spec_file_path(), '-y'])
+    print('\n--- building app executable ended ---\n\n')
