@@ -32,7 +32,8 @@ def application_project_dir() -> Path:
     define the function to get the project_directory path
     D:\Git Repos\tg_bot_constructor\simple_gram_desktop
     """
-    application_project_dir = spec_file_dir() / Path('..') / '..' / 'simple_gram_desktop'
+#    application_project_dir = os.path.normpath(spec_file_dir() / '..' / '..' / 'simple_gram_desktop')
+    application_project_dir = (spec_file_dir() / '..' / '..' / 'simple_gram_desktop').resolve()
     return application_project_dir
 
 
@@ -50,7 +51,6 @@ PyInstaller.config.CONF['workpath'] = str(build_dir)
 PyInstaller.config.CONF['distpath'] = str(dist_dir)
 
 app_type = read_specfileconf()
-
 
 a = Analysis(
     [application_project_dir() / filename_to_build(app_type)],

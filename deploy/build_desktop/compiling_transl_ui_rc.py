@@ -49,7 +49,9 @@ def compile_translations() -> None:
             'D:/Git Repos/tg_bot_constructor/simple_gram_desktop/constructor_app/translations/bot_constructor_*.qm'
 
     """
-    ts_files_path = get_project_dir() / '..' / '..' / 'simple_gram_desktop' / 'constructor_app' / 'translations'
+    ts_files_path = (
+                        get_project_dir() / '..' / '..' / 'simple_gram_desktop' / 'constructor_app' / 'translations'
+    ).resolve()
     print(f'get_script_dir: ', get_project_dir())
 
     localizations = list(ts_files_path.glob('**/*_man_*.ts'))
@@ -144,7 +146,7 @@ def compile_ui_forms() -> None:
         'D:/Git Repos/tg_bot_constructor/simple_gram_desktop/constructor_app/widgets/bot_editor/ui_*_form.py'
 
     """
-    simple_gram_desktop_project_path = os.path.normpath(get_project_dir() / '..' / '..' / 'simple_gram_desktop')
+    simple_gram_desktop_project_path = (get_project_dir() / '..' / '..' / 'simple_gram_desktop').resolve()
     search_dirs = [
         Path(simple_gram_desktop_project_path) / 'common',
         Path(simple_gram_desktop_project_path) / 'constructor_app',
