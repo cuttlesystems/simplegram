@@ -5,8 +5,11 @@ from pathlib import Path
 import shutil
 
 from get_repo_to_deploy_from import get_repo_to_deploy
-from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally
-from deploy_server_utils import gen_ssh_key_pair, add_pub_key_to_remote_server
+from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally, \
+    rsa_key_based_connect
+# from deploy_server_utils import rsa_key_based_connect
+from deploy_server_utils import get_backend_server_credentials, gen_ssh_key_pair
+# from deploy_server_utils import add_pub_key_to_remote_server
 from deploy_server_utils import docreg_login_remotely
 
 
@@ -53,7 +56,7 @@ def check_paramiko_is_installed() -> bool:
 
 
 def install_paramiko_module() -> None:
-    run(['pip', 'install', 'paramiko'])
+    run(['pip', 'install', 'paramiko==2.8.0'])
     print(f'\'paramiko\' module is installed')
 
 
@@ -190,7 +193,7 @@ if __name__ == '__main__':
         print(f'\nGit pull from \'{origin}/{branch}\' completed\n')
 
     # get credentials saved to 'dockerregistrycredentials.json' file to log in private docker registry
-    # get_docker_registry_credentials()
+    docker_registry_credentials = get_docker_registry_credentials()
 
     # private docker registry logging in remotely through 'ssh' and
     #  with 2 command line parameters (without '--password-stdin') to pull docker image to the server
@@ -199,16 +202,22 @@ if __name__ == '__main__':
 
     # private docker registry logging in locally with credentials
     #  saved to 'dockerregistrycredentials.json' file to push docker image
-    docreg_login_locally()
+    docreg_login_locally(docker_registry_credentials)
 
     # private docker registry logging out locally
-    docreg_logout_locally()
+    docreg_logout_locally(docker_registry_credentials)
 
     # add_key_to_known_hosts()
+    # rsa_key_based_connect()
+    # generate SSH key pair before remote Docker daemon usage if keys don't exist yet
+    gen_ssh_key_pair()
+
+    # credentials to establish SSH connection with remote server where the application backend is deployed
+    backend_server_credentials = get_backend_server_credentials()
 
     # private docker registry logging in remotely with credentials saved to
     #  'dockerregistrycredentials.json' file to pull docker image
     # docreg_login_remotely()
 
-    gen_ssh_key_pair()
-    add_pub_key_to_remote_server()
+    # add_pub_key_to_remote_server()
+    rsa_key_based_connect()

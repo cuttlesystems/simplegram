@@ -11,6 +11,7 @@ import json
 from subprocess import run
 
 import docker
+# import paramiko
 
 
 @dataclass(slots=True)
@@ -25,6 +26,24 @@ class BackendServerCredentials:
     backend_server_ip: str
     username: str
     password: str
+
+
+def get_docker_registry_credentials_json_file_path() -> Path:
+    """
+
+    :return:
+    """
+    docker_registry_credentials_json_file_name = 'dockerregistrycredentials.json'
+    # путь для проверки существования файла 'backendservercredentials.json'
+    #  (с данными для установления соединения по SSH с удалённым сервером)
+    #  в директории "..\deploy\deploy_server\scripts"
+    search_dir_path = Path(__file__).parent
+    docker_registry_credentials_json_file_path = search_dir_path / docker_registry_credentials_json_file_name
+
+    # print(f'\n\'backendservercredentials.json\' file search path: {search_dir_path}')
+    # # print(f'Current file name: {search_dir_path.name}')
+    # print(f'\'backendservercredentials.json\' file path: {backend_server_credentials_json_file_path}')
+    return docker_registry_credentials_json_file_path
 
 
 def write_dockerregistrycredentials() -> None:
@@ -53,11 +72,18 @@ def write_dockerregistrycredentials() -> None:
         'username': docker_registry_credentials.username,
         'password': docker_registry_credentials.password
     }
-    with open('dockerregistrycredentials.json', 'wt') as conffile:
+    with open(get_docker_registry_credentials_json_file_path(), 'wt', encoding='utf-8') as conffile:
         json.dump(params, conffile)
+    # print(
+    #     f'\n--- Credentials to login into private docker registry were written into \'dockerregistrycredentials.json\','
+    #     f' content: \n      {params} ---'
+    # )
     print(
-        f'\n--- Credentials to login into private docker registry were written into \'dockerregistrycredentials.json\','
-        f' content: \n      {params} ---'
+        f'\n---------------------------------------------------------\n'
+        f'Credentials to login into private docker registry were written into '
+        f'\'{get_docker_registry_credentials_json_file_path()}\',\n'
+        f'content: {params}'
+        f'\n---------------------------------------------------------\n'
     )
 
 
@@ -70,7 +96,7 @@ def read_dockerregistrycredentials() -> DockerRegistryCredentials:
                 there is no 'dockerregistrycredentials.json' file
 
     """
-    with open('dockerregistrycredentials.json', 'rt', encoding='utf-8') as conffile:
+    with open(get_docker_registry_credentials_json_file_path(), 'rt', encoding='utf-8') as conffile:
         docker_registry_credentials = json.load(conffile)
         # docker_registry_server_url = docker_registry_credentials['docker_registry_server_url']
         # username = docker_registry_credentials['username']
@@ -81,7 +107,7 @@ def read_dockerregistrycredentials() -> DockerRegistryCredentials:
             username=docker_registry_credentials['username'],
             password=docker_registry_credentials['password'],
         )
-        print(f'\nconffile: {conffile}')
+        # print(f'\nconffile: {conffile}')
         # print(f'\nconffile content - \'docker_registry_credentials\' instance:\n'
         #       f'{docker_registry_credentials}')
         # print(f'\ndockerregistrycredentials_content: {docker_registry_credentials}')
@@ -90,40 +116,24 @@ def read_dockerregistrycredentials() -> DockerRegistryCredentials:
         # print(f'username: {docker_registry_credentials.username}')
         # print(f'password: {docker_registry_credentials.password}')
 
-        return docker_registry_credentials
+    return docker_registry_credentials
 
-
-# if __name__ == '__main__':
-#     docker_registry_credentials_json_file_name = 'dockerregistrycredentials.json'
-#     # путь для проверки существования файла 'dockerregistrycredentials.json' (с данными для входа в docker registry)
-#     #  в директории "..\deploy\deploy_server\scripts"
-#     search_dir_path = Path(__file__).parent
-#     docker_registry_credentials_json_file_path = Path(search_dir_path) / docker_registry_credentials_json_file_name
-#
-#     print(f'\n\'dockerregistrycredentials.json\' file search path: {search_dir_path}')
-#     # print(f'Current file name: {search_dir_path.name}')
-#     print(f'\'dockerregistrycredentials.json\' file path: {docker_registry_credentials_json_file_path}')
-#     if os.path.exists(docker_registry_credentials_json_file_path):
-#         docker_registry_credentials = read_dockerregistrycredentials()
-#     else:
-#         write_dockerregistrycredentials()
-#         docker_registry_credentials = read_dockerregistrycredentials()
 
 def get_docker_registry_credentials() -> DockerRegistryCredentials:
     """
 
     :return:
     """
-    docker_registry_credentials_json_file_name = 'dockerregistrycredentials.json'
-    # путь для проверки существования файла 'dockerregistrycredentials.json' (с данными для входа в docker registry)
-    #  в директории "..\deploy\deploy_server\scripts"
-    search_dir_path = Path(__file__).parent
-    docker_registry_credentials_json_file_path = Path(search_dir_path) / docker_registry_credentials_json_file_name
-
-    print(f'\n\'dockerregistrycredentials.json\' file search path: {search_dir_path}')
-    # print(f'Current file name: {search_dir_path.name}')
-    print(f'\'dockerregistrycredentials.json\' file path: {docker_registry_credentials_json_file_path}')
-    if os.path.exists(docker_registry_credentials_json_file_path):
+    # docker_registry_credentials_json_file_name = 'dockerregistrycredentials.json'
+    # # путь для проверки существования файла 'dockerregistrycredentials.json' (с данными для входа в docker registry)
+    # #  в директории "..\deploy\deploy_server\scripts"
+    # search_dir_path = Path(__file__).parent
+    # docker_registry_credentials_json_file_path = Path(search_dir_path) / docker_registry_credentials_json_file_name
+    #
+    # print(f'\n\'dockerregistrycredentials.json\' file search path: {search_dir_path}')
+    # # print(f'Current file name: {search_dir_path.name}')
+    # print(f'\'dockerregistrycredentials.json\' file path: {docker_registry_credentials_json_file_path}')
+    if os.path.exists(get_docker_registry_credentials_json_file_path()):
         docker_registry_credentials = read_dockerregistrycredentials()
         print(f'\n\'dockerregistrycredentials.json\' file already exists in search path')
         # print(f'\nCredentials to login')
@@ -141,6 +151,24 @@ def get_docker_registry_credentials() -> DockerRegistryCredentials:
     return docker_registry_credentials
 
 
+def get_backend_server_credentials_json_file_path() -> Path:
+    """
+
+    :return:
+    """
+    backend_server_credentials_json_file_name = 'backendservercredentials.json'
+    # путь для проверки существования файла 'backendservercredentials.json'
+    #  (с данными для установления соединения по SSH с удалённым сервером)
+    #  в директории "..\deploy\deploy_server\scripts"
+    search_dir_path = Path(__file__).parent
+    backend_server_credentials_json_file_path = search_dir_path / backend_server_credentials_json_file_name
+
+    # print(f'\n\'backendservercredentials.json\' file search path: {search_dir_path}')
+    # # print(f'Current file name: {search_dir_path.name}')
+    # print(f'\'backendservercredentials.json\' file path: {backend_server_credentials_json_file_path}')
+    return backend_server_credentials_json_file_path
+
+
 def write_backend_server_credentials() -> None:
     """
     write application backend server credentials into 'backendservercredentials.json' file
@@ -148,6 +176,7 @@ def write_backend_server_credentials() -> None:
                 with remote server where the application backend is deployed
 
     """
+    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<----------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
     backend_server_credentials = BackendServerCredentials(
         backend_server_ip=input(
             '\nEnter backend server ip (push \'Enter\' for default - \"185.146.3.196 ramashechka.kz\"): '
@@ -171,11 +200,14 @@ def write_backend_server_credentials() -> None:
         'username': backend_server_credentials.username,
         'password': backend_server_credentials.password
     }
-    with open('backendservercredentials.json', 'wt') as conffile:
+    with open(get_backend_server_credentials_json_file_path(), 'wt', encoding='utf-8') as conffile:
         json.dump(params, conffile)
     print(
-        f'\n--- Credentials to establish SSH connection were written into \'backendservercredentials.json\','
-        f' content: \n      {params} ---'
+        f'\n---------------------------------------------------------\n'
+        f'Credentials to establish SSH connection were written into '
+        f'\'{get_backend_server_credentials_json_file_path()}\',\n'
+        f'content: {params}'
+        f'\n---------------------------------------------------------\n'
     )
 
 
@@ -188,27 +220,27 @@ def read_backend_server_credentials() -> BackendServerCredentials:
                 there is no 'backendservercredentials.json' file
 
     """
-    with open('backendservercredentials.json', 'rt', encoding='utf-8') as conffile:
+    with open(get_backend_server_credentials_json_file_path(), 'rt', encoding='utf-8') as conffile:
         backend_server_credentials = json.load(conffile)
-        # backend_server_ip = backend_server_credentials['backend_server_ip']
-        # username = backend_server_credentials['username']
-        # password = backend_server_credentials['password']
+    # backend_server_ip = backend_server_credentials['backend_server_ip']
+    # username = backend_server_credentials['username']
+    # password = backend_server_credentials['password']
 
-        backend_server_credentials = BackendServerCredentials(
-            backend_server_ip=backend_server_credentials['backend_server_ip'],
-            username=backend_server_credentials['username'],
-            password=backend_server_credentials['password'],
-        )
-        print(f'\nconffile: {conffile}')
-        # print(f'\nconffile content - \'backend_server_credentials\' instance:\n'
-        #       f'{backend_server_credentials}')
-        # print(f'\nbackendservercredentials_content: {backend_server_credentials}')
-        # print(f'\nCredentials to establish SSH connection with remote server')
-        # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
-        # print(f'username: {backend_server_credentials.username}')
-        # print(f'password: {backend_server_credentials.password}')
+    backend_server_credentials = BackendServerCredentials(
+        backend_server_ip=backend_server_credentials['backend_server_ip'],
+        username=backend_server_credentials['username'],
+        password=backend_server_credentials['password'],
+    )
+    # print(f'\nconffile: {conffile}')
+    # print(f'\nconffile content - \'backend_server_credentials\' instance:\n'
+    #       f'{backend_server_credentials}')
+    # print(f'\nbackendservercredentials_content: {backend_server_credentials}')
+    # print(f'\nCredentials to establish SSH connection with remote server')
+    # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
+    # print(f'username: {backend_server_credentials.username}')
+    # print(f'password: {backend_server_credentials.password}')
 
-        return backend_server_credentials
+    return backend_server_credentials
 
 
 def get_backend_server_credentials() -> BackendServerCredentials:
@@ -216,19 +248,22 @@ def get_backend_server_credentials() -> BackendServerCredentials:
 
     :return:
     """
-    backend_server_credentials_json_file_name = 'backendservercredentials.json'
-    # путь для проверки существования файла 'backendservercredentials.json'
-    #  (с данными для установления соединения по SSH с удалённым сервером)
-    #  в директории "..\deploy\deploy_server\scripts"
-    search_dir_path = Path(__file__).parent
-    backend_server_credentials_json_file_path = Path(search_dir_path) / backend_server_credentials_json_file_name
-
-    print(f'\n\'backendservercredentials.json\' file search path: {search_dir_path}')
-    # print(f'Current file name: {search_dir_path.name}')
-    print(f'\'backendservercredentials.json\' file path: {backend_server_credentials_json_file_path}')
-    if os.path.exists(backend_server_credentials_json_file_path):
+    # backend_server_credentials_json_file_name = 'backendservercredentials.json'
+    # # путь для проверки существования файла 'backendservercredentials.json'
+    # #  (с данными для установления соединения по SSH с удалённым сервером)
+    # #  в директории "..\deploy\deploy_server\scripts"
+    # search_dir_path = Path(__file__).parent
+    # backend_server_credentials_json_file_path = Path(search_dir_path) / backend_server_credentials_json_file_name
+    #
+    # print(f'\n\'backendservercredentials.json\' file search path: {search_dir_path}')
+    # # print(f'Current file name: {search_dir_path.name}')
+    # print(f'\'backendservercredentials.json\' file path: {backend_server_credentials_json_file_path}')
+    if os.path.exists(get_backend_server_credentials_json_file_path()):
         backend_server_credentials = read_backend_server_credentials()
-        print(f'\n\'backendservercredentials.json\' file already exists in search path')
+        print(
+                f'\n\'backendservercredentials.json\' file already exists in search path:\n'
+                f'{get_backend_server_credentials_json_file_path().parent}'
+        )
         # print(f'\nCredentials to establish SSH connection with remote server')
         # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
         # print(f'username: {backend_server_credentials.username}')
@@ -244,28 +279,28 @@ def get_backend_server_credentials() -> BackendServerCredentials:
     return backend_server_credentials
 
 
-def docreg_login_locally():
+def docreg_login_locally(docker_registry_credentials: DockerRegistryCredentials):
     # get_docker_registry_credentials()
     # print(f'{get_docker_registry_credentials}')
     print(
-        f'\nprivate docker registry logging in locally with credentials saved to'
-        f'\'dockerregistrycredentials.json\' file to push docker image'
+        f'\n--- private docker registry logging in locally with credentials saved to'
+        f'\'dockerregistrycredentials.json\' file to push docker image ---'
     )
-    print(f'private docker registry server url: {get_docker_registry_credentials().docker_registry_server_url}')
+    print(f'\nprivate docker registry server url: {docker_registry_credentials.docker_registry_server_url}')
 
     # run([f'docker', '-v'])
     run(
         [
             f'docker',
             'login',
-            f'{get_docker_registry_credentials().docker_registry_server_url}',
-            '--username', f'{get_docker_registry_credentials().username}',
-            '--password', f'{get_docker_registry_credentials().password}'
+            f'{docker_registry_credentials.docker_registry_server_url}',
+            '--username', f'{docker_registry_credentials.username}',
+            '--password', f'{docker_registry_credentials.password}'
         ]
     )
 
 
-def docreg_logout_locally():
+def docreg_logout_locally(docker_registry_credentials: DockerRegistryCredentials):
     """
 
     :return:
@@ -277,71 +312,46 @@ def docreg_logout_locally():
         [
             f'docker',
             'logout',
-            f'{get_docker_registry_credentials().docker_registry_server_url}'
+            f'{docker_registry_credentials.docker_registry_server_url}'
         ]
     )
 
 
-    # private docker registry logging in remotely through 'ssh' and
-    #  with 2 command line parameters (without '--password-stdin') to pull docker image to the server
-    #  for 'simple_gram' application background image deployment
-def docreg_login_remotely():
+# private docker registry logging in remotely through 'ssh' and
+#  with 2 command line parameters (without '--password-stdin') to pull docker image to the server
+#  for 'simple_gram' application background image deployment
+def docreg_login_remotely(backend_server_credentials: BackendServerCredentials):
     """
 
     :return:
     """
-    add_key_to_known_hosts()
-
     # ssh ubuntu@185.146.3.196 'bash -s '$(cat ~/scripts/docreg_password.txt)' '$(cat ~/scripts/docreg_password.txt)'' -- < ~/scripts/docreg_login.sh
+    print('Check')
+
+    # # Load SSH host keys.
+    # ssh_client.load_system_host_keys()
 
     # Create a client connecting to Docker daemon via SSH
-    client = docker.DockerClient(
-        base_url=f'ssh://{get_backend_server_credentials().username}@{get_backend_server_credentials().backend_server_ip}',
+    docker_client = docker.DockerClient(
+        base_url=f'ssh://{backend_server_credentials.username}@{backend_server_credentials.backend_server_ip}',
         use_ssh_client=True
     )
 
     print(f'SSH connection to remote server established')
-    print(f'application backend server ip: {get_backend_server_credentials().backend_server_ip}')
-    print(f'username: {get_backend_server_credentials().username}')
+    # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
+    # print(f'username: {backend_server_credentials.username}')
 
     print(
         f'\nprivate docker registry logging in remotely with credentials saved to'
         f'\'dockerregistrycredentials.json\' file to pull docker image'
     )
-    # print(f'private docker registry server url: {get_docker_registry_credentials.docker_registry_server_url}')
-    client.login(username='admin', password='admin', registry='https://ramasuchka.kz:4443')
+    # print(f'private docker registry server url: {docker_registry_credentials.docker_registry_server_url}')
+    docker_client.login(username='admin', password='admin', registry='https://ramasuchka.kz:4443')
     print(
         f'\nSuccessfully logged in to private docker registry from the remote server - '
-        f'{get_backend_server_credentials().backend_server_ip}'
+        # f'{backend_server_credentials.backend_server_ip}'
     )
 
-
-# def add_key_to_known_hosts() -> None:
-#     """
-#
-#     :return:
-#     """
-#     # получение пути к директории пользователя
-#     user_path = Path('~').expanduser()
-#     print(f'Path to user directory: {user_path}')
-#
-#     # path to 'known_hosts' file
-#     path_to_known_hosts = Path(user_path) / '.ssh' / 'known_hosts'
-#     print(f'Path to \'known_hosts\' file: {path_to_known_hosts}')
-#
-#     # ssh-keygen -f "/home/user/.ssh/known_hosts" -R "git@gitlab.praktikum-services.ru"
-#     # add correct host key in '<user_path>/.ssh/known_hosts' file
-#     run(
-#         [
-#             f'ssh-keygen',
-#             '-f',
-#             f'{path_to_known_hosts}',
-#             '-R',
-#             # f'{get_backend_server_credentials().backend_server_ip}'
-#             f'185.146.3.196'
-#         ]
-#     )
-#     print(f'host key in \'{path_to_known_hosts}\' file')
 
 def get_rsa_pub_key_directory_path() -> Path:
     """
@@ -353,7 +363,7 @@ def get_rsa_pub_key_directory_path() -> Path:
     print(f'Path to user directory: {user_path}')
 
     # path to '<user_path>/.ssh' directory
-    rsa_pub_key_directory_path = Path(user_path) / '.ssh'
+    rsa_pub_key_directory_path = user_path / '.ssh'
     print(f'Path to \'<user_path>/.ssh\' directory: {rsa_pub_key_directory_path}')
     return rsa_pub_key_directory_path
 
@@ -365,19 +375,19 @@ def get_rsa_pub_key_path() -> Path:
 
     """
     # path to RSA key - '<user_path>/.ssh/id_rsa'
-    rsa_pub_key_path = Path(get_rsa_pub_key_directory_path()) / 'id_rsa'
+    rsa_pub_key_path = get_rsa_pub_key_directory_path() / 'id_rsa'
     print(f'Path to \'<user_path>/.ssh/id_rsa\' file: {rsa_pub_key_path}')
     return rsa_pub_key_path
 
 
-def rsa_pub_key_present() -> bool:
+def rsa_pub_key_is_present() -> bool:
     """
-    define function to check if there is an RSA key already present in '<user_path>/.ssh' directory
+    define function to check if there is an RSA pub key already present in '<user_path>/.ssh' directory
     :return: bool
-                'True' if RSA key is already present in '<user_path>/.ssh' directory
-                'False' if there's no RSA key '<user_path>/.ssh' directory
+                'True' if RSA pub key is already present in '<user_path>/.ssh' directory
+                'False' if there's no RSA pub key '<user_path>/.ssh' directory
     """
-    if 'id_rsa' in os.listdir(get_rsa_pub_key_directory_path()):
+    if 'id_rsa.pub' in os.listdir(get_rsa_pub_key_directory_path()):
         return True
     else:
         return False
@@ -399,8 +409,8 @@ def gen_ssh_key_pair() -> None:
     :return: SSH key pair
     """
     os.chdir(get_rsa_pub_key_directory_path())
-    if rsa_pub_key_present():
-        show(f'SSH key is already present in \'<user_path>/.ssh\' directory')
+    if rsa_pub_key_is_present():
+        show(f'SSH pub key is already present in \'{get_rsa_pub_key_directory_path()}\' directory')
     else:
         # generate SSH key pair
         # subprocess.call('ssh-keygen', shell=True)
@@ -408,7 +418,7 @@ def gen_ssh_key_pair() -> None:
         run(
             [
                 'ssh-keygen',
-                # '-q',
+                '-q',
                 '-t',
                 'rsa',
                 '-N',
@@ -419,27 +429,31 @@ def gen_ssh_key_pair() -> None:
                 # 'y'
             ]
         )
+        # command = "ssh-copy-id -p %s %s@%s" % (22, 'ubuntu', f'{get_backend_server_credentials().backend_server_ip}')
+        # subprocess.call(command, shell=True)
 
 
-def add_pub_key_to_remote_server() -> None:
-    """
-    # ssh-copy-id -i ~/.ssh/id_rsa.pub git@gitlab.praktikum-services.ru
-    :return:
+def rsa_key_based_connect():
+    import paramiko
+    ssh_client = paramiko.SSHClient()
 
-    """
-    # path to 'pub' file
-    rsa_pub_key_pub_path = Path(get_rsa_pub_key_path().with_suffix('.pub'))
-    print(f'Path to \'<user_path>/.ssh/id_rsa.pub\' file: {rsa_pub_key_pub_path}')
+    # Load SSH host keys.
+    ssh_client.load_system_host_keys()
 
-    # ssh-copy-id -i ~/.ssh/id_rsa.pub git@gitlab.praktikum-services.ru
-    run(
-        [
-            f'ssh-copy-id',
-            '-i',
-            # f'{rsa_pub_key_pub_path}',
-            f'C:\\Users\\saifs\\.ssh\\id_rsa.pub',
-            # f'{get_backend_server_credentials().username}@{get_backend_server_credentials().backend_server_ip}'
-            f'ubuntu@185.146.3.196'
-        ]
-    )
-    print(f'\n\'id_rsa.pub\' file added to remote server')
+    # transport = ssh_client.get_transport()
+    host = f'{get_backend_server_credentials().backend_server_ip}'
+    special_account = f'{get_backend_server_credentials().username}'
+    # password = f'{get_backend_server_credentials().password}'
+    private_key = paramiko.RSAKey.from_private_key_file(f'{get_rsa_pub_key_path()}')
+
+    # client = paramiko.SSHClient()
+    policy = paramiko.AutoAddPolicy()
+    ssh_client.set_missing_host_key_policy(policy)
+
+    # ssh_client.connect(host, disabled_algorithms={'keys': ['rsa-sha2-256', 'rsa-sha2-512']}, username=special_account, pkey=private_key, look_for_keys=False)
+    # ssh_client.connect(host, username=special_account, password=password, pkey=private_key)
+    ssh_client.connect(host, username=special_account, pkey=private_key)
+    print(f'\nSSH connection established: {ssh_client}')
+    return ssh_client
+
+
