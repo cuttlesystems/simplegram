@@ -15,10 +15,10 @@ class OsClass(Enum):
     WINDOWS_CLASS = 'windows_class'
 
 
-def get_script_dir() -> Path:
+def get_project_dir() -> Path:
     """
-    функция получения родительской директории запускаемого скрипта
-    Returns: путь к родительской директории запускаемого скрипта
+    функция получения родительской директории - директории проекта 'build_desktop'
+    Returns: путь к родительской директории - директории проекта 'build_desktop'
     """
     return Path(__file__).parent
 
@@ -71,9 +71,9 @@ def get_building_dir() -> Path:
     """
     current_os = get_current_os()
     if current_os == OsClass.WINDOWS_CLASS:
-        result = get_script_dir() / 'windows'
+        result = get_project_dir() / 'windows'
     elif current_os == OsClass.LINUX_CLASS:
-        result = get_script_dir() / 'linux'
+        result = get_project_dir() / 'linux'
     else:
         raise NotImplementedError('Unsupported os')
     return result
