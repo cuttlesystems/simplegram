@@ -4,17 +4,17 @@ from enum import Enum
 import PyInstaller.config
 import os
 import sys
-from application_type_enum import ApplicationTypeEnum
-from build_executable_utils import read_specfileconf, filename_to_build
-from build_executable_utils import suffix_for_app_and_folder_name, app_and_folder_name_without_time_label
-from build_executable_utils import time_suffix_for_app_and_folder_name, app_and_folder_name_with_time_label_suffix
 
 # обходное решение для добавления текущей директории в 'PYTHONPATH'
-#  небходимо для того, чтобы проходил import, выполняемый строкой ниже
+#  небходимо для того, чтобы проходили выполняемые ниже import'ы
 sys.path.append('.')
 
 from python_venv_execs_paths import get_building_dir
 
+from application_type_enum import ApplicationTypeEnum
+from build_executable_utils import read_specfileconf, filename_to_build
+from build_executable_utils import suffix_for_app_and_folder_name, app_and_folder_name_without_time_label
+from build_executable_utils import time_suffix_for_app_and_folder_name, app_and_folder_name_with_time_label_suffix
 
 block_cipher = None
 
@@ -32,7 +32,8 @@ def application_project_dir() -> Path:
     define the function to get the project_directory path
     D:\Git Repos\tg_bot_constructor\simple_gram_desktop
     """
-    return spec_file_dir() / Path('..') / '..' / 'simple_gram_desktop'
+    application_project_dir = spec_file_dir() / Path('..') / '..' / 'simple_gram_desktop'
+    return application_project_dir
 
 
 # working and destination directories for executable file creation
