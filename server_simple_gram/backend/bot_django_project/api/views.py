@@ -165,9 +165,9 @@ class BotViewSet(viewsets.ModelViewSet):
         """
         bot_id_int = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id_int)
+        self.check_object_permissions(request, bot)
         if bot.must_be_started:
             self._set_bot_must_be_started_value(bot=bot, must_be_started=False)
-        self.check_object_permissions(request, bot)
         bot_processes_manager = BotProcessesManagerSingle()
         bot_process = bot_processes_manager.get_process_info(bot_id_int)
         if bot_process is not None:
@@ -344,8 +344,7 @@ class BotViewSet(viewsets.ModelViewSet):
         user_bots_id_list = [bot.id for bot in user_bots_from_db]
 
         bot_processes_manager = BotProcessesManagerSingle()
-        all_running_bots = bot_processes_manager.get_all_processes_info()
-        all_running_bots_id_list = [bot.bot_id for bot in all_running_bots.values() if not bot.is_terminated]
+        all_running_bots_id_list = bot_processes_manager.get_all_running_bots_id_list()
 
         all_running_user_bots = set(user_bots_id_list).intersection(set(all_running_bots_id_list))
         return Response(
