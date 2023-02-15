@@ -6,6 +6,7 @@ from pathlib import Path
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand, \
     MessageTypeEnum
+from cuttle_builder.builder.additional.db_bot_data_preprocessor.db_bot_data_preprocessor import DbBotDataPreprocessor
 from cuttle_builder.builder.additional.helpers.find_functions import find_previous_messages, find_previous_variants, \
     find_variants_of_message
 from cuttle_builder.builder.additional.helpers.user_message_validator import UserMessageValidator
@@ -48,11 +49,10 @@ class BotGenerator:
             bot: экземпляр BotDescription
             bot_path: путь куда будут помещены исходники бота
         """
-        assert all(isinstance(bot_mes, BotMessage) for bot_mes in messages)
-        assert all(isinstance(variant, BotVariant) for variant in variants)
-        assert all(isinstance(command, BotCommand) for command in commands)
-        assert isinstance(bot, BotDescription)
-        assert isinstance(bot_path, str)
+        preprocessor = DbBotDataPreprocessor()
+        messages, variants, commands, bot, bot_path = preprocessor.validate_all_data(
+            messages, variants, commands, bot, bot_path
+        )
 
         self._handler_inits: List[HandlerInit] = []
         self._messages: List[BotMessage] = messages
@@ -107,13 +107,11 @@ class BotGenerator:
         keyboard_type = message.keyboard_type
         is_init_created = False
         additional_functions_under_answer = ''
-        # print(message.message_type)
         if message.message_type == MessageTypeEnum.GOTO:
             next_message = self._get_message_object_by_id(message.next_message_id)
             next_message_handler_name = self._get_handler_name_for_message(next_message.id)
             imports_for_handler += self._tab_from_new_line(f'from .get_{next_message.id} import handler_message_{next_message_handler_name}\n')
             additional_functions_under_answer = f'await handler_message_{next_message_handler_name}(message, state)'
-            print(imports_for_handler)
 
         # создать файл с изображением в директории бота и вернуть адрес
         if message.photo is not None:
@@ -125,7 +123,6 @@ class BotGenerator:
             )
         else:
             image = None
-
         if message.id == self._start_message_id:
             # Создание клавиатуры для сообщения.
             keyboard_name = self.create_keyboard(message.id, keyboard_type)
@@ -205,36 +202,36 @@ class BotGenerator:
             imports_generation_counter += 1
         # Получение списка сообщений у которых next_message == message.id (принемаемый на вход функцией).
         previous_messages = self._find_previous_messages(message.id)
-        previous_message = previous_messages[0] if previous_messages else None
 
         # it is ANY_INPUT
-        if previous_message is not None:
-            if keyboard_generation_counter == 0:
-                keyboard_name = self.create_keyboard(message.id, keyboard_type)
-            else:
-                keyboard_name = self._get_keyboard_name_for_message(message.id)
+        for previous_message in previous_messages:
+            if previous_message is not None:
+                if keyboard_generation_counter == 0:
+                    keyboard_name = self.create_keyboard(message.id, keyboard_type)
+                else:
+                    keyboard_name = self._get_keyboard_name_for_message(message.id)
 
-            # Создание хэндлера для команды /previous_message.variable
-            update_state_data = f'await state.update_data({previous_message.variable}=message.text)' \
-                if previous_message.variable else ''
-            additional_functions_from_top_of_answer = self._tab_from_new_line(update_state_data) + additional_functions_from_top_of_answer
-            handler_code = self._create_state_handler(
-                command='',
-                prev_state=self._get_handler_name_for_message(previous_message.id),
-                text_to_handle=None,
-                state_to_set_name=self._get_handler_name_for_message(message.id),
-                text_of_answer=text,
-                image_answer=image,
-                kb=keyboard_name,
-                handler_type=ButtonTypesEnum.REPLY,
-                extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
-                additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
-                additional_functions_under_answer=additional_functions_under_answer
-            )
-            self._file_manager.create_file_handler(str(message.id), handler_code)
-            is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
-            keyboard_generation_counter += 1
-            imports_generation_counter += 1
+                # Создание хэндлера для команды /previous_message.variable
+                update_state_data = f'await state.update_data({previous_message.variable}=message.text)' \
+                    if previous_message.variable else ''
+                additional_functions_from_top_of_answer = self._tab_from_new_line(update_state_data) + additional_functions_from_top_of_answer
+                handler_code = self._create_state_handler(
+                    command='',
+                    prev_state=self._get_handler_name_for_message(previous_message.id),
+                    text_to_handle=None,
+                    state_to_set_name=self._get_handler_name_for_message(message.id),
+                    text_of_answer=text,
+                    image_answer=image,
+                    kb=keyboard_name,
+                    handler_type=ButtonTypesEnum.REPLY,
+                    extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
+                    additional_functions_from_top_of_answer=additional_functions_from_top_of_answer,
+                    additional_functions_under_answer=additional_functions_under_answer
+                )
+                self._file_manager.create_file_handler(str(message.id), handler_code)
+                is_init_created = self._add_handler_init_by_condition(is_init_created, message.id)
+                keyboard_generation_counter += 1
+                imports_generation_counter += 1
 
     def create_image_file_in_bot_directory(self, full_path_to_source_file: str, path_to_bot_media_dir: str,
                                            filename: str, file_format: str) -> str:
