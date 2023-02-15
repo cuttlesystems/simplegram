@@ -58,14 +58,32 @@ class BotEditorWidget(QWidget):
         self._prop_model = BotPropertiesModel()
         self._ui.bot_params_view.setModel(self._prop_model)
 
-        self._prepare_and_setup_context_menu()
-
         self._connect_signals()
 
-        self._menu_scheme: QMenu() = None
-        self._menu_message: QMenu() = None
-        self._menu_variant: QMenu() = None
+        self._menu_Block: QMenu = QMenu(self)
 
+        self._menu_Block.addActions(
+            [QAction(QtGui.QIcon(':icons/widgets/times_icon/add_variant.png'), '1', self),
+             QAction(QtGui.QIcon(':icons/widgets/times_icon/add_variant.png'), '12', self),
+             QAction(QtGui.QIcon(':icons/widgets/times_icon/add_variant.png'), '123', self),
+             QAction(QtGui.QIcon(':icons/widgets/times_icon/add_variant.png'), '1234', self),
+             QAction(QtGui.QIcon(':icons/widgets/times_icon/add_variant.png'), '12345', self),
+             QAction(QtGui.QIcon(':icons/widgets/times_icon/add_variant.png'), '123456', self),
+             QAction(QtGui.QIcon(':icons/widgets/times_icon/add_variant.png'), '1234567', self),
+             QAction(QtGui.QIcon(':icons/widgets/times_icon/add_variant.png'), '12345678', self)])
+
+        #self._on_add_new_message_action    = QAction(QIcon(), 'asas', self),
+        #self._on_add_variant_action        = QAction(QIcon(), 'asas', self),
+        #self._on_delete_message_action     = QAction(QIcon(), 'asas', self),
+        #self._on_generate_bot_action       = QAction(QIcon(), 'asas', self),
+        #self._switch_toggle_action         = QAction(QIcon(), 'asas', self),
+        #self._on_mark_as_start_action      = QAction(QIcon(), 'asas', self),
+        #self._on_mark_as_error_action      = QAction(QIcon(), 'asas', self),
+        #self._on_delete_variant_action     = QAction(QIcon(), 'asas', self),
+        #]
+
+        self._menu_scheme: QMenu() = None
+        self._prepare_and_setup_context_menu()
 
     def set_bot_api(self, bot_api: IBotApi):
         # toDo: добавить заполнение через IBotApi
@@ -137,7 +155,12 @@ class BotEditorWidget(QWidget):
         """
         Создать, подготовить и установить контекстное меню для блока и пустой области
         """
+        self._ui.graphics_view.setup_block_menu(self._menu_Block)
 
+        #self._context_menu_empty = QMenu(self)
+        #self._context_menu_empty.addAction(self._ui.action_add_message)
+#
+        #self._ui.graphics_view.setup_empty_menu(self._context_menu_empty)
 
     def _load_bot_scene(self):
         self._bot_scene.clear_scene()

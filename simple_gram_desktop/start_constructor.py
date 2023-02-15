@@ -5,7 +5,7 @@ from utils.compile_resources import compile_all_resources
 
 if __name__ == "__main__":
     # сначала нужно скомпилировать все ресурсы
-    compile_all_resources()
+    # compile_all_resources()
 
     # и только потом есть уверенность, что импорты (которые могут быть на ui_*.py) пройдут правильно
     import constructor_app.rc_bot_icons
