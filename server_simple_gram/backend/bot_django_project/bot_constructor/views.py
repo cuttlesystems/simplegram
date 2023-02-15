@@ -3,11 +3,18 @@ from django.http import FileResponse
 
 from bot_constructor.log_configs import logger_django
 from bot_constructor.settings import BASE_DIR
+from bots.models import User, Bot
 
 
 def index(request):
     template = 'index.html/'
-    return render(request, template)
+    users_count = User.objects.all().count()
+    bots_count = Bot.objects.all().count()
+    context = {
+        'users_count': users_count,
+        'bots_count': bots_count,
+    }
+    return render(request, template, context)
 
 
 def download_app(request):
