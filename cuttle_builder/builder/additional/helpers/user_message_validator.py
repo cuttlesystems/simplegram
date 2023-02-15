@@ -18,8 +18,7 @@ class UserMessageValidator:
         Returns:
             (str) text, contains double curly brackets of words, that doesn't exist in user_variables
         """
-        # найти и вернуть потенциальные переменные в тексте сообщения
-        # variables: List[str] = self._get_all_variables_from_text(text)
+        # найти и вернуть потенциальные переменные в тексте сообщенияs
         variables: List[str] = self._get_all_values_in_brackets(text)
 
         # добавить фигурные скобки ко всем, объявленным переменным

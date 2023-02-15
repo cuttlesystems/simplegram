@@ -6,6 +6,8 @@ from pathlib import Path
 
 from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, HandlerInit, BotCommand, \
     MessageTypeEnum
+from cuttle_builder.builder.additional.helpers.find_functions import find_previous_messages, find_previous_variants, \
+    find_variants_of_message
 from cuttle_builder.builder.additional.helpers.user_message_validator import UserMessageValidator
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
@@ -253,7 +255,7 @@ class BotGenerator:
 
     def create_keyboard(self, message_id: int, keyboard_type: ButtonTypesEnum) -> typing.Optional[str]:
         assert isinstance(keyboard_type, ButtonTypesEnum)
-        variants = self._get_variants_of_message(message_id)
+        variants = self._find_variants_of_message(message_id)
         if len(variants) == 0:
             return None
         keyboard_name = self._get_keyboard_name_for_message(message_id)
@@ -408,36 +410,20 @@ class BotGenerator:
         if handler_type == ButtonTypesEnum.REPLY:
             message_handler = create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                            state_to_set_name, text_of_answer, image_answer, kb,
-                                                           additional_functions_from_top_of_answer, additional_functions_under_answer)
+                                                           additional_functions_from_top_of_answer,
+                                                           additional_functions_under_answer)
         elif handler_type == ButtonTypesEnum.INLINE:
             message_handler = create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
                                                             state_to_set_name, text_of_answer, image_answer, kb,
-                                                            additional_functions_from_top_of_answer, additional_functions_under_answer)
+                                                            additional_functions_from_top_of_answer,
+                                                            additional_functions_under_answer)
         return message_handler
 
     def _find_previous_messages(self, message_id: int) -> typing.List[BotMessage]:
-        """Получает список собщении у которых next_message == message.id (принемаемый
-        на вход функцией)
-
-        Args:
-            message_id (int): id of current message
-
-        Returns:
-            typing.List[dict]: list of all previous messages for concrete message
-        """
-        return [item for item in self._messages if item.next_message_id == message_id]
+        return find_previous_messages(message_id, self._messages)
 
     def _find_previous_variants(self, message_id: int) -> typing.List[BotVariant]:
-        """Получает список вариантов у которых next_message == message.id (принемаемый
-        на вход функцией)
-
-        Args:
-            message_id (int): id of current message
-
-        Returns:
-            typing.List[dict]: list of all previous variants for concrete message
-        """
-        return [item for item in self._variants if item.next_message_id == message_id]
+        return find_previous_variants(message_id, self._variants)
 
     def _get_handler_name_for_message(self, message_id: int) -> str:
         assert isinstance(message_id, int)
@@ -453,7 +439,7 @@ class BotGenerator:
     def _get_keyboard_name_for_message(self, message_id: int) -> Optional[str]:
         assert isinstance(message_id, int)
         keyboard_name = f'keyboard_for_message_id_{message_id}'
-        variants = self._get_variants_of_message(message_id)
+        variants = self._find_variants_of_message(message_id)
         if len(variants) == 0:
             keyboard_name = None
         return keyboard_name
@@ -472,16 +458,8 @@ class BotGenerator:
                 return message
         return None
 
-    def _get_variants_of_message(self, message_id: int) -> typing.List[BotVariant]:
-        """generate list of variants, names of buttons in keyboard
-
-        Args:
-            message_id (int): id of message
-
-        Returns:
-            typing.List[MessageVariant]: list of variants (keyboard buttons) related to concrete message
-        """
-        return [item for item in self._variants if item.current_message_id == message_id]
+    def _find_variants_of_message(self, message_id: int) -> typing.List[BotVariant]:
+        return find_variants_of_message(message_id, self._variants)
 
     def _prepare_init_handlers(self) -> List[HandlerInit]:
         prepared_handler_inits = []
