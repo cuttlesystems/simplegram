@@ -58,10 +58,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'bot_constructor.urls'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,6 +123,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/static/')]
 
 MEDIA_URL_NOT_DOMAINED = '/media/'
 MEDIA_URL_DOMAINED = f'{HOST_PROTOCOL}://{DOMAIN_HOST}{MEDIA_URL_NOT_DOMAINED}'
