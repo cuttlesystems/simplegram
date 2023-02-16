@@ -213,13 +213,21 @@
     </message>
     <message>
         <location filename="../widgets/client_widget.ui" line="199"/>
-        <source>Bot systems:</source>
-        <translation>Құралған боттар</translation>
+        <source>Bots list:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/client_widget.ui" line="262"/>
+        <source>Create bot</source>
+        <translation type="unfinished">Ботты жасау</translation>
+    </message>
+    <message>
+        <source>Bot systems:</source>
+        <translation type="vanished">Құралған боттар</translation>
+    </message>
+    <message>
         <source>+ New Project</source>
-        <translation>Ботты құру</translation>
+        <translation type="vanished">Ботты құру</translation>
     </message>
     <message>
         <location filename="../widgets/client_widget.ui" line="309"/>
@@ -346,47 +354,47 @@
         <translation>Тіркелу</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="165"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Welcome to a better BOT-systems&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <location filename="../widgets/login_widget.ui" line="191"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#292a2f;&quot;&gt;Welcome to Simple&lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="209"/>
+        <location filename="../widgets/login_widget.ui" line="247"/>
         <source>Enter your server address</source>
         <translation>Серверге қосылу сілтемесі</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="234"/>
+        <location filename="../widgets/login_widget.ui" line="272"/>
         <source>Enter your email address</source>
         <translation>Өзіңіздің email-ыңызды енгізіңіз</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="265"/>
+        <location filename="../widgets/login_widget.ui" line="303"/>
         <source>Enter your username</source>
         <translation>Пайдаланушы атын енгізіңіз</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="293"/>
+        <location filename="../widgets/login_widget.ui" line="331"/>
         <source>Enter your password</source>
         <translation>Құпия сөзді енгізіңіз</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="321"/>
+        <location filename="../widgets/login_widget.ui" line="359"/>
         <source>Confirm your password</source>
         <translation>Құпия сөзді растау</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="328"/>
+        <location filename="../widgets/login_widget.ui" line="366"/>
         <source>Save my password</source>
         <translation>Құпия сөзді сақтау</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="373"/>
+        <location filename="../widgets/login_widget.ui" line="411"/>
         <source>Sign up -&gt;</source>
         <translation>Тіркелу</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="405"/>
+        <location filename="../widgets/login_widget.ui" line="443"/>
         <source>Log in -&gt;</source>
         <translation>Қосылу</translation>
     </message>
