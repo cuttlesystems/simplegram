@@ -5,7 +5,8 @@ from pathlib import Path
 import shutil
 
 from get_repo_to_deploy_from import get_repo_to_deploy
-from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally
+from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally, \
+    get_postgres_env_variables, convert_postgres_env_variables_json_to_text
 from deploy_server_utils import get_postgres_env_file_path
 from deploy_server_utils import move_rsa_pub_key_to_remote
 # from deploy_server_utils import rsa_key_based_connect
@@ -210,6 +211,8 @@ if __name__ == '__main__':
     # echo ""
     postgres_env_file_path = get_postgres_env_file_path()
     print(f'postgres_env_file path: {postgres_env_file_path}')
+    # get_postgres_env_variables()
+    convert_postgres_env_variables_json_to_text()
 
     exit(0)
     # get credentials saved to 'dockerregistrycredentials.json' file to log in private docker registry

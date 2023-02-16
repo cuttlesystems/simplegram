@@ -546,7 +546,7 @@ def get_postgres_env_file_path() -> Path:
     return postgres_env_file_path
 
 
-def write_postgres_env_variables() -> None:
+def write_postgres_env_variables_json() -> None:
     """
     write postgres environment variables into '.env' file
     Returns:
@@ -607,25 +607,62 @@ def write_postgres_env_variables() -> None:
         'DOMAIN_HOST': postgres_env_variables.DOMAIN_HOST,
         'HOST_PROTOCOL': postgres_env_variables.HOST_PROTOCOL
     }
-    with open(get_postgres_env_file_path(), 'wt', encoding='utf-8') as envfile:
+    with open(f'{get_postgres_env_file_path()}_json', 'wt', encoding='utf-8') as envfile:
         json.dump(params, envfile)
     print(
         f'\n---------------------------------------------------------\n'
         f'postgres environment variables were written into '
-        f'\'{get_postgres_env_file_path()}\',\n'
+        f'\'{get_postgres_env_file_path()}_json\',\n'
         f'content: {params}'
         f'\n---------------------------------------------------------\n'
     )
 
 
-def read_postgres_env_variables() -> PostgresEnvVariables:
+def convert_postgres_env_variables_json_to_text() -> None:
+    """
+    convert postgres environment variables from '.env.json' file into '.env' file
+    Returns:
+        '.env' file with postgres environment variables for postgresDB functionality
+
+    """
+    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<----------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    postgres_env_variables = get_postgres_env_variables()
+    assert isinstance(postgres_env_variables, PostgresEnvVariables)
+
+    with open(get_postgres_env_file_path(), 'wt', encoding='utf-8') as envfile:
+        envfile.writelines(f'DB_ENGINE={postgres_env_variables.DB_ENGINE}\n')
+        envfile.writelines(f'DB_NAME={postgres_env_variables.DB_NAME}\n')
+        envfile.writelines(f'POSTGRES_USER={postgres_env_variables.POSTGRES_USER}\n')
+        envfile.writelines(f'POSTGRES_PASSWORD={postgres_env_variables.POSTGRES_PASSWORD}\n')
+        envfile.writelines(f'DB_HOST={postgres_env_variables.DB_HOST}\n')
+        envfile.writelines(f'DB_PORT={postgres_env_variables.DB_PORT}\n')
+        envfile.writelines(f'DOMAIN_HOST={postgres_env_variables.DOMAIN_HOST}\n')
+        envfile.writelines(f'HOST_PROTOCOL={postgres_env_variables.HOST_PROTOCOL}')
+    print(
+        f'\n---------------------------------------------------------\n'
+        f'postgres environment variables were written into '
+        f'\'{get_postgres_env_file_path()}\',\n'
+        f'content:\n'
+        f'DB_ENGINE={postgres_env_variables.DB_ENGINE}\n'
+        f'DB_NAME={postgres_env_variables.DB_NAME}\n'
+        f'POSTGRES_USER={postgres_env_variables.POSTGRES_USER}\n'
+        f'POSTGRES_PASSWORD={postgres_env_variables.POSTGRES_PASSWORD}\n'
+        f'DB_HOST={postgres_env_variables.DB_HOST}\n'
+        f'DB_PORT={postgres_env_variables.DB_PORT}\n'
+        f'DOMAIN_HOST={postgres_env_variables.DOMAIN_HOST}\n'
+        f'HOST_PROTOCOL={postgres_env_variables.HOST_PROTOCOL}\n'
+        f'\n---------------------------------------------------------\n'
+    )
+
+
+def read_postgres_env_variables_json() -> PostgresEnvVariables:
     """
     read postgres environment variables from '.env' file
     Returns:
         postgres environment variables' values from '.env' file needed for postgresDB functionality
 
     """
-    with open(get_postgres_env_file_path(), 'rt', encoding='utf-8') as envfile:
+    with open(f'{get_postgres_env_file_path()}_json', 'rt', encoding='utf-8') as envfile:
         postgres_env_variables = json.load(envfile)
     # backend_server_ip = backend_server_credentials['backend_server_ip']
     # username = backend_server_credentials['username']
@@ -635,11 +672,11 @@ def read_postgres_env_variables() -> PostgresEnvVariables:
         DB_ENGINE=postgres_env_variables['DB_ENGINE'],
         DB_NAME=postgres_env_variables['DB_NAME'],
         POSTGRES_USER=postgres_env_variables['POSTGRES_USER'],
-        POSTGRES_PASSWORD=postgres_env_variables['POSTGRES_USER'],
-        DB_HOST=postgres_env_variables['POSTGRES_USER'],
-        DB_PORT=postgres_env_variables['POSTGRES_USER'],
-        DOMAIN_HOST=postgres_env_variables['POSTGRES_USER'],
-        HOST_PROTOCOL=postgres_env_variables['POSTGRES_USER']
+        POSTGRES_PASSWORD=postgres_env_variables['POSTGRES_PASSWORD'],
+        DB_HOST=postgres_env_variables['DB_HOST'],
+        DB_PORT=postgres_env_variables['DB_PORT'],
+        DOMAIN_HOST=postgres_env_variables['DOMAIN_HOST'],
+        HOST_PROTOCOL=postgres_env_variables['HOST_PROTOCOL']
     )
     # print(f'\nconffile: {conffile}')
     # print(f'\nconffile content - \'backend_server_credentials\' instance:\n'
@@ -650,4 +687,45 @@ def read_postgres_env_variables() -> PostgresEnvVariables:
     # print(f'username: {backend_server_credentials.username}')
     # print(f'password: {backend_server_credentials.password}')
 
+    return postgres_env_variables
+
+
+def get_postgres_env_variables() -> PostgresEnvVariables:
+    """
+
+    :return:
+    """
+    # backend_server_credentials_json_file_name = 'backendservercredentials.json'
+    # # путь для проверки существования файла 'backendservercredentials.json'
+    # #  (с данными для установления соединения по SSH с удалённым сервером)
+    # #  в директории "..\deploy\deploy_server\scripts"
+    # search_dir_path = Path(__file__).parent
+    # backend_server_credentials_json_file_path = Path(search_dir_path) / backend_server_credentials_json_file_name
+    #
+    # print(f'\n\'backendservercredentials.json\' file search path: {search_dir_path}')
+    # # print(f'Current file name: {search_dir_path.name}')
+    # print(f'\'backendservercredentials.json\' file path: {backend_server_credentials_json_file_path}')
+    if os.path.exists(get_postgres_env_file_path()):
+        postgres_env_variables = read_postgres_env_variables_json()
+        # print(
+        #         f'\n\'backendservercredentials.json\' file already exists in search path:\n'
+        #         f'{get_backend_server_credentials_json_file_path().parent}'
+        # )
+        # print(f'\nCredentials to establish SSH connection with remote server')
+        # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
+        # print(f'username: {backend_server_credentials.username}')
+        # print(f'password: {backend_server_credentials.password}')
+    else:
+        write_postgres_env_variables_json()
+        postgres_env_variables = read_postgres_env_variables_json()
+        print(f'\n\'.env\' file saved')
+        print(f'\npostgres environment variables\' values from \'.env\' file needed for postgresDB functionality')
+        print(f'DB_ENGINE: {postgres_env_variables.DB_ENGINE}')
+        print(f'DB_NAME: {postgres_env_variables.DB_NAME}')
+        print(f'POSTGRES_USER: {postgres_env_variables.POSTGRES_USER}')
+        print(f'POSTGRES_PASSWORD: {postgres_env_variables.POSTGRES_PASSWORD}')
+        print(f'DB_HOST: {postgres_env_variables.DB_HOST}')
+        print(f'DB_PORT: {postgres_env_variables.DB_PORT}')
+        print(f'DOMAIN_HOST: {postgres_env_variables.DOMAIN_HOST}')
+        print(f'HOST_PROTOCOL: {postgres_env_variables.HOST_PROTOCOL}')
     return postgres_env_variables
