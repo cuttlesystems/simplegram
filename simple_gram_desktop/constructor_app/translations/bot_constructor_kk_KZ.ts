@@ -9,34 +9,72 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="132"/>
         <source>Новый бот</source>
-        <translation>Жаңа бот</translation>
+        <translation type="vanished">Жаңа бот</translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="139"/>
+        <location filename="../widgets/add_new_project_widget.ui" line="148"/>
         <source>Time to start</source>
         <translation>Басталу уақыты</translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="176"/>
         <source>Token bot&apos;s</source>
-        <translation>Боттың токені</translation>
+        <translation type="vanished">Боттың токені</translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="196"/>
         <source>About bot&apos;s</source>
-        <translation>Бот жайлы</translation>
+        <translation type="vanished">Бот жайлы</translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="238"/>
+        <location filename="../widgets/add_new_project_widget.ui" line="141"/>
+        <source>New Cuttle Systems bot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/add_new_project_widget.ui" line="256"/>
         <source>Cancel</source>
         <translation>Бас тарту</translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="278"/>
+        <location filename="../widgets/add_new_project_widget.ui" line="302"/>
         <source>Accept</source>
         <translation>Қолдану</translation>
+    </message>
+</context>
+<context>
+    <name>BlockWidget</name>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="27"/>
+        <source>Error Message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="38"/>
+        <source>NameBot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="58"/>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="90"/>
+        <location filename="../widgets/block_widget.ui" line="95"/>
+        <location filename="../widgets/block_widget.ui" line="100"/>
+        <location filename="../widgets/block_widget.ui" line="105"/>
+        <source>Новый элемент</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="144"/>
+        <source>PushButton</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -57,22 +95,22 @@
         <translation>Бот stderr output</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="95"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="126"/>
         <source>Bot</source>
         <translation>Бот</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="104"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="135"/>
         <source>Block</source>
         <translation>Блок</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="117"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="148"/>
         <source>Scheme</source>
         <translation>Схема</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="128"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="87"/>
         <source>toolBar</source>
         <translation>Құралдар тақтасы</translation>
     </message>
@@ -164,34 +202,62 @@
 <context>
     <name>ClientWidget</name>
     <message>
-        <location filename="../widgets/client_widget.ui" line="20"/>
-        <source>Widget</source>
+        <location filename="../widgets/client_widget.ui" line="26"/>
+        <source>Simple.gram</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="135"/>
+        <location filename="../widgets/client_widget.ui" line="155"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#ffffff;&quot;&gt;Simple&lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="179"/>
+        <location filename="../widgets/client_widget.ui" line="199"/>
         <source>Bot systems:</source>
         <translation>Құралған боттар</translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="242"/>
+        <location filename="../widgets/client_widget.ui" line="262"/>
         <source>+ New Project</source>
         <translation>Ботты құру</translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="289"/>
+        <location filename="../widgets/client_widget.ui" line="309"/>
         <source>? Settings</source>
         <translation>Параметрлер</translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="457"/>
+        <location filename="../widgets/client_widget.ui" line="431"/>
+        <source>Log out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>User</source>
-        <translation>Қолданушыны</translation>
+        <translation type="vanished">Қолданушыны</translation>
+    </message>
+</context>
+<context>
+    <name>DialogWidget</name>
+    <message>
+        <location filename="../widgets/dialog_widget.ui" line="20"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/dialog_widget.ui" line="94"/>
+        <location filename="../widgets/dialog_widget.ui" line="119"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/dialog_widget.ui" line="154"/>
+        <source>Apply</source>
+        <translation type="unfinished">Қолдану</translation>
+    </message>
+    <message>
+        <location filename="../widgets/dialog_widget.ui" line="194"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Бас тарту</translation>
     </message>
 </context>
 <context>
@@ -275,52 +341,52 @@
         <translation>Тіркелу формасы</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="125"/>
+        <location filename="../widgets/login_widget.ui" line="127"/>
         <source>Sign in</source>
         <translation>Тіркелу</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="163"/>
+        <location filename="../widgets/login_widget.ui" line="165"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Welcome to a better BOT-systems&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="207"/>
+        <location filename="../widgets/login_widget.ui" line="209"/>
         <source>Enter your server address</source>
         <translation>Серверге қосылу сілтемесі</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="232"/>
+        <location filename="../widgets/login_widget.ui" line="234"/>
         <source>Enter your email address</source>
         <translation>Өзіңіздің email-ыңызды енгізіңіз</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="263"/>
+        <location filename="../widgets/login_widget.ui" line="265"/>
         <source>Enter your username</source>
         <translation>Пайдаланушы атын енгізіңіз</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="291"/>
+        <location filename="../widgets/login_widget.ui" line="293"/>
         <source>Enter your password</source>
         <translation>Құпия сөзді енгізіңіз</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="319"/>
+        <location filename="../widgets/login_widget.ui" line="321"/>
         <source>Confirm your password</source>
         <translation>Құпия сөзді растау</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="326"/>
+        <location filename="../widgets/login_widget.ui" line="328"/>
         <source>Save my password</source>
         <translation>Құпия сөзді сақтау</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="371"/>
+        <location filename="../widgets/login_widget.ui" line="373"/>
         <source>Sign up -&gt;</source>
         <translation>Тіркелу</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="403"/>
+        <location filename="../widgets/login_widget.ui" line="405"/>
         <source>Log in -&gt;</source>
         <translation>Қосылу</translation>
     </message>
@@ -401,17 +467,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/selected_project_widget.ui" line="135"/>
+        <location filename="../widgets/selected_project_widget.ui" line="140"/>
         <source>New BOT</source>
         <translation type="unfinished">Ботты жасау</translation>
     </message>
     <message>
-        <location filename="../widgets/selected_project_widget.ui" line="207"/>
+        <location filename="../widgets/selected_project_widget.ui" line="199"/>
         <source>Bot is disabled</source>
         <translation>Бот өшірулі</translation>
     </message>
     <message>
-        <location filename="../widgets/selected_project_widget.ui" line="331"/>
+        <location filename="../widgets/selected_project_widget.ui" line="310"/>
         <source>Open in redactor -&gt;</source>
         <translation>Ботты ашу</translation>
     </message>
@@ -419,14 +485,49 @@
 <context>
     <name>SettingWidget</name>
     <message>
-        <location filename="../widgets/settings_widget.ui" line="14"/>
+        <source>Apply</source>
+        <translation type="vanished">Қолдану</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsItem</name>
+    <message>
+        <location filename="../widgets/settings_item.ui" line="14"/>
         <source>Form</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/settings_widget.ui" line="26"/>
+        <location filename="../widgets/settings_item.ui" line="20"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SettingsWidget</name>
+    <message>
+        <location filename="../widgets/settings_widget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/settings_widget.ui" line="68"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/settings_widget.ui" line="124"/>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/settings_widget.ui" line="255"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Бас тарту</translation>
+    </message>
+    <message>
+        <location filename="../widgets/settings_widget.ui" line="294"/>
         <source>Apply</source>
-        <translation>Қолдану</translation>
+        <translation type="unfinished">Қолдану</translation>
     </message>
 </context>
 <context>
@@ -486,6 +587,14 @@
     <name>ToolStackWidget</name>
     <message>
         <location filename="../widgets/tool_stack_widget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserPopUpWidget</name>
+    <message>
+        <location filename="../widgets/user_popup_widget.ui" line="14"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
