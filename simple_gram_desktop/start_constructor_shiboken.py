@@ -3,8 +3,7 @@ import sys
 from PySide6.QtWidgets import QApplication
 from utils.compile_resources import compile_all_resources
 
-if __name__ == "__main__":
-    # сначала нужно скомпилировать все ресурсы
+def main():
     compile_all_resources()
 
     # и потом можно выполнить импорты, поскольку они могут появиться после компиляции
@@ -25,5 +24,13 @@ if __name__ == "__main__":
     _rc_module = constructor_app.rc_bot_icons
 
     client_widget = ClientWidget()
-    client_widget.show()
-    sys.exit(app.exec())
+    currentExitCode = -11231351
+
+    while currentExitCode == client_widget.EXIT_CODE_REBOOT:
+        client_widget.show()
+        currentExitCode = app.exec()
+        return currentExitCode
+
+
+if __name__ == "__main__":
+    main()
