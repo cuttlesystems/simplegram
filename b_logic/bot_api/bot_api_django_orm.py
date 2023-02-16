@@ -25,6 +25,9 @@ class BotApiByDjangoORM(IBotApi):
     def auth_by_token(self, token: str) -> None:
         raise NotImplementedError('Метод не определен!')
 
+    def logout(self) -> None:
+        raise NotImplementedError('Метод не определен!')
+
     def create_bot(self, bot_name: str,
                    bot_token: str, bot_description: str) -> BotDescription:
         raise NotImplementedError('Метод не определен!')
