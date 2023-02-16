@@ -11,14 +11,6 @@ from constructor_app.settings.language_settings_manager import LanguageSettingsM
 from constructor_app.settings.languages_enum import LanguagesEnum
 from constructor_app.settings.language_settings import LanguageSettings
 
-
-@dataclass(slots=True)
-class ComboItem:
-    # toDo: Renaming BotExtended
-    combo_item: str
-    language_item: LanguagesEnum
-
-
 class SettingsWidget(QWidget):
     """
     Надстройка выводимого пользователю GUI
@@ -34,24 +26,18 @@ class SettingsWidget(QWidget):
         self._ui.apply_button.clicked.connect(self._on_apply_clicked)
         self._ui.cancel_button.clicked.connect(self._on_cancel_clicked)
 
-        self._combo_list: List[ComboItem] = list()
-        self._combo_list.append(
-            ComboItem(
-                combo_item=self._ui.language_combo.itemData(0, QtCore.Qt.ItemDataRole.DisplayRole),
-                language_item=LanguagesEnum.ENGLISH))
-        self._combo_list.append(
-            ComboItem(
-                combo_item=self._ui.language_combo.itemData(1, QtCore.Qt.ItemDataRole.DisplayRole),
-                language_item=LanguagesEnum.RUSSIAN))
-        self._combo_list.append(
-            ComboItem(
-                combo_item=self._ui.language_combo.itemData(2, QtCore.Qt.ItemDataRole.DisplayRole),
-                language_item=LanguagesEnum.KAZAKH))
+        self._ui.language_combo.clear()
+        self._ui.language_combo.addItem('English language', LanguagesEnum.ENGLISH)
+        self._ui.language_combo.addItem('Русский язык', LanguagesEnum.RUSSIAN)
+        self._ui.language_combo.addItem('Қазақ тілі', LanguagesEnum.KAZAKH)
 
         self._language_settings_manager = LanguageSettingsManager()
 
-        #toDo: добавить инициализацию языка
-        self._ui.language_combo.setCurrentIndex(0)
+        selected_language = self._language_settings_manager.read_settings().language
+        for index in range(self._ui.language_combo.count()):
+            data = self._ui.language_combo.itemData(index)
+            if data == selected_language:
+                self._ui.language_combo.setCurrentIndex(index)
 
         self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool | Qt.WindowType.WindowStaysOnTopHint)
@@ -60,8 +46,8 @@ class SettingsWidget(QWidget):
 
     def _on_apply_clicked(self) -> None:
         index = self._ui.language_combo.currentIndex()
-        language_setting = self._combo_list.__getitem__(index)
-        self._language_settings_manager.write_settings(LanguageSettings(language=language_setting.language_item))
+        data = self._ui.language_combo.itemData(index)
+        self._language_settings_manager.write_settings(LanguageSettings(language=data))
         QtWidgets.QMessageBox.information(self, self._tr('Info message'),
                                           self._tr('The changes you made will take '
                                                    'effect after the application is restarted.'))
