@@ -46,11 +46,7 @@ class ClientWidget(QMainWindow):
         self._ui.setupUi(self)
         self._bot_api: Optional[IBotApi] = None
 
-        self.EXIT_CODE_REBOOT = -11231351
-
         self._ui.login_page.log_in.connect(self._post_login_initial_botapi)
-
-        #self._ui.bot_new_creator_page.close_window.connect(self._start_main_menu)
 
         """Сайдбар"""
         self._ui.new_project_button.clicked.connect(self._start_new_project)
@@ -68,17 +64,8 @@ class ClientWidget(QMainWindow):
 
         self._ui.settings_button.clicked.connect(self._start_settings_slot)
 
-        #self._ui.user_widget.addItem(
-        #    QtGui.QPixmap(":/icons/widgets/times_icon/user_icon.png"), self._tr("Profile"))
-        #self._ui.user_widget.addItem(
-        #    QtGui.QPixmap(":/icons/widgets/times_icon/exit_account_icon.png"), self._tr("Log out"))
-
         self._bot_editor_index: Optional[int] = None
         self._settings_window = SettingsWidget()
-        self._settings_window.restart_signal.connect(self._restart_slot)
-
-    def _restart_slot(self) -> None:
-        QtCore.QCoreApplication.exit(-11231351)
 
     def _start_login_users(self) -> None:
         # выстравляю страницу инициализации

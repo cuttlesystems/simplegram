@@ -15,7 +15,6 @@ class SettingsWidget(QWidget):
     """
     Надстройка выводимого пользователю GUI
     """
-    restart_signal = Signal()
 
     def __init__(self, parent: Optional[QWidget] = None):
         # toDO: Добавить функцию инициализации QSS
