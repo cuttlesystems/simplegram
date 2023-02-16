@@ -127,7 +127,7 @@ DATA_FILES_ROOT = os.path.join(BASE_DIR, 'data_files')
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 # STATICFILES_DIRS содержит дополнительный список директорий в которых может находиться статика
-STATICFILES_DIRS = [os.path.join(DATA_FILES_ROOT, 'templates_static/')]
+STATICFILES_DIRS = [os.path.join(DATA_FILES_ROOT, 'templates_static')]
 
 MEDIA_URL_NOT_DOMAINED = '/media/'
 MEDIA_URL_DOMAINED = f'{HOST_PROTOCOL}://{DOMAIN_HOST}{MEDIA_URL_NOT_DOMAINED}'
