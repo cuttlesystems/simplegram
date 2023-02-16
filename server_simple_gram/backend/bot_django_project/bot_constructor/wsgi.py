@@ -11,13 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-from bot_constructor.log_configs import logger_django
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bot_constructor.settings')
-
-from bots.started_bots_managing.restart_bots_manage import start_all_launched_bots
-
-logger_django.info_logging('Django is started. Call autorun bots')
-start_all_launched_bots()
 
 application = get_wsgi_application()
