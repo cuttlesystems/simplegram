@@ -14,7 +14,7 @@ def get_bot_dir(bot_id: int) -> Path:
     return bot_dir
 
 
-def stop_bot_if_it_run(bot_id: int):
+def stop_bot_if_it_run(bot_id: int) -> None:
     assert isinstance(bot_id, int)
     bot_process_manager = BotProcessesManagerSingle()
     already_started_bot = bot_process_manager.get_process_info(bot_id)
@@ -23,30 +23,7 @@ def stop_bot_if_it_run(bot_id: int):
         bot_process_manager.remove(bot_id)
 
 
-def stop_all_running_bots_before_autoreload(sender, **kwargs) -> None:
-    """
-    Остановка всех запущенных ботов при перезапуске сервера.
-
-    Args:
-        sender: Отправитель сигнала. Обязательный аргумент.
-        **kwargs: Произвольные аргументы. Обязательный аргумент.
-        (https://docs.djangoproject.com/en/4.1/topics/signals/#receiver-functions)
-    """
-    logger_django.info_logging('Before autoreload.')
-    process_manager = BotProcessesManagerSingle()
-    all_running_processes = process_manager.get_all_processes_info()
-    if len(all_running_processes) > 0:
-        for process in all_running_processes.values():
-            process.bot_runner.stop()
-
-
-def start_all_launched_bots(sender, **kwargs) -> None:
-    """
-    Запуск всех ботов, которые должны быть запущены.
-    Args:
-        sender: Отправитель сигнала. Обязательный аргумент.
-        **kwargs: Произвольные аргументы. Обязательный аргумент.
-    """
+def start_all_launched_bots() -> None:
     started_bots_list: list = Bot.objects.filter(must_be_started=True).values_list('id', flat=True)
     if len(started_bots_list) > 0:
         logger_django.info_logging(f'Bots need to start: {started_bots_list}')
@@ -63,3 +40,33 @@ def start_all_launched_bots(sender, **kwargs) -> None:
             logger_django.info_logging(f'Bot {bot_id} started after server reload. Process: {process_id}')
     else:
         logger_django.info_logging(f'No bots need to start.')
+
+
+def stop_all_running_bots_before_autoreload() -> None:
+    logger_django.info_logging('Before autoreload.')
+    process_manager = BotProcessesManagerSingle()
+    all_running_processes = process_manager.get_all_processes_info()
+    for process in all_running_processes.values():
+        process.bot_runner.stop()
+
+
+def signal_handler_stop_all_running_bots_before_autoreload(sender, **kwargs) -> None:
+    """
+    Остановка всех запущенных ботов при перезапуске сервера.
+
+    Args:
+        sender: Отправитель сигнала. Обязательный аргумент.
+        **kwargs: Произвольные аргументы. Обязательный аргумент.
+        (https://docs.djangoproject.com/en/4.1/topics/signals/#receiver-functions)
+    """
+    stop_all_running_bots_before_autoreload()
+
+
+def signal_handler_start_all_launched_bots(sender, **kwargs) -> None:
+    """
+    Запуск всех ботов, которые должны быть запущены.
+    Args:
+        sender: Отправитель сигнала. Обязательный аргумент.
+        **kwargs: Произвольные аргументы. Обязательный аргумент.
+    """
+    start_all_launched_bots()
