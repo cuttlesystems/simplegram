@@ -108,8 +108,8 @@ class BotGenerator:
             if message.next_message_id is not None:
                 next_message = self._get_message_object_by_id(message.next_message_id)
                 next_message_handler_name = self._get_handler_name_for_message(next_message.id)
-                imports_for_handler += self._tab_from_new_line(f'from .get_{next_message.id} import handler_message_{next_message_handler_name}\n')
-                additional_functions_under_answer = f'await handler_message_{next_message_handler_name}(message, state)'
+                additional_functions_under_answer += self._tab_from_new_line(f'from .get_{next_message.id} import handler_message_{next_message_handler_name}\n')
+                additional_functions_under_answer += f'await handler_message_{next_message_handler_name}(message, state)'
 
         # создать файл с изображением в директории бота и вернуть адрес
         if message.photo is not None:
@@ -121,6 +121,7 @@ class BotGenerator:
             )
         else:
             image = None
+
         if message.id == self._start_message_id:
             # Создание клавиатуры для сообщения.
             keyboard_name = self.create_keyboard(message.id, keyboard_type)
