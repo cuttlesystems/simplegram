@@ -214,8 +214,8 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_api = BotApiByDjangoORM()
         bot_obj = bot_api.get_bot_by_id(bot_django.id)
         bot_dir = self._get_bot_dir(bot_django.id)
-        generator = BotGeneratorDb(bot_api, bot_obj, str(bot_dir))
         try:
+            generator = BotGeneratorDb(bot_api, bot_obj, str(bot_dir))
             generator.create_bot()
         except BotGeneratorException as exception:
             raise ErrorsFromBotGenerator(detail=exception)

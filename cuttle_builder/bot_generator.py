@@ -49,31 +49,28 @@ class BotGenerator:
             bot: экземпляр BotDescription
             bot_path: путь куда будут помещены исходники бота
         """
-        preprocessor = DbBotDataPreprocessor()
-        messages, variants, commands, bot, bot_path = preprocessor.validate_all_data(
-            messages, variants, commands, bot, bot_path
-        )
+        preprocessor = DbBotDataPreprocessor(messages, variants, commands, bot, bot_path)
+        preprocessor.preprocess_all_data()
 
         self._handler_inits: List[HandlerInit] = []
-        self._messages: List[BotMessage] = messages
-        self._variants: List[BotVariant] = variants
-        self._commands: List[BotCommand] = commands
-        self._start_message_id = bot.start_message_id
+        self._messages: List[BotMessage] = preprocessor.messages
+        self._variants: List[BotVariant] = preprocessor.variants
+        self._commands: List[BotCommand] = preprocessor.commands
+        self._start_message_id = preprocessor.bot.start_message_id
         self._states: List[int] = []
-        self._file_manager = APIFileCreator(bot_path)
-        self._token = bot.bot_token
-        self._bot_directory = bot_path
-        self._logs_file_path = self._get_bot_logs_file_path(bot, bot_path)
-        self._media_directory = bot_path + '/media'
-        self._user_message_validator = UserMessageValidator(messages)
+        self._file_manager = APIFileCreator(preprocessor.bot_directory)
+        self._token = preprocessor.bot.bot_token
+        self._bot_directory = preprocessor.bot_directory
+        self._logs_file_path = self._get_bot_logs_file_path(preprocessor.bot, preprocessor.bot_directory)
+        self._media_directory = preprocessor.bot_directory + '/media'
+        self._user_message_validator = UserMessageValidator(preprocessor.messages)
 
-        self._error_message_id = bot.error_message_id
+        self._error_message_id = preprocessor.bot.error_message_id
         for message in messages:
             self._states.append(message.id)
 
     def create_bot(self) -> None:
         self._file_manager.delete_dir(self._bot_directory)
-        self._check_valid_data()
         self._create_generated_bot_directory()
         self._create_config_file()
         self._create_app_file()
