@@ -21,3 +21,8 @@ class NoStartMessageException(BotGeneratorException):
 class WrongBracketsSyntaxError(BotGeneratorException):
     def __init__(self, msg: str):
         super().__init__(msg)
+
+
+class GoToMessageHasNotNextMessageException(BotGeneratorException):
+    def __init__(self, msg: str):
+        super().__init__(msg)
