@@ -196,7 +196,7 @@ padding-left:10px;
 color: rgba(255,255,255,100);}</string>
             </property>
             <property name="text">
-             <string>Bot systems:</string>
+             <string>Bots list:</string>
             </property>
            </widget>
           </item>
@@ -259,7 +259,7 @@ text-align: left;
 }</string>
             </property>
             <property name="text">
-             <string>+ New Project</string>
+             <string>Create bot</string>
             </property>
            </widget>
           </item>
