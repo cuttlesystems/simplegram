@@ -58,10 +58,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'bot_constructor.urls'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,21 +121,26 @@ USE_I18N = True
 
 USE_TZ = True
 
+# путь с данными, которые не относятся к исходникам (сгенерированные боты, изображения, видео)
+DATA_FILES_ROOT = os.path.join(BASE_DIR, 'data_files')
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+# STATICFILES_DIRS содержит дополнительный список директорий в которых может находиться статика
+STATICFILES_DIRS = [os.path.join(DATA_FILES_ROOT, 'templates_static/')]
 
 MEDIA_URL_NOT_DOMAINED = '/media/'
 MEDIA_URL_DOMAINED = f'{HOST_PROTOCOL}://{DOMAIN_HOST}{MEDIA_URL_NOT_DOMAINED}'
 MEDIA_URL = MEDIA_URL_DOMAINED
 
-# путь с данными, которые не относятся к исходникам (сгенерированные боты, изображения, видео)
-DATA_FILES_ROOT = os.path.join(BASE_DIR, 'data_files')
-
 MEDIA_ROOT = os.path.join(DATA_FILES_ROOT, 'media')
 
 # путь, где лежат созданные пользователем боты
 BOTS_DIR = Path(DATA_FILES_ROOT) / 'generated_bots'
+# путь, где лежат логи проекта
 PROJECT_LOG_DIR = Path(DATA_FILES_ROOT) / 'project_logs'
+# путь, где лежат клиентские приложения
+DESKTOP_APPS_ROOT = Path(DATA_FILES_ROOT) / 'releases'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
