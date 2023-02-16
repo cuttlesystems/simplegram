@@ -130,7 +130,7 @@ class ClientWidget(QMainWindow):
         # toDO: добавить реализацию выхода для сервера
         self._start_login_users()
 
-    def _start_settings_slot(self, _toggle: bool) -> None:
+    def _start_settings_slot(self, _toggled: bool) -> None:
         self._settings_window.show()
 
     def _start_bot_redactor(self) -> None:
