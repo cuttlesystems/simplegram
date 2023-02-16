@@ -2,6 +2,7 @@
 модуль с дополнительными функциями, которые используются при разворачивании backend'а приложения на сервере
 """
 import os
+import sys
 from pathlib import Path
 
 from dataclasses import dataclass
@@ -334,6 +335,28 @@ def docreg_logout_locally(docker_registry_credentials: DockerRegistryCredentials
             'logout',
             f'{docker_registry_credentials.docker_registry_server_url}'
         ]
+    )
+
+
+def docker_create_image_locally():
+    # Create a client connecting to Docker daemon locally
+    docker_client_local = docker.from_env()
+    # Create a client connecting to Docker daemon via SSH
+    # docker_client = docker.DockerClient(
+    #     base_url=f'ssh://{backend_server_credentials.username}@{backend_server_credentials.backend_server_ip}',
+    #     use_ssh_client=True
+    # )
+    print(
+        f'\nprivate docker registry logging in locally with credentials saved to'
+        f'\'dockerregistrycredentials.json\' file to create and push docker image'
+    )
+
+    docker_client_local.login(username='admin', password='admin', registry='https://ramasuchka.kz:4443')
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'\nSuccessfully logged in to private docker registry from the local machine with local Docker daemon '
+        # f'{backend_server_credentials.backend_server_ip}'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
     )
 
 
@@ -678,14 +701,6 @@ def read_postgres_env_variables_json() -> PostgresEnvVariables:
         DOMAIN_HOST=postgres_env_variables['DOMAIN_HOST'],
         HOST_PROTOCOL=postgres_env_variables['HOST_PROTOCOL']
     )
-    # print(f'\nconffile: {conffile}')
-    # print(f'\nconffile content - \'backend_server_credentials\' instance:\n'
-    #       f'{backend_server_credentials}')
-    # print(f'\nbackendservercredentials_content: {backend_server_credentials}')
-    # print(f'\nCredentials to establish SSH connection with remote server')
-    # print(f'application backend server ip: {backend_server_credentials.backend_server_ip}')
-    # print(f'username: {backend_server_credentials.username}')
-    # print(f'password: {backend_server_credentials.password}')
 
     return postgres_env_variables
 
@@ -729,3 +744,45 @@ def get_postgres_env_variables() -> PostgresEnvVariables:
         print(f'DOMAIN_HOST: {postgres_env_variables.DOMAIN_HOST}')
         print(f'HOST_PROTOCOL: {postgres_env_variables.HOST_PROTOCOL}')
     return postgres_env_variables
+
+
+def move_env_docker_compose_files_to_remote() -> None:
+    """
+
+    :return:
+
+    """
+    # import scp
+    from scp import SCPClient
+
+    postgres_env_file_path_local = get_postgres_env_file_path()
+    postgres_env_file_name_local = postgres_env_file_name_remote = '.env'
+    docker_compose_file_name_local = 'docker-compose_move_2_server.yml'
+    docker_compose_file_path_local = get_postgres_env_file_path().parent / docker_compose_file_name_local
+
+    docker_compose_file_name_remote = 'docker-compose.yml'
+    # docker_compose_file_path_remote = f'~/tg_bot_constructor/infra/{docker_compose_file_name_remote}'
+
+    remote_directory = '~/tg_bot_constructor/infra/'
+    docker_compose_file_path_remote = f'{remote_directory}{docker_compose_file_name_remote}'
+    postgres_env_file_path_remote = f'{remote_directory}{postgres_env_file_name_remote}'
+
+    # оставлено для примера отображения прогресса передачи файлов по SCP
+    # def progress(filename, size, sent):
+    #     sys.stdout.write("%s's progress: %.2f%%   \r" % (filename, float(sent) / float(size) * 100))
+    # scp = SCPClient(rsa_key_based_connect().get_transport(), progress=progress)
+
+    # SCPCLient takes a paramiko transport and progress callback as its arguments
+    scp = SCPClient(rsa_key_based_connect().get_transport())
+    # send '.env' and 'docker-compose_move_2_server.yml' files to remote server
+    scp.put(postgres_env_file_path_local, postgres_env_file_path_remote)
+    scp.put(docker_compose_file_path_local, docker_compose_file_path_remote)
+    print(
+        f'\n---------------------------------------------------------\n'
+        f'\'{postgres_env_file_name_local}\' and \'{docker_compose_file_name_local}\' files,\n'
+        f'sent to remote server directory: {remote_directory}'
+        f'\n---------------------------------------------------------\n'
+    )
+
+    # Should now be printing the current progress of your put function
+    scp.close()

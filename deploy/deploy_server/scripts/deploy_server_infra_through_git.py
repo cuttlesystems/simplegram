@@ -4,10 +4,12 @@ from pathlib import Path
 # модуль для определения пути к исполняемому файлу установленного в системе python
 import shutil
 
+import docker
+
 from get_repo_to_deploy_from import get_repo_to_deploy
 from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally, \
     get_postgres_env_variables, convert_postgres_env_variables_json_to_text
-from deploy_server_utils import get_postgres_env_file_path
+from deploy_server_utils import get_postgres_env_file_path, move_env_docker_compose_files_to_remote
 from deploy_server_utils import move_rsa_pub_key_to_remote
 # from deploy_server_utils import rsa_key_based_connect
 from deploy_server_utils import get_backend_server_credentials, gen_ssh_key_pair
@@ -211,10 +213,11 @@ if __name__ == '__main__':
     # echo ""
     postgres_env_file_path = get_postgres_env_file_path()
     print(f'postgres_env_file path: {postgres_env_file_path}')
-    # get_postgres_env_variables()
+    # get_postgres_env_variables() - создание '.env_json' файла с переменными окружения для базы данных postgres
+    #  в json-формате, а также файла '.env' на его основе с записью необходимых переменных окружения в строковом виде
     convert_postgres_env_variables_json_to_text()
 
-    exit(0)
+    # exit(0)
     # get credentials saved to 'dockerregistrycredentials.json' file to log in private docker registry
     docker_registry_credentials = get_docker_registry_credentials()
 
@@ -225,16 +228,16 @@ if __name__ == '__main__':
     # private docker registry logging out locally
     docreg_logout_locally(docker_registry_credentials)
 
-
     # copy modified 'docker-compose.yml' file to remote server
-    # #scp -r ~/tg_bot_constructor/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
+    # # scp -r ~/tg_bot_constructor/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
     # scp -r ~/tg_bot_constructor/deploy/deploy_server/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
     #
     # # copy modified '.env' file to remote server
-    # #scp -r ~/tg_bot_constructor/infra/.env ubuntu@185.146.3.196:~/tg_bot_constructor/infra/.env
+    # # scp -r ~/tg_bot_constructor/infra/.env ubuntu@185.146.3.196:~/tg_bot_constructor/infra/.env
     # scp -r ~/tg_bot_constructor/deploy/deploy_server/infra/.env ubuntu@185.146.3.196:~/tg_bot_constructor/infra/.env
+    move_env_docker_compose_files_to_remote()
 
-
+    # not necessary
     # add_key_to_known_hosts()
     # rsa_key_based_connect()
 
