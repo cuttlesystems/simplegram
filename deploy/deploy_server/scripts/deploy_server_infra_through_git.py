@@ -225,6 +225,16 @@ if __name__ == '__main__':
     # private docker registry logging out locally
     docreg_logout_locally(docker_registry_credentials)
 
+
+    # copy modified 'docker-compose.yml' file to remote server
+    # #scp -r ~/tg_bot_constructor/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
+    # scp -r ~/tg_bot_constructor/deploy/deploy_server/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
+    #
+    # # copy modified '.env' file to remote server
+    # #scp -r ~/tg_bot_constructor/infra/.env ubuntu@185.146.3.196:~/tg_bot_constructor/infra/.env
+    # scp -r ~/tg_bot_constructor/deploy/deploy_server/infra/.env ubuntu@185.146.3.196:~/tg_bot_constructor/infra/.env
+
+
     # add_key_to_known_hosts()
     # rsa_key_based_connect()
 
