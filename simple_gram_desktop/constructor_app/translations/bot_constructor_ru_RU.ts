@@ -11,7 +11,7 @@
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="148"/>
         <source>Time to start</source>
-        <translation type="unfinished"></translation>
+        <translation>Время начать</translation>
     </message>
     <message>
         <source>Token bot&apos;s</source>
@@ -24,17 +24,17 @@
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="141"/>
         <source>New Cuttle Systems bot</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый Cuttle Systems бот</translation>
     </message>
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="256"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="302"/>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать</translation>
     </message>
 </context>
 <context>
