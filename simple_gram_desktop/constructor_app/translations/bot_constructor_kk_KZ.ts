@@ -11,32 +11,32 @@
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="132"/>
         <source>Новый бот</source>
-        <translation type="unfinished"></translation>
+        <translation>Жаңа бот</translation>
     </message>
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="139"/>
         <source>Time to start</source>
-        <translation type="unfinished"></translation>
+        <translation>Басталу уақыты</translation>
     </message>
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="176"/>
         <source>Token bot&apos;s</source>
-        <translation type="unfinished"></translation>
+        <translation>Боттың токені</translation>
     </message>
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="196"/>
         <source>About bot&apos;s</source>
-        <translation type="unfinished"></translation>
+        <translation>Бот жайлы</translation>
     </message>
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="238"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Бас тарту</translation>
     </message>
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="278"/>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
+        <translation>Қолдану</translation>
     </message>
 </context>
 <context>
@@ -144,12 +144,13 @@
     <message>
         <location filename="../widgets/bot_editor_widget.ui" line="32"/>
         <source>Bot stdout output</source>
-        <translation type="unfinished">Бот stdout output</translation>
+        <translation>Логтар нәтижесі</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor_widget.ui" line="55"/>
         <source>Bot stderr output</source>
-        <translation type="unfinished">Бот stderr output</translation>
+        <translatorcomment>Қателер нәтижесі</translatorcomment>
+        <translation>Бот stderr output</translation>
     </message>
 </context>
 <context>
@@ -175,17 +176,17 @@
     <message>
         <location filename="../widgets/client_widget.ui" line="179"/>
         <source>Bot systems:</source>
-        <translation type="unfinished"></translation>
+        <translation>Құралған боттар</translation>
     </message>
     <message>
         <location filename="../widgets/client_widget.ui" line="242"/>
         <source>+ New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Ботты құру</translation>
     </message>
     <message>
         <location filename="../widgets/client_widget.ui" line="289"/>
         <source>? Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметрлер</translation>
     </message>
     <message>
         <location filename="../widgets/client_widget.ui" line="457"/>
@@ -276,7 +277,7 @@
     <message>
         <location filename="../widgets/login_widget.ui" line="125"/>
         <source>Sign in</source>
-        <translation type="unfinished"></translation>
+        <translation>Тіркелу</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="163"/>
@@ -402,12 +403,12 @@
     <message>
         <location filename="../widgets/selected_project_widget.ui" line="135"/>
         <source>New BOT</source>
-        <translation>Ботты жасау</translation>
+        <translation type="unfinished">Ботты жасау</translation>
     </message>
     <message>
         <location filename="../widgets/selected_project_widget.ui" line="207"/>
         <source>Bot is disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Бот өшірулі</translation>
     </message>
     <message>
         <location filename="../widgets/selected_project_widget.ui" line="331"/>
@@ -420,12 +421,12 @@
     <message>
         <location filename="../widgets/settings_widget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../widgets/settings_widget.ui" line="26"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Қолдану</translation>
     </message>
 </context>
 <context>
