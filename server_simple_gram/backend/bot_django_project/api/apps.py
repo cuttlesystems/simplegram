@@ -1,7 +1,8 @@
-from django.apps import AppConfig
+import os
+import sys
 
+from django.apps import AppConfig
 from bot_constructor.log_configs import logger_django
-# from bots.started_bots_managing.restart_bots_manage import start_all_launched_bots
 
 
 class ApiConfig(AppConfig):
@@ -9,4 +10,7 @@ class ApiConfig(AppConfig):
     name = 'api'
 
     def ready(self):
-        logger_django.info_logging('Django is started. Call autorun bots')
+        if os.environ.get('RUN_MAIN'):
+            from bots.started_bots_managing.restart_bots_manage import start_all_launched_bots
+            logger_django.info_logging('Django is started. Call autorun bots')
+            start_all_launched_bots()
