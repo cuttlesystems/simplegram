@@ -24,12 +24,8 @@ def main():
     _rc_module = constructor_app.rc_bot_icons
 
     client_widget = ClientWidget()
-    currentExitCode = -11231351
-
-    while currentExitCode == client_widget.EXIT_CODE_REBOOT:
-        client_widget.show()
-        currentExitCode = app.exec()
-        return currentExitCode
+    client_widget.show()
+    app.exec()
 
 
 if __name__ == "__main__":
