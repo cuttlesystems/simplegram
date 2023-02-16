@@ -58,7 +58,7 @@ class DbBotDataPreprocessor:
         return False
 
     def _is_messages_empty(self, messages: List[BotMessage]):
-        if not messages:
+        if len(messages) == 0:
             return True
         return False
 
