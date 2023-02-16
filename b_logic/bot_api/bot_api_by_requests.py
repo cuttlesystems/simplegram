@@ -13,7 +13,7 @@ from b_logic.bot_api.i_bot_api import IBotApi, SignUpException, CreatingBotExcep
     DeletingImageException, GettingMessagesVariantsListException, CreatingVariantException, EditingVariantException, \
     LinkingVariantWithNextMessageException, DeletingVariantException, GettingBotCommandsException, \
     CreatingCommandException, BotGenerationException, BotStopException, BotStartupException, \
-    GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException
+    GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException, LogoutException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
     MessageTypeEnum
 from b_logic.utils.image_to_bytes import get_binary_data_from_image_file
@@ -108,6 +108,15 @@ class BotApiByRequests(IBotApi):
         """
         assert isinstance(token, str)
         self._auth_token = token
+
+    def logout(self) -> None:
+        response = requests.post(
+            url=self._suite_url + 'api/auth/token/logout/',
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.no_content:
+            raise LogoutException(response)
+        self._auth_token = None
 
     def get_bots(self) -> List[BotDescription]:
         """
