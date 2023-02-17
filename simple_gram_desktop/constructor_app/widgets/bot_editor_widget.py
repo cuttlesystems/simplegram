@@ -29,6 +29,7 @@ class BotEditorWidget(QWidget):
 
     # сигнал, о том, что пользователь закрывает этот редактор
     close_bot = Signal()
+    update_state_bot = Signal()
 
     delete_message_setEnabled = Signal(bool)
     delete_variant_setEnabled = Signal(bool)
@@ -338,6 +339,7 @@ class BotEditorWidget(QWidget):
     def __start_bot(self):
         try:
             self._bot_api.start_bot(self._bot)
+            self.update_state_bot.emit()
         except Exception as e:
             self._process_exception(e)
 
@@ -350,6 +352,7 @@ class BotEditorWidget(QWidget):
     def __stop_bot(self):
         try:
             self._bot_api.stop_bot(self._bot)
+            self.update_state_bot.emit()
         except Exception as e:
             self._process_exception(e)
 

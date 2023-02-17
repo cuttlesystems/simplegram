@@ -148,6 +148,7 @@ class ClientWidget(QMainWindow):
             bot_editor = BotEditorWidget()
             bot_editor.set_bot_api(self._bot_api)
             bot_editor.setup_tool_stack(self._ui.tool_stack, bot_extended.bot_state)
+            bot_editor.update_state_bot.connect(self.__load_bots_list)
             bot_editor.set_bot(bot)
 
             if self._bot_editor_index is not None:
