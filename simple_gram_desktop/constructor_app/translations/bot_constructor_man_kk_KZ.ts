@@ -73,6 +73,42 @@
         <source>Select only one message to set as start message</source>
         <translation>Бастапқы хабар ретінде орнату үшін тек бір хабарды таңдаңыз</translation>
     </message>
+    <message>
+        <source>Add message</source>
+        <translation>Хабарды қосу</translation>
+    </message>
+    <message>
+        <source>Delete message</source>
+        <translation>Хабарды жою</translation>
+    </message>
+    <message>
+        <source>Add variant</source>
+        <translation>Вариантты қосу</translation>
+    </message>
+    <message>
+        <source>Mark start message</source>
+        <translation>Бастапқы хабар ретінде белгілеу</translation>
+    </message>
+    <message>
+        <source>Mark error message</source>
+        <translation>Қате хабар ретінде белгілеу</translation>
+    </message>
+    <message>
+        <source>Start bot</source>
+        <translation>Ботты қосу</translation>
+    </message>
+    <message>
+        <source>Stop bot</source>
+        <translation>Ботты өшіру</translation>
+    </message>
+    <message>
+        <source>Generate bot</source>
+        <translation>Ботты жасау</translation>
+    </message>
+    <message>
+        <source>Show log</source>
+        <translation>Көрсету логи</translation>
+    </message>
 </context>
 
 

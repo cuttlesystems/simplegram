@@ -85,7 +85,7 @@
         <source>Select only one message to set as start message</source>
         <translation>Выберите только одно сообщение для установки в качестве стартового сообщения</translation>
     </message>
-        <message>
+    <message>
         <source>Add message</source>
         <translation>Создать новое сообщение</translation>
     </message>

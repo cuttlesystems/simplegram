@@ -187,8 +187,7 @@
     <message>
         <location filename="../widgets/bot_editor_widget.ui" line="55"/>
         <source>Bot stderr output</source>
-        <translatorcomment>Қателер нәтижесі</translatorcomment>
-        <translation>Бот stderr output</translation>
+        <translation>Қателер нәтижесі</translation>
     </message>
 </context>
 <context>
@@ -214,17 +213,17 @@
     <message>
         <location filename="../widgets/client_widget.ui" line="199"/>
         <source>Bots list:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тізім боттар</translation>
     </message>
     <message>
         <location filename="../widgets/client_widget.ui" line="262"/>
         <source>Create bot</source>
-        <translation type="unfinished">Ботты жасау</translation>
+        <translation>Ботты жасау</translation>
     </message>
     <message>
         <location filename="../widgets/client_widget.ui" line="309"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметрлер</translation>
     </message>
     <message>
         <source>Bot systems:</source>
@@ -241,7 +240,7 @@
     <message>
         <location filename="../widgets/client_widget.ui" line="431"/>
         <source>Log out</source>
-        <translation type="unfinished"></translation>
+        <translation>Шығу</translation>
     </message>
     <message>
         <source>User</source>
@@ -395,18 +394,18 @@
     <message>
         <location filename="../widgets/login_widget.ui" line="448"/>
         <source>Sign up</source>
-        <translation type="unfinished">Тіркелу</translation>
+        <translation>Тіркелу</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="480"/>
         <source>Log in</source>
-        <translation type="unfinished"></translation>
+        <translation>Қосылу</translation>
     </message>
     <message>
         <location filename="../widgets/login_widget.ui" line="558"/>
         <source>© TOO CuttleSystems
  https://cuttlesystems.com</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Sign up -&gt;</source>
@@ -538,22 +537,22 @@
     <message>
         <location filename="../widgets/settings_widget.ui" line="68"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметрлер</translation>
     </message>
     <message>
         <location filename="../widgets/settings_widget.ui" line="124"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Тіл</translation>
     </message>
     <message>
         <location filename="../widgets/settings_widget.ui" line="255"/>
         <source>Cancel</source>
-        <translation type="unfinished">Бас тарту</translation>
+        <translation>Бас тарту</translation>
     </message>
     <message>
         <location filename="../widgets/settings_widget.ui" line="294"/>
         <source>Apply</source>
-        <translation type="unfinished">Қолдану</translation>
+        <translation>Қолдану</translation>
     </message>
 </context>
 <context>
