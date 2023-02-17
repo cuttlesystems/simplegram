@@ -188,7 +188,7 @@ QRadioButton::indicator{
                </font>
               </property>
               <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#292a2f;&quot;&gt;Welcome to Simple&lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:36pt; color:#292a2f;&quot;&gt;Simple&lt;/span&gt;&lt;span style=&quot; font-size:36pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
              </widget>
             </item>
