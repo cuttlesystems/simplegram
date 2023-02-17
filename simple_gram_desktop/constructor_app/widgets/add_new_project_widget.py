@@ -37,9 +37,6 @@ class AddNewProjectWidget(QWidget):
     close_window = Signal()
     new_bot_added = Signal()
 
-    _bot_api: Optional[IBotApi]
-    _bot_list: Optional[List[BotExtended]]
-
     def __init__(self, parent: typing.Optional[QWidget] = None):
         super().__init__(parent)
         self._ui = Ui_AddNewProjectWidget()
@@ -62,8 +59,8 @@ class AddNewProjectWidget(QWidget):
 
         self.setMouseTracking(True)
 
-        self._bot_api = None
-        self._bot_list = None
+        self._bot_api: Optional[IBotApi] = None
+        self._bot_list: List[BotExtended] = []
 
     def set_all_bot(self, bot_list: List[BotExtended]):
         assert all(isinstance(bot, BotExtended) for bot in bot_list)
