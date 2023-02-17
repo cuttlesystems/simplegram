@@ -84,6 +84,10 @@ class ToolStackWidget(QWidget):
         assert isinstance(enabled, bool)
         self._ui.mark_start_message_button.setEnabled(enabled)
 
+    def set_generate_bot_enabled(self, enabled: bool) -> None:
+        assert isinstance(enabled, bool)
+        self._ui.generate_bot_button.setEnabled(enabled)
+
     def set_mark_error_enabled(self, enabled: bool) -> None:
         assert isinstance(enabled, bool)
         self._ui.mark_error_message_button.setEnabled(enabled)
