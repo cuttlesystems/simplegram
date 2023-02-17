@@ -2,6 +2,7 @@
 модуль с дополнительными функциями, которые используются при разворачивании backend'а приложения на сервере
 """
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -341,86 +342,157 @@ def docreg_logout_locally(docker_registry_credentials: DockerRegistryCredentials
 # create docker image locally through 'subprocess.run( )' to push it into private docker registry later
 #  sudo docker-compose build --no-cache web
 def docker_create_image_locally():
+    """
+
+    :return:
+
+    """
     # 'docker-compose.yml' file local directory - 'D:/Git Repos/tg_bot_constructor/deploy/deploy_server/infra'
     # docker_compose_file_name_local = 'docker-compose.yml'
     docker_compose_yml_file_directory_path_local = get_postgres_env_file_path().parent
     print(f'\n\'docker-compose.yml\' file local directory: {docker_compose_yml_file_directory_path_local}')
-    os.chdir('D:/Git Repos/tg_bot_constructor/deploy/deploy_server/infra')
-
-    with open('output.log', 'wt', encoding='utf-8') as output:
-        # def sync_assets():
-        subprocess.run(
-            [
-                "docker-compose",
-                "build",
-                "--no-cache",
-                # "ssh -p {port}".format(port=c.conn.port),
-                "web"
-                # "*.map",
-                # "--exclude",
-                # "*.swp",
-                # "static/dist",
-                # "{user}@{host}:{path}".format(
-                #     host=c.conn.host,
-                #     user=c.conn.user,
-                #     path=os.path.join(c.conn.project_root, 'static'),
-                # ),
-            ],
-            shell=False,
-            stdout=output,
-            stderr=output
-        )
-
-    # from subprocess import Popen, PIPE
-    result = subprocess.Popen(['pip', 'list'], text=True, stdout=subprocess.PIPE)
-    # result = subprocess.Popen(['pip', 'list'], stdout=subprocess.PIPE)
-    # result.stdout
-    # result.stderr
-    pip_output_str = result.stdout.read()
-
-    print(f'\nresult.stdout: ', pip_output_str)
-
-    with open('file_name.txt', 'w') as file:
-        file.write(pip_output_str)
-        file.writelines('add any str 123')
-
-    
-
-    print(
-        f'\nprivate docker registry logging in locally with credentials saved to'
-        f'\'dockerregistrycredentials.json\' file to create and push docker image'
-    )
-
-    docker_client_local.login(username='admin', password='admin', registry='https://ramasuchka.kz:4443')
+    os.chdir(docker_compose_yml_file_directory_path_local)
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
-        f'\nSuccessfully logged in to private docker registry from the local machine with local Docker daemon '
-        # f'{backend_server_credentials.backend_server_ip}'
+        f'\nLocal docker image creation process started (based on \'docker-compose.yml\' file'
+        f'\nWait for a while and... be patient, please:)'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    with open('docker_create_image_locally_output.log', 'wt', encoding='utf-8') as create_image_output:
+        result = subprocess.run(
+                    [
+                        'docker-compose',
+                        'build',
+                        '--no-cache',
+                        'web'
+                    ],
+                    shell=False,
+                    stdout=create_image_output,
+                    stderr=create_image_output
+                )
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'\nDocker image creation process finished'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'result.stdout: {result}'
+        f'\nDocker image for \'web\' service container was created locally and ready to be pushed '
+        f'into private docker registry '
+        f'\nLog file of image creation process - \'docker_create_image_locally_output.log\' - '
+        f'created in directory:\n{docker_compose_yml_file_directory_path_local}'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
 
+
+# create docker image locally through 'subprocess.run( )' to push it into private docker registry later
+#  sudo docker-compose build --no-cache web
 
 # not to be implemented at the moment (17.02.2023)
 #  create docker image locally through DockerClient to push it into private docker registry later
+# def docker_create_image_locally_through_docker_client():
+#     # Create a client connecting to Docker daemon locally
+#     docker_client_local = docker.from_env()
+#     # Create a client connecting to Docker daemon via SSH
+#     # docker_client = docker.DockerClient(
+#     #     base_url=f'ssh://{backend_server_credentials.username}@{backend_server_credentials.backend_server_ip}',
+#     #     use_ssh_client=True
+#     # )
+#     print(
+#         f'\nprivate docker registry logging in locally with credentials saved to'
+#         f'\'dockerregistrycredentials.json\' file to create and push docker image'
+#     )
 #
-def docker_create_image_locally_through_docker_client():
-    # Create a client connecting to Docker daemon locally
-    docker_client_local = docker.from_env()
-    # Create a client connecting to Docker daemon via SSH
-    # docker_client = docker.DockerClient(
-    #     base_url=f'ssh://{backend_server_credentials.username}@{backend_server_credentials.backend_server_ip}',
-    #     use_ssh_client=True
-    # )
-    print(
-        f'\nprivate docker registry logging in locally with credentials saved to'
-        f'\'dockerregistrycredentials.json\' file to create and push docker image'
-    )
+#     docker_client_local.login(username='admin', password='admin', registry='https://ramasuchka.kz:4443')
+#     print(
+#         f'\n--------------------------------------------------------------------------------------------------------\n'
+#         f'\nSuccessfully logged in to private docker registry from the local machine with local Docker daemon '
+#         # f'{backend_server_credentials.backend_server_ip}'
+#         f'\n--------------------------------------------------------------------------------------------------------\n'
+#     )
 
-    docker_client_local.login(username='admin', password='admin', registry='https://ramasuchka.kz:4443')
+
+# tag local 'infra-web' docker image as 'ramasuchka.kz:4443/infra-web:latest' through 'subprocess.run( )'
+#  to push it into private docker registry
+#  sudo docker tag infra-web ramasuchka.kz:4443/infra-web:latest
+def docker_tag_local_image_to_push() -> str:
+    """
+
+    :return:
+        tags a local image 'infra-web' and returns back string tag value
+            'ramasuchka.kz:4443/infra-web:latest' after completed
+    """
+
+    docker_image_tag_to_push = 'ramasuchka.kz:4443/infra-web:latest'
+    result = subprocess.run(
+                [
+                    'docker',
+                    'tag',
+                    'infra-web',
+                    f'{docker_image_tag_to_push}'
+                ],
+                shell=True
+            )
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
-        f'\nSuccessfully logged in to private docker registry from the local machine with local Docker daemon '
-        # f'{backend_server_credentials.backend_server_ip}'
+        f'result.stdout: {result}'
+        f'\nLocal docker image for \'web\' service container was tagged as \'ramasuchka.kz:4443/infra-web:latest\' '
+        f'and ready to be pushed into private docker registry'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    print(f'\nLocal docker images:')
+    subprocess.run(
+        [
+            'docker',
+            'images'
+        ],
+        shell=True,
+        # stdout=create_image_output,
+        # stderr=create_image_output
+    )
+    return docker_image_tag_to_push
+
+
+# sudo docker push ramasuchka.kz:4443/infra-web:latest
+#
+# echo "Updated 'infra-web' image was pushed to the Private Docker Registry as 'ramasuchka.kz:4443/infra-web:latest'"
+def docker_push_tagged_local_image_to_registry() -> None:
+    """
+
+    :return:
+
+    """
+    docker_image_tag_to_push = docker_tag_local_image_to_push()
+    # os.chdir(docker_compose_yml_file_directory_path_local)
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'\nPushing of tagged local docker image - \'ramasuchka.kz:4443/infra-web:latest\' - started'
+        f'\nWait for a while and... be patient, please:)'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    with open('docker_push_tagged_local_image_to_registry_output.log', 'wt', encoding='utf-8') as push_image_output:
+        result = subprocess.run(
+                    [
+                        'docker',
+                        'push',
+                        f'{docker_image_tag_to_push}'
+                    ],
+                    shell=False,
+                    stdout=push_image_output,
+                    stderr=push_image_output
+                )
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'\nTagged local docker image was pushed to the Docker Registry as \'ramasuchka.kz:4443/infra-web:latest\''
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'result.stdout: {result}'
+        f'\nTagged local docker image was pushed to the Docker Registry as \'ramasuchka.kz:4443/infra-web:latest\''
+        f'\nLog file of push process - \'docker_push_tagged_local_image_to_registry_output.log\''
+        # f'created in directory:\n{docker_compose_yml_file_directory_path_local}'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
 
@@ -699,7 +771,7 @@ def write_postgres_env_variables_json() -> None:
         json.dump(params, envfile)
     print(
         f'\n---------------------------------------------------------\n'
-        f'postgres environment variables were written into '
+        f'postgres environment variables were written into file'
         f'\'{get_postgres_env_file_path()}_json\',\n'
         f'content: {params}'
         f'\n---------------------------------------------------------\n'
@@ -728,7 +800,7 @@ def convert_postgres_env_variables_json_to_text() -> None:
         envfile.writelines(f'HOST_PROTOCOL={postgres_env_variables.HOST_PROTOCOL}')
     print(
         f'\n---------------------------------------------------------\n'
-        f'postgres environment variables were written into '
+        f'postgres environment variables were written into file'
         f'\'{get_postgres_env_file_path()}\',\n'
         f'content:\n'
         f'DB_ENGINE={postgres_env_variables.DB_ENGINE}\n'

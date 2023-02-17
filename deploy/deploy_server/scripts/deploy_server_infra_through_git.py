@@ -8,7 +8,8 @@ import docker
 
 from get_repo_to_deploy_from import get_repo_to_deploy
 from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally, \
-    get_postgres_env_variables, convert_postgres_env_variables_json_to_text
+    get_postgres_env_variables, convert_postgres_env_variables_json_to_text, docker_create_image_locally, \
+    docker_tag_local_image_to_push, docker_push_tagged_local_image_to_registry
 from deploy_server_utils import get_postgres_env_file_path, move_env_docker_compose_files_to_remote
 from deploy_server_utils import move_rsa_pub_key_to_remote
 # from deploy_server_utils import rsa_key_based_connect
@@ -217,7 +218,6 @@ if __name__ == '__main__':
     #  в json-формате, а также файла '.env' на его основе с записью необходимых переменных окружения в строковом виде
     convert_postgres_env_variables_json_to_text()
 
-    # exit(0)
     # get credentials saved to 'dockerregistrycredentials.json' file to log in private docker registry
     docker_registry_credentials = get_docker_registry_credentials()
 
@@ -225,8 +225,25 @@ if __name__ == '__main__':
     #  saved to 'dockerregistrycredentials.json' file to push docker image
     docreg_login_locally(docker_registry_credentials)
 
+    # create docker image locally through 'subprocess.run( )' to push it into private docker registry later
+    #  sudo docker-compose build --no-cache web
+    docker_create_image_locally()
+
+    # tag local 'infra-web' docker image as 'ramasuchka.kz:4443/infra-web:latest' through 'subprocess.run( )'
+    #  to push it into private docker registry
+    #  sudo docker tag infra-web ramasuchka.kz:4443/infra-web:latest
+    # закоменчено, потому что вызов осуществляется в другой функции
+    # docker_tag_local_image_to_push()
+
+    # sudo docker push ramasuchka.kz:4443/infra-web:latest
+    #
+    # echo "Updated 'infra-web' image was pushed to the Private Docker Registry as 'ramasuchka.kz:4443/infra-web:latest'"
+    docker_push_tagged_local_image_to_registry()
+
     # private docker registry logging out locally
     docreg_logout_locally(docker_registry_credentials)
+
+    exit(0)
 
     # copy modified 'docker-compose.yml' file to remote server
     # # scp -r ~/tg_bot_constructor/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
