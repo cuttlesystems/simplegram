@@ -14,6 +14,21 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <spacer name="verticalSpacer_6">
      <property name="orientation">
@@ -137,6 +152,22 @@ QRadioButton::indicator{
         </widget>
        </item>
        <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QGroupBox" name="background_login">
          <property name="styleSheet">
           <string notr="true">QGroupBox{
@@ -188,7 +219,7 @@ QRadioButton::indicator{
                </font>
               </property>
               <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#292a2f;&quot;&gt;Welcome to Simple&lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:36pt; color:#292a2f;&quot;&gt;Simple&lt;/span&gt;&lt;span style=&quot; font-size:36pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
              </widget>
             </item>
@@ -362,6 +393,12 @@ QRadioButton::indicator{
           </item>
           <item>
            <widget class="QCheckBox" name="save_my_password">
+            <property name="styleSheet">
+             <string notr="true">QCheckBox{	
+	margin-left: 10px;
+	margin-right: 10px;
+}</string>
+            </property>
             <property name="text">
              <string>Save my password</string>
             </property>
@@ -408,7 +445,7 @@ QPushButton::hover{
 }</string>
             </property>
             <property name="text">
-             <string>Sign up -&gt;</string>
+             <string>Sign up</string>
             </property>
            </widget>
           </item>
@@ -440,7 +477,7 @@ QPushButton::hover{
 }</string>
             </property>
             <property name="text">
-             <string>Log in -&gt;</string>
+             <string>Log in</string>
             </property>
            </widget>
           </item>
@@ -492,6 +529,41 @@ QPushButton::hover{
       </size>
      </property>
     </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+color: white;
+margin-right: 10px;
+margin-bottom: 10px;
+}</string>
+       </property>
+       <property name="text">
+        <string>© TOO CuttleSystems
+ https://cuttlesystems.com</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

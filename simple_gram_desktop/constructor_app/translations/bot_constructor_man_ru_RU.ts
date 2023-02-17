@@ -85,6 +85,43 @@
         <source>Select only one message to set as start message</source>
         <translation>Выберите только одно сообщение для установки в качестве стартового сообщения</translation>
     </message>
+    <message>
+        <source>Add message</source>
+        <translation>Создать новое сообщение</translation>
+    </message>
+    <message>
+        <source>Delete message</source>
+        <translation>Удалить сообщение</translation>
+    </message>
+    <message>
+        <source>Add variant</source>
+        <translation>Добавить вариант</translation>
+    </message>
+    <message>
+        <source>Mark start message</source>
+        <translation>Назначить сообщение стартовым</translation>
+    </message>
+    <message>
+        <source>Mark error message</source>
+        <translation>Назначить сообщение ошибочным</translation>
+    </message>
+    <message>
+        <source>Start bot</source>
+        <translation>запустить бота</translation>
+    </message>
+    <message>
+        <source>Stop bot</source>
+        <translation>остановить бота</translation>
+    </message>
+    <message>
+        <source>Generate bot</source>
+        <translation>Сгенерировать бота</translation>
+    </message>
+    <message>
+        <source>Show log</source>
+        <translation>Показать логи</translation>
+    </message>
+
 </context>
 
 <context>
