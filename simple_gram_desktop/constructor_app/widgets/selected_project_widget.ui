@@ -105,7 +105,7 @@ background-color: rgb(255,255,255);
             </property>
             <property name="icon">
              <iconset resource="../bot_icons.qrc">
-              <normaloff>:/icons/widgets/times_icon/newProject.png</normaloff>:/icons/widgets/times_icon/newProject.png</iconset>
+              <normaloff>:/icons/widgets/times_icon/new_boit.png</normaloff>:/icons/widgets/times_icon/new_bot.png</iconset>
             </property>
             <property name="iconSize">
              <size>

@@ -17,7 +17,7 @@ from constructor_app.widgets.bot_properties_model import BotPropertiesModel
 
 from b_logic.bot_api.i_bot_api import BotDescription, IBotApi
 
-DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH: str = ":icons/widgets/times_icon/newProject.png"
+DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH: str = ":icons/widgets/times_icon/new_bot.png"
 
 
 class SelectedProjectWidget(QWidget):

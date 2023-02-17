@@ -32,6 +32,7 @@ class SettingsWidget(QWidget):
 
         self._language_settings_manager = LanguageSettingsManager()
 
+        self._language_settings = self._language_settings_manager.read_settings()
         selected_language = self._language_settings_manager.read_settings().language
         for index in range(self._ui.language_combo.count()):
             data = self._ui.language_combo.itemData(index)
@@ -46,7 +47,8 @@ class SettingsWidget(QWidget):
     def _on_apply_clicked(self) -> None:
         index = self._ui.language_combo.currentIndex()
         data = self._ui.language_combo.itemData(index)
-        self._language_settings_manager.write_settings(LanguageSettings(language=data))
+        self._language_settings.language = data
+        self._language_settings_manager.write_settings(self._language_settings)
         QtWidgets.QMessageBox.information(self, self._tr('Info message'),
                                           self._tr('The changes you made will take '
                                                    'effect after the application is restarted.'))
