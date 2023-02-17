@@ -9,7 +9,7 @@ import docker
 from get_repo_to_deploy_from import get_repo_to_deploy
 from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally, \
     get_postgres_env_variables, convert_postgres_env_variables_json_to_text, docker_create_image_locally, \
-    docker_tag_local_image_to_push, docker_push_tagged_local_image_to_registry
+    docker_tag_local_image_to_push, docker_push_tagged_local_image_to_registry, delete_infra_web_latest_image_remotely
 from deploy_server_utils import get_postgres_env_file_path, move_env_docker_compose_files_to_remote
 from deploy_server_utils import move_rsa_pub_key_to_remote
 # from deploy_server_utils import rsa_key_based_connect
@@ -272,12 +272,28 @@ if __name__ == '__main__':
     #  'dockerregistrycredentials.json' file to pull docker image
     docreg_login_remotely(backend_server_credentials, docker_registry_credentials)
 
-    # build with '--no-cache' option 'infra-web' image
-    # ./ scripts / build_no_cache_infra_web_image.sh
-    # #!/bin/bash
-    # cd ~/tg_bot_constructor/deploy/deploy_server/infra/
-    # sudo docker-compose build --no-cache web
-    # exit 0
+    # DOCKER STEPS ON REMOTE SERVER
+    # recreate_restart_infra_web_container_migrate.sh
+    # echo "recreation of a container started"
+    # ssh ubuntu@185.146.3.196 'bash -s' < ~/scripts/pull_updated_infra_web_image_restart_container.sh
 
-    # local docker registry login with '--password-stdin' to push docker image
-    # ./ scripts / docreg_login_locally.sh $(cat ~ / scripts / docreg_password.txt) < ~ / scripts / docreg_password.txt
+    # 1 # to avoid multi '<none>' images on the server we should remove 'infra-web:latest' image
+    #       before pull update for it from the registry
+    # #     '-f' force removing option
+    #   sudo docker rmi -f infra-web:latest
+    #
+    delete_infra_web_latest_image_remotely(backend_server_credentials)
+
+    # 2 # to avoid multi '<none>' images on the server we should remove 'ramasuchka.kz:4443/infra-web:latest' image
+    #       before pull update for it from the registry
+    # #     '-f' force removing option
+    #   sudo docker rmi -f ramasuchka.kz:4443/infra-web:latest
+    #
+    # 3 # pull updated image from the registry
+    #   sudo docker pull ramasuchka.kz:4443/infra-web:latest
+    #
+    # 4 # tag updated image as 'infra-web:latest'
+    #   sudo docker tag ramasuchka.kz:4443/infra-web:latest infra-web:latest
+
+    # remote docker registry logout
+    # ssh ubuntu@185.146.3.196 'sudo docker logout https://ramasuchka.kz:4443'

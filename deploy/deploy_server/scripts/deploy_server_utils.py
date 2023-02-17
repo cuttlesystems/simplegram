@@ -934,3 +934,67 @@ def move_env_docker_compose_files_to_remote(backend_server_credentials: BackendS
 
     # Should now be printing the current progress of your put function
     scp.close()
+
+
+    # 1 # to avoid multi '<none>' images on the server we should remove 'infra-web:latest' image
+    #       before pull update for it from the registry
+    # #     '-f' force removing option
+    #   sudo docker rmi -f infra-web:latest
+def delete_infra_web_latest_image_remotely(backend_server_credentials: BackendServerCredentials) -> str:
+    """
+    define function to remove 'infra-web:latest' image on remote server before pull update for it from the registry
+     in order to avoid multi '<none>' docker images on the server
+    :return:
+        deletes 'infra-web:latest' docker image on remote server before pulling update for it from the registry
+
+    """
+    # rsa_pub_key_path = get_rsa_key_path().with_suffix('.pub')
+    # print(f'Path to public rsa key \'<user_path>/.ssh/id_rsa.pub\' file: {rsa_pub_key_path}')
+    # with open(f'{rsa_pub_key_path}', 'rt', encoding='utf-8') as rsa_pub_key_content_file:
+    #     rsa_pub_key_content = rsa_pub_key_content_file.read()
+
+    # ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+    #     f'echo "{rsa_pub_key_content}" >> ~/.ssh/authorized_keys'
+    # )
+    # ssh_stdin.close()
+    #######
+    docker_image_tag_to_delete = 'infra-web:latest'
+    # result = subprocess.run(
+    #     [
+    #         'docker',
+    #         'rmi',
+    #         '-f',
+    #         f'{docker_image_tag_to_delete}'
+    #     ],
+    #     shell=True
+    # )
+    ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+        f'docker rmi -f "{docker_image_tag_to_delete}"'
+    )
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'result: {ssh_stdin, ssh_stdout, ssh_stderr}'
+        f'\n\'infra-web:latest\' docker image was deleted on remote server before pulling update for it '
+        f'from the private docker registry'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    print(f'\nRemote docker images:')
+    # subprocess.run(
+    #     [
+    #         'docker',
+    #         'images'
+    #     ],
+    #     shell=True,
+    #     # stdout=create_image_output,
+    #     # stderr=create_image_output
+    # )
+    ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+        f'docker images'
+    )
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'result: {ssh_stdin, ssh_stdout, ssh_stderr}'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    ssh_stdin.close()
+    return docker_image_tag_to_delete
