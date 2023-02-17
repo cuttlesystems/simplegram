@@ -86,16 +86,15 @@ class ClientWidget(QMainWindow):
         self._start_main_menu()
 
     def _start_main_menu_slot(self) -> None:
-        # инициализация основого окна приложения
         self._start_main_menu()
 
     def _start_main_menu(self) -> None:
-        #выстравляю страницу главного окна
         self._ui.centrall_pannel_widget.setCurrentIndex(self._MAIN_MENU_INDEX_PAGE)
         self._init_stylesheet_stackedwidget(0)
-        # показываю сайдбар и топпанел
+
         self._ui.side_bar.show()
         self._ui.top_pannel.show()
+
         self._ui.tool_stack.hide()
 
     # инициализация окна с информацией о выбранном боте
@@ -135,13 +134,11 @@ class ClientWidget(QMainWindow):
 
     def _start_bot_redactor(self) -> None:
         try:
-            # выставляю страницу добавления нового бота
             self._ui.centrall_pannel_widget.setCurrentIndex(self._BOT_REDACTOR_PAGE)
             self._ui.tool_stack.show()
-            # настраиваю таблицу стилей подложки
+
             self._init_stylesheet_stackedwidget(0)
 
-            # Получаем текущего выбранного бота из списка и говорим что он не может быть None
             bot_extended = self._ui.bot_list.get_current_bot()
             assert bot_extended is not None
 

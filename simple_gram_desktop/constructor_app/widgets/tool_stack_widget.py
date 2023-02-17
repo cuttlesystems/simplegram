@@ -21,7 +21,6 @@ class ColorScheme:
 class ToolStackWidget(QWidget):
     _BORDER_RADIUS_BACKGROUND = 12
 
-    #toDo: убрать bool
     add_message_signal = Signal()
     add_variant_signal = Signal()
     delete_message_signal = Signal()
@@ -49,18 +48,6 @@ class ToolStackWidget(QWidget):
         self._ui.mark_start_message_button.clicked.connect(self._on_mark_as_start)
         self._ui.mark_error_message_button.clicked.connect(self._on_mark_as_error)
         self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
-
-        #self._ui.action_manual_save_button.triggered.connect(self._on_apply_button)
-        #self._ui.action_read_logs_button.triggered.connect(self._on_read_bot_logs)
-
-        # toDo: посмотреть почему он выеживался на _tr()
-        #self._add_message_action: QAction = QtGui.QAction(
-        #    self._ui.add_message_button.icon(), 'Add new message', self)
-        #self._ui.add_variant_button.insertAction(0, self._add_message_action)
-        #self._add_message_action.triggered.connect(lambda:
-        #                                           QtWidgets.QMessageBox.warning(self, "Gugabuga", "tatatatata"))
-        #self._add_message_action.triggered.connect(self._on_add_new_message)
-        #self._ui.add_variant_button.clicked.connect()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         # toDo: If this will be used in the future, then put the colors in the parameters
