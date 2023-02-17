@@ -14,14 +14,13 @@
 
         <file>widgets/times_icon/closeIcon.png</file>
         <file>widgets/times_icon/logo.png</file>
-        <file>widgets/times_icon/newProject.png</file>
+        <file>widgets/times_icon/new_bot.png</file>
         <file>widgets/times_icon/user_icon.png</file>
         <file>widgets/times_icon/exit_account_icon.png</file>
         <file>widgets/times_icon/error_image.png</file>
         <file>widgets/times_icon/background_texture.png</file>
         <file>widgets/times_icon/background_texture_big.png</file>
         <file>widgets/times_icon/texture_scene.png</file>
-        <file>widgets/times_icon/simpleGram.png</file>
 
         <file>widgets/times_icon/add_variant.png</file>
         <file>widgets/times_icon/add_message.png</file>
