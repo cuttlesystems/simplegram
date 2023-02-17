@@ -280,7 +280,6 @@ class BotEditorWidget(QWidget):
     def _on_add_variant_action(self):
         self._add_variant()
 
-
     def _on_bot_scene_add_new_variant(self, _message: BotMessage, _variants: typing.List[BotVariant]):
         self._add_variant()
 
@@ -331,6 +330,7 @@ class BotEditorWidget(QWidget):
                 )
 
     def _on_start_bot_action(self):
+        self._tool_stack_widget.init_switch_toggle(True)
         self.__start_bot()
 
     def _on_start_bot(self):
@@ -344,6 +344,7 @@ class BotEditorWidget(QWidget):
             self._process_exception(e)
 
     def _on_stop_bot_action(self):
+        self._tool_stack_widget.init_switch_toggle(False)
         self.__stop_bot()
 
     def _on_stop_bot(self):
