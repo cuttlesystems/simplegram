@@ -11,6 +11,10 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
+from bot_constructor.log_configs import logger_django
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bot_constructor.settings')
 
 application = get_wsgi_application()
+
+logger_django.info_logging('Wsgi module processed')
