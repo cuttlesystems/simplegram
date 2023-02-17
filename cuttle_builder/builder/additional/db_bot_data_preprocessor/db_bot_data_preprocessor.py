@@ -2,7 +2,7 @@ import copy
 import typing
 from typing import List
 
-from b_logic.data_objects import HandlerInit, BotDescription, BotCommand, BotMessage, BotVariant, MessageTypeEnum
+from b_logic.data_objects import BotDescription, BotCommand, BotMessage, BotVariant, MessageTypeEnum
 from cuttle_builder.builder.additional.helpers.find_functions import find_variants_of_message
 from cuttle_builder.exceptions.bot_gen_exceptions import NoStartMessageException, NoOneMessageException, TokenException
 
@@ -30,7 +30,7 @@ class DbBotDataPreprocessor:
         self._bot = bot
         self._bot_directory = bot_path
 
-    def preprocess_all_data(self):
+    def preprocess_all_data(self) -> None:
         if self._is_start_message_id_none(self.bot.start_message_id):
             raise NoStartMessageException(
                 'Can\'t generate bot without start message. '
@@ -44,20 +44,31 @@ class DbBotDataPreprocessor:
             raise TokenException('Token is invalid!')
 
         self._remove_next_message_for_variants_with_any_input_message()
+        self._remove_variants_for_goto_messages()
 
-    def _remove_next_message_for_variants_with_any_input_message(self):
+    def _remove_next_message_for_variants_with_any_input_message(self) -> None:
         for message in self._messages:
             if message.message_type == MessageTypeEnum.ANY_INPUT:
-                any_input_variants = find_variants_of_message(message.id, self._variants)
+                any_input_variants = self._find_variants_of_message(message.id)
                 for variant in any_input_variants:
                     variant.next_message_id = None
 
-    def _is_start_message_id_none(self, start_message_id: typing.Optional[int]):
+    def _remove_variants_for_goto_messages(self) -> None:
+        goto_variants = []
+        for message in self._messages:
+            if message.message_type == MessageTypeEnum.GOTO:
+                goto_variants.extend(self._find_variants_of_message(message.id))
+        self._variants = [variant for variant in self._variants if variant not in goto_variants]
+
+    def _find_variants_of_message(self, message_id: int) -> typing.List[BotVariant]:
+        return find_variants_of_message(message_id, self._variants)
+
+    def _is_start_message_id_none(self, start_message_id: typing.Optional[int]) -> bool:
         if start_message_id is None:
             return True
         return False
 
-    def _is_messages_empty(self, messages: List[BotMessage]):
+    def _is_messages_empty(self, messages: List[BotMessage]) -> bool:
         if len(messages) == 0:
             return True
         return False
