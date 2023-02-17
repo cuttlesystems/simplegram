@@ -5,7 +5,7 @@ import sys
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# разрешаем импорты также с корня репозитория
+# разрешаем импорты также с корня приложения
 sys.path.append(str(BASE_DIR.parent.parent))
 
 SECRET_KEY = 'django-insecure-l^#t200))@a#@3^g7vhy4zk(0)pfg-xfecdr+$@41hw*id)(m6'
@@ -22,7 +22,6 @@ ALLOWED_HOSTS = ['*']
 # FIX admin CSRF token issue
 # CSRF_TRUSTED_ORIGINS=['https://*.YOUR_DOMAIN.COM']
 ##  CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*'] doesn't effect so the 'CSRF_TRUSTED_ORIGINS' value is assigned directly as 'http://*.domain.com'
-
 
 
 #if DEBUG == True:
