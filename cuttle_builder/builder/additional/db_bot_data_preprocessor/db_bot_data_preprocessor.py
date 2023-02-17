@@ -31,7 +31,7 @@ class DbBotDataPreprocessor:
         self._bot = bot
         self._bot_directory = bot_path
 
-    def preprocess_all_data(self):
+    def preprocess_all_data(self) -> None:
         if self._is_start_message_id_none(self.bot.start_message_id):
             raise NoStartMessageException(
                 'Can\'t generate bot without start message. '
@@ -47,38 +47,37 @@ class DbBotDataPreprocessor:
         self._remove_next_message_for_variants_with_any_input_message()
         self._remove_variants_for_goto_messages()
 
-    def _remove_next_message_for_variants_with_any_input_message(self):
+    def _remove_next_message_for_variants_with_any_input_message(self) -> None:
         for message in self._messages:
             if message.message_type == MessageTypeEnum.ANY_INPUT:
                 any_input_variants = self._find_variants_of_message(message.id)
                 for variant in any_input_variants:
                     variant.next_message_id = None
 
-    def _remove_variants_for_goto_messages(self):
+    def _remove_variants_for_goto_messages(self) -> None:
         for message in self._messages:
             if message.message_type == MessageTypeEnum.GOTO:
                 goto_variants = self._find_variants_of_message(message.id)
                 for variant in goto_variants:
                     variant = None
 
-    def _is_goto_messages_has_next_message(self):
+    def _is_goto_messages_has_next_message(self) -> None:
         for message in self._messages:
             if message.message_type == MessageTypeEnum.GOTO:
                 if message.next_message_id is None:
                     raise GoToMessageHasNotNextMessageException(
                         'GoTo message hasn\'t next message'
                     )
-        return True
 
     def _find_variants_of_message(self, message_id: int) -> typing.List[BotVariant]:
         return find_variants_of_message(message_id, self._variants)
 
-    def _is_start_message_id_none(self, start_message_id: typing.Optional[int]):
+    def _is_start_message_id_none(self, start_message_id: typing.Optional[int]) -> bool:
         if start_message_id is None:
             return True
         return False
 
-    def _is_messages_empty(self, messages: List[BotMessage]):
+    def _is_messages_empty(self, messages: List[BotMessage]) -> bool:
         if len(messages) == 0:
             return True
         return False
