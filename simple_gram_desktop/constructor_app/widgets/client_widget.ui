@@ -306,7 +306,7 @@ color:rgb(255,255,255);
 }</string>
           </property>
           <property name="text">
-           <string>? Settings</string>
+           <string>Settings</string>
           </property>
          </widget>
         </item>
