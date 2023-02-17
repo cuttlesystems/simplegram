@@ -3,9 +3,7 @@ from typing import Optional
 import requests
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
-from PySide6.QtWidgets import QWidget, QMessageBox
-from PySide6 import QtGui
+from PySide6.QtWidgets import QWidget, QMessageBox, QMainWindow
 
 from b_logic.bot_api.i_bot_api import BotApiException, IBotApi
 from common.localisation import tran
@@ -17,9 +15,10 @@ from constructor_app.widgets.bot_extended import BotExtended
 from network.bot_api_by_request_extended import BotApiMessageException
 from constructor_app.widgets.selected_project_widget import SelectedProjectWidget
 from constructor_app.widgets.bot_editor_widget import BotEditorWidget
+from constructor_app.widgets.settings_widget import SettingsWidget
 
 
-class ClientWidget(QWidget):
+class ClientWidget(QMainWindow):
 
     """
     Надстройка выводимого пользователю GUI
@@ -39,7 +38,7 @@ class ClientWidget(QWidget):
     # максимальное значение страниц/виджетов в стеке редактора
     _MAX_SIZE_EDITOR_STACKED_WIDGET = 1
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: Optional[QMainWindow] = None):
         # toDO: Добавить функцию инициализации QSS
         super().__init__(parent)
 
@@ -47,10 +46,7 @@ class ClientWidget(QWidget):
         self._ui.setupUi(self)
         self._bot_api: Optional[IBotApi] = None
 
-        # дружу кнопку ентера при авторизации и инициализации мейн окна
         self._ui.login_page.log_in.connect(self._post_login_initial_botapi)
-
-        #self._ui.bot_new_creator_page.close_window.connect(self._start_main_menu)
 
         """Сайдбар"""
         self._ui.new_project_button.clicked.connect(self._start_new_project)
@@ -66,12 +62,10 @@ class ClientWidget(QWidget):
         # первое открытие приложения, инициализация авторизации
         self._start_login_users()
 
-        #self._ui.user_widget.addItem(
-        #    QtGui.QPixmap(":/icons/widgets/times_icon/user_icon.png"), self._tr("Profile"))
-        #self._ui.user_widget.addItem(
-        #    QtGui.QPixmap(":/icons/widgets/times_icon/exit_account_icon.png"), self._tr("Log out"))
+        self._ui.settings_button.clicked.connect(self._start_settings_slot)
 
         self._bot_editor_index: Optional[int] = None
+        self._settings_window = SettingsWidget()
 
     def _start_login_users(self) -> None:
         # выстравляю страницу инициализации
@@ -136,6 +130,9 @@ class ClientWidget(QWidget):
         # toDO: добавить реализацию выхода для сервера
         self._start_login_users()
 
+    def _start_settings_slot(self, _toggled: bool) -> None:
+        self._settings_window.show()
+
     def _start_bot_redactor(self) -> None:
         try:
             # выставляю страницу добавления нового бота
@@ -179,9 +176,6 @@ class ClientWidget(QWidget):
             self._ui.centrall_pannel_widget.setStyleSheet(
                 "QStackedWidget{border: none;background: rgb(105,105,109);}")
 
-    def _tr(self, text: str) -> str:
-        return tran('ClientWidget.manual', text)
-
     def __load_bots_list(self):
         # toDo:Add method-handler state item in sidebar
         # toDo:Recode item in sidebar
@@ -209,3 +203,7 @@ class ClientWidget(QWidget):
                         bot_state=bot_state))
         except BotApiException as error:
             QMessageBox.warning(self, self._tr('Error'), str(error))
+
+    def _tr(self, text: str) -> str:
+        return tran('ClientWidget.manual', text)
+

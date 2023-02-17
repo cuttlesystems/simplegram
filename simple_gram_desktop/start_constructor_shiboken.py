@@ -3,8 +3,7 @@ import sys
 from PySide6.QtWidgets import QApplication
 from utils.compile_resources import compile_all_resources
 
-if __name__ == "__main__":
-    # сначала нужно скомпилировать все ресурсы
+def main():
     compile_all_resources()
 
     # и потом можно выполнить импорты, поскольку они могут появиться после компиляции
@@ -26,4 +25,8 @@ if __name__ == "__main__":
 
     client_widget = ClientWidget()
     client_widget.show()
-    sys.exit(app.exec())
+    app.exec()
+
+
+if __name__ == "__main__":
+    main()

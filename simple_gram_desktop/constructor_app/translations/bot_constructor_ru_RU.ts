@@ -6,37 +6,71 @@
     <message>
         <location filename="../widgets/add_new_project_widget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="132"/>
-        <source>Новый бот</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="139"/>
+        <location filename="../widgets/add_new_project_widget.ui" line="148"/>
         <source>Time to start</source>
-        <translation type="unfinished"></translation>
+        <translation>Время начать</translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="176"/>
         <source>Token bot&apos;s</source>
-        <translation>Токен бота</translation>
+        <translation type="vanished">Токен бота</translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="196"/>
         <source>About bot&apos;s</source>
-        <translation>Описание бота</translation>
+        <translation type="vanished">Описание бота</translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="238"/>
+        <location filename="../widgets/add_new_project_widget.ui" line="141"/>
+        <source>New Cuttle Systems bot</source>
+        <translation>Новый Cuttle Systems бот</translation>
+    </message>
+    <message>
+        <location filename="../widgets/add_new_project_widget.ui" line="256"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../widgets/add_new_project_widget.ui" line="278"/>
+        <location filename="../widgets/add_new_project_widget.ui" line="302"/>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать</translation>
+    </message>
+</context>
+<context>
+    <name>BlockWidget</name>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="27"/>
+        <source>Error Message</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="38"/>
+        <source>NameBot</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="58"/>
+        <source>...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="90"/>
+        <location filename="../widgets/block_widget.ui" line="95"/>
+        <location filename="../widgets/block_widget.ui" line="100"/>
+        <location filename="../widgets/block_widget.ui" line="105"/>
+        <source>Новый элемент</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../widgets/block_widget.ui" line="144"/>
+        <source>PushButton</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -57,22 +91,22 @@
         <translation>Вывод бота stderr</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="95"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="126"/>
         <source>Bot</source>
         <translation>Бот</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="104"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="135"/>
         <source>Block</source>
         <translation>Блок</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="117"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="148"/>
         <source>Scheme</source>
         <translation>Схема</translation>
     </message>
     <message>
-        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="128"/>
+        <location filename="../widgets/bot_editor/bot_editor_form.ui" line="87"/>
         <source>toolBar</source>
         <translation>Панель инструментов</translation>
     </message>
@@ -138,17 +172,17 @@
     <message>
         <location filename="../widgets/bot_editor_widget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor_widget.ui" line="32"/>
         <source>Bot stdout output</source>
-        <translation>Вывод бота stdout</translation>
+        <translation type="unfinished">Логи вывода</translation>
     </message>
     <message>
         <location filename="../widgets/bot_editor_widget.ui" line="55"/>
         <source>Bot stderr output</source>
-        <translation>Вывод бота stderr</translation>
+        <translation type="unfinished">Лог ошибок</translation>
     </message>
 </context>
 <context>
@@ -162,34 +196,58 @@
 <context>
     <name>ClientWidget</name>
     <message>
-        <location filename="../widgets/client_widget.ui" line="20"/>
-        <source>Widget</source>
+        <location filename="../widgets/client_widget.ui" line="26"/>
+        <source>Simple.gram</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="135"/>
+        <location filename="../widgets/client_widget.ui" line="155"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#ffffff;&quot;&gt;Simple&lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="179"/>
-        <source>Bot systems:</source>
-        <translation type="unfinished"></translation>
+        <location filename="../widgets/client_widget.ui" line="199"/>
+        <source>Bots list:</source>
+        <translation type="unfinished">Список ботов:</translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="242"/>
-        <source>+ New Project</source>
-        <translation type="unfinished"></translation>
+        <location filename="../widgets/client_widget.ui" line="262"/>
+        <source>Create bot</source>
+        <translation type="unfinished">Создать бота</translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="289"/>
+        <location filename="../widgets/client_widget.ui" line="309"/>
         <source>? Settings</source>
+        <translation type="unfinished">Настройки</translation>
+    </message>
+    <message>
+        <location filename="../widgets/client_widget.ui" line="431"/>
+        <source>Log out</source>
+        <translation type="unfinished">Выйти</translation>
+    </message>
+</context>
+<context>
+    <name>DialogWidget</name>
+    <message>
+        <location filename="../widgets/dialog_widget.ui" line="20"/>
+        <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="457"/>
-        <source>User</source>
+        <location filename="../widgets/dialog_widget.ui" line="94"/>
+        <location filename="../widgets/dialog_widget.ui" line="119"/>
+        <source>TextLabel</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/dialog_widget.ui" line="154"/>
+        <source>Apply</source>
+        <translation type="unfinished">Применить</translation>
+    </message>
+    <message>
+        <location filename="../widgets/dialog_widget.ui" line="194"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Отмена</translation>
     </message>
 </context>
 <context>
@@ -274,55 +332,55 @@
     <message>
         <location filename="../widgets/login_widget.ui" line="91"/>
         <source>Create a free account</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Создать аккаунт</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="125"/>
+        <location filename="../widgets/login_widget.ui" line="127"/>
         <source>Sign in</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Авторизация</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="163"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Welcome to a better BOT-systems&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <location filename="../widgets/login_widget.ui" line="191"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#292a2f;&quot;&gt;Welcome to Simple&lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#292a2f;&quot;&gt;Добро пожаловать на Simple&lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="207"/>
+        <location filename="../widgets/login_widget.ui" line="247"/>
         <source>Enter your server address</source>
         <translation>Введите адрес сервера</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="232"/>
+        <location filename="../widgets/login_widget.ui" line="272"/>
         <source>Enter your email address</source>
         <translation>Введите адрес электронной почты</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="263"/>
+        <location filename="../widgets/login_widget.ui" line="303"/>
         <source>Enter your username</source>
         <translation>Введите имя пользователя</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="291"/>
+        <location filename="../widgets/login_widget.ui" line="331"/>
         <source>Enter your password</source>
         <translation>Введите пароль</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="319"/>
+        <location filename="../widgets/login_widget.ui" line="359"/>
         <source>Confirm your password</source>
         <translation>Введите пароль ещё раз</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="326"/>
+        <location filename="../widgets/login_widget.ui" line="366"/>
         <source>Save my password</source>
         <translation>Сохранить мой пароль</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="371"/>
+        <location filename="../widgets/login_widget.ui" line="411"/>
         <source>Sign up -&gt;</source>
         <translation>Зарегистрироваться</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="403"/>
+        <location filename="../widgets/login_widget.ui" line="443"/>
         <source>Log in -&gt;</source>
         <translation>Войти</translation>
     </message>
@@ -403,32 +461,60 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/selected_project_widget.ui" line="135"/>
+        <location filename="../widgets/selected_project_widget.ui" line="140"/>
         <source>New BOT</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Новый Cuttle Systems бот</translation>
     </message>
     <message>
-        <location filename="../widgets/selected_project_widget.ui" line="207"/>
+        <location filename="../widgets/selected_project_widget.ui" line="199"/>
         <source>Bot is disabled</source>
+        <translation type="unfinished">Бот не запущен</translation>
+    </message>
+    <message>
+        <location filename="../widgets/selected_project_widget.ui" line="310"/>
+        <source>Open in redactor -&gt;</source>
+        <translation type="unfinished">Открыть в редакторе</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsItem</name>
+    <message>
+        <location filename="../widgets/settings_item.ui" line="14"/>
+        <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/selected_project_widget.ui" line="331"/>
-        <source>Open in redactor -&gt;</source>
+        <location filename="../widgets/settings_item.ui" line="20"/>
+        <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>SettingWidget</name>
+    <name>SettingsWidget</name>
     <message>
         <location filename="../widgets/settings_widget.ui" line="14"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/settings_widget.ui" line="26"/>
+        <location filename="../widgets/settings_widget.ui" line="68"/>
+        <source>Settings</source>
+        <translation type="unfinished">Параметры</translation>
+    </message>
+    <message>
+        <location filename="../widgets/settings_widget.ui" line="124"/>
+        <source>Language</source>
+        <translation type="unfinished">Язык</translation>
+    </message>
+    <message>
+        <location filename="../widgets/settings_widget.ui" line="255"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Отмена</translation>
+    </message>
+    <message>
+        <location filename="../widgets/settings_widget.ui" line="294"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Применить</translation>
     </message>
 </context>
 <context>
@@ -489,7 +575,15 @@
     <message>
         <location filename="../widgets/tool_stack_widget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>UserPopUpWidget</name>
+    <message>
+        <location filename="../widgets/user_popup_widget.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
     </message>
 </context>
 <context>
