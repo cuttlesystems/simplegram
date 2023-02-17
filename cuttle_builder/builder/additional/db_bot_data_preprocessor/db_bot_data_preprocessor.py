@@ -58,16 +58,7 @@ class DbBotDataPreprocessor:
         for message in self._messages:
             if message.message_type == MessageTypeEnum.GOTO:
                 goto_variants = self._find_variants_of_message(message.id)
-                for variant in goto_variants:
-                    variant = None
-
-    def _is_goto_messages_has_next_message(self) -> None:
-        for message in self._messages:
-            if message.message_type == MessageTypeEnum.GOTO:
-                if message.next_message_id is None:
-                    raise GoToMessageHasNotNextMessageException(
-                        'GoTo message hasn\'t next message'
-                    )
+                self._variants = [variant for variant in self._variants if variant not in goto_variants]
 
     def _find_variants_of_message(self, message_id: int) -> typing.List[BotVariant]:
         return find_variants_of_message(message_id, self._variants)
