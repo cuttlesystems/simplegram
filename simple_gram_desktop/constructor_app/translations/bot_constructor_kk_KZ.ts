@@ -222,6 +222,11 @@
         <translation type="unfinished">Ботты жасау</translation>
     </message>
     <message>
+        <location filename="../widgets/client_widget.ui" line="309"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Bot systems:</source>
         <translation type="vanished">Құралған боттар</translation>
     </message>
@@ -230,9 +235,8 @@
         <translation type="vanished">Ботты құру</translation>
     </message>
     <message>
-        <location filename="../widgets/client_widget.ui" line="309"/>
         <source>? Settings</source>
-        <translation>Параметрлер</translation>
+        <translation type="vanished">Параметрлер</translation>
     </message>
     <message>
         <location filename="../widgets/client_widget.ui" line="431"/>
@@ -344,59 +348,73 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="91"/>
+        <location filename="../widgets/login_widget.ui" line="106"/>
         <source>Create a free account</source>
         <translation>Тіркелу формасы</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="127"/>
+        <location filename="../widgets/login_widget.ui" line="142"/>
         <source>Sign in</source>
         <translation>Тіркелу</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="191"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#292a2f;&quot;&gt;Welcome to Simple&lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <location filename="../widgets/login_widget.ui" line="222"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:36pt; color:#292a2f;&quot;&gt;Simple&lt;/span&gt;&lt;span style=&quot; font-size:36pt; color:#4d96ff;&quot;&gt;.gram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="247"/>
+        <location filename="../widgets/login_widget.ui" line="278"/>
         <source>Enter your server address</source>
         <translation>Серверге қосылу сілтемесі</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="272"/>
+        <location filename="../widgets/login_widget.ui" line="303"/>
         <source>Enter your email address</source>
         <translation>Өзіңіздің email-ыңызды енгізіңіз</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="303"/>
+        <location filename="../widgets/login_widget.ui" line="334"/>
         <source>Enter your username</source>
         <translation>Пайдаланушы атын енгізіңіз</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="331"/>
+        <location filename="../widgets/login_widget.ui" line="362"/>
         <source>Enter your password</source>
         <translation>Құпия сөзді енгізіңіз</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="359"/>
+        <location filename="../widgets/login_widget.ui" line="390"/>
         <source>Confirm your password</source>
         <translation>Құпия сөзді растау</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="366"/>
+        <location filename="../widgets/login_widget.ui" line="403"/>
         <source>Save my password</source>
         <translation>Құпия сөзді сақтау</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="411"/>
-        <source>Sign up -&gt;</source>
-        <translation>Тіркелу</translation>
+        <location filename="../widgets/login_widget.ui" line="448"/>
+        <source>Sign up</source>
+        <translation type="unfinished">Тіркелу</translation>
     </message>
     <message>
-        <location filename="../widgets/login_widget.ui" line="443"/>
+        <location filename="../widgets/login_widget.ui" line="480"/>
+        <source>Log in</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/login_widget.ui" line="558"/>
+        <source>© TOO CuttleSystems
+ https://cuttlesystems.com</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sign up -&gt;</source>
+        <translation type="vanished">Тіркелу</translation>
+    </message>
+    <message>
         <source>Log in -&gt;</source>
-        <translation>Қосылу</translation>
+        <translation type="vanished">Қосылу</translation>
     </message>
 </context>
 <context>
