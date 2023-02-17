@@ -2,10 +2,9 @@ import copy
 import typing
 from typing import List
 
-from b_logic.data_objects import HandlerInit, BotDescription, BotCommand, BotMessage, BotVariant, MessageTypeEnum
+from b_logic.data_objects import BotDescription, BotCommand, BotMessage, BotVariant, MessageTypeEnum
 from cuttle_builder.builder.additional.helpers.find_functions import find_variants_of_message
-from cuttle_builder.exceptions.bot_gen_exceptions import NoStartMessageException, NoOneMessageException, TokenException, \
-    GoToMessageHasNotNextMessageException
+from cuttle_builder.exceptions.bot_gen_exceptions import NoStartMessageException, NoOneMessageException, TokenException
 
 
 class DbBotDataPreprocessor:
@@ -55,10 +54,11 @@ class DbBotDataPreprocessor:
                     variant.next_message_id = None
 
     def _remove_variants_for_goto_messages(self) -> None:
+        goto_variants = []
         for message in self._messages:
             if message.message_type == MessageTypeEnum.GOTO:
-                goto_variants = self._find_variants_of_message(message.id)
-                self._variants = [variant for variant in self._variants if variant not in goto_variants]
+                goto_variants.extend(self._find_variants_of_message(message.id))
+        self._variants = [variant for variant in self._variants if variant not in goto_variants]
 
     def _find_variants_of_message(self, message_id: int) -> typing.List[BotVariant]:
         return find_variants_of_message(message_id, self._variants)
