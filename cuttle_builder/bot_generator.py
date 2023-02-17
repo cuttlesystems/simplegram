@@ -110,7 +110,6 @@ class BotGenerator:
                 next_message_handler_name = self._get_handler_name_for_message(next_message.id)
                 additional_functions_under_answer += self._tab_from_new_line(f'from .get_{next_message.id} import handler_message_{next_message_handler_name}\n')
                 additional_functions_under_answer += f'await handler_message_{next_message_handler_name}(message, state)'
-
         # создать файл с изображением в директории бота и вернуть адрес
         if message.photo is not None:
             image = self.create_image_file_in_bot_directory(
