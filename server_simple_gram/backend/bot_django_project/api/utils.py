@@ -1,4 +1,4 @@
-from django.utils.autoreload import file_changed, autoreload_started, StatReloader
+from django.utils.autoreload import file_changed, autoreload_started
 
 from api.exceptions import InvalidBotTokenWhenGenerateBot
 from bots.models import Bot
