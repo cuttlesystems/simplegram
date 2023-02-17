@@ -147,7 +147,7 @@ class ClientWidget(QMainWindow):
 
             bot_editor = BotEditorWidget()
             bot_editor.set_bot_api(self._bot_api)
-            bot_editor.setup_tool_stack(self._ui.tool_stack)
+            bot_editor.setup_tool_stack(self._ui.tool_stack, bot_extended.bot_state)
             bot_editor.set_bot(bot)
 
             if self._bot_editor_index is not None:
@@ -198,6 +198,7 @@ class ClientWidget(QMainWindow):
                         bot_icon=bot_icon,
                         bot_description=bot,
                         bot_state=bot_state))
+            self._ui.bot_list.update_current()
         except BotApiException as error:
             QMessageBox.warning(self, self._tr('Error'), str(error))
 

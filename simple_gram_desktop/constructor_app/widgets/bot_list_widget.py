@@ -12,13 +12,15 @@ class BotListWidget(QListWidget):
     """
     Надстройка сайдбара
     """
-    _ITEM_SIZE = QSize(210, 40)
-    _bots_list: List[BotExtended] = []
 
     def __init__(self, parent: typing.Optional[QListWidget] = None):
         # toDo: Если будет необходимо добавить функцию [night/light]mode
         super().__init__(parent)
         self.__init_stylesheet()
+
+        self._ITEM_SIZE = QSize(210, 40)
+        self._bots_list: List[BotExtended] = []
+        self._bot_current: Optional[int] = None
 
     def __init_stylesheet(self):
         # toDo: добавить сигналы hover и селекта
@@ -55,12 +57,6 @@ class BotListWidget(QListWidget):
         item = self.item(row)
         self.removeItemWidget(item)
 
-    #Заготовква для дальнейшей реализации изменения состояния бота
-    def bot_state_changed(self, state: bool, row: int):
-        # toDo: Add checkabled for item sidebar and server
-        widget = BotListItemWidget()
-        item = self.item(row)
-
     def get_bots(self) -> List[BotExtended]:
         # take bot in BotDescription and bot_state
         return self._bots_list
@@ -75,5 +71,10 @@ class BotListWidget(QListWidget):
         return bot
 
     def clear(self) -> None:
+        self._bot_current = self.currentRow()
         self._bots_list.clear()
         super().clear()
+
+    def update_current(self):
+        if self._bot_current is not None:
+            self.setCurrentRow(self._bot_current)

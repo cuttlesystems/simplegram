@@ -61,6 +61,10 @@ class ToolStackWidget(QWidget):
             self._BORDER_RADIUS_BACKGROUND)
         paint_engine.end()
 
+    def init_switch_toggle(self, state: bool):
+        assert isinstance(state, bool)
+        self._ui.switch_bot.setChecked(state)
+
     def _switch_toggle(self, state: int):
         assert isinstance(state, int)
         if state == 0:

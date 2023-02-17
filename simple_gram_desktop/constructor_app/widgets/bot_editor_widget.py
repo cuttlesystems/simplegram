@@ -139,8 +139,9 @@ class BotEditorWidget(QWidget):
 
         QtCore.QTimer.singleShot(0, self._on_after_set_bot)
 
-    def setup_tool_stack(self, tool: ToolStackWidget):
+    def setup_tool_stack(self, tool: ToolStackWidget, state_bot: bool):
         assert isinstance(tool, ToolStackWidget)
+        assert isinstance(state_bot, bool)
         self._tool_stack_widget = tool
         
         self._tool_stack_widget.delete_variant_signal.connect(self._on_delete_variant)
@@ -153,6 +154,8 @@ class BotEditorWidget(QWidget):
         self._tool_stack_widget.stop_bot_signal.connect(self._on_stop_bot)
         self._tool_stack_widget.read_bot_logs_signal.connect(self._on_read_bot_logs)
         self._tool_stack_widget.delete_message_signal.connect(self._on_delete_message)
+
+        self._tool_stack_widget.init_switch_toggle(state_bot)
 
     def _on_after_set_bot(self):
         # небольшое обходное решение, чтобы произвести центрирование области
