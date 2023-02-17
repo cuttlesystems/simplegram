@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QApplication
 from utils.compile_resources import compile_all_resources
 
 def main():
-    #compile_all_resources()
+    compile_all_resources()
 
     # и потом можно выполнить импорты, поскольку они могут появиться после компиляции
     import constructor_app.rc_bot_icons
