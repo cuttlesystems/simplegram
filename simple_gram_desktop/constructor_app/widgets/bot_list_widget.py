@@ -20,7 +20,7 @@ class BotListWidget(QListWidget):
 
         self._ITEM_SIZE = QSize(210, 40)
         self._bots_list: List[BotExtended] = []
-        self._bot_current: Optional[int] = None
+        self._bot_current_index: Optional[int] = None
 
     def __init_stylesheet(self):
         # toDo: добавить сигналы hover и селекта
@@ -71,10 +71,12 @@ class BotListWidget(QListWidget):
         return bot
 
     def clear(self) -> None:
-        self._bot_current = self.currentRow()
+        self._bot_current_index = self.currentRow()
         self._bots_list.clear()
         super().clear()
 
     def update_current(self):
-        if self._bot_current is not None:
-            self.setCurrentRow(self._bot_current)
+        if self._bot_current_index is not None:
+            self.setCurrentRow(self._bot_current_index)
+
+            
