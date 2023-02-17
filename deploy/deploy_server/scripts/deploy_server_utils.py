@@ -13,6 +13,8 @@ import json
 from subprocess import run
 
 import docker
+
+
 # import paramiko
 
 
@@ -360,16 +362,16 @@ def docker_create_image_locally():
     )
     with open('docker_create_image_locally_output.log', 'wt', encoding='utf-8') as create_image_output:
         result = subprocess.run(
-                    [
-                        'docker-compose',
-                        'build',
-                        '--no-cache',
-                        'web'
-                    ],
-                    shell=False,
-                    stdout=create_image_output,
-                    stderr=create_image_output
-                )
+            [
+                'docker-compose',
+                'build',
+                '--no-cache',
+                'web'
+            ],
+            shell=False,
+            stdout=create_image_output,
+            stderr=create_image_output
+        )
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'\nDocker image creation process finished'
@@ -426,14 +428,14 @@ def docker_tag_local_image_to_push() -> str:
 
     docker_image_tag_to_push = 'ramasuchka.kz:4443/infra-web:latest'
     result = subprocess.run(
-                [
-                    'docker',
-                    'tag',
-                    'infra-web',
-                    f'{docker_image_tag_to_push}'
-                ],
-                shell=True
-            )
+        [
+            'docker',
+            'tag',
+            'infra-web',
+            f'{docker_image_tag_to_push}'
+        ],
+        shell=True
+    )
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'result.stdout: {result}'
@@ -473,15 +475,15 @@ def docker_push_tagged_local_image_to_registry() -> None:
     )
     with open('docker_push_tagged_local_image_to_registry_output.log', 'wt', encoding='utf-8') as push_image_output:
         result = subprocess.run(
-                    [
-                        'docker',
-                        'push',
-                        f'{docker_image_tag_to_push}'
-                    ],
-                    shell=False,
-                    stdout=push_image_output,
-                    stderr=push_image_output
-                )
+            [
+                'docker',
+                'push',
+                f'{docker_image_tag_to_push}'
+            ],
+            shell=False,
+            stdout=push_image_output,
+            stderr=push_image_output
+        )
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'\nTagged local docker image was pushed to the Docker Registry as \'ramasuchka.kz:4443/infra-web:latest\''
@@ -500,7 +502,10 @@ def docker_push_tagged_local_image_to_registry() -> None:
 # private docker registry logging in remotely through 'ssh' and
 #  with 2 command line parameters (without '--password-stdin') to pull docker image to the server
 #  for 'simple_gram' application background image deployment
-def docreg_login_remotely(backend_server_credentials: BackendServerCredentials):
+def docreg_login_remotely(
+        backend_server_credentials: BackendServerCredentials,
+        docker_registry_credentials: DockerRegistryCredentials
+) -> None:
     """
 
     :return:
@@ -522,11 +527,17 @@ def docreg_login_remotely(backend_server_credentials: BackendServerCredentials):
     # print(f'username: {backend_server_credentials.username}')
 
     print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
         f'\nprivate docker registry logging in remotely with credentials saved to'
         f'\'dockerregistrycredentials.json\' file to pull docker image'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
     )
 
-    docker_client.login(username='admin', password='admin', registry='https://ramasuchka.kz:4443')
+    docker_client.login(
+        username=f'{docker_registry_credentials.username}',
+        password=f'{docker_registry_credentials.password}',
+        registry=f'{docker_registry_credentials.docker_registry_server_url}'
+    )
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'\nSuccessfully logged in to private docker registry on the remote server - '
@@ -618,7 +629,7 @@ def gen_ssh_key_pair() -> None:
         # subprocess.call(command, shell=True)
 
 
-def rsa_key_based_connect():
+def rsa_key_based_connect(backend_server_credentials: BackendServerCredentials) -> 'SSHClient':
     """
 
     :return:
@@ -630,9 +641,9 @@ def rsa_key_based_connect():
     ssh_client.load_system_host_keys()
 
     # transport = ssh_client.get_transport()
-    host = f'{get_backend_server_credentials().backend_server_ip}'
-    special_account = f'{get_backend_server_credentials().username}'
-    password = f'{get_backend_server_credentials().password}'
+    host = f'{backend_server_credentials.backend_server_ip}'
+    special_account = f'{backend_server_credentials.username}'
+    password = f'{backend_server_credentials.password}'
     private_key = paramiko.RSAKey.from_private_key_file(f'{get_rsa_key_path()}')
 
     # client = paramiko.SSHClient()
@@ -647,7 +658,7 @@ def rsa_key_based_connect():
     return ssh_client
 
 
-def move_rsa_pub_key_to_remote() -> None:
+def move_rsa_pub_key_to_remote(backend_server_credentials: BackendServerCredentials) -> None:
     """
 
     :return:
@@ -681,7 +692,7 @@ def move_rsa_pub_key_to_remote() -> None:
     # command = f'sudo echo "{backend_server_credentials}" >> ~/.ssh/authorized_keys'
     # command = str('sudo echo b >> ~/test.txt')
     # command = 'echo {backend_server_credentials} >> ~/.ssh/authorized_keys'.format(backend_server_credentials=backend_server_credentials)
-    ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect().exec_command(
+    ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
         f'echo "{rsa_pub_key_content}" >> ~/.ssh/authorized_keys'
     )
     ssh_stdin.close()
@@ -883,7 +894,7 @@ def get_postgres_env_variables() -> PostgresEnvVariables:
     return postgres_env_variables
 
 
-def move_env_docker_compose_files_to_remote() -> None:
+def move_env_docker_compose_files_to_remote(backend_server_credentials: BackendServerCredentials) -> None:
     """
 
     :return:
@@ -910,7 +921,7 @@ def move_env_docker_compose_files_to_remote() -> None:
     # scp = SCPClient(rsa_key_based_connect().get_transport(), progress=progress)
 
     # SCPCLient takes a paramiko transport and progress callback as its arguments
-    scp = SCPClient(rsa_key_based_connect().get_transport())
+    scp = SCPClient(rsa_key_based_connect(backend_server_credentials).get_transport())
     # send '.env' and 'docker-compose_move_2_server.yml' files to remote server
     scp.put(postgres_env_file_path_local, postgres_env_file_path_remote)
     scp.put(docker_compose_file_path_local, docker_compose_file_path_remote)

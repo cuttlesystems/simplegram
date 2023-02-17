@@ -199,6 +199,12 @@ if __name__ == '__main__':
         origin.pull()
         print(f'\nGit pull from \'{origin}/{branch}\' completed\n')
 
+    # credentials to establish SSH connection with remote server where the application backend is deployed
+    backend_server_credentials = get_backend_server_credentials()
+
+    # get credentials saved to 'dockerregistrycredentials.json' file to log in private docker registry
+    docker_registry_credentials = get_docker_registry_credentials()
+
     # get values from '.env' file
     # echo
     # 'DB_ENGINE=django.db.backends.postgresql
@@ -218,8 +224,25 @@ if __name__ == '__main__':
     #  в json-формате, а также файла '.env' на его основе с записью необходимых переменных окружения в строковом виде
     convert_postgres_env_variables_json_to_text()
 
-    # get credentials saved to 'dockerregistrycredentials.json' file to log in private docker registry
-    docker_registry_credentials = get_docker_registry_credentials()
+
+    # copy modified 'docker-compose.yml' file to remote server
+    # # scp -r ~/tg_bot_constructor/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
+    # scp -r ~/tg_bot_constructor/deploy/deploy_server/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
+    #
+    # # copy modified '.env' file to remote server
+    # # scp -r ~/tg_bot_constructor/infra/.env ubuntu@185.146.3.196:~/tg_bot_constructor/infra/.env
+    # scp -r ~/tg_bot_constructor/deploy/deploy_server/infra/.env ubuntu@185.146.3.196:~/tg_bot_constructor/infra/.env
+    move_env_docker_compose_files_to_remote(backend_server_credentials)
+
+    # not necessary
+    # add_key_to_known_hosts()
+    # rsa_key_based_connect()
+
+    # generate SSH key pair before remote Docker daemon usage if keys don't exist yet
+    gen_ssh_key_pair()
+
+    # add_pub_key_to_remote_server()
+    move_rsa_pub_key_to_remote(backend_server_credentials)
 
     # private docker registry logging in locally with credentials
     #  saved to 'dockerregistrycredentials.json' file to push docker image
@@ -243,33 +266,11 @@ if __name__ == '__main__':
     # private docker registry logging out locally
     docreg_logout_locally(docker_registry_credentials)
 
-    exit(0)
-
-    # copy modified 'docker-compose.yml' file to remote server
-    # # scp -r ~/tg_bot_constructor/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
-    # scp -r ~/tg_bot_constructor/deploy/deploy_server/infra/docker-compose_move_2_server.yml ubuntu@185.146.3.196:~/tg_bot_constructor/infra/docker-compose.yml
-    #
-    # # copy modified '.env' file to remote server
-    # # scp -r ~/tg_bot_constructor/infra/.env ubuntu@185.146.3.196:~/tg_bot_constructor/infra/.env
-    # scp -r ~/tg_bot_constructor/deploy/deploy_server/infra/.env ubuntu@185.146.3.196:~/tg_bot_constructor/infra/.env
-    move_env_docker_compose_files_to_remote()
-
-    # not necessary
-    # add_key_to_known_hosts()
-    # rsa_key_based_connect()
-
-    # generate SSH key pair before remote Docker daemon usage if keys don't exist yet
-    gen_ssh_key_pair()
-
-    # add_pub_key_to_remote_server()
-    move_rsa_pub_key_to_remote()
-
-    # credentials to establish SSH connection with remote server where the application backend is deployed
-    backend_server_credentials = get_backend_server_credentials()
+    # exit(0)
 
     # private docker registry logging in remotely through DockerClient with credentials saved to
     #  'dockerregistrycredentials.json' file to pull docker image
-    docreg_login_remotely(backend_server_credentials)
+    docreg_login_remotely(backend_server_credentials, docker_registry_credentials)
 
     # build with '--no-cache' option 'infra-web' image
     # ./ scripts / build_no_cache_infra_web_image.sh
