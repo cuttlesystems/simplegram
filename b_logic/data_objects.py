@@ -23,8 +23,8 @@ class MessageTypeEnum(Enum):
 @dataclass(slots=True)
 class BotDescription:
     id: Optional[int] = None
-    bot_name: Optional[str] = None
-    bot_token: Optional[str] = None
+    bot_name: str = 'Undefined bot name'
+    bot_token: str = ''
     bot_description: Optional[str] = None
     _start_message_id: Optional[int] = None
     _error_message_id: Optional[int] = None
@@ -54,7 +54,7 @@ class BotDescription:
 @dataclass(slots=True)
 class BotMessage:
     id: Optional[int] = None
-    text: Optional[str] = None
+    text: str = ''
     keyboard_type: ButtonTypesEnum = ButtonTypesEnum.REPLY
     photo: Optional[str] = None
     photo_file_format: Optional[str] = None
@@ -63,7 +63,7 @@ class BotMessage:
     file: Optional[str] = None
     message_type: MessageTypeEnum = MessageTypeEnum.VARIANTS
     next_message_id: Optional[int] = None
-    variable: Optional[str] = None
+    variable: str = ''
 
     x: Optional[int] = None
     y: Optional[int] = None

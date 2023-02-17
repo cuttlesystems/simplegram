@@ -86,7 +86,7 @@ class MessageEditorDialog(QDialog):
 
     def get_variable_name(self) -> Optional[str]:
         variable = self._ui.variable_name_line_edit.text()
-        return variable if variable != '' else None
+        return variable
 
     def get_next_message(self) -> Optional[BotMessage]:
         return self._ui.next_message_list_widget.get_selected_message()
