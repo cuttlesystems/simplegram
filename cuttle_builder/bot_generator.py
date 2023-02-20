@@ -271,6 +271,7 @@ class BotGenerator:
         assert isinstance(path_to_bot_media_dir, str)
         assert isinstance(filename, str)
         assert isinstance(file_format, str)
+        file_format = self._file_manager.get_file_format(full_path_to_source_file)
         Path(path_to_bot_media_dir).mkdir(exist_ok=True)
         full_path_to_file_in_bot_dir = path_to_bot_media_dir + '/' + filename + '.' + file_format
         try:
