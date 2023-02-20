@@ -130,7 +130,7 @@ class SelectedProjectWidget(QWidget):
 
             self._load_bot_scene()
         except BotApiMessageException as error:
-            QMessageBox(self, self._tr('Error'), error)
+            QMessageBox(self, self._tr('Error'), str(error))
 
     def __bot_editing(self) -> None:
         # коннект кнопки открытия бота в редакторе и сигналом старта редактирования в основном клиент/менеджерном
