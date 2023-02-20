@@ -998,3 +998,68 @@ def delete_infra_web_latest_image_remotely(backend_server_credentials: BackendSe
     )
     ssh_stdin.close()
     return docker_image_tag_to_delete
+
+
+    # 2 # to avoid multi '<none>' images on the server we should remove 'ramasuchka.kz:4443/infra-web:latest' image
+    #       before pull update for it from the registry
+    # #     '-f' force removing option
+    #   sudo docker rmi -f ramasuchka.kz:4443/infra-web:latest
+def delete_according_to_registry_tagged_image_remotely(backend_server_credentials: BackendServerCredentials) -> str:
+    """
+    define function to remove 'ramasuchka.kz:4443/infra-web:latest' image on remote server
+     before pull update for it from the registry in order to avoid multi '<none>' docker images on the server
+    :return:
+        deletes 'ramasuchka.kz:4443/infra-web:latest' docker image on remote server
+         before pulling update for it from the registry
+
+    """
+    # rsa_pub_key_path = get_rsa_key_path().with_suffix('.pub')
+    # print(f'Path to public rsa key \'<user_path>/.ssh/id_rsa.pub\' file: {rsa_pub_key_path}')
+    # with open(f'{rsa_pub_key_path}', 'rt', encoding='utf-8') as rsa_pub_key_content_file:
+    #     rsa_pub_key_content = rsa_pub_key_content_file.read()
+
+    # ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+    #     f'echo "{rsa_pub_key_content}" >> ~/.ssh/authorized_keys'
+    # )
+    # ssh_stdin.close()
+    #######
+    according_to_registry_docker_image_tag_to_delete = 'ramasuchka.kz:4443/infra-web:latest'
+    # result = subprocess.run(
+    #     [
+    #         'docker',
+    #         'rmi',
+    #         '-f',
+    #         f'{docker_image_tag_to_delete}'
+    #     ],
+    #     shell=True
+    # )
+    ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+        f'docker rmi -f "{according_to_registry_docker_image_tag_to_delete}"'
+    )
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'result: {ssh_stdin, ssh_stdout, ssh_stderr}'
+        f'\n\'ramasuchka.kz:4443/infra-web:latest\' docker image was deleted on remote server'
+        f'before pulling update for it from the private docker registry'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    print(f'\nRemote docker images:')
+    # subprocess.run(
+    #     [
+    #         'docker',
+    #         'images'
+    #     ],
+    #     shell=True,
+    #     # stdout=create_image_output,
+    #     # stderr=create_image_output
+    # )
+    ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+        f'docker images'
+    )
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'result: {ssh_stdin, ssh_stdout, ssh_stderr}'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    ssh_stdin.close()
+    return according_to_registry_docker_image_tag_to_delete
