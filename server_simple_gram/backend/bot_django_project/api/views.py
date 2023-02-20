@@ -47,7 +47,7 @@ def set_bot_must_be_generated_value(bot: Bot, must_be_generated: bool) -> None:
     if bot.must_be_generated != must_be_generated:
         bot.must_be_generated = must_be_generated
         bot.save()
-    logger_django.info_logging(f'Bot_id_{bot.id} must_be_generated value: {must_be_generated}.')
+        logger_django.info_logging(f'Bot_id_{bot.id} must_be_generated value set to: {must_be_generated}.')
 
 
 class BotViewSet(viewsets.ModelViewSet):
