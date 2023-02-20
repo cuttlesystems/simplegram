@@ -73,7 +73,7 @@ class Bot(models.Model):
 
 
 class Message(models.Model):
-    text = models.TextField()
+    text = models.TextField(blank=True)
     keyboard_type = models.CharField(
         max_length=3,
         choices=KEYBOARD_TYPES,
