@@ -113,11 +113,10 @@ class BotGenerator:
                 additional_functions_under_answer += f'await handler_message_{next_message_handler_name}(message, state)'
         # создать файл с изображением в директории бота и вернуть адрес
         if message.photo is not None:
-            image = self.create_image_file_in_bot_directory(
+            image = self.create_file_in_bot_directory(
                 full_path_to_source_file=message.photo,
                 path_to_bot_media_dir=self._media_directory,
-                filename='message' + str(message.id),
-                file_format=message.photo_file_format
+                filename='message' + str(message.id)
             )
         else:
             image = None
@@ -126,8 +125,7 @@ class BotGenerator:
             video = self.create_file_in_bot_directory(
                 full_path_to_source_file=message.video,
                 path_to_bot_media_dir=self._media_directory,
-                filename='message' + str(message.id),
-                file_format='mkv'
+                filename='message' + str(message.id)
             )
         else:
             video = None
@@ -248,6 +246,7 @@ class BotGenerator:
 
     def create_image_file_in_bot_directory(self, full_path_to_source_file: str, path_to_bot_media_dir: str,
                                            filename: str, file_format: str) -> str:
+        # todo 01.03.23 удалить метод, когда уберем photo file_format
         assert isinstance(full_path_to_source_file, str)
         assert isinstance(path_to_bot_media_dir, str)
         assert isinstance(filename, str)
@@ -265,12 +264,11 @@ class BotGenerator:
         return result
 
     def create_file_in_bot_directory(self, full_path_to_source_file: str, path_to_bot_media_dir: str,
-                                           filename: str, file_format: str) -> str:
+                                           filename: str) -> str:
         # можно вызывать только этот метод для создания файлов, видео и фото
         assert isinstance(full_path_to_source_file, str)
         assert isinstance(path_to_bot_media_dir, str)
         assert isinstance(filename, str)
-        assert isinstance(file_format, str)
         file_format = self._file_manager.get_file_format(full_path_to_source_file)
         Path(path_to_bot_media_dir).mkdir(exist_ok=True)
         full_path_to_file_in_bot_dir = path_to_bot_media_dir + '/' + filename + '.' + file_format
