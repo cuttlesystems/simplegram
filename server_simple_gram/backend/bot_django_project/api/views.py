@@ -44,8 +44,10 @@ def _set_bot_must_be_generated_value(bot: Bot, must_be_generated: bool) -> None:
     """
     assert isinstance(bot, Bot)
     assert isinstance(must_be_generated, bool)
-    bot.must_be_generated = must_be_generated
-    bot.save()
+    if bot.must_be_generated != must_be_generated:
+        bot.must_be_generated = must_be_generated
+        bot.save()
+    logger_django.info_logging(f'Bot_id_{bot.id} must_be_generated value: {must_be_generated}.')
 
 
 class BotViewSet(viewsets.ModelViewSet):
@@ -83,6 +85,12 @@ class BotViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer: BotSerializer):
         author = self.request.user
         serializer.save(owner=author)
+
+    def perform_update(self, serializer):
+        bot_id = self.kwargs['bot_id_str']
+        bot = get_object_or_404(Bot, id=bot_id)
+        serializer.save()
+        _set_bot_must_be_generated_value(bot, True)
 
     def _get_bot_dir(self, bot_id: int) -> Path:
         assert isinstance(bot_id, int)
@@ -154,6 +162,7 @@ class BotViewSet(viewsets.ModelViewSet):
             logger_django.info_logging(f'Bot {bot_id} started. Process id: {process_id}')
 
             self._set_bot_must_be_started_value(bot=bot, must_be_started=True)
+            _set_bot_must_be_generated_value(bot, False)
         else:
             result = JsonResponse(
                 {
@@ -250,6 +259,7 @@ class BotViewSet(viewsets.ModelViewSet):
             generator = BotGeneratorDb(bot_api, bot_obj, str(bot_dir))
             generator.create_bot()
             _set_bot_must_be_generated_value(bot_django, False)
+            logger_django.info_logging(f'Bot_{bot_id} was generated.')
         except BotGeneratorException as exception:
             raise ErrorsFromBotGenerator(detail=exception)
 
@@ -387,7 +397,7 @@ class MessageViewSet(ListPostViewSet):
         return MessageSerializer
 
     def perform_create(self, serializer: MessageSerializer) -> None:
-        bot_id = self.kwargs.get('bot_id')
+        bot_id = self.kwargs['bot_id']
         bot = get_object_or_404(Bot, id=bot_id)
         serializer.save(bot=bot)
         _set_bot_must_be_generated_value(bot, True)
@@ -401,6 +411,7 @@ class MessageViewSet(ListPostViewSet):
 class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
     """Чтение, обновление и удаление для экземпляра сообщения"""
     queryset = Message.objects.all()
+    permission_classes = (IsMessageOwnerOrForbidden,)
     lookup_url_kwarg = 'message_id'
 
     def get_serializer_class(self):
@@ -408,22 +419,15 @@ class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
             return MessageSerializerWithVariants
         return MessageSerializer
 
-    permission_classes = (IsMessageOwnerOrForbidden,)
-
     def perform_update(self, serializer):
-        print(self.kwargs)
+        message_id = self.kwargs['message_id']
+        message = get_object_or_404(Message, id=message_id)
         serializer.save()
-        # bot_id = self.kwargs.get('bot_id')
-        # bot = get_object_or_404(Bot, id=bot_id)
-        # _set_bot_must_be_generated_value(bot, True)
+        _set_bot_must_be_generated_value(message.bot, True)
 
-    def perform_destroy(self, instance):
-        print(self.kwargs)
+    def perform_destroy(self, instance: Message):
+        _set_bot_must_be_generated_value(instance.bot, True)
         instance.delete()
-        # serializer.de
-        # bot_id = self.kwargs.get('bot_id')
-        # bot = get_object_or_404(Bot, id=bot_id)
-        # _set_bot_must_be_generated_value(bot, True)
 
 
 class VariantViewSet(ListPostViewSet):
@@ -458,11 +462,24 @@ class OneVariantViewSet(RetrieveUpdateDestroyViewSet):
     queryset = Variant.objects.all()
     serializer_class = VariantSerializer
     permission_classes = (IsVariantOwnerOrForbidden,)
+    lookup_url_kwarg = 'variant_id'
+
+    def perform_update(self, serializer):
+        variant_id = self.kwargs['variant_id']
+        variant: Variant = get_object_or_404(Variant, id=variant_id)
+        message: Message = variant.current_message
+        serializer.save()
+        _set_bot_must_be_generated_value(message.bot, True)
+
+    def perform_destroy(self, instance: Variant):
+        message: Message = instance.current_message
+        _set_bot_must_be_generated_value(message.bot, True)
+        instance.delete()
 
 
-class CommandViewSet(viewsets.ModelViewSet):
+class CommandViewSet(ListPostViewSet):
     """
-    Отображение всех команд бота и
+    Отображение всех команд бота и со
     CRUD-функционал для экземпляра команды
     """
     serializer_class = CommandSerializer
@@ -476,6 +493,7 @@ class CommandViewSet(viewsets.ModelViewSet):
         bot_id = self.kwargs['bot_id']
         bot = get_object_or_404(Bot, id=bot_id)
         serializer.save(bot=bot)
+        _set_bot_must_be_generated_value(bot, True)
 
     def create(self, request: Request, bot_id: int) -> Response:
         bot = get_object_or_404(Bot, id=bot_id)
@@ -488,3 +506,14 @@ class OneCommandViewSet(RetrieveUpdateDestroyViewSet):
     queryset = Command.objects.all()
     serializer_class = CommandSerializer
     permission_classes = (IsCommandOwnerOrForbidden,)
+    lookup_url_kwarg = 'command_id'
+
+    def perform_update(self, serializer):
+        command_id = self.kwargs['command_id']
+        command = get_object_or_404(Message, id=command_id)
+        serializer.save()
+        _set_bot_must_be_generated_value(command.bot, True)
+
+    def perform_destroy(self, instance: Message):
+        _set_bot_must_be_generated_value(instance.bot, True)
+        instance.delete()
