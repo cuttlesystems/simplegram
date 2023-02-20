@@ -2,7 +2,7 @@ import os
 from typing import Optional
 
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QWidget, QFileDialog
+from PySide6.QtWidgets import QWidget, QFileDialog, QMessageBox
 from PySide6.QtCore import QObject, Slot, Signal
 from PySide6.QtGui import QPainter
 
@@ -16,6 +16,7 @@ from constructor_app.graphic_scene.bot_scene import BotScene
 from constructor_app.widgets.bot_properties_model import BotPropertiesModel
 
 from b_logic.bot_api.i_bot_api import BotDescription, IBotApi
+from network.bot_api_by_request_extended import BotApiMessageException
 
 DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH: str = ":icons/widgets/times_icon/new_bot.png"
 
@@ -90,43 +91,46 @@ class SelectedProjectWidget(QWidget):
         # Set name bot in lineEdit
         assert isinstance(bot, BotDescription)
         assert isinstance(bot_state, bool)
-        # обновляем информацию о боте для корректного отображения картинки
-        self._bot = self._bot_api.get_bot_by_id(bot.id)
+        try:
+            # обновляем информацию о боте для корректного отображения картинки
+            self._bot = self._bot_api.get_bot_by_id(bot.id)
 
-        # Установка дефолтной аватарки бота или фотки из БД, если есть.
-        # toDo: Добавить функцию инициализации иконки из стартерпака иконок заказанных у дизайнера
-        if self._bot.bot_profile_photo is not None:
-            image_data: Optional[bytes] = self._bot_api.get_image_data_by_url(self._bot.bot_profile_photo)
-            image: Optional[QPixmap] = get_pixmap_image_from_bytes(image_data)
-            self._ui.icon_bot_button.setIcon(image)
-        else:
-            self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
+            # Установка дефолтной аватарки бота или фотки из БД, если есть.
+            # toDo: Добавить функцию инициализации иконки из стартерпака иконок заказанных у дизайнера
+            if self._bot.bot_profile_photo is not None:
+                image_data: Optional[bytes] = self._bot_api.get_image_data_by_url(self._bot.bot_profile_photo)
+                image: Optional[QPixmap] = get_pixmap_image_from_bytes(image_data)
+                self._ui.icon_bot_button.setIcon(image)
+            else:
+                self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
 
-        # toDo: понять что мы блин натворили
-        self._ui.name_bot_edit.setText(self._bot.bot_name)
-        self._ui.name_bot_edit.setText(bot.bot_name)
-        self._ui.switch_activated_bot.setChecked(bot_state)
-        self._init_state_bot()
+            # toDo: понять что мы блин натворили
+            self._ui.name_bot_edit.setText(self._bot.bot_name)
+            self._ui.name_bot_edit.setText(bot.bot_name)
+            self._ui.switch_activated_bot.setChecked(bot_state)
+            self._init_state_bot()
 
-        self._init_preview_bot()
-        self._bot = self._bot_api.get_bot_by_id(bot_id=bot.id, with_link=1)
-        self._bot_scene.set_bot_scene(self._bot)
+            self._init_preview_bot()
+            self._bot = self._bot_api.get_bot_by_id(bot_id=bot.id, with_link=1)
+            self._bot_scene.set_bot_scene(self._bot)
 
-        self._prop_model = BotPropertiesModel()
+            self._prop_model = BotPropertiesModel()
 
-        if bot is not None:
-            self._prop_model.set_name(self._bot.bot_name)
-            self._prop_model.set_token(self._bot.bot_token)
-            self._prop_model.set_description(self._bot.bot_description)
-            self._prop_model.set_link(self._bot.bot_link)
+            if bot is not None:
+                self._prop_model.set_name(self._bot.bot_name)
+                self._prop_model.set_token(self._bot.bot_token)
+                self._prop_model.set_description(self._bot.bot_description)
+                self._prop_model.set_link(self._bot.bot_link)
 
-        else:
-            self._prop_model.set_name('')
-            self._prop_model.set_token('')
-            self._prop_model.set_description('')
-            self._prop_model.set_link('')
+            else:
+                self._prop_model.set_name('')
+                self._prop_model.set_token('')
+                self._prop_model.set_description('')
+                self._prop_model.set_link('')
 
-        self._load_bot_scene()
+            self._load_bot_scene()
+        except BotApiMessageException as error:
+            QMessageBox(self, self._tr('Error'), error)
 
     def __bot_editing(self) -> None:
         # коннект кнопки открытия бота в редакторе и сигналом старта редактирования в основном клиент/менеджерном
@@ -165,6 +169,7 @@ class SelectedProjectWidget(QWidget):
 
     def _remove_bot(self) -> None:
         self._bot_api.delete_bot(self._bot.id)
+        self._bot = None
         self.remove_bot_signal.emit()
 
     def _rename_bot(self) -> None:

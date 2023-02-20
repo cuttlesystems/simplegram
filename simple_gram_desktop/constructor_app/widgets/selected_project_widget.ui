@@ -87,147 +87,170 @@ background-color: rgb(255,255,255);
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="QPushButton" name="icon_bot_button">
-            <property name="minimumSize">
-             <size>
-              <width>54</width>
-              <height>54</height>
-             </size>
+           <widget class="QGroupBox" name="border_group">
+            <property name="styleSheet">
+             <string notr="true">QGroupBox{
+border: 1px solid rgba(39,39,39,180);
+border-radius:0px;
+background: transparent;
+}</string>
             </property>
-            <property name="maximumSize">
-             <size>
-              <width>54</width>
-              <height>54</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/icons/widgets/times_icon/new_boit.png</normaloff>:/icons/widgets/times_icon/new_boit.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>47</width>
-              <height>47</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <property name="spacing">
-             <number>10</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLineEdit" name="name_bot_edit">
-              <property name="minimumSize">
-               <size>
-                <width>150</width>
-                <height>58</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>26</pointsize>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QLineEdit{
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <property name="rightMargin">
+              <number>1</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="icon_bot_button">
+               <property name="minimumSize">
+                <size>
+                 <width>54</width>
+                 <height>54</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>54</width>
+                 <height>54</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="../bot_icons.qrc">
+                 <normaloff>:/icons/widgets/times_icon/new_bot.png</normaloff>:/icons/widgets/times_icon/new_bot.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>47</width>
+                 <height>47</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <property name="spacing">
+                <number>10</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLineEdit" name="name_bot_edit">
+                 <property name="minimumSize">
+                  <size>
+                   <width>150</width>
+                   <height>58</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>26</pointsize>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QLineEdit{
 color:black;
 border:none;
 background:transparent;
 }</string>
-              </property>
-              <property name="text">
-               <string>New BOT</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_2">
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="edit_bot_button">
-                <property name="minimumSize">
-                 <size>
-                  <width>28</width>
-                  <height>28</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>28</width>
-                  <height>28</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="../bot_icons.qrc">
-                  <normaloff>:/icons/widgets/times_icon/rename.png</normaloff>:/icons/widgets/times_icon/rename.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="remove_bot_button">
-                <property name="minimumSize">
-                 <size>
-                  <width>28</width>
-                  <height>28</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>28</width>
-                  <height>28</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="../bot_icons.qrc">
-                  <normaloff>:/icons/widgets/times_icon/remove.png</normaloff>:/icons/widgets/times_icon/remove.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
+                 </property>
+                 <property name="text">
+                  <string>New BOT</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_2">
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_7">
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QPushButton" name="edit_bot_button">
+                     <property name="minimumSize">
+                      <size>
+                       <width>28</width>
+                       <height>28</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>28</width>
+                       <height>28</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../bot_icons.qrc">
+                       <normaloff>:/icons/widgets/times_icon/rename.png</normaloff>:/icons/widgets/times_icon/rename.png</iconset>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="remove_bot_button">
+                     <property name="minimumSize">
+                      <size>
+                       <width>28</width>
+                       <height>28</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>28</width>
+                       <height>28</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../bot_icons.qrc">
+                       <normaloff>:/icons/widgets/times_icon/remove.png</normaloff>:/icons/widgets/times_icon/remove.png</iconset>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
