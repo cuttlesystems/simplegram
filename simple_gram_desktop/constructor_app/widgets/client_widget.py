@@ -48,7 +48,6 @@ class ClientWidget(QMainWindow):
 
         self._ui.login_page.log_in.connect(self._post_login_initial_botapi)
 
-        """Сайдбар"""
         self._ui.new_project_button.clicked.connect(self._start_new_project)
         self._ui.bot_list.clicked.connect(self._start_selected_project)
         self._ui.bot_new_creator_page.close_window.connect(self._start_main_menu_slot)
@@ -56,6 +55,8 @@ class ClientWidget(QMainWindow):
         self._ui.bot_show_page.open_bot_in_redactor_signal.connect(self._start_bot_redactor)
         self._ui.bot_show_page.activated_bot_signal.connect(self.__load_bots_list)
         self._ui.log_out_button.clicked.connect(self._logout_account)
+        self._ui.bot_show_page.after_remove_bot_signal.connect(self._after_remove_bot_slot)
+        self._ui.bot_show_page.after_rename_bot_signal.connect(self._after_changed_bot_slot)
         # перезагрузка бот-листа при смене аватарки бота (наверное лучше не менять весь бот-лист
         # а поменять только аватарку у конкретного элемента)
         self._ui.bot_show_page.bot_avatar_changed_signal.connect(self.__load_bots_list)
@@ -180,7 +181,9 @@ class ClientWidget(QMainWindow):
         try:
             # получение всех ботов юзера из БД
             bots = self._bot_api.get_bots()
+            self._ui.bot_list.set_current_bot()
             self._ui.bot_list.clear()
+
             # получение списка запущенных ботов
             running_bots = self._bot_api.get_running_bots_info()
             for bot in bots:
@@ -202,6 +205,13 @@ class ClientWidget(QMainWindow):
             self._ui.bot_list.update_current()
         except BotApiException as error:
             QMessageBox.warning(self, self._tr('Error'), str(error))
+
+    def _after_remove_bot_slot(self) -> None:
+        self.__load_bots_list()
+        self._start_main_menu()
+
+    def _after_changed_bot_slot(self) -> None:
+        self.__load_bots_list()
 
     def _tr(self, text: str) -> str:
         return tran('ClientWidget.manual', text)
