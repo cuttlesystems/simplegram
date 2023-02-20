@@ -77,12 +77,11 @@ class BotListWidget(QListWidget):
 
     def update_current(self):
         if self._bot_current_id is not None:
-            index = 0
             for index, bot in enumerate(self._bots_list):
                 if bot.bot_description.id == self._bot_current_id:
                     self.setCurrentRow(index)
                     break
-                elif index+1 == len(self._bots_list):
+                elif index == len(self._bots_list)-1:
                     self.clearSelection()
         else:
             self.clearSelection()
