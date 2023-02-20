@@ -9,6 +9,7 @@ from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonT
 from cuttle_builder.builder.additional.db_bot_data_preprocessor.db_bot_data_preprocessor import DbBotDataPreprocessor
 from cuttle_builder.builder.additional.helpers.find_functions import find_previous_messages, find_previous_variants, \
     find_variants_of_message
+from cuttle_builder.builder.additional.helpers.tab_from_new_line import tab_from_new_line
 from cuttle_builder.builder.additional.helpers.user_message_validator import UserMessageValidator
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
@@ -121,6 +122,16 @@ class BotGenerator:
         else:
             image = None
 
+        if message.video is not None:
+            video = self.create_file_in_bot_directory(
+                full_path_to_source_file=message.video,
+                path_to_bot_media_dir=self._media_directory,
+                filename='message' + str(message.id),
+                file_format='mkv'
+            )
+        else:
+            video = None
+
         if message.id == self._start_message_id:
             # Создание клавиатуры для сообщения.
             keyboard_name = self.create_keyboard(message.id, keyboard_type)
@@ -136,6 +147,7 @@ class BotGenerator:
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
                 image_answer=image,
+                video_answer=video,
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_start_handler,
@@ -160,6 +172,7 @@ class BotGenerator:
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
                 image_answer=image,
+                video_answer=video,
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_handler,
@@ -187,6 +200,7 @@ class BotGenerator:
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
                 image_answer=image,
+                video_answer=video,
                 kb=keyboard_name,
                 handler_type=current_message_of_variant.keyboard_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
@@ -220,6 +234,7 @@ class BotGenerator:
                     state_to_set_name=self._get_handler_name_for_message(message.id),
                     text_of_answer=text,
                     image_answer=image,
+                    video_answer=video,
                     kb=keyboard_name,
                     handler_type=ButtonTypesEnum.REPLY,
                     extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
@@ -233,6 +248,25 @@ class BotGenerator:
 
     def create_image_file_in_bot_directory(self, full_path_to_source_file: str, path_to_bot_media_dir: str,
                                            filename: str, file_format: str) -> str:
+        assert isinstance(full_path_to_source_file, str)
+        assert isinstance(path_to_bot_media_dir, str)
+        assert isinstance(filename, str)
+        assert isinstance(file_format, str)
+
+        Path(path_to_bot_media_dir).mkdir(exist_ok=True)
+        full_path_to_file_in_bot_dir = path_to_bot_media_dir + '/' + filename + '.' + file_format
+        try:
+            shutil.copyfile(full_path_to_source_file, full_path_to_file_in_bot_dir)
+            assert os.path.exists(full_path_to_file_in_bot_dir)
+            result = full_path_to_file_in_bot_dir
+        except FileNotFoundError as error:
+            print(f'----------->>>Logging error: {error}')
+            result = None
+        return result
+
+    def create_file_in_bot_directory(self, full_path_to_source_file: str, path_to_bot_media_dir: str,
+                                           filename: str, file_format: str) -> str:
+        # можно вызывать только этот метод для создания файлов, видео и фото
         assert isinstance(full_path_to_source_file, str)
         assert isinstance(path_to_bot_media_dir, str)
         assert isinstance(filename, str)
@@ -373,7 +407,7 @@ class BotGenerator:
 
     def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                               state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                              kb: str, handler_type: ButtonTypesEnum, extended_imports: str,
+                              video_answer: Optional[str], kb: str, handler_type: ButtonTypesEnum, extended_imports: str,
                               additional_functions_from_top_of_answer: str, additional_functions_under_answer: str) -> str:
         """Подготовка данных и выбор генерируемого хэндлера в зависимости от типа клавиатуры
 
@@ -404,12 +438,13 @@ class BotGenerator:
 
         if handler_type == ButtonTypesEnum.REPLY:
             message_handler = create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
-                                                           state_to_set_name, text_of_answer, image_answer, kb,
-                                                           additional_functions_from_top_of_answer,
+                                                           state_to_set_name, text_of_answer, image_answer,
+                                                           video_answer, kb, additional_functions_from_top_of_answer,
                                                            additional_functions_under_answer)
         elif handler_type == ButtonTypesEnum.INLINE:
             message_handler = create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
-                                                            state_to_set_name, text_of_answer, image_answer, kb,
+                                                            state_to_set_name, text_of_answer, image_answer,
+                                                            video_answer, kb,
                                                             additional_functions_from_top_of_answer,
                                                             additional_functions_under_answer)
         return message_handler
@@ -468,12 +503,4 @@ class BotGenerator:
         return prepared_handler_inits
 
     def _tab_from_new_line(self, code: str) -> str:
-        """
-        Prepare generate code: replace next string to new line and add tabulation
-        Args:
-            code (str): code, that will writen in file
-        Returns:
-            prepared string, that move next string to new line and add tabulation
-        """
-        assert isinstance(code, str)
-        return f'{code}\n\t'
+        return tab_from_new_line(code)

@@ -179,8 +179,11 @@ class BotApiByDjangoORM(IBotApi):
         if message_django.photo:
             bot_message.photo = self._get_full_path_to_django_image(message_django.photo)
             bot_message.photo_file_format = self._get_file_format(message_django.photo)
-        bot_message.video = message_django.video
-        bot_message.file = message_django.file
+
+        if message_django.video:
+            bot_message.video = message_django.video.path
+        if message_django.file:
+            bot_message.file = message_django.file.path
         bot_message.x = message_django.coordinate_x
         bot_message.y = message_django.coordinate_y
         bot_message.message_type = MessageTypeEnum(message_django.message_type)
