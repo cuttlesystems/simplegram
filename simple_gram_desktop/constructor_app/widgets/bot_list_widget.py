@@ -81,7 +81,7 @@ class BotListWidget(QListWidget):
                 if bot.bot_description.id == self._bot_current_id:
                     self.setCurrentRow(index)
                     break
-                elif index == len(self._bots_list)-1:
+                elif index == len(self._bots_list) - 1:
                     self.clearSelection()
         else:
             self.clearSelection()
