@@ -60,6 +60,9 @@ class Bot(models.Model):
     must_be_started = models.BooleanField(
         default=False
     )
+    must_be_generated = models.BooleanField(
+        default=True
+    )
 
     class Meta:
         ordering = ['id']

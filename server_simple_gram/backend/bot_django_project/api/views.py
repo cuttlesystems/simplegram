@@ -26,13 +26,26 @@ from cuttle_builder.exceptions.bot_gen_exceptions import BotGeneratorException
 from .serializers import (BotSerializer, BotSerializerWithBotLink, MessageSerializer, MessageSerializerWithVariants,
                           VariantSerializer, CommandSerializer)
 from bots.models import Bot, Message, Variant, Command
-from .mixins import RetrieveUpdateDestroyViewSet
+from .mixins import RetrieveUpdateDestroyViewSet, ListPostViewSet
 from .permissions import (IsMessageOwnerOrForbidden, IsVariantOwnerOrForbidden, IsBotOwnerOrForbidden,
                           IsCommandOwnerOrForbidden, check_is_bot_owner_or_permission_denied)
 from .exceptions import ErrorsFromBotGenerator
 
 MESSAGE_WITH_VARIANTS = 'with_variants'
 BOT_WITH_LINK = 'with_link'
+
+
+def _set_bot_must_be_generated_value(bot: Bot, must_be_generated: bool) -> None:
+    """
+    Устанавливает значение в поле бота must_be_generated.
+    Args:
+        bot: Экземпляр бота из БД.
+        must_be_generated: True или False.
+    """
+    assert isinstance(bot, Bot)
+    assert isinstance(must_be_generated, bool)
+    bot.must_be_generated = must_be_generated
+    bot.save()
 
 
 class BotViewSet(viewsets.ModelViewSet):
@@ -115,6 +128,9 @@ class BotViewSet(viewsets.ModelViewSet):
         bot_id = int(bot_id_str)
         bot = get_object_or_404(Bot, id=bot_id)
         self.check_object_permissions(request, bot)
+
+        if bot.must_be_generated:
+            self.generate_bot(request, bot_id_str)
 
         bot_dir = self._get_bot_dir(bot_id)
 
@@ -233,6 +249,7 @@ class BotViewSet(viewsets.ModelViewSet):
         try:
             generator = BotGeneratorDb(bot_api, bot_obj, str(bot_dir))
             generator.create_bot()
+            _set_bot_must_be_generated_value(bot_django, False)
         except BotGeneratorException as exception:
             raise ErrorsFromBotGenerator(detail=exception)
 
@@ -353,10 +370,9 @@ class BotViewSet(viewsets.ModelViewSet):
         )
 
 
-class MessageViewSet(viewsets.ModelViewSet):
+class MessageViewSet(ListPostViewSet):
     """
-    Отображение всех меседжей бота и
-    CRUD-функционал для экземпляра меседжа
+    Отображение всех меседжей бота и добавление нового меседжа.
     """
 
     def get_queryset(self):
@@ -374,6 +390,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         bot_id = self.kwargs.get('bot_id')
         bot = get_object_or_404(Bot, id=bot_id)
         serializer.save(bot=bot)
+        _set_bot_must_be_generated_value(bot, True)
 
     def create(self, request: Request, bot_id: int) -> Response:
         bot = get_object_or_404(Bot, id=bot_id)
@@ -384,6 +401,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
     """Чтение, обновление и удаление для экземпляра сообщения"""
     queryset = Message.objects.all()
+    lookup_url_kwarg = 'message_id'
 
     def get_serializer_class(self):
         if self.request.query_params.get(MESSAGE_WITH_VARIANTS) == '1':
@@ -392,11 +410,25 @@ class OneMessageViewSet(RetrieveUpdateDestroyViewSet):
 
     permission_classes = (IsMessageOwnerOrForbidden,)
 
+    def perform_update(self, serializer):
+        print(self.kwargs)
+        serializer.save()
+        # bot_id = self.kwargs.get('bot_id')
+        # bot = get_object_or_404(Bot, id=bot_id)
+        # _set_bot_must_be_generated_value(bot, True)
 
-class VariantViewSet(viewsets.ModelViewSet):
+    def perform_destroy(self, instance):
+        print(self.kwargs)
+        instance.delete()
+        # serializer.de
+        # bot_id = self.kwargs.get('bot_id')
+        # bot = get_object_or_404(Bot, id=bot_id)
+        # _set_bot_must_be_generated_value(bot, True)
+
+
+class VariantViewSet(ListPostViewSet):
     """
-    Отображение всех вариантов сообщения и
-    CRUD-функционал для экземпляра варианта
+    Отображение всех вариантов сообщения и создание нового варианта
     """
     serializer_class = VariantSerializer
 
@@ -410,6 +442,7 @@ class VariantViewSet(viewsets.ModelViewSet):
         message_id = self.kwargs['message_id']
         message = get_object_or_404(Message, id=message_id)
         serializer.save(current_message=message)
+        _set_bot_must_be_generated_value(message.bot, True)
 
     def create(self, request: Request, message_id: int) -> Response:
         message = get_object_or_404(Message, id=message_id)
