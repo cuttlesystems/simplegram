@@ -26,6 +26,8 @@ class SelectedProjectWidget(QWidget):
     activated_bot_signal = Signal()
     open_bot_in_redactor_signal = Signal()
     bot_avatar_changed_signal = Signal()
+    remove_bot_signal = Signal()
+    rename_bot_signal = Signal()
 
     def __init__(self, parent: Optional[QWidget] = None):
         # toDO: Добавить функцию инициализации QSS
@@ -35,6 +37,8 @@ class SelectedProjectWidget(QWidget):
         self._ui.switch_activated_bot.clicked.connect(self._switch_bot)
         self._ui.open_in_redactor_button.clicked.connect(self.__bot_editing)
         self._ui.icon_bot_button.clicked.connect(self._set_bot_image)
+        self._ui.edit_bot_button.clicked.connect(self._rename_bot)
+        self._ui.remove_bot_button.clicked.connect(self._remove_bot)
         self._init_StyleSheet()
         self._bot_api: Optional[IBotApi] = None
         self._bot: Optional[BotDescription] = None
@@ -124,9 +128,6 @@ class SelectedProjectWidget(QWidget):
 
         self._load_bot_scene()
 
-    def set_bot_api(self, bot_api: IBotApi):
-        self._bot_api = bot_api
-
     def __bot_editing(self) -> None:
         # коннект кнопки открытия бота в редакторе и сигналом старта редактирования в основном клиент/менеджерном
         # приложении
@@ -161,6 +162,16 @@ class SelectedProjectWidget(QWidget):
     def set_bot_api(self, bot_api: IBotApi):
         assert isinstance(bot_api, IBotApi)
         self._bot_api = bot_api
+
+    def _remove_bot(self) -> None:
+        self._bot_api.delete_bot(self._bot.id)
+        self.remove_bot_signal.emit()
+
+    def _rename_bot(self) -> None:
+        new_name_bot = self._ui.name_bot_edit.text()
+        self._bot.bot_name = new_name_bot
+        self._bot_api.change_bot(self._bot)
+        self.rename_bot_signal.emit()
 
     def _init_preview_bot(self) -> None:
 

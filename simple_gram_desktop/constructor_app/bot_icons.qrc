@@ -21,6 +21,8 @@
         <file>widgets/times_icon/background_texture.png</file>
         <file>widgets/times_icon/background_texture_big.png</file>
         <file>widgets/times_icon/texture_scene.png</file>
+        <file>widgets/times_icon/remove.png</file>
+        <file>widgets/times_icon/rename.png</file>
 
         <file>widgets/times_icon/add_variant.png</file>
         <file>widgets/times_icon/add_message.png</file>
