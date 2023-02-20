@@ -52,8 +52,8 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
     keyboard_if_exists = f', reply_markup={kb}' if kb else ""
     answer_content = f'await message.answer(text=f{repr(text_of_answer)}{keyboard_if_exists})'
     if image_answer:
-        image_content = f'\n    await message.answer_photo(photo=types.InputFile(\'{image_answer}\'))'
-        answer_content += image_content
+        image_content = f'\n    await message.answer_photo(photo=types.InputFile(\'{image_answer}\'), caption=f{repr(text_of_answer)}{keyboard_if_exists})'
+        answer_content = image_content
 
     return create_handler(imports,
                           handler_params,
