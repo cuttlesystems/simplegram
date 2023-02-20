@@ -76,7 +76,7 @@ background-color: rgb(255,255,255);
          <number>47</number>
         </property>
         <property name="topMargin">
-         <number>47</number>
+         <number>27</number>
         </property>
         <property name="rightMargin">
          <number>47</number>
@@ -84,6 +84,94 @@ background-color: rgb(255,255,255);
         <property name="bottomMargin">
          <number>47</number>
         </property>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_9">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <property name="spacing">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="edit_bot_button">
+              <property name="minimumSize">
+               <size>
+                <width>28</width>
+                <height>28</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>28</width>
+                <height>28</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../bot_icons.qrc">
+                <normaloff>:/icons/widgets/times_icon/save.png</normaloff>:/icons/widgets/times_icon/save.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="remove_bot_button">
+              <property name="minimumSize">
+               <size>
+                <width>28</width>
+                <height>28</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>28</width>
+                <height>28</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../bot_icons.qrc">
+                <normaloff>:/icons/widgets/times_icon/remove.png</normaloff>:/icons/widgets/times_icon/remove.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
@@ -168,71 +256,6 @@ background-color: transparent;
                 <property name="rightMargin">
                  <number>0</number>
                 </property>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_8">
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QPushButton" name="edit_bot_button">
-                    <property name="minimumSize">
-                     <size>
-                      <width>28</width>
-                      <height>28</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>28</width>
-                      <height>28</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../bot_icons.qrc">
-                      <normaloff>:/icons/widgets/times_icon/save.png</normaloff>:/icons/widgets/times_icon/save.png</iconset>
-                    </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>20</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="remove_bot_button">
-                    <property name="minimumSize">
-                     <size>
-                      <width>28</width>
-                      <height>28</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>28</width>
-                      <height>28</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../bot_icons.qrc">
-                      <normaloff>:/icons/widgets/times_icon/remove.png</normaloff>:/icons/widgets/times_icon/remove.png</iconset>
-                    </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>20</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
                 <item>
                  <spacer name="verticalSpacer_5">
                   <property name="orientation">
@@ -332,7 +355,13 @@ background-color:#FF5F8F;
          </spacer>
         </item>
         <item>
-         <widget class="BotView" name="bot_view"/>
+         <widget class="BotView" name="bot_view">
+          <property name="styleSheet">
+           <string notr="true">QGraphicsView{
+margin-right:0px;
+}</string>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="verticalSpacer_3">
@@ -349,6 +378,9 @@ background-color:#FF5F8F;
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
           <item>
            <spacer name="horizontalSpacer_3">
             <property name="orientation">
