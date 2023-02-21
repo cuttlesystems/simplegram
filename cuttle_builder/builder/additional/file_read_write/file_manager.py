@@ -59,11 +59,10 @@ class FileManager:
         return 'bot_{0}'.format(bot_id)
 
     def get_file_format(self, full_path_to_file: str) -> str:
-        file_path_split_by_dot = full_path_to_file.split('.')
-        file_format = file_path_split_by_dot[-1]
+        file_format = Path(full_path_to_file).suffix
         return file_format
 
-    def read_file(self, file_path: str) -> str:
+    def read_text_file_content(self, file_path: str) -> str:
         with open(file_path, 'r') as file:
             return file.read()
 
@@ -95,6 +94,6 @@ class FileManager:
             dir (_type_): directory path
             code (_type_): generated code (import insdide init)
         """
-        prev_file = self.read_file(file_path)
+        prev_file = self.read_text_file_content(file_path)
         with open(file_path, 'w') as file:
             file.write(code + prev_file)

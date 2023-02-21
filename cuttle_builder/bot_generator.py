@@ -59,11 +59,11 @@ class BotGenerator:
         self._commands: List[BotCommand] = preprocessor.commands
         self._start_message_id = preprocessor.bot.start_message_id
         self._states: List[int] = []
-        self._file_manager = APIFileCreator(preprocessor.bot_directory)
+        self._file_manager = APIFileCreator(str(preprocessor.bot_directory))
         self._token = preprocessor.bot.bot_token
         self._bot_directory = preprocessor.bot_directory
         self._logs_file_path = self._get_bot_logs_file_path(preprocessor.bot, preprocessor.bot_directory)
-        self._media_directory = preprocessor.bot_directory + '/media'
+        self._media_directory = str(Path(preprocessor.bot_directory) / 'media')
         self._user_message_validator = UserMessageValidator(preprocessor.messages)
 
         self._error_message_id = preprocessor.bot.error_message_id
@@ -116,7 +116,7 @@ class BotGenerator:
             image = self.create_file_in_bot_directory(
                 full_path_to_source_file=message.photo,
                 path_to_bot_media_dir=self._media_directory,
-                filename='message' + str(message.id)
+                filename=f'message{message.id}'
             )
         else:
             image = None
@@ -125,7 +125,7 @@ class BotGenerator:
             video = self.create_file_in_bot_directory(
                 full_path_to_source_file=message.video,
                 path_to_bot_media_dir=self._media_directory,
-                filename='message' + str(message.id)
+                filename=f'message{message.id}'
             )
         else:
             video = None
@@ -271,13 +271,13 @@ class BotGenerator:
         assert isinstance(filename, str)
         file_format = self._file_manager.get_file_format(full_path_to_source_file)
         Path(path_to_bot_media_dir).mkdir(exist_ok=True)
-        full_path_to_file_in_bot_dir = path_to_bot_media_dir + '/' + filename + '.' + file_format
+        full_path_to_file_in_bot_dir = str(Path(path_to_bot_media_dir) / f'{filename}{file_format}')
         try:
             shutil.copyfile(full_path_to_source_file, full_path_to_file_in_bot_dir)
             assert os.path.exists(full_path_to_file_in_bot_dir)
             result = full_path_to_file_in_bot_dir
         except FileNotFoundError as error:
-            print(f'----------->>>Logging error: {error}')
+            print(f'----------->>>Copy bot image error: {error}')
             result = None
         return result
 
@@ -417,9 +417,12 @@ class BotGenerator:
             state_to_set_name (str): id of current state
             text_of_answer (str): text of answer
             image_answer (Optional[str]): path to image file in bot directory
+            video_answer (Optional[str]): path to video file in bot directory
             kb (str): keyboard of answer
             handler_type (ButtonTypesEnum): type of handler (inline or reply)
             extended_imports: __
+            additional_functions_from_top_of_answer (str): functions over the answer message
+            additional_functions_under_answer (str): functions under the answer message
 
         Returns:
             str: generated code for handler with state and handled text
@@ -462,7 +465,7 @@ class BotGenerator:
         assert isinstance(imports_file_name, str)
         imports = str(
             CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'imports' / f'{imports_file_name}.txt')
-        extended_imports = self._file_manager.read_file(imports)
+        extended_imports = self._file_manager.read_text_file_content(imports)
         return extended_imports
 
     def _get_keyboard_name_for_message(self, message_id: int) -> Optional[str]:

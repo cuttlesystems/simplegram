@@ -1,5 +1,6 @@
 import copy
 import typing
+from pathlib import Path
 from typing import List
 
 from b_logic.data_objects import BotDescription, BotCommand, BotMessage, BotVariant, MessageTypeEnum

@@ -22,7 +22,6 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
     """Подготовка данных для генерации кода меседж хэндлера
 
     Args:
-        video_answer:
         imports (str): Импорты
         command (str): Команда перехватываемая хэндлером типа /start
         prev_state (Optional[str]): Предыдущее состояние
@@ -30,8 +29,10 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
         state_to_set_name (Optional[str]): Состояние к установке
         text_of_answer (str): Текст ответа
         image_answer (Optional[str]): Путь к файлу с изображением
+        video_answer (Optional[str]): Путь к файлу с видео
         kb (str): Клавиатура
-        additional_functions_from_top_of_answer
+        additional_functions_from_top_of_answer (str): доп функции над message.answer
+        additional_functions_under_answer (str): доп функции под message.answer
 
     Returns:
         str: Сгенерированный код
@@ -84,18 +85,17 @@ def create_state_callback_handler(imports: str, command: str, prev_state: Option
     """Подготовка данных для генерации кода колбэк хэндлера
 
     Args:
-        additional_functions_under_answer:
-        video_answer:
         imports (str): Импорты
         command (str): Команда перехватываемая хэндлером типа /start
         prev_state (Optional[str]): Предыдущее состояние
         text_to_handle (Optional[str]): Текст перехватываемый хэндлером
         state_to_set_name (Optional[str]): Состояние к установке
-        send_message_type (str): Тип отправляемого сообщения
         text_of_answer (str): Текст ответа
         image_answer (Optional[str]): Путь к файлу с изображением
+        video_answer (Optional[str]): Путь к файлу с изображением
         kb (str): Клавиатура
-        additional_functions_from_top_of_answer
+        additional_functions_from_top_of_answer (str): доп функции над message.answer
+        additional_functions_under_answer (str): доп функции под message.answer
 
     Returns:
         str: Сгенерированный код
