@@ -28,14 +28,14 @@ share/python-wheels/
 MANIFEST
 # 'specfileconf.json' file with 'application_type' wriiten in it
 #  as a value of 'ApplicationTypeEnum' class object
-tg_bot_constructor/deploy/build_desktop/specfileconf.json
+deploy/build_desktop/specfileconf.json
 
 # deploy concerned files
 # remote server credentials (IP, user, password) to establish SSH connection
 #  with remote server where the application backend is deployed 
-tg_bot_constructor/deploy/deploy_server/scripts/backendservercredentials.json
+deploy/deploy_server/scripts/backendservercredentials.json
 # file with credentials to login into private docker registry
-tg_bot_constructor/deploy/deploy_server/scripts/dockerregistrycredentials.json
+deploy/deploy_server/scripts/dockerregistrycredentials.json
 
 # Installer logs
 pip-log.txt
