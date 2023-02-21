@@ -60,6 +60,7 @@ class BotMessage:
     photo_file_format: Optional[str] = None
     photo_filename: Optional[str] = None
     video: Optional[str] = None
+    is_video_loaded_from_frontend: bool = False
     file: Optional[str] = None
     message_type: MessageTypeEnum = MessageTypeEnum.VARIANTS
     next_message_id: Optional[int] = None

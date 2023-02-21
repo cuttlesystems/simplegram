@@ -1,4 +1,5 @@
 import json
+import os
 import typing
 from typing import List, Optional
 from urllib.error import HTTPError
@@ -13,10 +14,10 @@ from b_logic.bot_api.i_bot_api import IBotApi, SignUpException, CreatingBotExcep
     DeletingImageException, GettingMessagesVariantsListException, CreatingVariantException, EditingVariantException, \
     LinkingVariantWithNextMessageException, DeletingVariantException, GettingBotCommandsException, \
     CreatingCommandException, BotGenerationException, BotStopException, BotStartupException, \
-    GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException, LogoutException
+    GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException, LogoutException, DeletingVideoException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
     MessageTypeEnum
-from b_logic.utils.image_to_bytes import get_binary_data_from_image_file
+from b_logic.utils.image_to_bytes import get_binary_data_from_file
 
 
 def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[bytes]:
@@ -366,6 +367,16 @@ class BotApiByRequests(IBotApi):
             # raise BotApiException(
             #     self._tr('Deleting image error: {0}').format(response.text))
 
+    def remove_message_video(self, message: BotMessage) -> None:
+        assert isinstance(message, BotMessage)
+        response = requests.patch(
+            url=self._suite_url + f'api/message/{message.id}/',
+            json={'video': None},
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise DeletingVideoException(response)
+
     def delete_message(self, message: BotMessage):
         assert isinstance(message, BotMessage)
         print(f'delete message id {message.id}')
@@ -620,7 +631,7 @@ class BotApiByRequests(IBotApi):
         assert isinstance(bot, BotDescription)
         upload_files_bot_dict = dict()
         if bot.bot_profile_photo and bot.profile_photo_filename:
-            file_data = get_binary_data_from_image_file(bot.bot_profile_photo)
+            file_data = get_binary_data_from_file(bot.bot_profile_photo)
             upload_files_bot_dict['profile_photo'] = (bot.profile_photo_filename, file_data)
         return upload_files_bot_dict
 
@@ -674,8 +685,12 @@ class BotApiByRequests(IBotApi):
         assert isinstance(message, BotMessage)
         upload_files_message_dict = dict()
         if message.photo and message.photo_filename:
-            file_data = get_binary_data_from_image_file(message.photo)
+            file_data = get_binary_data_from_file(message.photo)
             upload_files_message_dict['photo'] = (message.photo_filename, file_data)
+        if message.video and message.is_video_loaded_from_frontend:
+            video_filename = os.path.basename(message.video)
+            file_data = get_binary_data_from_file(message.video)
+            upload_files_message_dict['video'] = (video_filename, file_data)
         return upload_files_message_dict
 
     def _create_variant_from_data(self, variant_dict: dict) -> BotVariant:
