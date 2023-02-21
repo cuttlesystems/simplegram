@@ -176,9 +176,10 @@ class SelectedProjectWidget(QWidget):
     def _on_reset_icon_button(self) -> None:
         self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
 
-        self._bot.bot_profile_photo = None
-        self._bot.profile_photo_filename = None
-        self._bot_api.change_bot(self._bot)
+        # self._bot.bot_profile_photo = None
+        # self._bot.profile_photo_filename = None
+        # self._bot_api.change_bot(self._bot)
+        self._bot_api.remove_bot_image(self._bot)
 
         self.bot_avatar_changed_signal.emit()
 
