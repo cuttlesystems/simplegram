@@ -3,19 +3,16 @@ import os
 from PySide6 import QtCore, QtWidgets
 from typing import Optional
 
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPixmap, QDesktopServices
 from PySide6.QtWidgets import QWidget, QFileDialog, QMessageBox
-from PySide6.QtCore import Signal
-from PySide6.QtGui import QPainter
+from PySide6.QtCore import Signal, QUrl
 
 from constructor_app.utils.get_image_from_bytes import get_pixmap_image_from_bytes
 
 from constructor_app.widgets.ui_selected_project_widget import Ui_SelectedProjectWidget
 
 from common.localisation import tran
-from common.model_property import ModelProperty
 from constructor_app.graphic_scene.bot_scene import BotScene
-from constructor_app.widgets.bot_properties_model import BotPropertiesModel
 
 from b_logic.bot_api.i_bot_api import BotDescription, IBotApi
 from network.bot_api_by_request_extended import BotApiMessageException
@@ -50,6 +47,14 @@ class SelectedProjectWidget(QWidget):
         self._bot_scene: Optional[BotScene] = None
         self._ui.name_bot_edit.keyPressEvent = self.name_key_press_event
 
+        self._ui.link_bot_header.setOpenExternalLinks(True)
+        self._ui.link_bot_header.keyPressEvent = self.name_key_press_event
+
+    def _on_check(self):
+        open_link = QDesktopServices()
+        link = "https://doc.qt.io"
+        open_link.openUrl(QUrl(link))
+
     def _init_StyleSheet(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
         #  инициализатор qss
@@ -69,6 +74,7 @@ class SelectedProjectWidget(QWidget):
             self._bot.bot_profile_photo = None
             self._bot.profile_photo_filename = None
             self._bot_api.change_bot(self._bot)
+            self._on_check()
             self.after_changed_bot_signal.emit()
 
     def _switch_bot(self):
@@ -170,15 +176,13 @@ class SelectedProjectWidget(QWidget):
         self._bot.bot_name = new_name_bot
         new_description_bot = self._ui.description_bot_edit.text()
         self._bot.bot_description = new_description_bot
+        new_token_bot = self._ui.token_bot_edit.text()
+        self._bot.bot_token = new_token_bot
         self._bot_api.change_bot(self._bot)
         self.after_changed_bot_signal.emit()
 
     def _on_reset_icon_button(self) -> None:
         self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
-
-        # self._bot.bot_profile_photo = None
-        # self._bot.profile_photo_filename = None
-        # self._bot_api.change_bot(self._bot)
         self._bot_api.remove_bot_image(self._bot)
 
         self.bot_avatar_changed_signal.emit()

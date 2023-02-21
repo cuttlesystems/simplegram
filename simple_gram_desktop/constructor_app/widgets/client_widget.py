@@ -9,6 +9,7 @@ from b_logic.bot_api.i_bot_api import BotApiException, IBotApi
 from common.localisation import tran
 from constructor_app.utils.get_image_from_bytes import get_pixmap_image_from_bytes
 from constructor_app.widgets.selected_project_widget import DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH
+from constructor_app.widgets.tool_stack_widget import ToolStackWidget
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
 from constructor_app.widgets.bot_extended import BotExtended
@@ -60,6 +61,11 @@ class ClientWidget(QMainWindow):
         # перезагрузка бот-листа при смене аватарки бота (наверное лучше не менять весь бот-лист
         # а поменять только аватарку у конкретного элемента)
         self._ui.bot_show_page.bot_avatar_changed_signal.connect(self.__load_bots_list)
+
+        self._bot_editor = BotEditorWidget()
+        self.setup_tool_stack(self._ui.tool_stack)
+        self._bot_editor.setup_tool_stack(self._ui.tool_stack)
+
         # первое открытие приложения, инициализация авторизации
         self._start_login_users()
 
@@ -67,6 +73,20 @@ class ClientWidget(QMainWindow):
 
         self._bot_editor_index: Optional[int] = None
         self._settings_window = SettingsWidget()
+
+    def setup_tool_stack(self, tool: ToolStackWidget):
+        assert isinstance(tool, ToolStackWidget)
+
+        tool.delete_variant_signal.connect(self._bot_editor._on_delete_variant)
+        tool.mark_as_start_signal.connect(self._bot_editor._on_mark_start_button)
+        tool.add_variant_signal.connect(self._bot_editor._on_add_variant_button)
+        tool.mark_as_error_signal.connect(self._bot_editor._on_mark_error_button)
+        tool.add_message_signal.connect(self._bot_editor._on_add_new_message)
+        tool.generate_bot_signal.connect(self._bot_editor._on_generate_bot)
+        tool.start_bot_signal.connect(self._bot_editor._on_start_bot)
+        tool.stop_bot_signal.connect(self._bot_editor._on_stop_bot)
+        tool.read_bot_logs_signal.connect(self._bot_editor._on_read_bot_logs)
+        tool.delete_message_signal.connect(self._bot_editor._on_delete_message)
 
     def _start_login_users(self) -> None:
         # выстравляю страницу инициализации
@@ -146,18 +166,17 @@ class ClientWidget(QMainWindow):
             bot_id = bot_extended.bot_description.id
             bot = self._bot_api.get_bot_by_id(bot_id)
 
-            bot_editor = BotEditorWidget()
-            bot_editor.set_bot_api(self._bot_api)
-            bot_editor.setup_tool_stack(self._ui.tool_stack, bot_extended.bot_state)
-            bot_editor.update_state_bot.connect(self.__load_bots_list)
-            bot_editor.set_bot(bot)
+            self._ui.tool_stack.init_switch_toggle(bot_extended.bot_state)
+            self._bot_editor.update_state_bot.connect(self.__load_bots_list)
+            self._bot_editor.set_bot_api(self._bot_api)
+            self._bot_editor.set_bot(bot)
 
             if self._bot_editor_index is not None:
                 closed_bot_editor_widget = self._ui.bot_editor_stacked.widget(self._bot_editor_index)
                 closed_bot_editor_widget.forced_close_bot()
                 self._ui.bot_editor_stacked.removeWidget(closed_bot_editor_widget)
 
-            self._bot_editor_index = self._ui.bot_editor_stacked.addWidget(bot_editor)
+            self._bot_editor_index = self._ui.bot_editor_stacked.addWidget(self._bot_editor)
             self._ui.bot_editor_stacked.setCurrentIndex(self._ui.bot_editor_stacked.count()-1)
         except requests.exceptions.ConnectionError as e:
             # toDo: add translate kz, ru
