@@ -95,7 +95,8 @@ class BotViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance: Bot):
         self._stop_bot_if_it_run(instance.id)
         bot_dir = self._get_bot_dir(instance.id)
-        shutil.rmtree(path=bot_dir, ignore_errors=True)
+        if bot_dir.exists():
+            shutil.rmtree(path=bot_dir)
         instance.delete()
 
     def _get_bot_dir(self, bot_id: int) -> Path:
