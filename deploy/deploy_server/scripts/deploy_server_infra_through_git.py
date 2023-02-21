@@ -1,4 +1,5 @@
 import subprocess
+import sys
 from subprocess import run
 from pathlib import Path
 # модуль для определения пути к исполняемому файлу установленного в системе python
@@ -71,8 +72,8 @@ def install_paramiko_module() -> None:
 
 if __name__ == '__main__':
     # определение пути к исполняемому файлу python в системе
-    system_python_path = shutil.which('python')
-    print('\nПуть к исполняемому файлу python в системе: ', shutil.which('python'), '\n')
+    system_python_path = sys.executable
+    print(f'\nПуть к исполняемому файлу python в системе: {system_python_path}\n')
 
     # run([get_venv_python_path(venv_dir), '-m', 'pip', 'install', '--upgrade', 'pip'])
     # run(['../venv/Scripts/python.exe', '-m', 'pip', 'install', '--upgrade', 'pip'])
@@ -93,14 +94,15 @@ if __name__ == '__main__':
     if not check_paramiko_is_installed():
         install_paramiko_module()
 
+    # todo: убрать закоментированный код
     # from subprocess import Popen, PIPE
-    result = subprocess.Popen(['pip', 'list'], text=True, stdout=subprocess.PIPE)
+    result = subprocess.run(['pip', 'list'], text=True, stdout=subprocess.PIPE)
     # result = subprocess.Popen(['pip', 'list'], stdout=subprocess.PIPE)
     # result.stdout
     # result.stderr
     pip_output_str = result.stdout.read()
 
-    print(f'\nresult.stdout: ', pip_output_str)
+    print(f'\n\'pip list\' result.stdout: ', pip_output_str)
 
     with open('pip_list.txt', 'w') as file:
         file.write(pip_output_str)
@@ -121,13 +123,14 @@ if __name__ == '__main__':
     import git
     from git import Repo
 
+    # todo: держать токены в секретном файле
     # define parameters for a request to GitHub
     # Personal Access Token (PAT) for authorization in GitHub repo
     token = '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'
     # organization in GitHub the repository belongs to
     owner = 'cuttlesystems'
     # repo = 'tg_bot_constructor'
-    path = 'README.md'
+    # path = 'README.md'
 
     HTTPS_REMOTE_URL = f'https://{token}:x-oauth-basic@github.com/{owner}/{repo}'
     if not project_dir.exists():
