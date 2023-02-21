@@ -60,6 +60,9 @@ class Bot(models.Model):
     must_be_started = models.BooleanField(
         default=False
     )
+    must_be_generated = models.BooleanField(
+        default=True
+    )
 
     class Meta:
         ordering = ['id']
@@ -70,7 +73,7 @@ class Bot(models.Model):
 
 
 class Message(models.Model):
-    text = models.TextField()
+    text = models.TextField(blank=True)
     keyboard_type = models.CharField(
         max_length=3,
         choices=KEYBOARD_TYPES,
