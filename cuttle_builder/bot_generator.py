@@ -1,5 +1,6 @@
 import re
 import shutil
+import tempfile
 import typing
 import os
 from pathlib import Path
@@ -62,7 +63,7 @@ class BotGenerator:
         self._token = preprocessor.bot.bot_token
         self._bot_directory = preprocessor.bot_directory
         self._logs_file_path = self._get_bot_logs_file_path(preprocessor.bot, preprocessor.bot_directory)
-        self._media_directory = preprocessor.bot_directory + '/media'
+        self._media_directory = os.path.join(preprocessor.bot_directory, 'media')
         self._user_message_validator = UserMessageValidator(preprocessor.messages)
 
         self._error_message_id = preprocessor.bot.error_message_id
@@ -239,7 +240,7 @@ class BotGenerator:
         assert isinstance(filename, str)
         assert isinstance(file_format, str)
         Path(path_to_bot_media_dir).mkdir(exist_ok=True)
-        full_path_to_file_in_bot_dir = path_to_bot_media_dir + '/' + filename + '.' + file_format
+        full_path_to_file_in_bot_dir = path_to_bot_media_dir + os.path.sep + filename + '.' + file_format
         try:
             shutil.copyfile(full_path_to_source_file, full_path_to_file_in_bot_dir)
             assert os.path.exists(full_path_to_file_in_bot_dir)
