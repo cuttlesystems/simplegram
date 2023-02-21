@@ -63,9 +63,18 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
         answer_content = image_content
 
     if video_answer:
-        video_answer = tab_from_new_line(f'await message.answer_video(video=types.InputFile(\'{video_answer}\'), '
+        video_content = tab_from_new_line(f'await message.answer_video(video=types.InputFile(\'{video_answer}\'), '
                                          f'caption=f{repr(text_of_answer)}{keyboard_if_exists})')
-        answer_content = video_answer
+        answer_content = video_content
+    if image_answer and video_answer:
+        media_answer = ['await types.ChatActions.upload_video()',
+                        'media = types.MediaGroup()',
+                        f'media.attach_photo(types.InputFile({repr(image_answer)}), {repr(text_of_answer)})',
+                        f'media.attach_video(types.InputFile({repr(video_answer)}))',
+                        f'await message.answer_media_group(media=media)'
+                        ]
+
+        answer_content = ''.join([tab_from_new_line(line) for line in media_answer])
 
     return create_handler(imports,
                           handler_params,
