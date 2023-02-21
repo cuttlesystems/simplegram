@@ -58,6 +58,7 @@ class BotEditorWidget(QWidget):
 
         self._prop_model = BotPropertiesModel()
         self._ui.bot_params_view.setModel(self._prop_model)
+        self._prop_model.set_allow_edit(False)
 
         self._connect_signals()
 

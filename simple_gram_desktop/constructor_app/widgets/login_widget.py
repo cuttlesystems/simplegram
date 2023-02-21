@@ -86,7 +86,8 @@ class LoginWidget(QWidget):
         if unfilled_field is not None:
             QMessageBox.warning(self,
                                 self._tr('Empty field error'),
-                                self._tr('{field}. This field should not be empty.').format(field=unfilled_field.placeholderText())
+                                self._tr('{field}. This field should not be empty.').format(
+                                    field=unfilled_field.placeholderText())
                                 )
         elif password.text() == confirm_password.text():
             try:
@@ -98,7 +99,8 @@ class LoginWidget(QWidget):
                 )
                 QMessageBox.information(self,
                                         self._tr('Success'),
-                                        self._tr('User {username} created successfully.').format(username=username.text())
+                                        self._tr('User {username} created successfully.').format(
+                                            username=username.text())
                                         )
                 # если пользователь успешно создан переключиться в режим логин
                 self._ui.login_radiobutton.setChecked(True)

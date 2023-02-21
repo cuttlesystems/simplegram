@@ -1,9 +1,11 @@
 import os
+
+from PySide6 import QtCore, QtWidgets
 from typing import Optional
 
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget, QFileDialog, QMessageBox
-from PySide6.QtCore import QObject, Slot, Signal
+from PySide6.QtCore import Signal
 from PySide6.QtGui import QPainter
 
 from constructor_app.utils.get_image_from_bytes import get_pixmap_image_from_bytes
@@ -28,7 +30,7 @@ class SelectedProjectWidget(QWidget):
     open_bot_in_redactor_signal = Signal()
     bot_avatar_changed_signal = Signal()
     after_remove_bot_signal = Signal()
-    after_rename_bot_signal = Signal()
+    after_changed_bot_signal = Signal()
 
     def __init__(self, parent: Optional[QWidget] = None):
         # toDO: Добавить функцию инициализации QSS
@@ -38,22 +40,36 @@ class SelectedProjectWidget(QWidget):
         self._ui.switch_activated_bot.clicked.connect(self._switch_bot)
         self._ui.open_in_redactor_button.clicked.connect(self.__bot_editing)
         self._ui.icon_bot_button.clicked.connect(self._set_bot_image)
-        self._ui.edit_bot_button.clicked.connect(self._rename_bot)
+        self._ui.open_file_button.clicked.connect(self._set_bot_image)
+        self._ui.reset_icon_button.clicked.connect(self._on_reset_icon_button)
+        self._ui.edit_bot_button.clicked.connect(self._changed_bot)
         self._ui.remove_bot_button.clicked.connect(self._remove_bot)
         self._init_StyleSheet()
         self._bot_api: Optional[IBotApi] = None
         self._bot: Optional[BotDescription] = None
         self._bot_scene: Optional[BotScene] = None
+        self._ui.name_bot_edit.keyPressEvent = self.name_key_press_event
 
     def _init_StyleSheet(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
         #  инициализатор qss
-        self._ui.background.setStyleSheet(
-            "QGroupBox{border-radius:22px; border:none; "
-            "background-color:rgb(255,255,255);}")
-        self._ui.open_in_redactor_button.setStyleSheet(
-            "QPushButton{background-color:rgb(57,178,146);border:none;"
-            "color:white;border-radius:8px;}")
+        #self._ui.background.setStyleSheet(
+        #    "QGroupBox{border-radius:22px; border:none; "
+        #    "background-color:rgba(23,23,23,220);}")
+        #self._ui.open_in_redactor_button.setStyleSheet(
+        #    "QPushButton{background-color:rgb(57,178,146);border:none;"
+        #    "color:white;border-radius:8px;}")
+        pass
+
+    def name_key_press_event(self, event):
+        QtWidgets.QLineEdit.keyPressEvent(self._ui.name_bot_edit, event)
+        if event.key() in (QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter):
+            new_name_bot = self._ui.name_bot_edit.text()
+            self._bot.bot_name = new_name_bot
+            self._bot.bot_profile_photo = None
+            self._bot.profile_photo_filename = None
+            self._bot_api.change_bot(self._bot)
+            self.after_changed_bot_signal.emit()
 
     def _switch_bot(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
@@ -88,7 +104,6 @@ class SelectedProjectWidget(QWidget):
             self._ui.marker_state_bot.setText(self._tr("Bot is disabled"))
 
     def set_bot(self, bot: BotDescription, bot_state: bool) -> None:
-        # Set name bot in lineEdit
         assert isinstance(bot, BotDescription)
         assert isinstance(bot_state, bool)
         try:
@@ -104,31 +119,16 @@ class SelectedProjectWidget(QWidget):
             else:
                 self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
 
-            # toDo: понять что мы блин натворили
-            self._ui.name_bot_edit.setText(self._bot.bot_name)
             self._ui.name_bot_edit.setText(bot.bot_name)
+            self._ui.description_bot_edit.setText(bot.bot_description)
+            self._ui.link_bot_edit.setText(bot.bot_link)
+            self._ui.token_bot_edit.setText(bot.bot_token)
+
             self._ui.switch_activated_bot.setChecked(bot_state)
             self._init_state_bot()
 
-            self._init_preview_bot()
             self._bot = self._bot_api.get_bot_by_id(bot_id=bot.id, with_link=1)
-            self._bot_scene.set_bot_scene(self._bot)
 
-            self._prop_model = BotPropertiesModel()
-
-            if bot is not None:
-                self._prop_model.set_name(self._bot.bot_name)
-                self._prop_model.set_token(self._bot.bot_token)
-                self._prop_model.set_description(self._bot.bot_description)
-                self._prop_model.set_link(self._bot.bot_link)
-
-            else:
-                self._prop_model.set_name('')
-                self._prop_model.set_token('')
-                self._prop_model.set_description('')
-                self._prop_model.set_link('')
-
-            self._load_bot_scene()
         except BotApiMessageException as error:
             QMessageBox(self, self._tr('Error'), str(error))
 
@@ -156,13 +156,6 @@ class SelectedProjectWidget(QWidget):
             # отправляем сигнал на обновление бот_листа
             self.bot_avatar_changed_signal.emit()
 
-    def _load_bot_scene(self):
-        self._bot_scene.clear_scene()
-        bot_messages = self._bot_api.get_messages(self._bot)
-        for message in bot_messages:
-            variants = self._bot_api.get_variants(message)
-            self._bot_scene.add_message(message, variants)
-
     def set_bot_api(self, bot_api: IBotApi):
         assert isinstance(bot_api, IBotApi)
         self._bot_api = bot_api
@@ -172,26 +165,25 @@ class SelectedProjectWidget(QWidget):
         self._bot = None
         self.after_remove_bot_signal.emit()
 
-    def _rename_bot(self) -> None:
+    def _changed_bot(self) -> None:
         new_name_bot = self._ui.name_bot_edit.text()
         self._bot.bot_name = new_name_bot
+        new_description_bot = self._ui.description_bot_edit.text()
+        self._bot.bot_description = new_description_bot
         self._bot_api.change_bot(self._bot)
-        self.after_rename_bot_signal.emit()
+        self.after_changed_bot_signal.emit()
 
-    def _init_preview_bot(self) -> None:
+    def _on_reset_icon_button(self) -> None:
+        self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
 
-        # toDo: Подумать и переделать подгрузку скрина бот-сцены на
-        self._bot: Optional[BotDescription] = None
-        self._prop_name: Optional[ModelProperty] = None
-        self._prop_token: Optional[ModelProperty] = None
-        self._prop_description: Optional[ModelProperty] = None
+        self._bot.bot_profile_photo = None
+        self._bot.profile_photo_filename = None
+        self._bot_api.change_bot(self._bot)
 
-        self._bot_scene = BotScene(self)
-        self._ui.bot_view.setScene(self._bot_scene)
-        self._ui.bot_view.setRenderHint(QPainter.Antialiasing)
+        self.bot_avatar_changed_signal.emit()
 
-        scene_rect = self._bot_scene.itemsBoundingRect()
-        self._ui.bot_view.centerOn(scene_rect.x(), scene_rect.y())
+    def _on_open_file_button(self) -> None:
+        pass
 
     def _tr(self, text: str) -> str:
         return tran('SelectedProjectWidget.manual', text)

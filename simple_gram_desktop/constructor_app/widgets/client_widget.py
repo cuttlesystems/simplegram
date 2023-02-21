@@ -56,7 +56,7 @@ class ClientWidget(QMainWindow):
         self._ui.bot_show_page.activated_bot_signal.connect(self.__load_bots_list)
         self._ui.log_out_button.clicked.connect(self._logout_account)
         self._ui.bot_show_page.after_remove_bot_signal.connect(self._after_remove_bot_slot)
-        self._ui.bot_show_page.after_rename_bot_signal.connect(self._after_changed_bot_slot)
+        self._ui.bot_show_page.after_changed_bot_signal.connect(self._after_changed_bot_slot)
         # перезагрузка бот-листа при смене аватарки бота (наверное лучше не менять весь бот-лист
         # а поменять только аватарку у конкретного элемента)
         self._ui.bot_show_page.bot_avatar_changed_signal.connect(self.__load_bots_list)

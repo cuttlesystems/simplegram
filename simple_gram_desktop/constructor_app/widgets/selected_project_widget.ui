@@ -13,7 +13,19 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout_7">
+   <property name="leftMargin">
+    <number>20</number>
+   </property>
+   <property name="topMargin">
+    <number>20</number>
+   </property>
+   <property name="rightMargin">
+    <number>20</number>
+   </property>
+   <property name="bottomMargin">
+    <number>20</number>
+   </property>
    <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
@@ -60,12 +72,7 @@
         <string notr="true">QGroupBox{
 border-radius: 22px;
 border:none;
-background-color: rgba(255,255,255,180);
-}
-QGroupBox::hover{
-border-radius: 22px;
-border:none;
-background-color: rgb(255,255,255);
+background-color: rgb(255, 255, 255);
 }</string>
        </property>
        <property name="title">
@@ -76,7 +83,7 @@ background-color: rgb(255,255,255);
          <number>47</number>
         </property>
         <property name="topMargin">
-         <number>27</number>
+         <number>47</number>
         </property>
         <property name="rightMargin">
          <number>47</number>
@@ -85,129 +92,12 @@ background-color: rgb(255,255,255);
          <number>47</number>
         </property>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_9">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <property name="spacing">
-             <number>2</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <spacer name="horizontalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="edit_bot_button">
-              <property name="minimumSize">
-               <size>
-                <width>28</width>
-                <height>28</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>28</width>
-                <height>28</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../bot_icons.qrc">
-                <normaloff>:/icons/widgets/times_icon/save.png</normaloff>:/icons/widgets/times_icon/save.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="remove_bot_button">
-              <property name="minimumSize">
-               <size>
-                <width>28</width>
-                <height>28</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>28</width>
-                <height>28</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../bot_icons.qrc">
-                <normaloff>:/icons/widgets/times_icon/remove.png</normaloff>:/icons/widgets/times_icon/remove.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <property name="rightMargin">
              <number>0</number>
             </property>
-            <item>
-             <widget class="QPushButton" name="icon_bot_button">
-              <property name="minimumSize">
-               <size>
-                <width>54</width>
-                <height>54</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>54</width>
-                <height>54</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../bot_icons.qrc">
-                <normaloff>:/icons/widgets/times_icon/new_bot.png</normaloff>:/icons/widgets/times_icon/new_bot.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>47</width>
-                <height>47</height>
-               </size>
-              </property>
-             </widget>
-            </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <property name="spacing">
@@ -234,14 +124,14 @@ background-color: rgb(255,255,255);
                  <string notr="true">QLineEdit{
 border: 1px solid rgb(204,204,204);
 color: black;
-border-radius:8px; 
+border-radius:8px;
 background-color: transparent;
 }
 
 QLineEdit::hover{
 border: 1px solid rgba(82,136,193,180);
 color: black;
-border-radius:8px; 
+border-radius:8px;
 background-color: transparent;
 }
 </string>
@@ -251,56 +141,12 @@ background-color: transparent;
                 </property>
                </widget>
               </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_2">
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <spacer name="verticalSpacer_5">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
              </layout>
             </item>
            </layout>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QRadioButton" name="switch_activated_bot">
-              <property name="styleSheet">
-               <string notr="true">QRadioButton{}
-
-QRadioButton::indicator
-{
-    width: 50px;
-    height:50px;
-}
-
-QRadioButton::indicator:checked{
-image:url(:/icons/images/start_bot.svg);
-}
-
-QRadioButton::indicator:unchecked{
-image:url(:/icons/images/stop_bot.svg);
-}</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
             <item>
              <widget class="QLabel" name="marker_state_bot">
               <property name="minimumSize">
@@ -337,7 +183,370 @@ background-color:#FF5F8F;
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QRadioButton" name="switch_activated_bot">
+              <property name="styleSheet">
+               <string notr="true">QRadioButton{}
+
+QRadioButton::indicator
+{
+    width: 50px;
+    height:40px;
+}
+
+QRadioButton::indicator:checked{
+image:url(:/icons/widgets/times_icon/start_bot.png);
+}
+
+QRadioButton::indicator:unchecked{
+image:url(:/icons/widgets/times_icon/stop_bot.png);
+}</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
            </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QGroupBox" name="bot_icon_group">
+            <property name="styleSheet">
+             <string notr="true">/*QGroupBox{\nborder: 1px solid #BEBABA;\nborder-radius:0px;\n}*/</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <property name="topMargin">
+              <number>1</number>
+             </property>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <spacer name="verticalSpacer_7">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="bot_icon_header">
+                 <property name="font">
+                  <font>
+                   <pointsize>16</pointsize>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QLabel{ color: #625C5C; }</string>
+                 </property>
+                 <property name="text">
+                  <string>Bot Icon:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="icon_bot_button">
+                 <property name="minimumSize">
+                  <size>
+                   <width>150</width>
+                   <height>150</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>150</width>
+                   <height>150</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../bot_icons.qrc">
+                   <normaloff>:/icons/widgets/times_icon/new_bot.png</normaloff>:/icons/widgets/times_icon/new_bot.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>198</width>
+                   <height>198</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_5">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <spacer name="verticalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Preferred</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="warning_baner_group">
+                 <property name="styleSheet">
+                  <string notr="true">QGroupBox{
+background: #F2EFEF;
+border-radius: 12px;
+margin-left: 10px;
+margin-right: 10px;
+}</string>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_13">
+                  <property name="leftMargin">
+                   <number>20</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>20</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>20</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>20</number>
+                  </property>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_14">
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <layout class="QVBoxLayout" name="verticalLayout_6">
+                      <item>
+                       <widget class="QLabel" name="label_3">
+                        <property name="maximumSize">
+                         <size>
+                          <width>80</width>
+                          <height>80</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>8</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="pixmap">
+                         <pixmap resource="../bot_icons.qrc">:/icons/widgets/times_icon/error_image.png</pixmap>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="info_message">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>The bot token field are optional but the bot will not work without a work token set.</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_5">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Preferred</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_7">
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <item>
+                  <widget class="QPushButton" name="reset_icon_button">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>138</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>14</pointsize>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton{
+background: #D9D9D9;
+border-radius: 8px;
+color: black;
+border: none;
+align-left: 20px;
+}
+
+QPushButton::hover{
+background: #B6B3B3;
+border-radius: 8px;
+color: black;
+border: none;
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Reset icon</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../bot_icons.qrc">
+                     <normaloff>:/icons/widgets/times_icon/clear.png</normaloff>:/icons/widgets/times_icon/clear.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>20</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_8">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Preferred</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="open_file_button">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>138</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>14</pointsize>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton{
+background: #D9D9D9;
+border-radius: 8px;
+color: black;
+border: none;
+align-left: 20px;
+}
+
+QPushButton::hover{
+background: #B6B3B3;
+border-radius: 8px;
+color: black;
+border: none;
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Open file</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../bot_icons.qrc">
+                     <normaloff>:/icons/widgets/times_icon/open_file.png</normaloff>:/icons/widgets/times_icon/open_file.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>23</width>
+                     <height>23</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </item>
          </layout>
         </item>
@@ -355,12 +564,201 @@ background-color:#FF5F8F;
          </spacer>
         </item>
         <item>
-         <widget class="BotView" name="bot_view">
+         <widget class="QGroupBox" name="description_bot_group">
           <property name="styleSheet">
-           <string notr="true">QGraphicsView{
-margin-right:0px;
-}</string>
+           <string notr="true">/*QGroupBox{\nborder: 1px solid #BEBABA;\nborder-radius:0px;\n}*/</string>
           </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_16">
+           <property name="topMargin">
+            <number>1</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="description_bot_header">
+             <property name="minimumSize">
+              <size>
+               <width>153</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>16</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLabel{ color: #625C5C; }</string>
+             </property>
+             <property name="text">
+              <string>Description bot: </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="description_bot_edit">
+             <property name="minimumSize">
+              <size>
+               <width>307</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLineEdit{
+border: 1px solid rgb(204,204,204);
+color: black;
+border-radius:8px;
+background-color: transparent;
+}
+
+QLineEdit::hover{
+border: 1px solid rgba(82,136,193,180);
+color: black;
+border-radius:8px;
+background-color: transparent;
+}
+</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="token_bot_group">
+          <property name="styleSheet">
+           <string notr="true">/*QGroupBox{\nborder: 1px solid #BEBABA;\nborder-radius:0px;\n}*/</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <property name="topMargin">
+            <number>1</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="token_bot_header">
+             <property name="minimumSize">
+              <size>
+               <width>153</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>16</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLabel{ color: #625C5C; }</string>
+             </property>
+             <property name="text">
+              <string>Token bot:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="token_bot_edit">
+             <property name="minimumSize">
+              <size>
+               <width>307</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLineEdit{
+border: 1px solid rgb(204,204,204);
+color: black;
+border-radius:8px;
+background-color: transparent;
+}
+
+QLineEdit::hover{
+border: 1px solid rgba(82,136,193,180);
+color: black;
+border-radius:8px;
+background-color: transparent;
+}
+</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="token_bot_group_2">
+          <property name="styleSheet">
+           <string notr="true">/*QGroupBox{\nborder: 1px solid #BEBABA;\nborder-radius:0px;\n}*/</string>
+          </property>
+          <layout class="QHBoxLayout" name="link_bot_group">
+           <property name="topMargin">
+            <number>1</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="link_bot_header">
+             <property name="minimumSize">
+              <size>
+               <width>153</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>16</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLabel{ color: #625C5C; }</string>
+             </property>
+             <property name="text">
+              <string>Link bot: </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="link_bot_edit">
+             <property name="minimumSize">
+              <size>
+               <width>307</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLineEdit{
+border: 1px solid rgb(204,204,204);
+color: black;
+border-radius:8px;
+background-color: transparent;
+}
+
+QLineEdit::hover{
+border: 1px solid rgba(82,136,193,180);
+color: black;
+border-radius:8px;
+background-color: transparent;
+}
+</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
@@ -381,6 +779,54 @@ margin-right:0px;
           <property name="rightMargin">
            <number>0</number>
           </property>
+          <item>
+           <widget class="QPushButton" name="remove_bot_button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>160</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+border:none;
+border-radius: 8px;
+background-color: #ff5f78;
+color:black;
+}
+QPushButton::hover{
+border:none;
+border-radius: 8px;
+background-color: #F83E3E;
+color:black;
+}</string>
+            </property>
+            <property name="text">
+             <string>Remove bot</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../bot_icons.qrc">
+              <normaloff>:/icons/widgets/times_icon/remove.png</normaloff>:/icons/widgets/times_icon/remove.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>22</height>
+             </size>
+            </property>
+           </widget>
+          </item>
           <item>
            <spacer name="horizontalSpacer_3">
             <property name="orientation">
@@ -421,6 +867,54 @@ margin-right:0px;
            </spacer>
           </item>
           <item>
+           <widget class="QPushButton" name="edit_bot_button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>160</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+border:none;
+border-radius: 8px;
+background-color: #39B292;
+color:black;
+}
+QPushButton::hover{
+border:none;
+border-radius: 8px;
+background-color: #4BCDAB;
+color:black;
+}</string>
+            </property>
+            <property name="text">
+             <string>Apply changes</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../bot_icons.qrc">
+              <normaloff>:/icons/widgets/times_icon/save.png</normaloff>:/icons/widgets/times_icon/save.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>21</width>
+              <height>18</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="open_in_redactor_button">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -430,19 +924,29 @@ margin-right:0px;
             </property>
             <property name="minimumSize">
              <size>
-              <width>140</width>
+              <width>185</width>
               <height>40</height>
              </size>
             </property>
             <property name="font">
              <font>
-              <pointsize>13</pointsize>
+              <pointsize>14</pointsize>
               <bold>false</bold>
              </font>
             </property>
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
             <property name="styleSheet">
              <string notr="true">QPushButton{
-background-color: rgb(57,178,146);
+background-color: #4DAAFF;
+border:none;
+color:white;
+border-radius:8px;
+}
+
+QPushButton::hover{
+background-color: #6CB9FF;
 border:none;
 color:white;
 border-radius:8px;
@@ -450,7 +954,17 @@ border-radius:8px;
 </string>
             </property>
             <property name="text">
-             <string>Open in redactor -&gt;</string>
+             <string>Open in redactor </string>
+            </property>
+            <property name="icon">
+             <iconset resource="../bot_icons.qrc">
+              <normaloff>:/icons/widgets/times_icon/open_bot_in_editor.png</normaloff>:/icons/widgets/times_icon/open_bot_in_editor.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -489,13 +1003,6 @@ border-radius:8px;
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>BotView</class>
-   <extends>QGraphicsView</extends>
-   <header>constructor_app.graphic_scene.bot_view</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../bot_icons.qrc"/>
  </resources>
