@@ -9,7 +9,11 @@ import docker
 from get_repo_to_deploy_from import get_repo_to_deploy
 from deploy_server_utils import get_docker_registry_credentials, docreg_login_locally, docreg_logout_locally, \
     get_postgres_env_variables, convert_postgres_env_variables_json_to_text, docker_create_image_locally, \
-    docker_tag_local_image_to_push, docker_push_tagged_local_image_to_registry, delete_infra_web_latest_image_remotely
+    docker_tag_local_image_to_push, docker_push_tagged_local_image_to_registry, \
+    docker_delete_infra_web_latest_image_remotely, \
+    docker_delete_according_to_registry_tagged_image_remotely, \
+    docker_pull_according_to_registry_tagged_image_to_remote, docker_tag_remote_image_to_recreate, \
+    docker_compose_recreate_web_container, get_script_dir_path
 from deploy_server_utils import get_postgres_env_file_path, move_env_docker_compose_files_to_remote
 from deploy_server_utils import move_rsa_pub_key_to_remote
 # from deploy_server_utils import rsa_key_based_connect
@@ -234,6 +238,11 @@ if __name__ == '__main__':
     # scp -r ~/tg_bot_constructor/deploy/deploy_server/infra/.env ubuntu@185.146.3.196:~/tg_bot_constructor/infra/.env
     move_env_docker_compose_files_to_remote(backend_server_credentials)
 
+    # получение пути к директории скрипта
+    #  'D:\Git Repos\tg_bot_constructor\deploy\deploy_server\scripts\deploy_server_utils.py'
+    # get_script_dir_path()
+    # exit(0)
+
     # not necessary
     # add_key_to_known_hosts()
     # rsa_key_based_connect()
@@ -250,18 +259,21 @@ if __name__ == '__main__':
 
     # create docker image locally through 'subprocess.run( )' to push it into private docker registry later
     #  sudo docker-compose build --no-cache web
-    docker_create_image_locally()
+    # docker_create_image_locally()
 
     # tag local 'infra-web' docker image as 'ramasuchka.kz:4443/infra-web:latest' through 'subprocess.run( )'
     #  to push it into private docker registry
     #  sudo docker tag infra-web ramasuchka.kz:4443/infra-web:latest
     # закоменчено, потому что вызов осуществляется в другой функции
-    # docker_tag_local_image_to_push()
+    # раскоменчено c мыслью передавать полученный в результате выполнения
+    #  этой функции tag в качестве параметра в функцию
+    docker_image_tag_to_push = docker_tag_local_image_to_push()
 
     # sudo docker push ramasuchka.kz:4443/infra-web:latest
     #
-    # echo "Updated 'infra-web' image was pushed to the Private Docker Registry as 'ramasuchka.kz:4443/infra-web:latest'"
-    docker_push_tagged_local_image_to_registry()
+    # echo "Updated 'infra-web' image was pushed to
+    #  the Private Docker Registry as 'ramasuchka.kz:4443/infra-web:latest'"
+    docker_push_tagged_local_image_to_registry(docker_image_tag_to_push)
 
     # private docker registry logging out locally
     docreg_logout_locally(docker_registry_credentials)
@@ -282,18 +294,41 @@ if __name__ == '__main__':
     # #     '-f' force removing option
     #   sudo docker rmi -f infra-web:latest
     #
-    delete_infra_web_latest_image_remotely(backend_server_credentials)
+    docker_delete_infra_web_latest_image_remotely(backend_server_credentials)
 
     # 2 # to avoid multi '<none>' images on the server we should remove 'ramasuchka.kz:4443/infra-web:latest' image
     #       before pull update for it from the registry
     # #     '-f' force removing option
     #   sudo docker rmi -f ramasuchka.kz:4443/infra-web:latest
     #
-    # 3 # pull updated image from the registry
+    docker_delete_according_to_registry_tagged_image_remotely(backend_server_credentials)
+
+    # 3 # to avoid multi '<none>' images on the server we should remove <none>-tagged images from remote server
+    #       before pull update for 'infra-web' image from the docker registry
+    # #     '-f' force removing option
+    #   sudo docker rmi -f ramasuchka.kz:4443/infra-web:latest
+    #  leave 4 future refactoring (!!!)
+    # delete_none_tagged_image_remotely(backend_server_credentials)
+
+    # 4 # pull updated image from the registry
     #   sudo docker pull ramasuchka.kz:4443/infra-web:latest
     #
-    # 4 # tag updated image as 'infra-web:latest'
+    docker_pull_according_to_registry_tagged_image_to_remote(backend_server_credentials)
+
+    # 5 # tag updated image as 'infra-web:latest'
     #   sudo docker tag ramasuchka.kz:4443/infra-web:latest infra-web:latest
+    docker_tag_remote_image_to_recreate(backend_server_credentials)
+
+    # 6 # forced recreation of the 'infra-web' container with updated image and start
+    # sudo docker-compose up --force-recreate -d web
+    # #docker-compose up --force-recreate -d web
+    # echo ""
+    docker_compose_recreate_web_container(backend_server_credentials)
+
+    # 7 # then migrate in started container
+    # sudo docker exec -it infra-web-1 bash -c "python manage.py migrate"
+    # docker exec infra-web-1 bash -c "python manage.py migrate"
+    # sudo docker exec infra-web-1 bash -c "python manage.py migrate"
 
     # remote docker registry logout
     # ssh ubuntu@185.146.3.196 'sudo docker logout https://ramasuchka.kz:4443'

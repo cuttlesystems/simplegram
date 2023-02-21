@@ -2,6 +2,7 @@
 модуль с дополнительными функциями, которые используются при разворачивании backend'а приложения на сервере
 """
 import os
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -13,6 +14,8 @@ import json
 from subprocess import run
 
 import docker
+
+from paramiko.channel import ChannelFile
 
 
 # import paramiko
@@ -52,6 +55,32 @@ class PostgresEnvVariables:
     # HOST_PROTOCOL=https'
 
 
+def get_script_dir_path() -> Path:
+    """
+    define function to determine script file path:
+        '../tg_bot_constructor/deploy/deploy_server/scripts/deploy_server_utils.py'
+    :return:
+        script file path '../tg_bot_constructor/deploy/deploy_server/scripts/deploy_server_utils.py'
+    """
+    script_dir_path = Path(__file__).parent
+    # print(f'\nPath(__file__): {Path(__file__)}')
+    # print(f'\nscript_dir_path: {script_dir_path}')
+    return script_dir_path
+
+
+def get_infra_directory_path_local() -> Path:
+    """
+    define function to determine 'infra' script file path:
+        '../tg_bot_constructor/deploy/deploy_server/infra'
+    :return:
+        script file path '../tg_bot_constructor/deploy/deploy_server/infra'
+
+    """
+    infra_directory_path_local = get_script_dir_path().parent / 'infra'
+    # print(f'\nPath(__file__): {Path(__file__)}')
+    # print(f'\nscript_dir_path: {script_dir_path}')
+    return infra_directory_path_local
+
 def get_docker_registry_credentials_json_file_path() -> Path:
     """
 
@@ -61,8 +90,7 @@ def get_docker_registry_credentials_json_file_path() -> Path:
     # путь для проверки существования файла 'backendservercredentials.json'
     #  (с данными для установления соединения по SSH с удалённым сервером)
     #  в директории "..\deploy\deploy_server\scripts"
-    search_dir_path = Path(__file__).parent
-    docker_registry_credentials_json_file_path = search_dir_path / docker_registry_credentials_json_file_name
+    docker_registry_credentials_json_file_path = get_script_dir_path() / docker_registry_credentials_json_file_name
 
     # print(f'\n\'backendservercredentials.json\' file search path: {search_dir_path}')
     # # print(f'Current file name: {search_dir_path.name}')
@@ -184,8 +212,7 @@ def get_backend_server_credentials_json_file_path() -> Path:
     # путь для проверки существования файла 'backendservercredentials.json'
     #  (с данными для установления соединения по SSH с удалённым сервером)
     #  в директории "..\deploy\deploy_server\scripts"
-    search_dir_path = Path(__file__).parent
-    backend_server_credentials_json_file_path = search_dir_path / backend_server_credentials_json_file_name
+    backend_server_credentials_json_file_path = get_script_dir_path() / backend_server_credentials_json_file_name
 
     # print(f'\n\'backendservercredentials.json\' file search path: {search_dir_path}')
     # # print(f'Current file name: {search_dir_path.name}')
@@ -345,18 +372,20 @@ def docreg_logout_locally(docker_registry_credentials: DockerRegistryCredentials
 #  sudo docker-compose build --no-cache web
 def docker_create_image_locally():
     """
-
+    define function to create docker image locally through 'subprocess.run( )' to push it
+        into private docker registry later by analogy with 'sudo docker-compose build --no-cache web' bash command
     :return:
 
     """
     # 'docker-compose.yml' file local directory - 'D:/Git Repos/tg_bot_constructor/deploy/deploy_server/infra'
     # docker_compose_file_name_local = 'docker-compose.yml'
-    docker_compose_yml_file_directory_path_local = get_postgres_env_file_path().parent
+    # docker_compose_yml_file_directory_path_local - 'D:/Git Repos/tg_bot_constructor/deploy/deploy_server/infra'
+    docker_compose_yml_file_directory_path_local = get_infra_directory_path_local()
     print(f'\n\'docker-compose.yml\' file local directory: {docker_compose_yml_file_directory_path_local}')
     os.chdir(docker_compose_yml_file_directory_path_local)
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
-        f'\nLocal docker image creation process started (based on \'docker-compose.yml\' file'
+        f'\nLocal docker image creation process started (based on \'docker-compose.yml\' file)'
         f'\nWait for a while and... be patient, please:)'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
@@ -372,6 +401,16 @@ def docker_create_image_locally():
             stdout=create_image_output,
             stderr=create_image_output
         )
+    # stdout_text = result.stdout.read().decode('utf-8')
+    stdout_text = result.stdout
+    # stderr_text = result.stderr.read().decode('utf-8')
+    stderr_text = result.stderr
+    # print(
+    #     f'\n--------------------------------------------------------------------------------------------------------\n'
+    #     f'stdout of create docker image locally:\n{stdout_text}'
+    #     f'stderr create docker image locally:\n{stderr_text}'
+    #     f'\n--------------------------------------------------------------------------------------------------------\n'
+    # )
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'\nDocker image creation process finished'
@@ -380,6 +419,8 @@ def docker_create_image_locally():
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'result.stdout: {result}'
+        f'result.stdout.text: {stdout_text}'
+        f'result.stderr.text: {stderr_text}'
         f'\nDocker image for \'web\' service container was created locally and ready to be pushed '
         f'into private docker registry '
         f'\nLog file of image creation process - \'docker_create_image_locally_output.log\' - '
@@ -459,13 +500,15 @@ def docker_tag_local_image_to_push() -> str:
 # sudo docker push ramasuchka.kz:4443/infra-web:latest
 #
 # echo "Updated 'infra-web' image was pushed to the Private Docker Registry as 'ramasuchka.kz:4443/infra-web:latest'"
-def docker_push_tagged_local_image_to_registry() -> None:
+def docker_push_tagged_local_image_to_registry(docker_image_tag_to_push: Path) -> None:
     """
 
+    :param docker_image_tag_to_push: tag should be assigned to push updated 'web' service image to registry
+        ('ramasuchka.kz:4443/infra-web:latest')
     :return:
-
+        pushes updated 'infra-web' image to private docker registry
     """
-    docker_image_tag_to_push = docker_tag_local_image_to_push()
+    # docker_image_tag_to_push = docker_tag_local_image_to_push()
     # os.chdir(docker_compose_yml_file_directory_path_local)
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
@@ -484,6 +527,16 @@ def docker_push_tagged_local_image_to_registry() -> None:
             stdout=push_image_output,
             stderr=push_image_output
         )
+    # stdout_text = result.stdout.read().decode('utf-8')
+    stdout_text = result.stdout
+    # stdout_text = result.stdout.read().decode('utf-8')
+    stderr_text = result.stderr
+    # print(
+    #     f'\n--------------------------------------------------------------------------------------------------------\n'
+    #     f'stdout of docker push image to registry:\n{stdout_text}'
+    #     f'stderr of docker push image to registry:\n{stderr_text}'
+    #     f'\n--------------------------------------------------------------------------------------------------------\n'
+    # )
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'\nTagged local docker image was pushed to the Docker Registry as \'ramasuchka.kz:4443/infra-web:latest\''
@@ -492,6 +545,8 @@ def docker_push_tagged_local_image_to_registry() -> None:
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'result.stdout: {result}'
+        f'result.stdout.text: {stdout_text}'
+        f'result.stderr.text: {stderr_text}'
         f'\nTagged local docker image was pushed to the Docker Registry as \'ramasuchka.kz:4443/infra-web:latest\''
         f'\nLog file of push process - \'docker_push_tagged_local_image_to_registry_output.log\''
         # f'created in directory:\n{docker_compose_yml_file_directory_path_local}'
@@ -550,8 +605,10 @@ def get_rsa_pub_key_directory_path() -> Path:
     """
     define function to get an RSA key directory path - '<user_path>/.ssh'
     :return:
+
     """
     # path to user directory
+    #  Path to user directory: 'C:\Users\user' for Windows or '/home/user' for Linux
     user_path = Path('~').expanduser()
     # print(f'Path to user directory: {user_path}')
 
@@ -587,7 +644,7 @@ def rsa_pub_key_is_present() -> bool:
         return False
 
 
-def show(msg):
+def show(msg) -> None:
     """
     define function to print debug messages and script process notifications
     :param msg: str
@@ -609,7 +666,7 @@ def gen_ssh_key_pair() -> None:
         # print(f'Path to \'<user_path>/.ssh/id_rsa\' file: {rsa_private_key_path}')
     else:
         # generate SSH key pair
-        # subprocess.call('ssh-keygen', shell=True)
+        # subprocess.call('ssh-keygen', shell=True) by analogue with bash command
         # ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y
         run(
             [
@@ -638,13 +695,15 @@ def rsa_key_based_connect(backend_server_credentials: BackendServerCredentials) 
     ssh_client = paramiko.SSHClient()
 
     # Load SSH host keys.
+    print(f'\nget_rsa_pub_key_directory_path: {get_rsa_pub_key_directory_path()}')
     ssh_client.load_system_host_keys()
 
     # transport = ssh_client.get_transport()
     host = f'{backend_server_credentials.backend_server_ip}'
     special_account = f'{backend_server_credentials.username}'
     password = f'{backend_server_credentials.password}'
-    private_key = paramiko.RSAKey.from_private_key_file(f'{get_rsa_key_path()}')
+    # DON'T DELETE (left for refactoring)
+    # private_key = paramiko.RSAKey.from_private_key_file(f'{get_rsa_key_path()}')
 
     # client = paramiko.SSHClient()
     policy = paramiko.AutoAddPolicy()
@@ -701,18 +760,20 @@ def move_rsa_pub_key_to_remote(backend_server_credentials: BackendServerCredenti
 def get_postgres_env_file_path() -> Path:
     """
     define function to get '.env' file (with postgres environment variables) path
+        '../tg_bot_constructor/deploy/deploy_server/infra'
     :return:
         '.env' file path
     """
     postgres_env_file_name = '.env'
+    infra_directory_path_local = get_infra_directory_path_local()
     # путь для проверки существования файла '.env'
     #  (с переменными оружения для функционирования базы данных postgres)
     #  в директории "..\deploy\deploy_server\infra"
-    search_dir_path = Path(__file__).parent.parent / 'infra'
-    postgres_env_file_path = search_dir_path / postgres_env_file_name
+    # search_dir_path = Path(__file__).parent.parent / 'infra'
+    postgres_env_file_path = infra_directory_path_local / postgres_env_file_name
 
-    print(f'\n\'.env\' file search path: {search_dir_path}')
-    print(f'Current file name: {search_dir_path.name}')
+    print(f'\n\'.env\' file search path: {infra_directory_path_local}')
+    print(f'Current file name: {infra_directory_path_local.name}')
     print(f'\'.env\' file path: {postgres_env_file_path}')
     return postgres_env_file_path
 
@@ -857,6 +918,7 @@ def get_postgres_env_variables() -> PostgresEnvVariables:
     """
 
     :return:
+
     """
     # backend_server_credentials_json_file_name = 'backendservercredentials.json'
     # # путь для проверки существования файла 'backendservercredentials.json'
@@ -906,7 +968,9 @@ def move_env_docker_compose_files_to_remote(backend_server_credentials: BackendS
     postgres_env_file_path_local = get_postgres_env_file_path()
     postgres_env_file_name_local = postgres_env_file_name_remote = '.env'
     docker_compose_file_name_local = 'docker-compose_move_2_server.yml'
-    docker_compose_file_path_local = get_postgres_env_file_path().parent / docker_compose_file_name_local
+    docker_compose_file_path_local = get_infra_directory_path_local() / docker_compose_file_name_local
+    # docker_compose_file_path_local =\
+    #     'D:/Git Repos/tg_bot_constructor/deploy/deploy_server/scripts/tg_bot_constructor/deploy/deploy_server/infra/docker-compose_move_2_server.yml'
 
     docker_compose_file_name_remote = 'docker-compose.yml'
     # docker_compose_file_path_remote = f'~/tg_bot_constructor/infra/{docker_compose_file_name_remote}'
@@ -915,7 +979,8 @@ def move_env_docker_compose_files_to_remote(backend_server_credentials: BackendS
     docker_compose_file_path_remote = f'{remote_directory}{docker_compose_file_name_remote}'
     postgres_env_file_path_remote = f'{remote_directory}{postgres_env_file_name_remote}'
 
-    # оставлено для примера отображения прогресса передачи файлов по SCP
+    # DON'T DELETE
+    #  оставлено для примера отображения прогресса передачи файлов по SCP
     # def progress(filename, size, sent):
     #     sys.stdout.write("%s's progress: %.2f%%   \r" % (filename, float(sent) / float(size) * 100))
     # scp = SCPClient(rsa_key_based_connect().get_transport(), progress=progress)
@@ -935,12 +1000,13 @@ def move_env_docker_compose_files_to_remote(backend_server_credentials: BackendS
     # Should now be printing the current progress of your put function
     scp.close()
 
-
     # 1 # to avoid multi '<none>' images on the server we should remove 'infra-web:latest' image
     #       before pull update for it from the registry
-    # #     '-f' force removing option
-    #   sudo docker rmi -f infra-web:latest
-def delete_infra_web_latest_image_remotely(backend_server_credentials: BackendServerCredentials) -> str:
+    #
+    #   'sudo docker rmi -f infra-web:latest' with '-f' force removing option
+
+
+def docker_delete_infra_web_latest_image_remotely(backend_server_credentials: BackendServerCredentials) -> str:
     """
     define function to remove 'infra-web:latest' image on remote server before pull update for it from the registry
      in order to avoid multi '<none>' docker images on the server
@@ -978,7 +1044,7 @@ def delete_infra_web_latest_image_remotely(backend_server_credentials: BackendSe
         f'from the private docker registry'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
-    print(f'\nRemote docker images:')
+    print(f'\nRemote docker images after \'infra-web:latest\' image deletion:')
     # subprocess.run(
     #     [
     #         'docker',
@@ -991,9 +1057,12 @@ def delete_infra_web_latest_image_remotely(backend_server_credentials: BackendSe
     ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
         f'docker images'
     )
+    stdout_text = ssh_stdout.read().decode('utf-8')
+    stderr_text = ssh_stderr.read().decode('utf-8')
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
-        f'result: {ssh_stdin, ssh_stdout, ssh_stderr}'
+        f'stdout:\n{stdout_text}'
+        f'stderr:\n{stderr_text}'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
     ssh_stdin.close()
@@ -1004,7 +1073,7 @@ def delete_infra_web_latest_image_remotely(backend_server_credentials: BackendSe
     #       before pull update for it from the registry
     # #     '-f' force removing option
     #   sudo docker rmi -f ramasuchka.kz:4443/infra-web:latest
-def delete_according_to_registry_tagged_image_remotely(backend_server_credentials: BackendServerCredentials) -> str:
+def docker_delete_according_to_registry_tagged_image_remotely(backend_server_credentials: BackendServerCredentials) -> str:
     """
     define function to remove 'ramasuchka.kz:4443/infra-web:latest' image on remote server
      before pull update for it from the registry in order to avoid multi '<none>' docker images on the server
@@ -1043,23 +1112,205 @@ def delete_according_to_registry_tagged_image_remotely(backend_server_credential
         f'before pulling update for it from the private docker registry'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
-    print(f'\nRemote docker images:')
-    # subprocess.run(
-    #     [
-    #         'docker',
-    #         'images'
-    #     ],
-    #     shell=True,
-    #     # stdout=create_image_output,
-    #     # stderr=create_image_output
-    # )
+    print(f'\nRemote docker images after \'ramasuchka.kz:4443/infra-web:latest\' image deletion:')
     ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
         f'docker images'
     )
+    stdout_text = ssh_stdout.read().decode('utf-8')
+    stderr_text = ssh_stderr.read().decode('utf-8')
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
-        f'result: {ssh_stdin, ssh_stdout, ssh_stderr}'
+        f'stdout of removing \'ramasuchka.kz:4443/infra-web:latest\' image from remote server:\n{stdout_text}'
+        f'stderr of removing \'ramasuchka.kz:4443/infra-web:latest\' image from remote server:\n{stderr_text}'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
     ssh_stdin.close()
     return according_to_registry_docker_image_tag_to_delete
+
+
+    # 3 # to avoid multi '<none>' images on the server we should remove '<none>' images
+    #       before pull update for it from the registry
+    # #     '-f' force removing option
+    #   sudo docker rmi -f ramasuchka.kz:4443/infra-web:latest
+    # leave 4 future refactoring (!!!)
+# def delete_none_tagged_image_remotely(backend_server_credentials: BackendServerCredentials) -> str:
+#     """
+#     define function to remove <none>-tagged images on remote server before pull update for it from the registry
+#      in order to avoid multi '<none>' docker images on the server
+#     :return:
+#         deletes <none>-tagged images on remote server before pulling update for it from the registry
+#
+#     """
+# ------------------------------- EXAMPLE -------------------------------------
+    # import paramiko
+    #
+    # class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
+    #     def missing_host_key(self, client, hostname, key):
+    #         return
+    #
+    # client = paramiko.SSHClient()
+    # client.set_missing_host_key_policy(AllowAnythingPolicy())
+    # client.connect('127.0.0.1', username='test')  # password='')
+    #
+    # for command in 'echo "Hello, world!"', 'uname', 'uptime':
+    #     stdin, stdout, stderr = client.exec_command(command)
+    #     stdin.close()
+    #     print repr(stdout.read())
+    #     stdout.close()
+    #     stderr.close()
+    #
+    # client.close()
+# ------------------------------- EXAMPLE -------------------------------------
+
+    # 4 # pull updated image from the registry
+    #   sudo docker pull ramasuchka.kz:4443/infra-web:latest
+    #
+def docker_pull_according_to_registry_tagged_image_to_remote(
+        backend_server_credentials: BackendServerCredentials
+) -> str:
+    """
+    define function to pull 'ramasuchka.kz:4443/infra-web:latest' image to remote server from the registry
+    :return:
+        pulls 'ramasuchka.kz:4443/infra-web:latest' docker image to remote server
+
+    """
+    # rsa_pub_key_path = get_rsa_key_path().with_suffix('.pub')
+    # print(f'Path to public rsa key \'<user_path>/.ssh/id_rsa.pub\' file: {rsa_pub_key_path}')
+    # with open(f'{rsa_pub_key_path}', 'rt', encoding='utf-8') as rsa_pub_key_content_file:
+    #     rsa_pub_key_content = rsa_pub_key_content_file.read()
+
+    # ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+    #     f'echo "{rsa_pub_key_content}" >> ~/.ssh/authorized_keys'
+    # )
+    # ssh_stdin.close()
+    #######
+
+    docker_image_tag_to_pull = 'ramasuchka.kz:4443/infra-web:latest'
+    pull_command = f'docker pull {docker_image_tag_to_pull}'
+    # pull_command = 'docker pull {docker_image_tag_to_pull}'.format(docker_image_tag_to_pull=docker_image_tag_to_pull)
+    # cmd = subprocess.list2cmdline(shlex.split(""f'{pull_command}'""))
+    cmd = pull_command
+    # command = """sh -c f'{pull_command}' """
+    # command = "sh -c f'{pull_command}'"
+    os.chdir(get_infra_directory_path_local())
+    with open('docker_pull_image_to_remote.log', 'wt', encoding='utf-8') as pull_image_output:
+        ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+            cmd
+        )
+        ssh_stdout: ChannelFile
+        ssh_stderr: ChannelFile
+        print('\nCommand to pull \'ramasuchka.kz:4443/infra-web:latest\' image to remote server:')
+        print(cmd)
+        # print('\nPrints during file creating:')
+        stdout_text = ssh_stdout.read().decode('utf-8')
+        stderr_text = ssh_stderr.read().decode('utf-8')
+        # print(f'stdout {ssh_stdout.read()}\n')
+        # print(f'stderr {ssh_stderr.read()}\n')
+
+        # pull_image_output.write(str(ssh_stdin))
+        # pull_image_output.writelines('\n--------\n')
+        # pull_image_output.write(str(ssh_stdout))
+        # pull_image_output.writelines('\n--------\n')
+        # pull_image_output.write(str(ssh_stderr))
+        # pull_image_output.writelines('\n--------\n')
+        pull_image_output.writelines('\nstdout of pulling image to remote server:\n')
+        pull_image_output.write(stdout_text)
+        pull_image_output.writelines('\n----------------------------------------------------------------------------\n')
+        pull_image_output.writelines('\nstderr of pulling image to remote server:\n')
+        pull_image_output.write(stderr_text)
+        pull_image_output.writelines('\n----------------------------------------------------------------------------\n')
+
+        ssh_stdin.close()
+
+    # ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+    #     f'docker pull "{docker_image_tag_to_pull}"'
+    # )
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        # f'result: {ssh_stdout, ssh_stderr}'
+        f'\n\'ramasuchka.kz:4443/infra-web:latest\' docker image was pulled to the remote server '
+        f'from the private docker registry'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+
+
+    with open('docker_pull_image_to_remote.log', 'rt', encoding='utf-8') as pull_image_output:
+        # ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+        #     f'docker pull "{docker_image_tag_to_pull}"'
+        # )
+        print('\n\'docker_pull_image_to_remote.log\' file reading:')
+        print(pull_image_output.read())
+    return docker_image_tag_to_pull
+
+
+    # 5 # tag updated image as 'infra-web:latest'
+    #   sudo docker tag ramasuchka.kz:4443/infra-web:latest infra-web:latest
+def docker_tag_remote_image_to_recreate(backend_server_credentials: BackendServerCredentials) -> str:
+    """
+
+    :return:
+        tags pulled from registry image 'ramasuchka.kz:4443/infra-web' as 'infra-web:latest' and
+        returns back string tag value 'infra-web:latest' after completed
+    """
+
+    docker_image_tag_pulled = 'ramasuchka.kz:4443/infra-web:latest'
+    docker_image_tag_to_recreate = 'infra-web:latest'
+    # ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+    #     f'docker tag "{docker_image_tag_pulled}" "{docker_image_tag_to_recreate}"'
+    # )
+    rsa_key_based_connect(backend_server_credentials).exec_command(
+        f'docker tag "{docker_image_tag_pulled}" "{docker_image_tag_to_recreate}"'
+    )
+    # stdout_text = ssh_stdout.read().decode('utf-8')
+    # stderr_text = ssh_stderr.read().decode('utf-8')
+    # print(
+    #     f'\n--------------------------------------------------------------------------------------------------------\n'
+    #     f'stdout of tagging image to recreate:\n{stdout_text}'
+    #     f'stderr of tagging image to recreate:\n{stderr_text}'
+    #     f'\n--------------------------------------------------------------------------------------------------------\n'
+    # )
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        # f'result: {ssh_stdout}, {ssh_stderr}'
+        f'\nPulled from the registry image \'ramasuchka.kz:4443/infra-web\' for \'web\' service container '
+        f'was tagged as \'infra-web:latest\' for further usage'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    return docker_image_tag_to_recreate
+
+
+    # 6 # forced recreation of the 'infra-web' container with updated image and start
+    # sudo docker-compose up --force-recreate -d web
+    # #docker-compose up --force-recreate -d web
+    # echo ""
+def docker_compose_recreate_web_container(backend_server_credentials: BackendServerCredentials) -> str:
+    """
+    define function to recreate the 'infra-web' container with updated image and start it on remote server
+    :return:
+        starts updated container of 'infra-web' service (recreated with updated image) on remote server
+
+    """
+    # ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+    #     f'cd /home/ubuntu/tg_bot_constructor/infra'
+    # )
+    # stdout_text = ssh_stdout.read().decode('utf-8')
+    # stderr_text = ssh_stderr.read().decode('utf-8')
+    # print(
+    #     f'\n--------------------------------------------------------------------------------------------------------\n'
+    #     f'stdout of cd:\n{stdout_text}'
+    #     f'stderr of cd:\n{stderr_text}'
+    #     f'\n--------------------------------------------------------------------------------------------------------\n'
+    # )
+    ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
+        f'docker-compose -f /home/ubuntu/tg_bot_constructor/infra/docker-compose.yml up --force-recreate -d web'
+    )
+    stdout_text = ssh_stdout.read().decode('utf-8')
+    stderr_text = ssh_stderr.read().decode('utf-8')
+    print(
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+        f'stdout of \'infra-web\' container recreation:\n{stdout_text}'
+        f'stderr of \'infra-web\' container recreation:\n{stderr_text}'
+        f'\n--------------------------------------------------------------------------------------------------------\n'
+    )
+    ssh_stdin.close()
+    # return according_to_registry_docker_image_tag_to_delete
