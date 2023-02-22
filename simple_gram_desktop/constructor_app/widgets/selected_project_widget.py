@@ -124,17 +124,13 @@ class SelectedProjectWidget(QWidget):
                 self._ui.icon_bot_button.setIcon(image)
             else:
                 self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
-
             self._ui.name_bot_edit.setText(bot.bot_name)
             self._ui.description_bot_edit.setText(bot.bot_description)
             self._ui.link_bot_edit.setText(bot.bot_link)
             self._ui.token_bot_edit.setText(bot.bot_token)
-
             self._ui.switch_activated_bot.setChecked(bot_state)
             self._init_state_bot()
-
             self._bot = self._bot_api.get_bot_by_id(bot_id=bot.id, with_link=1)
-
         except BotApiMessageException as error:
             QMessageBox(self, self._tr('Error'), str(error))
             print(traceback.format_exc())

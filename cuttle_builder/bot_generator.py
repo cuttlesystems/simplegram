@@ -1,5 +1,6 @@
 import re
 import shutil
+import tempfile
 import typing
 import os
 from pathlib import Path
@@ -253,7 +254,7 @@ class BotGenerator:
         assert isinstance(file_format, str)
 
         Path(path_to_bot_media_dir).mkdir(exist_ok=True)
-        full_path_to_file_in_bot_dir = path_to_bot_media_dir + '/' + filename + '.' + file_format
+        full_path_to_file_in_bot_dir = Path(path_to_bot_media_dir) / f'{filename}.{file_format}'
         try:
             shutil.copyfile(full_path_to_source_file, full_path_to_file_in_bot_dir)
             assert os.path.exists(full_path_to_file_in_bot_dir)
