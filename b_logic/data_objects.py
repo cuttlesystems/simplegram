@@ -20,6 +20,12 @@ class MessageTypeEnum(Enum):
     GOTO = 'goto'
 
 
+class MediaFileStateEnum(Enum):
+    LOADED = 'loaded'
+    DELETED = 'deleted'
+    NO_ACTION = 'no_action'
+
+
 @dataclass(slots=True)
 class BotDescription:
     id: Optional[int] = None
@@ -57,9 +63,9 @@ class BotMessage:
     text: str = ''
     keyboard_type: ButtonTypesEnum = ButtonTypesEnum.REPLY
     photo: Optional[str] = None
-    photo_loaded_from_frontend_state: str = ''
+    photo_loaded_from_frontend_state: MediaFileStateEnum = MediaFileStateEnum.NO_ACTION
     video: Optional[str] = None
-    video_loaded_from_frontend_state: str = ''
+    video_loaded_from_frontend_state: MediaFileStateEnum = MediaFileStateEnum.NO_ACTION
     file: Optional[str] = None
     message_type: MessageTypeEnum = MessageTypeEnum.VARIANTS
     next_message_id: Optional[int] = None

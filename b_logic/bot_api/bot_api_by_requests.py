@@ -16,7 +16,7 @@ from b_logic.bot_api.i_bot_api import IBotApi, SignUpException, CreatingBotExcep
     CreatingCommandException, BotGenerationException, BotStopException, BotStartupException, \
     GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException, LogoutException, DeletingVideoException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
-    MessageTypeEnum
+    MessageTypeEnum, MediaFileStateEnum
 from b_logic.utils.image_to_bytes import get_binary_data_from_file
 
 
@@ -38,8 +38,6 @@ def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[byt
 
 
 class BotApiByRequests(IBotApi):
-    _LOADED_MEDIA_FILE_STATE = 'loaded'
-
     def __init__(self, suite_url: typing.Optional[str] = None):
         """
         Создать объект для работы с данными ботов через rest_api
@@ -680,11 +678,11 @@ class BotApiByRequests(IBotApi):
     def _create_upload_files_message_dict_from_message_obj(self, message: BotMessage) -> dict:
         assert isinstance(message, BotMessage)
         upload_files_message_dict = dict()
-        if message.photo and (message.photo_loaded_from_frontend_state == self._LOADED_MEDIA_FILE_STATE):
+        if message.photo and (message.photo_loaded_from_frontend_state == MediaFileStateEnum.LOADED):
             photo_filename = os.path.basename(message.photo)
             file_data = get_binary_data_from_file(message.photo)
             upload_files_message_dict['photo'] = (photo_filename, file_data)
-        if message.video and (message.video_loaded_from_frontend_state == self._LOADED_MEDIA_FILE_STATE):
+        if message.video and (message.video_loaded_from_frontend_state == MediaFileStateEnum.LOADED):
             video_filename = os.path.basename(message.video)
             file_data = get_binary_data_from_file(message.video)
             upload_files_message_dict['video'] = (video_filename, file_data)
