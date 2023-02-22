@@ -57,7 +57,6 @@ class BotMessage:
     text: str = ''
     keyboard_type: ButtonTypesEnum = ButtonTypesEnum.REPLY
     photo: Optional[str] = None
-    photo_file_format: Optional[str] = None
     photo_loaded_from_frontend_state: str = ''
     video: Optional[str] = None
     video_loaded_from_frontend_state: str = ''

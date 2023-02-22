@@ -180,9 +180,7 @@ class BotApiByDjangoORM(IBotApi):
         bot_message.text = message_django.text
         bot_message.keyboard_type = ButtonTypesEnum(message_django.keyboard_type)
         if message_django.photo:
-            bot_message.photo = self._get_full_path_to_django_image(message_django.photo)
-            bot_message.photo_file_format = self._get_file_format(message_django.photo)
-
+            bot_message.photo = message_django.photo.path
         if message_django.video:
             bot_message.video = message_django.video.path
         if message_django.file:
