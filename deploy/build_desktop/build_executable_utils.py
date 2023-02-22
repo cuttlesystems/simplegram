@@ -7,6 +7,7 @@ from application_type_enum import ApplicationTypeEnum
 
 import time
 
+
 def read_specfileconf() -> ApplicationTypeEnum:
     """
     read content of 'specfileconf.json' file

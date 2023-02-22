@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from b_logic.bot_runner import BotRunner
 from common_utils.singlethon import SingletonBase
@@ -36,6 +36,9 @@ class BotProcessesManagerSingle(metaclass=SingletonBase):
 
     def get_all_processes_info(self) -> Dict[int, BotProcessInfo]:
         return self._processes
+
+    def get_all_running_bots_id_list(self) -> List[int]:
+        return [bot.bot_id for bot in self._processes.values() if not bot.is_terminated]
 
     def remove(self, bot_id: int) -> None:
         assert bot_id in self._processes

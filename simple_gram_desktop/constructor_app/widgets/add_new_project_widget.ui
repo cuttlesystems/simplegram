@@ -60,10 +60,11 @@
          </property>
          <property name="styleSheet">
           <string notr="true">QGroupBox{
-	border:none;
-	background: #FFFFFF;
-	border-radius: 16px;
-}</string>
+border-radius: 16px;
+border:none;
+background-color: rgba(255,255,255,220);
+}
+</string>
          </property>
          <property name="title">
           <string/>
@@ -87,14 +88,14 @@
              <widget class="QPushButton" name="icon_bot_button">
               <property name="minimumSize">
                <size>
-                <width>54</width>
-                <height>54</height>
+                <width>77</width>
+                <height>77</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>54</width>
-                <height>54</height>
+                <width>77</width>
+                <height>77</height>
                </size>
               </property>
               <property name="text">
@@ -102,12 +103,12 @@
               </property>
               <property name="icon">
                <iconset resource="../bot_icons.qrc">
-                <normaloff>:/icons/widgets/times_icon/newProject.png</normaloff>:/icons/widgets/times_icon/newProject.png</iconset>
+                <normaloff>:/icons/widgets/times_icon/new_bot.png</normaloff>:/icons/widgets/times_icon/new_bot.png</iconset>
               </property>
               <property name="iconSize">
                <size>
-                <width>47</width>
-                <height>47</height>
+                <width>77</width>
+                <height>77</height>
                </size>
               </property>
              </widget>
@@ -115,21 +116,29 @@
             <item>
              <layout class="QVBoxLayout" name="verticalLayout">
               <item>
-               <widget class="QLineEdit" name="name_bot">
+               <widget class="QLineEdit" name="name_bot_edit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>150</width>
                   <height>30</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
                 <property name="styleSheet">
-                 <string notr="true">QLineEdit{
-border: none;
-color: black;
-}</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
-                 <string>Новый бот</string>
+                 <string>New Cuttle Systems bot</string>
                 </property>
                </widget>
               </item>
@@ -165,15 +174,16 @@ color: black;
               <height>50</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
-             <string notr="true">QLineEdit{
-border:1px solid #CCCCCC;
-color: #CCCCCC;
-border-radius:8px;
-}</string>
+             <string notr="true"/>
             </property>
             <property name="text">
-             <string>Token bot's</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -185,15 +195,16 @@ border-radius:8px;
               <height>50</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
-             <string notr="true">QLineEdit{
-border:1px solid #CCCCCC;
-color: #CCCCCC;
-border-radius:8px;
-}</string>
+             <string notr="true"/>
             </property>
             <property name="text">
-             <string>About bot's</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -231,6 +242,13 @@ border-radius:8px;
 border:none;
 border-radius: 8px;
 background-color: #FF5F8F;
+color:white;
+}
+
+QPushButton{
+border:none;
+border-radius: 8px;
+background-color: #ff5f78;
 color:white;
 }</string>
               </property>
@@ -272,6 +290,12 @@ border:none;
 border-radius: 8px;
 background-color: #39B292;
 color:white;
+}
+QPushButton::hover{
+border:none;
+border-radius: 8px;
+background-color: #39c292;
+color:white;
 }</string>
               </property>
               <property name="text">
@@ -300,9 +324,13 @@ color:white;
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-	background: transparent;
 	border: none;
-}</string>
+}
+
+QPushButton:hover{
+	border:1px solid grey;
+}
+</string>
          </property>
          <property name="text">
           <string/>

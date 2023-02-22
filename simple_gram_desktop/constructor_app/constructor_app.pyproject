@@ -21,6 +21,9 @@
         "widgets/bot_editor_widget.ui",
         "widgets/tool_stack_widget.ui",
         "widgets/settings_widget.ui",
-        "widgets/user_popup_widget.ui"
+        "widgets/user_popup_widget.ui",
+        "widgets/dialog_widget.ui",
+        "widgets/block_widget.ui",
+        "widgets/settings_item.ui"
     ]
 }

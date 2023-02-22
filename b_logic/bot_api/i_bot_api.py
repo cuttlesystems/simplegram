@@ -31,6 +31,10 @@ class UserAuthenticationException(BotApiRequestsException):
     pass
 
 
+class LogoutException(BotApiRequestsException):
+    pass
+
+
 class GetBotListException(BotApiRequestsException):
     pass
 
@@ -167,6 +171,11 @@ class IBotApi(ABC):
         Args:
             token: токен авторизации
         """
+        pass
+
+    @abstractmethod
+    def logout(self) -> None:
+        """Уничтожение токена"""
         pass
 
     @abstractmethod

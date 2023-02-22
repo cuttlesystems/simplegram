@@ -7,10 +7,10 @@ from subprocess import run
 
 import venv
 
-from python_venv_execs_paths import get_venv_python_path, get_venv_dir
+from python_venv_execs_paths import get_venv_python_path, get_venv_dir, get_project_dir
 
 
-def create_venv(venv_dir: Path):
+def create_venv(venv_dir: Path, requirements_file_path: Path):
     """
     функция создания виртуального окружения с установкой пакета 'pip', последующим его обновлением и
     установкой требуемых пакетов из файла 'requirements.txt'
@@ -31,9 +31,18 @@ def create_venv(venv_dir: Path):
         venv.create(venv_dir, with_pip=True)
 
     run([get_venv_python_path(venv_dir), '-m', 'pip', 'install', '--upgrade', 'pip'])
-    run([get_venv_python_path(venv_dir), '-m', 'pip', 'install', '-r', 'requirements.txt'])
+    run(
+        [
+            get_venv_python_path(venv_dir),
+            '-m',
+            'pip',
+            'install',
+            '-r',
+            requirements_file_path
+        ]
+    )
 
 
 def create_venv_in_build_desktop():
     print(f'get_venv_dir path: ', get_venv_dir())
-    create_venv(get_venv_dir())
+    create_venv(get_venv_dir(), get_project_dir() / 'requirements.txt')

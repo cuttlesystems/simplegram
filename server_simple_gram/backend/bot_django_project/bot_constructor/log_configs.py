@@ -1,7 +1,6 @@
 import inspect
 import logging.handlers
-
-from common_utils.get_root_dir import get_project_root_dir
+from pathlib import Path
 
 # Настройки логеров определены в settings.py в переменной LOGGING (dict) по ключу 'loggers'
 _LOGGER_DJANGO = logging.getLogger('django')
@@ -53,9 +52,12 @@ class BackendLogger:
         Returns: Путь к файлу начиная с корневой директории.
         """
         assert isinstance(path, str)
-        root_path = get_project_root_dir()
+        root_path = self._get_project_root_dir()
         part_of_path_before_root_dir = str(root_path.parent)
         return path.replace(part_of_path_before_root_dir, '', 1)
+
+    def _get_project_root_dir(self) -> Path:
+        return Path(__file__).parent.parent.parent.parent
 
 
 logger_django = BackendLogger(_LOGGER_DJANGO)

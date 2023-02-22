@@ -18,6 +18,14 @@ services:
       - ../../../data_files/project_logs:/app/server_simple_gram/backend/bot_django_project/data_files/project_logs
 
       - ../../../data_files/static_value:/app/server_simple_gram/backend/bot_django_project/static/
+
+# mount 'templates_static' directory with staticfiles for 'simple_gram_chamomile' and 'simple_gram_shiboken'
+#  applications zips download page
+      - ../data_files/templates_static:/app/server_simple_gram/backend/bot_django_project/data_files/templates_static
+# mount 'releases' directory with 'simple_gram_chamomile' and 'simple_gram_shiboken' applications zip-files
+#  to make them downloadable
+      - ../data_files/releases:/app/server_simple_gram/backend/bot_django_project/data_files/releases
+
     env_file:
       - ./.env
     networks:

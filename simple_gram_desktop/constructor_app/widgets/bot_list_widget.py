@@ -12,13 +12,15 @@ class BotListWidget(QListWidget):
     """
     Надстройка сайдбара
     """
-    _ITEM_SIZE = QSize(210, 40)
-    _bots_list: List[BotExtended] = []
 
     def __init__(self, parent: typing.Optional[QListWidget] = None):
         # toDo: Если будет необходимо добавить функцию [night/light]mode
         super().__init__(parent)
         self.__init_stylesheet()
+
+        self._ITEM_SIZE = QSize(210, 40)
+        self._bots_list: List[BotExtended] = []
+        self._bot_current_id: Optional[int] = None
 
     def __init_stylesheet(self):
         # toDo: добавить сигналы hover и селекта
@@ -36,7 +38,6 @@ class BotListWidget(QListWidget):
 
     def add_bot(self, bot: BotExtended):
         assert isinstance(bot, BotExtended)
-        # Заготовква для дальнейшей реализации добавления бота из списка бокового меню
         row = self.count()
         item = QListWidgetItem()
 
@@ -49,18 +50,6 @@ class BotListWidget(QListWidget):
         self.insertItem(row, item)
         self.setItemWidget(item, widget)
 
-    def remove_bot(self, row: int):
-        # Заготовква для дальнейшей реализации удаления бота из списка бокового меню
-        # toDo: Добавить удаление из списка проектов с сервера
-        item = self.item(row)
-        self.removeItemWidget(item)
-
-    #Заготовква для дальнейшей реализации изменения состояния бота
-    def bot_state_changed(self, state: bool, row: int):
-        # toDo: Add checkabled for item sidebar and server
-        widget = BotListItemWidget()
-        item = self.item(row)
-
     def get_bots(self) -> List[BotExtended]:
         # take bot in BotDescription and bot_state
         return self._bots_list
@@ -68,8 +57,32 @@ class BotListWidget(QListWidget):
     def get_current_bot(self) -> Optional[BotExtended]:
         # take bot in BotDescription and bot_state
         row = self.currentRow()
+        self._bot_current_id = self._bots_list[row].bot_description.id
         if row < 0:
             bot = None
         else:
             bot = self._bots_list[row]
         return bot
+
+    def clear(self) -> None:
+        self._bots_list.clear()
+        super().clear()
+
+    def set_current_bot(self):
+        row = self.currentRow()
+        if row > -1:
+            self._bot_current_id = self._bots_list[row].bot_description.id
+        else:
+            self._bot_current_id = None
+
+    def update_current(self):
+        if self._bot_current_id is not None:
+            for index, bot in enumerate(self._bots_list):
+                if bot.bot_description.id == self._bot_current_id:
+                    self.setCurrentRow(index)
+                    break
+                elif index == len(self._bots_list) - 1:
+                    self.clearSelection()
+        else:
+            self.clearSelection()
+

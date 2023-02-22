@@ -8,7 +8,7 @@ from threading import Thread
 from typing import Optional
 import psutil
 
-from utils.notification_sender import NotificationSender
+from process_manager_utils.notification_sender import NotificationSender
 
 
 class BotRunner:

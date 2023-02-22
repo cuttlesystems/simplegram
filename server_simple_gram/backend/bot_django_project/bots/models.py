@@ -31,8 +31,8 @@ class MessageTypesDjango(models.TextChoices):
 
 class Bot(models.Model):
     name = models.CharField(max_length=200)
-    token = models.CharField(max_length=100, null=True)
-    description = models.TextField('Bot description', null=True)
+    token = models.CharField(max_length=100, blank=True)
+    description = models.TextField('Bot description', blank=True)
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -42,18 +42,26 @@ class Bot(models.Model):
         'Message',
         on_delete=models.SET_NULL,
         related_name='first_message_bot',
-        null=True
+        null=True,
+        blank=True
     )
     error_message = models.ForeignKey(
         'Message',
         on_delete=models.SET_NULL,
         related_name='error_message_bot',
-        null=True
+        null=True,
+        blank=True
     )
     profile_photo = models.ImageField(
         upload_to='bot_profile_images/',
         null=True,
         blank=True
+    )
+    must_be_started = models.BooleanField(
+        default=False
+    )
+    must_be_generated = models.BooleanField(
+        default=True
     )
 
     class Meta:
@@ -65,7 +73,7 @@ class Bot(models.Model):
 
 
 class Message(models.Model):
-    text = models.TextField()
+    text = models.TextField(blank=True)
     keyboard_type = models.CharField(
         max_length=3,
         choices=KEYBOARD_TYPES,
@@ -110,7 +118,6 @@ class Message(models.Model):
         blank=True
     )
     variable = models.TextField(
-        null=True,
         blank=True
     )
 

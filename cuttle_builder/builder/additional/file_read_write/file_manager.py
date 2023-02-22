@@ -47,10 +47,6 @@ class FileManager:
         except Exception as e:
             print(e)
 
-    def read_file(self, file_path: str) -> str:
-        with open(file_path, 'r') as file:
-            return file.read()
-
     def _get_dir(self, bot_id: int) -> str:
         """generate path, where bot is store (doesn't work if call outside of cuttle_builder directory)
 
@@ -61,6 +57,14 @@ class FileManager:
             str: file path
         """
         return 'bot_{0}'.format(bot_id)
+
+    def get_file_format(self, full_path_to_file: str) -> str:
+        file_format = Path(full_path_to_file).suffix
+        return file_format
+
+    def read_text_file_content(self, file_path: str) -> str:
+        with open(file_path, 'r') as file:
+            return file.read()
 
     def _write_file_insert(self, file_path: str, code: str) -> None:
         """add into directory file, that contains generated code
@@ -90,6 +94,6 @@ class FileManager:
             dir (_type_): directory path
             code (_type_): generated code (import insdide init)
         """
-        prev_file = self.read_file(file_path)
+        prev_file = self.read_text_file_content(file_path)
         with open(file_path, 'w') as file:
             file.write(code + prev_file)

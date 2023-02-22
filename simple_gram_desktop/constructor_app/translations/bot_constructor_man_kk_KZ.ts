@@ -16,11 +16,33 @@
         <translation>Өтініш, сервер сілтемесін толтырыңыз. Мысалы: https://ramasuchka.kz/</translation>
     </message>
     <message>
+        <source>New Cuttle Systems bot</source>
+        <translation>Жаңа Cuttle Systems бот</translation>
+    </message>
+    <message>
         <source>Bot creation error: {0}</source>
         <translation>Бот жасаудан қате: {0}</translation>
     </message>
 </context>
-
+<context>
+    <name>SelectedProjectWidget.manual</name>
+    <message>
+        <source>Bot is enabled</source>
+        <translation>Бот қосылды</translation>
+    </message>
+    <message>
+        <source>Bot is disabled</source>
+        <translation>Бот өшірулі</translation>
+    </message>
+    <message>
+        <source>Open file</source>
+        <translation>Файл ашу</translation>
+    </message>
+    <message>
+        <source>Images {0};;All files (*.*)</source>
+        <translation>Сурет {0};;Барлық файлдар (*.*)</translation>
+    </message>
+</context>
 <context>
     <name>BotEditorForm.manual</name>
     <message>
@@ -50,6 +72,42 @@
     <message>
         <source>Select only one message to set as start message</source>
         <translation>Бастапқы хабар ретінде орнату үшін тек бір хабарды таңдаңыз</translation>
+    </message>
+    <message>
+        <source>Add message</source>
+        <translation>Хабарды қосу</translation>
+    </message>
+    <message>
+        <source>Delete message</source>
+        <translation>Хабарды жою</translation>
+    </message>
+    <message>
+        <source>Add variant</source>
+        <translation>Вариантты қосу</translation>
+    </message>
+    <message>
+        <source>Mark start message</source>
+        <translation>Бастапқы хабар ретінде белгілеу</translation>
+    </message>
+    <message>
+        <source>Mark error message</source>
+        <translation>Қате хабар ретінде белгілеу</translation>
+    </message>
+    <message>
+        <source>Start bot</source>
+        <translation>Ботты қосу</translation>
+    </message>
+    <message>
+        <source>Stop bot</source>
+        <translation>Ботты өшіру</translation>
+    </message>
+    <message>
+        <source>Generate bot</source>
+        <translation>Ботты жасау</translation>
+    </message>
+    <message>
+        <source>Show log</source>
+        <translation>Көрсету логи</translation>
     </message>
 </context>
 
@@ -229,4 +287,21 @@
         <translation>Құпиясөздер сәйкес келмейді.</translation>
     </message>
 </context>
+
+<context>
+    <name>AddNewProjectWidget.manual</name>
+    <message>
+        <source>Token bot</source>
+        <translation>Бот токені</translation>
+    </message>
+    <message>
+        <source>About bot</source>
+        <translation>Бот түсіндірмесі</translation>
+    </message>
+        <message>
+        <source>Bot name cannot be empty</source>
+        <translation>Бот атын енгізу керек</translation>
+    </message>
+</context>
+
 </TS>
