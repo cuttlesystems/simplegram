@@ -81,6 +81,7 @@ def get_infra_directory_path_local() -> Path:
     # print(f'\nscript_dir_path: {script_dir_path}')
     return infra_directory_path_local
 
+
 def get_docker_registry_credentials_json_file_path() -> Path:
     """
 

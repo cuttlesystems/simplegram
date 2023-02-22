@@ -21,6 +21,7 @@ from deploy_server_utils import move_rsa_pub_key_to_remote
 from deploy_server_utils import get_backend_server_credentials, gen_ssh_key_pair
 # from deploy_server_utils import add_pub_key_to_remote_server
 from deploy_server_utils import docreg_login_remotely
+from scripts.get_commit_info_from_github_api import get_commit_info_from_github_api, create_json_file_with_commit_data
 
 
 def check_git_python_is_installed() -> bool:
@@ -96,7 +97,7 @@ if __name__ == '__main__':
 
     # todo: убрать закоментированный код
     # from subprocess import Popen, PIPE
-    result = subprocess.run(['pip', 'list'], text=True, stdout=subprocess.PIPE)
+    result = subprocess.Popen(['pip', 'list'], text=True, stdout=subprocess.PIPE)
     # result = subprocess.Popen(['pip', 'list'], stdout=subprocess.PIPE)
     # result.stdout
     # result.stderr
@@ -127,6 +128,9 @@ if __name__ == '__main__':
     # define parameters for a request to GitHub
     # Personal Access Token (PAT) for authorization in GitHub repo
     token = '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'
+    # 'token_with_bearer' используем для переадчи в функцию получения информации о коммите
+    token_with_bearer = 'Bearer ' + f'{token}'
+    print(f'\ntoken_with_bearer: {token_with_bearer}')
     # organization in GitHub the repository belongs to
     owner = 'cuttlesystems'
     # repo = 'tg_bot_constructor'
@@ -205,6 +209,10 @@ if __name__ == '__main__':
 
         origin.pull()
         print(f'\nGit pull from \'{origin}/{branch}\' completed\n')
+    # exit(0)
+    # get commit info from git
+    # get_commit_info_from_github_api(token_with_bearer)
+    create_json_file_with_commit_data(commit_data=get_commit_info_from_github_api(token_with_bearer))
 
     # credentials to establish SSH connection with remote server where the application backend is deployed
     backend_server_credentials = get_backend_server_credentials()
