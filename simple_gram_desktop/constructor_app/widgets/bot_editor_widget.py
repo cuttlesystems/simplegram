@@ -14,7 +14,7 @@ from constructor_app.widgets.tool_stack_widget import ToolStackWidget
 from utils.name_utils import gen_next_name
 from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from constructor_app.graphic_scene.bot_scene import BotScene
-from constructor_app.widgets.bot_editor.message_editor_dialog import MessageEditorDialog
+from constructor_app.widgets.bot_editor.message_editor_dialog import MessageEditorDialog, MessageMediaFileState
 from constructor_app.widgets.ui_bot_editor_widget import Ui_BotEditorWidget
 from constructor_app.widgets.bot_editor.variant_editor_dialog import VariantEditorDialog
 from constructor_app.widgets.bot_properties_model import BotPropertiesModel
@@ -302,14 +302,14 @@ class BotEditorWidget(QWidget):
 
             next_message = editor_dialog.get_next_message()
             message.next_message_id = next_message.id if next_message is not None else None
-            if editor_dialog.get_image_must_be_removed_state():
+            if editor_dialog.get_message_image_state() == MessageMediaFileState.DELETED:
                 self._bot_api.remove_message_image(message)
-            if editor_dialog.get_video_must_be_removed_state():
+            if editor_dialog.get_message_video_state() == MessageMediaFileState.DELETED:
                 self._bot_api.remove_message_video(message)
             message.photo = editor_dialog.get_message_image_path()
-            message.photo_filename = editor_dialog.get_message_image_filename()
+            message.photo_loaded_from_frontend_state = editor_dialog.get_message_image_state().value
             message.video = editor_dialog.get_message_video_path()
-            message.is_video_loaded_from_frontend = editor_dialog.get_message_video_loaded_state()
+            message.video_loaded_from_frontend_state = editor_dialog.get_message_video_state().value
             self._bot_api.change_message(message)
 
             block.change_message(message)

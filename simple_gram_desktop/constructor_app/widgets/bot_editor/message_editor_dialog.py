@@ -1,4 +1,5 @@
 import os.path
+from enum import Enum
 from typing import Optional
 
 from PySide6 import QtWidgets, QtGui, QtCore
@@ -9,6 +10,12 @@ from b_logic.bot_api.i_bot_api import IBotApi
 from b_logic.data_objects import BotMessage, ButtonTypesEnum, MessageTypeEnum, BotDescription
 from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
 from b_logic.utils.image_to_bytes import get_binary_data_from_file
+
+
+class MessageMediaFileState(Enum):
+    LOADED = 'loaded'
+    DELETED = 'deleted'
+    NO_ACTION = 'no_action'
 
 
 class MessageEditorDialog(QDialog):
@@ -38,13 +45,10 @@ class MessageEditorDialog(QDialog):
         self._ui.remove_video_button.clicked.connect(self._on_remove_video)
 
         self._message_image_path: Optional[str] = None
-        self._message_image_filename: Optional[str] = None
+        self._message_image_state: MessageMediaFileState = MessageMediaFileState.NO_ACTION
 
         self._message_video_path: Optional[str] = None
-        self._message_video_loaded_state: bool = False
-
-        self._image_must_be_removed_state: bool = False
-        self._video_must_be_removed_state: bool = False
+        self._message_video_state: MessageMediaFileState = MessageMediaFileState.NO_ACTION
 
     def set_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
@@ -143,9 +147,8 @@ class MessageEditorDialog(QDialog):
             full_path_to_file: str = file_info[0]
             image_data = get_binary_data_from_file(full_path_to_file)
             self._show_image(image_data)
-            self._image_must_be_removed_state = False
             self._message_image_path = full_path_to_file
-            self._message_image_filename = os.path.basename(full_path_to_file)
+            self._message_image_state = MessageMediaFileState.LOADED
 
     def _on_load_video(self, checked: bool) -> None:
         file_info = QFileDialog.getOpenFileName(
@@ -159,35 +162,27 @@ class MessageEditorDialog(QDialog):
             full_path_to_file: str = file_info[0]
             self._video_must_be_removed_state = False
             self._message_video_path = full_path_to_file
-            self._message_video_loaded_state = True
+            self._message_video_state = MessageMediaFileState.LOADED
             self._ui.message_video_label.setText('Video file is attached')
 
     def _on_remove_image(self, checked: bool) -> None:
         self._ui.message_image_label.clear()
-        self._image_must_be_removed_state = True
         self._message_image_path = None
-        self._message_image_filename = None
+        self._message_image_state = MessageMediaFileState.DELETED
 
     def _on_remove_video(self, checked: bool) -> None:
-        self._video_must_be_removed_state = True
         self._message_video_path = None
-        self._message_video_loaded_state = False
+        self._message_video_state = MessageMediaFileState.DELETED
         self._ui.message_video_label.setText('Video file is not attached')
 
     def get_message_image_path(self) -> Optional[str]:
         return self._message_image_path
 
-    def get_message_image_filename(self) -> Optional[str]:
-        return self._message_image_filename
-
-    def get_image_must_be_removed_state(self) -> bool:
-        return self._image_must_be_removed_state
+    def get_message_image_state(self) -> MessageMediaFileState:
+        return self._message_image_state
 
     def get_message_video_path(self) -> Optional[str]:
         return self._message_video_path
 
-    def get_message_video_loaded_state(self) -> bool:
-        return self._message_video_loaded_state
-
-    def get_video_must_be_removed_state(self) -> bool:
-        return self._video_must_be_removed_state
+    def get_message_video_state(self) -> MessageMediaFileState:
+        return self._message_video_state

@@ -88,10 +88,9 @@ class BotApiByRequestsProxy(BotApiByRequests):
 
     def create_message(self, bot: BotDescription, text: str,
                        keyboard_type: ButtonTypesEnum, x: int, y: int,
-                       photo: Optional[str] = None,
-                       photo_filename: Optional[str] = None) -> BotMessage:
+                       ) -> BotMessage:
         try:
-            return super().create_message(bot, text, keyboard_type, x, y, photo, photo_filename)
+            return super().create_message(bot, text, keyboard_type, x, y)
         except CreatingMessageException as e:
             raise BotApiMessageException(self._tr('Creating message error: {0}').format(e.response.text))
 

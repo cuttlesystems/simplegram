@@ -38,6 +38,8 @@ def convert_image_from_api_response_to_bytes(url: Optional[str]) -> Optional[byt
 
 
 class BotApiByRequests(IBotApi):
+    _LOADED_MEDIA_FILE_STATE = 'loaded'
+
     def __init__(self, suite_url: typing.Optional[str] = None):
         """
         Создать объект для работы с данными ботов через rest_api
@@ -285,8 +287,7 @@ class BotApiByRequests(IBotApi):
 
     def create_message(self, bot: BotDescription, text: str,
                        keyboard_type: ButtonTypesEnum, x: int, y: int,
-                       photo: Optional[str] = None,
-                       photo_filename: Optional[str] = None) -> BotMessage:
+                       ) -> BotMessage:
         """
         Создать сообщение
         Args:
@@ -295,9 +296,6 @@ class BotApiByRequests(IBotApi):
             keyboard_type: тип клавиатуры для сообщения
             x: координата по x
             y: координата по y
-            photo: полный путь к файлу с изображением включая имя файла и расширение
-            photo_filename: имя файла с расширением
-
         Returns:
             объект созданного сообщения
         """
@@ -305,8 +303,6 @@ class BotApiByRequests(IBotApi):
         message = BotMessage(
             text=text,
             keyboard_type=keyboard_type,
-            photo=photo,
-            photo_filename=photo_filename,
             x=x,
             y=y
         )
@@ -684,10 +680,11 @@ class BotApiByRequests(IBotApi):
     def _create_upload_files_message_dict_from_message_obj(self, message: BotMessage) -> dict:
         assert isinstance(message, BotMessage)
         upload_files_message_dict = dict()
-        if message.photo and message.photo_filename:
+        if message.photo and (message.photo_loaded_from_frontend_state == self._LOADED_MEDIA_FILE_STATE):
+            photo_filename = os.path.basename(message.photo)
             file_data = get_binary_data_from_file(message.photo)
-            upload_files_message_dict['photo'] = (message.photo_filename, file_data)
-        if message.video and message.is_video_loaded_from_frontend:
+            upload_files_message_dict['photo'] = (photo_filename, file_data)
+        if message.video and (message.video_loaded_from_frontend_state == self._LOADED_MEDIA_FILE_STATE):
             video_filename = os.path.basename(message.video)
             file_data = get_binary_data_from_file(message.video)
             upload_files_message_dict['video'] = (video_filename, file_data)
