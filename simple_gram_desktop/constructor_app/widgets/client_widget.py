@@ -103,6 +103,7 @@ class ClientWidget(QMainWindow):
     def _post_login_initial_botapi(self, bot_api: IBotApi) -> None:
         assert isinstance(bot_api, IBotApi)
         self._bot_api = bot_api
+        self._bot_editor.set_bot_api(self._bot_api)
         self.__load_bots_list()
         self._start_main_menu()
 
@@ -168,7 +169,6 @@ class ClientWidget(QMainWindow):
 
             self._ui.tool_stack.init_switch_toggle(bot_extended.bot_state)
             self._bot_editor.update_state_bot.connect(self.__load_bots_list)
-            self._bot_editor.set_bot_api(self._bot_api)
             self._bot_editor.set_bot(bot)
 
             if self._bot_editor_index is not None:
