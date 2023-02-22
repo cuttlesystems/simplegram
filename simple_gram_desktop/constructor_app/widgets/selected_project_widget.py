@@ -138,6 +138,7 @@ class SelectedProjectWidget(QWidget):
                 font = self._ui.link_bot_label.font()
                 font.setUnderline(True)
                 self._ui.link_bot_label.setFont(font)
+                self._ui.link_bot_label.setDisabled(False)
                 self._ui.link_bot_label.setText(self._bot.bot_link)
             else:
                 font = self._ui.link_bot_label.font()
