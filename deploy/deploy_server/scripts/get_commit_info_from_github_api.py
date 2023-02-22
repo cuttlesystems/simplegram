@@ -51,7 +51,7 @@ def get_project_root_dir() -> Path:
     :return:
 
     """
-    project_root_dir = get_script_dir_path().parent.parent.parent
+    project_root_dir = get_script_dir_path().parent.parent.parent.parent / 'deploy_folder'
     return project_root_dir
 
 
@@ -61,7 +61,7 @@ def get_commit_info_file_path() -> Path:
     :return:
 
     """
-    commit_info_file_path = get_project_root_dir() / 'current_commit_info.json'
+    commit_info_file_path = get_project_root_dir() / 'tg_bot_constructor' / 'mini_app' / 'current_commit_info.json'
     return commit_info_file_path
 
 

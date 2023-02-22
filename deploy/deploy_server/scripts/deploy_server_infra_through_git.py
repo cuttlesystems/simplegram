@@ -119,7 +119,9 @@ if __name__ == '__main__':
         '\n    branch: ', branch,
         '\n    commit: ', commit
     )
-    project_dir = Path('.') / repo
+    print(f'get_script_dir_path: {get_script_dir_path()}')
+    project_dir = get_script_dir_path().parent.parent.parent.parent / 'deploy_folder' / repo
+    print(f'project_dir: {project_dir}')
 
     import git
     from git import Repo
@@ -211,7 +213,7 @@ if __name__ == '__main__':
 
         origin.pull()
         print(f'\nGit pull from \'{origin}/{branch}\' completed\n')
-    exit(0)
+    # exit(0)
     # get commit info from git
     # get_commit_info_from_github_api(token_with_bearer)
     create_json_file_with_commit_data(commit_data=get_commit_info_from_github_api(token_with_bearer))
