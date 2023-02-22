@@ -1,6 +1,5 @@
 import os, traceback
 
-from PySide6 import QtCore, QtWidgets
 from typing import Optional
 
 from PySide6.QtGui import QPixmap, QDesktopServices
@@ -46,7 +45,7 @@ class SelectedProjectWidget(QWidget):
         self._bot: Optional[BotDescription] = None
         self._bot_scene: Optional[BotScene] = None
         #self._ui.name_bot_edit.keyPressEvent = self.name_key_press_event
-#
+
         #self._ui.link_bot_header.setOpenExternalLinks(True)
         #self._ui.link_bot_header.keyPressEvent = self.name_key_press_event
 
@@ -80,20 +79,19 @@ class SelectedProjectWidget(QWidget):
     def _switch_bot(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
         #  инициализатор qss и продумать грамотный флаг состояния бота
+        self.activated_bot_signal.emit()
         if self._ui.switch_activated_bot.isChecked():
             self._ui.marker_state_bot.setStyleSheet(
                 "QLabel{border-radius:8px; border:none; color:white;"
                 "background-color:#4DAAFF;}")
             self._ui.marker_state_bot.setText(self._tr("Bot is enabled"))
             self._bot_api.start_bot(self._bot)
-            self.activated_bot_signal.emit()
         else:
             self._ui.marker_state_bot.setStyleSheet(
                 "QLabel{border-radius:8px; border:none; color:white;"
                 "background-color:#FF5F8F;}")
             self._ui.marker_state_bot.setText(self._tr("Bot is disabled"))
             self._bot_api.stop_bot(self._bot)
-            self.activated_bot_signal.emit()
 
     def _init_state_bot(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
