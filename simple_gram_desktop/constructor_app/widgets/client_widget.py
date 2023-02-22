@@ -170,6 +170,7 @@ class ClientWidget(QMainWindow):
             self._ui.tool_stack.init_switch_toggle(bot_extended.bot_state)
             self._bot_editor.update_state_bot.connect(self.__load_bots_list)
             self._bot_editor.set_bot(bot)
+            print('Open bot with Name: "{name}" and Id:"{id}"'.format(name=str(bot.bot_name), id=str(bot.id)))
 
         except requests.exceptions.ConnectionError as e:
             # toDo: add translate kz, ru
