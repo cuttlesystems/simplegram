@@ -22,6 +22,12 @@ class PropertiesModel(QAbstractTableModel):
             0: self._tr_prop_model('Parameter'),
             1: self._tr_prop_model('Value')
         }
+        self._allow_edit = True
+
+    def set_allow_edit(self, allow_edit: bool):
+        assert isinstance(allow_edit, bool)
+        self._allow_edit = allow_edit
+
     def rowCount(self, parent: QModelIndex):
         assert isinstance(parent, QModelIndex)
         return len(self._properties)
@@ -69,7 +75,8 @@ class PropertiesModel(QAbstractTableModel):
         result = super().flags(index)
         # столбец со значением параметра можно редактировать
         if index.column() == self._COLUMN_PROPERTY_VALUE:
-            result |= Qt.ItemFlag.ItemIsEditable
+            if self._allow_edit:
+                result |= Qt.ItemFlag.ItemIsEditable
         return result
 
     def headerData(self, section: int, orientation: Qt.Orientation, role: int) -> typing.Optional[str]:

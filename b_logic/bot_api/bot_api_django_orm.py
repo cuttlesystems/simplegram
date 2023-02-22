@@ -52,6 +52,9 @@ class BotApiByDjangoORM(IBotApi):
     def change_bot(self, bot: BotDescription) -> None:
         raise NotImplementedError('Метод не определен!')
 
+    def remove_bot_image(self, bot: BotDescription) -> None:
+        raise NotImplementedError('Метод не определен!')
+
     def delete_bot(self, bot_id: int) -> None:
         raise NotImplementedError('Метод не определен!')
 

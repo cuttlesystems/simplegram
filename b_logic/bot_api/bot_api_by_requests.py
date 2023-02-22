@@ -201,6 +201,16 @@ class BotApiByRequests(IBotApi):
             raise ChangingBotException(response)
             # raise BotApiException(self._tr('Changing bot error: {0}').format(response.text))
 
+    def remove_bot_image(self, bot: BotDescription) -> None:
+        assert isinstance(bot, BotDescription)
+        response = requests.patch(
+            url=self._suite_url + f'api/bots/{bot.id}/',
+            json={'profile_photo': None},
+            headers=self._get_headers()
+        )
+        if response.status_code != requests.status_codes.codes.ok:
+            raise DeletingImageException(response)
+
     def delete_bot(self, bot_id: int) -> None:
         """
         Удалить бота
