@@ -7,7 +7,7 @@ TELEGRAM_API_URL = 'https://api.telegram.org'
 LINK_TO_BOT = 'https://t.me/'
 
 
-def get_bot_link(bot_token: Optional[str]) -> str:
+def get_bot_link(bot_token: Optional[str]) -> Optional[str]:
     """
     Получает ссылку к телеграм боту по токену бота.
 
@@ -15,12 +15,12 @@ def get_bot_link(bot_token: Optional[str]) -> str:
         bot_token: токен бота
 
     Returns:
-        Ссылка на телеграм бота в формате: (https://t.me/VasiaBot)
+        Ссылка на телеграм бота в формате: (https://t.me/VasiaBot) или None
     """
     assert isinstance(bot_token, Optional[str])
-    bot_username = ''
+    bot_username: Optional[str] = None
     if bot_token is None or bot_token == '':
-        bot_username = 'Bot token is not specified.'
+        print('CHANGE TO LOGGING!!! Bot token is not specified.')
     else:
         try:
             response = requests.get(
@@ -32,8 +32,7 @@ def get_bot_link(bot_token: Optional[str]) -> str:
                 bot_username = LINK_TO_BOT + bot_username
             elif response.status_code in [requests.status_codes.codes.not_found,
                                           requests.status_codes.codes.unauthorized]:
-                bot_username = 'Information on provided token was not found.'
+                print('CHANGE TO LOGGING!!! Information on provided token was not found.')
         except ConnectionError as error:
-            bot_username = 'Check your internet connection.'
-            print(f'-----> Logger: {error}')
+            print(f'CHANGE TO LOGGING!!! Check your internet connection. {error}')
     return bot_username
