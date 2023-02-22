@@ -190,7 +190,7 @@ class AddNewProjectWidget(QWidget):
         used_names = [bot.bot_name for bot in self.__get_all_bots()]
         return gen_next_name(base_name, used_names)
 
-    def _add_new_bot(self):
+    def _add_new_bot(self, traceback=None):
         try:
             name_bot = self._ui.name_bot_edit.text()
             if name_bot != '':
@@ -201,12 +201,15 @@ class AddNewProjectWidget(QWidget):
                 )
                 # toDO: Перенести на кастомное диалоговое окно
                 QMessageBox.information(self, 'created', 'created')
+                print(traceback.format_exc())
                 self.new_bot_added.emit()
             else:
                 # toDO: Перенести на кастомное диалоговое окно
                 QMessageBox.warning(self, 'Error', self._tr('Bot name cannot be empty'))
+                print(traceback.format_exc())
         except BotApiMessageException as error:
             QMessageBox.warning(self, self._tr('Error'), self._tr('Bot creation error: {0}').format(error))
+            print(traceback.format_exc())
 
     def _tr(self, text: str) -> str:
         return tran('AddNewProjectWidget.manual', text)

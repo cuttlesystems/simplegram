@@ -199,7 +199,7 @@ image:url(:/icons/widgets/times_icon/start_bot.png);
 }
 
 QRadioButton::indicator:unchecked{
-image:url(:/icons/widgets/times_icon/stop_bot.png);
+image:url(:/icons/widgets/times_icon/stop_bot_gray.png);
 }</string>
               </property>
               <property name="text">
@@ -631,7 +631,7 @@ background-color: transparent;
 
 QLineEdit::hover{
 border: 1px solid rgba(82,136,193,180);
-color: black;
+color: rgb(82,136,193);
 border-radius:8px;
 background-color: transparent;
 }
@@ -701,7 +701,7 @@ background-color: transparent;
 
 QLineEdit::hover{
 border: 1px solid rgba(82,136,193,180);
-color: black;
+color: rgb(82,136,193);
 border-radius:8px;
 background-color: transparent;
 }
@@ -752,29 +752,39 @@ background-color: transparent;
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="link_bot_edit">
+            <widget class="QLabel" name="link_bot_label">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="minimumSize">
               <size>
-               <width>307</width>
+               <width>0</width>
                <height>50</height>
               </size>
              </property>
              <property name="font">
               <font>
                <pointsize>14</pointsize>
+               <underline>true</underline>
               </font>
              </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
              <property name="styleSheet">
-              <string notr="true">QLineEdit{
+              <string notr="true">QLabel{
 border: 1px solid rgb(204,204,204);
-color: black;
+color: rgb(204,204,204);
 border-radius:8px;
 background-color: transparent;
 }
 
-QLineEdit::hover{
+QLabel::hover{
 border: 1px solid rgba(82,136,193,180);
-color: black;
+color: rgb(82,136,193);
 border-radius:8px;
 background-color: transparent;
 }

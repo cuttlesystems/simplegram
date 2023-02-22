@@ -1,12 +1,14 @@
 import os, traceback
 
+from PySide6 import QtCore
 from typing import Optional
 
 from PySide6.QtGui import QPixmap, QDesktopServices
 from PySide6.QtWidgets import QWidget, QFileDialog, QMessageBox
-from PySide6.QtCore import Signal, QUrl
+from PySide6.QtCore import Signal, QUrl, QObject
 
 from constructor_app.utils.get_image_from_bytes import get_pixmap_image_from_bytes
+from constructor_app.widgets.bot_extended import BotExtended
 from constructor_app.widgets.qss.label_qss import LabelColorScheme
 
 from constructor_app.widgets.ui_selected_project_widget import Ui_SelectedProjectWidget
@@ -45,15 +47,19 @@ class SelectedProjectWidget(QWidget):
         self._bot_api: Optional[IBotApi] = None
         self._bot: Optional[BotDescription] = None
         self._bot_scene: Optional[BotScene] = None
-        #self._ui.name_bot_edit.keyPressEvent = self.name_key_press_event
+        self._ui.link_bot_header.setOpenExternalLinks(True)
+        self.installEventFilter(self)
+        self.setMouseTracking(True)
+        self._ui.link_bot_label.installEventFilter(self)
+        self._ui.link_bot_label.setMouseTracking(True)
 
-        #self._ui.link_bot_header.setOpenExternalLinks(True)
-        #self._ui.link_bot_header.keyPressEvent = self.name_key_press_event
-
-    #def _on_check(self):
-    #    open_link = QDesktopServices()
-    #    link = "https://doc.qt.io"
-    #    open_link.openUrl(QUrl(link))
+    def eventFilter(self, obj: QObject, event: QtCore.QEvent) -> bool:
+        if obj == self._ui.link_bot_label:
+            if event.type() == QtCore.QEvent.Type.MouseButtonPress:
+                open_link = QDesktopServices()
+                link = self._bot.bot_link
+                open_link.openUrl(QUrl(link))
+        return False
 
     def _init_StyleSheet(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
@@ -66,17 +72,6 @@ class SelectedProjectWidget(QWidget):
         #    "color:white;border-radius:8px;}")
         pass
 
-    #def name_key_press_event(self, event):
-    #    QtWidgets.QLineEdit.keyPressEvent(self._ui.name_bot_edit, event)
-    #    if event.key() in (QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter):
-    #        new_name_bot = self._ui.name_bot_edit.text()
-    #        self._bot.bot_name = new_name_bot
-    #        self._bot.bot_profile_photo = None
-    #        self._bot.profile_photo_filename = None
-    #        self._bot_api.change_bot(self._bot)
-    #        self._on_check()
-    #        self.after_changed_bot_signal.emit()
-
     def _switch_bot(self, toggled: bool):
         bot_enabled_state = toggled
         if toggled:
@@ -88,6 +83,7 @@ class SelectedProjectWidget(QWidget):
                 bot_enabled_state = True
             except BotApiMessageException as error:
                 QMessageBox(self, 'Error', str(error))
+                print(traceback.format_exc())
                 bot_enabled_state = False
         else:
             self._ui.marker_state_bot.setStyleSheet(
@@ -98,6 +94,7 @@ class SelectedProjectWidget(QWidget):
                 bot_enabled_state = False
             except BotApiMessageException as error:
                 QMessageBox(self, 'Error', str(error))
+                print(traceback.format_exc())
                 bot_enabled_state = False
 
         self._ui.switch_activated_bot.blockSignals(True)
@@ -117,12 +114,11 @@ class SelectedProjectWidget(QWidget):
                 LabelColorScheme.disabled)
             self._ui.marker_state_bot.setText(self._tr("Bot is disabled"))
 
-    def set_bot(self, bot: BotDescription, bot_state: bool) -> None:
-        assert isinstance(bot, BotDescription)
-        assert isinstance(bot_state, bool)
+    def set_bot(self, bot: BotExtended) -> None:
+        assert isinstance(bot, BotExtended)
         try:
             # обновляем информацию о боте для корректного отображения картинки
-            self._bot = self._bot_api.get_bot_by_id(bot.id)
+            self._bot = self._bot_api.get_bot_by_id(bot_id=bot.bot_description.id, with_link=1)
 
             # Установка дефолтной аватарки бота или фотки из БД, если есть.
             # toDo: Добавить функцию инициализации иконки из стартерпака иконок заказанных у дизайнера
@@ -133,15 +129,23 @@ class SelectedProjectWidget(QWidget):
             else:
                 self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
 
-            self._ui.name_bot_edit.setText(bot.bot_name)
-            self._ui.description_bot_edit.setText(bot.bot_description)
-            self._ui.link_bot_edit.setText(bot.bot_link)
-            self._ui.token_bot_edit.setText(bot.bot_token)
-
-            self._ui.switch_activated_bot.setChecked(bot_state)
+            self._ui.switch_activated_bot.setChecked(bot.bot_state)
             self._init_state_bot()
 
-            self._bot = self._bot_api.get_bot_by_id(bot_id=bot.id, with_link=1)
+            self._ui.name_bot_edit.setText(self._bot.bot_name)
+            self._ui.description_bot_edit.setText(self._bot.bot_description)
+            if self._bot.bot_link != 'Bot token is not specified.':
+                font = self._ui.link_bot_label.font()
+                font.setUnderline(True)
+                self._ui.link_bot_label.setFont(font)
+                self._ui.link_bot_label.setText(self._bot.bot_link)
+            else:
+                font = self._ui.link_bot_label.font()
+                font.setUnderline(False)
+                self._ui.link_bot_label.setFont(font)
+                self._ui.link_bot_label.setText('The link for bot will be generated after the bot is generated')
+                self._ui.link_bot_label.setDisabled(True)
+            self._ui.token_bot_edit.setText(self._bot.bot_token)
 
         except BotApiMessageException as error:
             QMessageBox(self, self._tr('Error'), str(error))

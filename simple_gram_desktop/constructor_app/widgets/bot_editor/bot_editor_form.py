@@ -351,11 +351,12 @@ class BotEditorForm(QMainWindow):
         except Exception as e:
             self._process_exception(e)
 
-    def _process_exception(self, exception: Exception):
+    def _process_exception(self, exception: Exception, traceback=None):
         if not isinstance(exception, NotImplementedError):
             exception_mes = str(exception)
             print(exception_mes)
             QMessageBox.warning(self, 'Error', exception_mes)
+            print(traceback.format_exc())
         else:
             raise
 

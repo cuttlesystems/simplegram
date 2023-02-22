@@ -110,6 +110,7 @@ class LoginWidget(QWidget):
                 print(traceback.format_exc())
         else:
             QMessageBox.warning(self, self._tr('Password error'), self._tr('Passwords did not match.'))
+            print(traceback.format_exc())
 
     def _switch_login(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой
