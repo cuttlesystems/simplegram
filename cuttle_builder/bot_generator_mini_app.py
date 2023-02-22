@@ -62,11 +62,12 @@ class BotGeneratorMiniApp(BotGeneratorDb):
         """
         Удаление медиафайлов из директории /temp/
         """
-        try:
-            shutil.rmtree(self._temp_dir)
-        except PermissionError as err:
-            print(f"No permission to delete directory: {self._temp_dir}: {err}")
-        except FileNotFoundError as err:
-            print(f"Directory not found: {self._temp_dir}: {err}")
-        except OSError as err:
-            print(f'Error deleting directory {self._temp_dir}: {err}')
+        if self._temp_dir:
+            try:
+                shutil.rmtree(self._temp_dir)
+            except PermissionError as err:
+                print(f'No permission to delete directory: {self._temp_dir}: {err}')
+            except FileNotFoundError as err:
+                print(f'Directory not found: {self._temp_dir}: {err}')
+            except OSError as err:
+                print(f'Error deleting directory {self._temp_dir}: {err}')
