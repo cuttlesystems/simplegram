@@ -63,7 +63,7 @@ class ClientWidget(QMainWindow):
         self._ui.bot_show_page.bot_avatar_changed_signal.connect(self.__load_bots_list)
 
         self._bot_editor = BotEditorWidget()
-        self.setup_tool_stack(self._ui.tool_stack)
+        self.setup_tool_stack()
         self._bot_editor.setup_tool_stack(self._ui.tool_stack)
 
         # первое открытие приложения, инициализация авторизации
@@ -73,20 +73,20 @@ class ClientWidget(QMainWindow):
 
         self._bot_editor_index: Optional[int] = None
         self._settings_window = SettingsWidget()
+        self._bot_editor_index = self._ui.bot_editor_stacked.addWidget(self._bot_editor)
+        self._ui.bot_editor_stacked.setCurrentIndex(self._ui.bot_editor_stacked.count() - 1)
 
-    def setup_tool_stack(self, tool: ToolStackWidget):
-        assert isinstance(tool, ToolStackWidget)
-
-        tool.delete_variant_signal.connect(self._bot_editor._on_delete_variant)
-        tool.mark_as_start_signal.connect(self._bot_editor._on_mark_start_button)
-        tool.add_variant_signal.connect(self._bot_editor._on_add_variant_button)
-        tool.mark_as_error_signal.connect(self._bot_editor._on_mark_error_button)
-        tool.add_message_signal.connect(self._bot_editor._on_add_new_message)
-        tool.generate_bot_signal.connect(self._bot_editor._on_generate_bot)
-        tool.start_bot_signal.connect(self._bot_editor._on_start_bot)
-        tool.stop_bot_signal.connect(self._bot_editor._on_stop_bot)
-        tool.read_bot_logs_signal.connect(self._bot_editor._on_read_bot_logs)
-        tool.delete_message_signal.connect(self._bot_editor._on_delete_message)
+    def setup_tool_stack(self):
+        self._ui.tool_stack.delete_variant_signal.connect(self._bot_editor.on_delete_variant)
+        self._ui.tool_stack.mark_as_start_signal.connect(self._bot_editor.on_mark_start_button)
+        self._ui.tool_stack.add_variant_signal.connect(self._bot_editor.on_add_variant_button)
+        self._ui.tool_stack.mark_as_error_signal.connect(self._bot_editor.on_mark_error_button)
+        self._ui.tool_stack.add_message_signal.connect(self._bot_editor.on_add_new_message)
+        self._ui.tool_stack.generate_bot_signal.connect(self._bot_editor.on_generate_bot)
+        self._ui.tool_stack.start_bot_signal.connect(self._bot_editor.on_start_bot)
+        self._ui.tool_stack.stop_bot_signal.connect(self._bot_editor.on_stop_bot)
+        self._ui.tool_stack.read_bot_logs_signal.connect(self._bot_editor.on_read_bot_logs)
+        self._ui.tool_stack.delete_message_signal.connect(self._bot_editor.on_delete_message)
 
     def _start_login_users(self) -> None:
         # выстравляю страницу инициализации
@@ -171,19 +171,13 @@ class ClientWidget(QMainWindow):
             self._bot_editor.update_state_bot.connect(self.__load_bots_list)
             self._bot_editor.set_bot(bot)
 
-            if self._bot_editor_index is not None:
-                closed_bot_editor_widget = self._ui.bot_editor_stacked.widget(self._bot_editor_index)
-                closed_bot_editor_widget.forced_close_bot()
-                self._ui.bot_editor_stacked.removeWidget(closed_bot_editor_widget)
-
-            self._bot_editor_index = self._ui.bot_editor_stacked.addWidget(self._bot_editor)
-            self._ui.bot_editor_stacked.setCurrentIndex(self._ui.bot_editor_stacked.count()-1)
         except requests.exceptions.ConnectionError as e:
             # toDo: add translate kz, ru
             QMessageBox.warning(self, self._tr('Error'), self._tr('Connection error: {0}').format(e))
             print(traceback.format_exc())
         except BotApiMessageException as exception:
             QMessageBox.warning(self, self._tr('Error'), str(exception))
+            print(traceback.format_exc())
 
     def _init_stylesheet_stackedwidget(self, state: int) -> None:
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный инициализатор

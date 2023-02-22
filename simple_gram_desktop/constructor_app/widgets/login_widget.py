@@ -1,10 +1,10 @@
-import typing
+import typing, traceback
 
 import PySide6
 from PySide6 import QtGui
 from PySide6.QtGui import QPaintEvent, QPixmap, QPainter, QLinearGradient, QColor, QBrush, QPalette, QResizeEvent
 from PySide6.QtWidgets import QWidget, QLineEdit, QMessageBox
-from PySide6.QtCore import QObject, Slot, Signal, QThread, QSize, QPoint, QRect, Qt
+from PySide6.QtCore import Signal, QPoint, QRect, Qt
 
 from b_logic.bot_api.bot_api_by_requests import BotApiByRequests
 from b_logic.bot_api.i_bot_api import BotApiException
@@ -70,6 +70,7 @@ class LoginWidget(QWidget):
             self.log_in.emit(self.bot_api)
         except BotApiException as bot_api_exception:
             QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
+            print(traceback.format_exc())
 
     def _clicked_sign_up_button(self):
         server_addr: QLineEdit = self._ui.server_addr_edit
@@ -106,6 +107,7 @@ class LoginWidget(QWidget):
                 self._ui.login_radiobutton.setChecked(True)
             except BotApiException as bot_api_exception:
                 QMessageBox.critical(self, self._tr('Error'), str(bot_api_exception))
+                print(traceback.format_exc())
         else:
             QMessageBox.warning(self, self._tr('Password error'), self._tr('Passwords did not match.'))
 

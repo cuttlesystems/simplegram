@@ -1,4 +1,4 @@
-import os
+import os, traceback
 
 from PySide6 import QtCore, QtWidgets
 from typing import Optional
@@ -137,6 +137,7 @@ class SelectedProjectWidget(QWidget):
 
         except BotApiMessageException as error:
             QMessageBox(self, self._tr('Error'), str(error))
+            print(traceback.format_exc())
 
     def __bot_editing(self) -> None:
         # коннект кнопки открытия бота в редакторе и сигналом старта редактирования в основном клиент/менеджерном
