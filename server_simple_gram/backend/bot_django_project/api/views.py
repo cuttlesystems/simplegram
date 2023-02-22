@@ -92,6 +92,13 @@ class BotViewSet(viewsets.ModelViewSet):
         serializer.save()
         set_bot_must_be_generated_value(bot, True)
 
+    def perform_destroy(self, instance: Bot):
+        self._stop_bot_if_it_run(instance.id)
+        bot_dir = self._get_bot_dir(instance.id)
+        if bot_dir.exists():
+            shutil.rmtree(path=bot_dir)
+        instance.delete()
+
     def _get_bot_dir(self, bot_id: int) -> Path:
         assert isinstance(bot_id, int)
         bot_dir = BOTS_DIR / f'bot_{bot_id}'
