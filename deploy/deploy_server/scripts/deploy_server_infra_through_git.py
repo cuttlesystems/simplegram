@@ -167,6 +167,8 @@ if __name__ == '__main__':
 
         try:
             active_branch = repo.active_branch
+            # print(f'\nActive branch: {active_branch}')
+            # print(f'User branch input: {branch}')
         except TypeError:
             # branch is in detached state
             active_branch = None
@@ -209,7 +211,7 @@ if __name__ == '__main__':
 
         origin.pull()
         print(f'\nGit pull from \'{origin}/{branch}\' completed\n')
-    # exit(0)
+    exit(0)
     # get commit info from git
     # get_commit_info_from_github_api(token_with_bearer)
     create_json_file_with_commit_data(commit_data=get_commit_info_from_github_api(token_with_bearer))
