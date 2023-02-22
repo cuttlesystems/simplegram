@@ -7,6 +7,7 @@ from PySide6.QtWidgets import QWidget, QFileDialog, QMessageBox
 from PySide6.QtCore import Signal, QUrl
 
 from constructor_app.utils.get_image_from_bytes import get_pixmap_image_from_bytes
+from constructor_app.widgets.qss.label_qss import LabelColorScheme
 
 from constructor_app.widgets.ui_selected_project_widget import Ui_SelectedProjectWidget
 
@@ -76,35 +77,44 @@ class SelectedProjectWidget(QWidget):
     #        self._on_check()
     #        self.after_changed_bot_signal.emit()
 
-    def _switch_bot(self):
-        # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
-        #  инициализатор qss и продумать грамотный флаг состояния бота
-        self.activated_bot_signal.emit()
-        if self._ui.switch_activated_bot.isChecked():
-            self._ui.marker_state_bot.setStyleSheet(
-                "QLabel{border-radius:8px; border:none; color:white;"
-                "background-color:#4DAAFF;}")
-            self._ui.marker_state_bot.setText(self._tr("Bot is enabled"))
-            self._bot_api.start_bot(self._bot)
+    def _switch_bot(self, toggled: bool):
+        bot_enabled_state = toggled
+        if toggled:
+            try:
+                self._bot_api.start_bot(self._bot)
+                self._ui.marker_state_bot.setStyleSheet(
+                    LabelColorScheme.enabled)
+                self._ui.marker_state_bot.setText(self._tr("Bot is enabled"))
+                bot_enabled_state = True
+            except BotApiMessageException as error:
+                QMessageBox(self, 'Error', str(error))
+                bot_enabled_state = False
         else:
             self._ui.marker_state_bot.setStyleSheet(
-                "QLabel{border-radius:8px; border:none; color:white;"
-                "background-color:#FF5F8F;}")
+                LabelColorScheme.disabled)
             self._ui.marker_state_bot.setText(self._tr("Bot is disabled"))
-            self._bot_api.stop_bot(self._bot)
+            try:
+                self._bot_api.stop_bot(self._bot)
+                bot_enabled_state = False
+            except BotApiMessageException as error:
+                QMessageBox(self, 'Error', str(error))
+                bot_enabled_state = False
+
+        self._ui.switch_activated_bot.blockSignals(True)
+        try:
+            self._ui.switch_activated_bot.setChecked(bot_enabled_state)
+            self.activated_bot_signal.emit()
+        finally:
+            self._ui.switch_activated_bot.blockSignals(False)
 
     def _init_state_bot(self):
-        # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
-        #  инициализатор qss и продумать грамотный флаг состояния бота
         if self._ui.switch_activated_bot.isChecked():
             self._ui.marker_state_bot.setStyleSheet(
-                "QLabel{border-radius:8px; border:none; color:white;"
-                "background-color:#4DAAFF;}")
+                LabelColorScheme.enabled)
             self._ui.marker_state_bot.setText(self._tr("Bot is enabled"))
         else:
             self._ui.marker_state_bot.setStyleSheet(
-                "QLabel{border-radius:8px; border:none; color:white;"
-                "background-color:#FF5F8F;}")
+                LabelColorScheme.disabled)
             self._ui.marker_state_bot.setText(self._tr("Bot is disabled"))
 
     def set_bot(self, bot: BotDescription, bot_state: bool) -> None:

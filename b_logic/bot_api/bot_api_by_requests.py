@@ -562,6 +562,8 @@ class BotApiByRequests(IBotApi):
         )
         if response.status_code != requests.status_codes.codes.ok:
             raise BotStartupException(response)
+        else:
+            response.text
             # raise BotApiException(
             #     self._tr('Bot startup error: {0}').format(response.text))
 
