@@ -554,14 +554,18 @@ class BotApiByRequests(IBotApi):
             # raise BotApiException(
             #     self._tr('Bot generation error: {0}').format(response.text))
 
-    def start_bot(self, bot: BotDescription) -> None:
+    def start_bot(self, bot: BotDescription) -> bool:
         assert isinstance(bot, BotDescription)
+        successful_start: bool = False
         response = requests.post(
             url=self._suite_url + f'api/bots/{bot.id}/start/',
             headers=self._get_headers()
         )
         if response.status_code != requests.status_codes.codes.ok:
             raise BotStartupException(response)
+        else:
+            successful_start = True
+        return successful_start
             # raise BotApiException(
             #     self._tr('Bot startup error: {0}').format(response.text))
 
