@@ -45,15 +45,15 @@ class SelectedProjectWidget(QWidget):
         self._bot_api: Optional[IBotApi] = None
         self._bot: Optional[BotDescription] = None
         self._bot_scene: Optional[BotScene] = None
-        self._ui.name_bot_edit.keyPressEvent = self.name_key_press_event
+        #self._ui.name_bot_edit.keyPressEvent = self.name_key_press_event
+#
+        #self._ui.link_bot_header.setOpenExternalLinks(True)
+        #self._ui.link_bot_header.keyPressEvent = self.name_key_press_event
 
-        self._ui.link_bot_header.setOpenExternalLinks(True)
-        self._ui.link_bot_header.keyPressEvent = self.name_key_press_event
-
-    def _on_check(self):
-        open_link = QDesktopServices()
-        link = "https://doc.qt.io"
-        open_link.openUrl(QUrl(link))
+    #def _on_check(self):
+    #    open_link = QDesktopServices()
+    #    link = "https://doc.qt.io"
+    #    open_link.openUrl(QUrl(link))
 
     def _init_StyleSheet(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
@@ -66,16 +66,16 @@ class SelectedProjectWidget(QWidget):
         #    "color:white;border-radius:8px;}")
         pass
 
-    def name_key_press_event(self, event):
-        QtWidgets.QLineEdit.keyPressEvent(self._ui.name_bot_edit, event)
-        if event.key() in (QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter):
-            new_name_bot = self._ui.name_bot_edit.text()
-            self._bot.bot_name = new_name_bot
-            self._bot.bot_profile_photo = None
-            self._bot.profile_photo_filename = None
-            self._bot_api.change_bot(self._bot)
-            self._on_check()
-            self.after_changed_bot_signal.emit()
+    #def name_key_press_event(self, event):
+    #    QtWidgets.QLineEdit.keyPressEvent(self._ui.name_bot_edit, event)
+    #    if event.key() in (QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter):
+    #        new_name_bot = self._ui.name_bot_edit.text()
+    #        self._bot.bot_name = new_name_bot
+    #        self._bot.bot_profile_photo = None
+    #        self._bot.profile_photo_filename = None
+    #        self._bot_api.change_bot(self._bot)
+    #        self._on_check()
+    #        self.after_changed_bot_signal.emit()
 
     def _switch_bot(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
