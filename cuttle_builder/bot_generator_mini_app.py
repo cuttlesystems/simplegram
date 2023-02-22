@@ -37,9 +37,6 @@ class BotGeneratorMiniApp(BotGeneratorDb):
         directory_path = str(Path(tempfile.mkdtemp(prefix=None)))
         return directory_path
 
-    def __enter__(self):
-        return self
-
     def _preprocess_data(self, messages: typing.List[BotMessage]):
         """
         Обрабатывает данные перед генерацией.
@@ -60,9 +57,6 @@ class BotGeneratorMiniApp(BotGeneratorDb):
             message.photo = file_path
             message.photo_filename = Path(file_path).name
             message.photo_file_format = file_format
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._after_finished()
 
     def _after_finished(self):
         """
