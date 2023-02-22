@@ -1,7 +1,7 @@
 from typing import Optional
 
 import requests
-from PySide6 import QtCore, QtWidgets
+import traceback
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget, QMessageBox, QMainWindow
 
@@ -181,6 +181,7 @@ class ClientWidget(QMainWindow):
         except requests.exceptions.ConnectionError as e:
             # toDo: add translate kz, ru
             QMessageBox.warning(self, self._tr('Error'), self._tr('Connection error: {0}').format(e))
+            print(traceback.format_exc())
         except BotApiMessageException as exception:
             QMessageBox.warning(self, self._tr('Error'), str(exception))
 
