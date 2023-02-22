@@ -225,6 +225,15 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
+    def remove_bot_image(self, bot: BotDescription) -> None:
+        """
+        Удаление картинки бота.
+        Args:
+            bot: описание бота.
+        """
+        pass
+
+    @abstractmethod
     def delete_bot(self, bot_id: int) -> None:
         """
         Удалить бота

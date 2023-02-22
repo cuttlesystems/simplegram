@@ -60,6 +60,7 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
     if image_answer:
         image_answer = repr(image_answer)
         image_content = tab_from_new_line(f'await message.answer_photo(photo=types.InputFile(\'{image_answer[1:-1]}\'),  '
+
                                           f'caption=f{repr(text_of_answer)}{keyboard_if_exists})')
         answer_content = image_content
 

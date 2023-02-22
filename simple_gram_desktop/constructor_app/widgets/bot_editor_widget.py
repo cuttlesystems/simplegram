@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-import typing
+import typing, traceback
 
 from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal, QPointF, QRect
@@ -58,6 +58,7 @@ class BotEditorWidget(QWidget):
 
         self._prop_model = BotPropertiesModel()
         self._ui.bot_params_view.setModel(self._prop_model)
+        self._prop_model.set_allow_edit(False)
 
         self._connect_signals()
 
@@ -75,7 +76,7 @@ class BotEditorWidget(QWidget):
         self._add_variant_action.triggered.connect(self._on_add_variant_action)
         self._mark_start_message_action = \
             QAction(QtGui.QIcon(':icons/widgets/times_icon/first_message.png'), self._tr('Mark start message'), self)
-        self._mark_start_message_action.triggered.connect(self._mark_start_action)
+        self._mark_start_message_action.triggered.connect(self.mark_start_action)
         self._mark_error_message_action = \
             QAction(QtGui.QIcon(':icons/widgets/times_icon/error_message.png'), self._tr('Mark error message'), self)
         self._mark_error_message_action.triggered.connect(self._on_mark_error_action)
@@ -140,24 +141,6 @@ class BotEditorWidget(QWidget):
 
         QtCore.QTimer.singleShot(0, self._on_after_set_bot)
 
-    def setup_tool_stack(self, tool: ToolStackWidget, state_bot: bool):
-        assert isinstance(tool, ToolStackWidget)
-        assert isinstance(state_bot, bool)
-        self._tool_stack_widget = tool
-        
-        self._tool_stack_widget.delete_variant_signal.connect(self._on_delete_variant)
-        self._tool_stack_widget.mark_as_start_signal.connect(self._on_mark_start_button)
-        self._tool_stack_widget.add_variant_signal.connect(self._on_add_variant_button)
-        self._tool_stack_widget.mark_as_error_signal.connect(self._on_mark_error_button)
-        self._tool_stack_widget.add_message_signal.connect(self._on_add_new_message)
-        self._tool_stack_widget.generate_bot_signal.connect(self._on_generate_bot)
-        self._tool_stack_widget.start_bot_signal.connect(self._on_start_bot)
-        self._tool_stack_widget.stop_bot_signal.connect(self._on_stop_bot)
-        self._tool_stack_widget.read_bot_logs_signal.connect(self._on_read_bot_logs)
-        self._tool_stack_widget.delete_message_signal.connect(self._on_delete_message)
-
-        self._tool_stack_widget.init_switch_toggle(state_bot)
-
     def _on_after_set_bot(self):
         # небольшое обходное решение, чтобы произвести центрирование области
         scene_rect = self._bot_scene.itemsBoundingRect()
@@ -167,7 +150,7 @@ class BotEditorWidget(QWidget):
         # сигналы, которые испускает сцена подключаем через QtCore.Qt.ConnectionType.QueuedConnection
         # (чтобы завершился обработчик клика)
         self._bot_scene.request_add_new_variant.connect(
-            self._on_bot_scene_add_new_variant)
+            self.on_bot_scene_add_new_variant)
 
         self._bot_scene.request_change_message.connect(
             self._on_change_message)
@@ -195,7 +178,7 @@ class BotEditorWidget(QWidget):
     def _on_generate_bot_action(self, triggered: bool):
         self.__generate_bot()
 
-    def _on_generate_bot(self):
+    def on_generate_bot(self):
         self.__generate_bot()
 
     def __generate_bot(self):
@@ -204,11 +187,12 @@ class BotEditorWidget(QWidget):
             self._bot_api.generate_bot(self._bot)
         except Exception as e:
             self._process_exception(e)
+            print(traceback.format_exc())
 
     def _on_read_bot_logs_action(self, triggered: bool):
         self.__read_bot_logs()
 
-    def _on_read_bot_logs(self) -> None:
+    def on_read_bot_logs(self) -> None:
         self.__read_bot_logs()
 
     def __read_bot_logs(self) -> None:
@@ -274,13 +258,13 @@ class BotEditorWidget(QWidget):
 
         self._actual_actions_state()
 
-    def _on_add_variant_button(self):
+    def on_add_variant_button(self):
         self._add_variant()
 
     def _on_add_variant_action(self):
         self._add_variant()
 
-    def _on_bot_scene_add_new_variant(self, _message: BotMessage, _variants: typing.List[BotVariant]):
+    def on_bot_scene_add_new_variant(self, _message: BotMessage, _variants: typing.List[BotVariant]):
         self._add_variant()
 
     def _on_change_message(self, block: BlockGraphicsItem, variants: typing.List[BotVariant]):
@@ -328,12 +312,13 @@ class BotEditorWidget(QWidget):
                     self._tr('Error'),
                     self._tr('Variant changing error: {0}').format(str(exception))
                 )
+                print(traceback.format_exc())
 
     def _on_start_bot_action(self):
         self._tool_stack_widget.init_switch_toggle(True)
         self.__start_bot()
 
-    def _on_start_bot(self):
+    def on_start_bot(self):
         self.__start_bot()
 
     def __start_bot(self):
@@ -342,12 +327,13 @@ class BotEditorWidget(QWidget):
             self.update_state_bot.emit()
         except Exception as e:
             self._process_exception(e)
+            print(traceback.format_exc())
 
     def _on_stop_bot_action(self):
         self._tool_stack_widget.init_switch_toggle(False)
         self.__stop_bot()
 
-    def _on_stop_bot(self):
+    def on_stop_bot(self):
         self.__stop_bot()
 
     def __stop_bot(self):
@@ -356,11 +342,12 @@ class BotEditorWidget(QWidget):
             self.update_state_bot.emit()
         except Exception as e:
             self._process_exception(e)
+            print(traceback.format_exc())
 
     def _on_delete_message_action(self):
         self.__delete_message()
 
-    def _on_delete_message(self):
+    def on_delete_message(self):
         self.__delete_message()
 
     def __delete_message(self):
@@ -374,7 +361,7 @@ class BotEditorWidget(QWidget):
     def _on_mark_error_action(self, triggered: bool) -> None:
         self.__mark_as_error()
 
-    def _on_mark_error_button(self) -> None:
+    def on_mark_error_button(self) -> None:
         self.__mark_as_error()
 
     def __mark_as_error(self) -> None:
@@ -400,7 +387,7 @@ class BotEditorWidget(QWidget):
                 self._tr('Error'),
                 self._tr('Select only one message to set as error message'))
 
-    def _on_delete_variant(self):
+    def on_delete_variant(self):
         deleted_variant: typing.Optional[BotVariant] = None
         block_with_deleted_variant: typing.Optional[BlockGraphicsItem] = None
         block_graphics = self._bot_scene.get_selected_blocks_graphics()
@@ -416,10 +403,14 @@ class BotEditorWidget(QWidget):
 
         self._actual_actions_state()
 
-    def _mark_start_action(self, triggered: bool) -> None:
+    def mark_start_action(self, triggered: bool) -> None:
         self.__mark_as_start()
 
-    def _on_mark_start_button(self) -> None:
+    def setup_tool_stack(self, tool: ToolStackWidget):
+        assert isinstance(tool, ToolStackWidget)
+        self._tool_stack_widget = tool
+
+    def on_mark_start_button(self) -> None:
         self.__mark_as_start()
 
     def __mark_as_start(self) -> None:
@@ -448,7 +439,7 @@ class BotEditorWidget(QWidget):
     def _on_add_new_message_action(self, triggered: bool) -> None:
         self.__add_new_message()
 
-    def _on_add_new_message(self) -> None:
+    def on_add_new_message(self) -> None:
         self.__add_new_message()
 
     def __add_new_message(self) -> None:
@@ -466,6 +457,7 @@ class BotEditorWidget(QWidget):
         if not isinstance(exception, NotImplementedError):
             exception_mes = str(exception)
             print(exception_mes)
+            print(traceback.format_exc())
             QMessageBox.warning(self, 'Error', exception_mes)
         else:
             raise
