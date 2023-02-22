@@ -18,6 +18,7 @@ if __name__ == '__main__':
               f'next_message_id={message.next_message_id}, '
               f'variable={message.variable is None} '
               f'messagetype={message.message_type} '
+              f'photo={message.photo} '
               f'variable={message.variable}')
         variants = bot_api.get_variants(message)
         for variant in variants:

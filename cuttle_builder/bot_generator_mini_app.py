@@ -50,6 +50,8 @@ class BotGeneratorMiniApp(BotGeneratorDb):
         """
         self._temp_dir = self.create_directory()
         for message in messages:
+            if message.photo is None:
+                continue
             photo_bytes = self._bot_api.get_image_data_by_url(message.photo)
             file_format = self.get_file_format(message.photo)
             file_path = str(Path(self._temp_dir) / f'{message.id}.{file_format}')

@@ -32,8 +32,16 @@ class BotGeneratorDb(BotGenerator):
             bot=bot,
             bot_path=bot_dir)
 
-    def _preprocess_data(self, messages: typing.List[BotMessage]):
+    def _preprocess_data(self, messages: typing.List[BotMessage]) -> None:
+        """
+        Переопределена в BotGeneratorMiniApp
+        Args:
+            messages (List[BotMessage]): список BotMessage
+        """
         pass
 
-    def _after_finished(self):
+    def _after_finished(self) -> None:
+        """
+        Переопределена в BotGeneratorMiniApp
+        """
         pass
