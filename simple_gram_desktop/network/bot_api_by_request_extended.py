@@ -8,7 +8,7 @@ from b_logic.bot_api.i_bot_api import SignUpException, UserAuthenticationExcepti
     DeletingImageException, GettingMessagesVariantsListException, CreatingVariantException, EditingVariantException, \
     LinkingVariantWithNextMessageException, DeletingVariantException, GettingBotCommandsException, \
     CreatingCommandException, BotGenerationException, BotStartupException, BotStopException, \
-    GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException
+    GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException, DeletingVideoException
 from b_logic.data_objects import BotDescription, BotMessage, ButtonTypesEnum, BotVariant, BotCommand, BotLogs
 from common.localisation import tran
 # from network.bot_api_by_requests import BotApiByRequests
@@ -115,6 +115,13 @@ class BotApiByRequestsProxy(BotApiByRequests):
         except DeletingImageException as e:
             raise BotApiMessageException(
                 self._tr('Deleting image error: {0}').format(e.response.text))
+
+    def remove_message_video(self, message: BotMessage) -> None:
+        try:
+            super().remove_message_video(message)
+        except DeletingVideoException as e:
+            raise BotApiMessageException(
+                self._tr('Deleting video error: {0}').format(e.response.text))
 
     def delete_message(self, message: BotMessage):
         try:

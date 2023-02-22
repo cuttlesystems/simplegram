@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>730</width>
-    <height>550</height>
+    <height>573</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,7 +75,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="message_image">
+        <widget class="QLabel" name="message_image_label">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -144,7 +144,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="message_video">
+        <widget class="QLabel" name="message_video_label">
          <property name="text">
           <string>Video file is not attached</string>
          </property>

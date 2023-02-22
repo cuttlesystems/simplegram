@@ -302,7 +302,6 @@ class BotEditorWidget(QWidget):
 
             next_message = editor_dialog.get_next_message()
             message.next_message_id = next_message.id if next_message is not None else None
-            print(f'Удаляем имэйдж? {editor_dialog.get_image_must_be_removed_state()}')
             if editor_dialog.get_image_must_be_removed_state():
                 self._bot_api.remove_message_image(message)
             if editor_dialog.get_video_must_be_removed_state():

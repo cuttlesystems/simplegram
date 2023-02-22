@@ -41,7 +41,7 @@ class MessageEditorDialog(QDialog):
         self._message_image_filename: Optional[str] = None
 
         self._message_video_path: Optional[str] = None
-        self._message_video_loaded_state: Optional[str] = None
+        self._message_video_loaded_state: bool = False
 
         self._image_must_be_removed_state: bool = False
         self._video_must_be_removed_state: bool = False
@@ -55,11 +55,11 @@ class MessageEditorDialog(QDialog):
         self._ui.radio_inline.setChecked(message.keyboard_type == ButtonTypesEnum.INLINE)
 
         # отображаем изображение для сообщения
-        self._ui.message_image.clear()
+        self._ui.message_image_label.clear()
         if message.photo:
             self._show_image(self._bot_api.get_image_data_by_url(message.photo))
         if message.video:
-            self._ui.message_video.setText('Video file is attached')
+            self._ui.message_video_label.setText('Video file is attached')
 
         # задаем тип сообщения
         self._ui.message_variants_radio.setChecked(message.message_type == MessageTypeEnum.VARIANTS)
@@ -107,15 +107,15 @@ class MessageEditorDialog(QDialog):
             image = QtGui.QImage()
             image.loadFromData(image_data)
             image_size = self._calculate_optimal_image_size(image.width(), image.height())
-            self._ui.message_image.setFixedWidth(image_size.width())
-            self._ui.message_image.setFixedHeight(image_size.height())
-            self._ui.message_image.setPixmap(QtGui.QPixmap(image))
+            self._ui.message_image_label.setFixedWidth(image_size.width())
+            self._ui.message_image_label.setFixedHeight(image_size.height())
+            self._ui.message_image_label.setPixmap(QtGui.QPixmap(image))
         else:
-            self._ui.message_image.setFixedSize(
+            self._ui.message_image_label.setFixedSize(
                 self._IMAGE_NOT_FOUND_WINDOW_WIDTH, self._IMAGE_NOT_FOUND_WINDOW_HEIGHT)
-            self._ui.message_image.setStyleSheet("border: 1px solid #cecdd1;")
-            self._ui.message_image.setText('Error!\nImage not found')
-            self._ui.message_image.setAlignment(QtCore.Qt.AlignCenter)
+            self._ui.message_image_label.setStyleSheet("border: 1px solid #cecdd1;")
+            self._ui.message_image_label.setText('Error!\nImage not found')
+            self._ui.message_image_label.setAlignment(QtCore.Qt.AlignCenter)
 
     def _calculate_optimal_image_size(self, width: int, height: int) -> QSize:
         assert isinstance(height, int)
@@ -160,10 +160,10 @@ class MessageEditorDialog(QDialog):
             self._video_must_be_removed_state = False
             self._message_video_path = full_path_to_file
             self._message_video_loaded_state = True
-            self._ui.message_video.setText('Video file is attached')
+            self._ui.message_video_label.setText('Video file is attached')
 
     def _on_remove_image(self, checked: bool) -> None:
-        self._ui.message_image.clear()
+        self._ui.message_image_label.clear()
         self._image_must_be_removed_state = True
         self._message_image_path = None
         self._message_image_filename = None
@@ -172,7 +172,7 @@ class MessageEditorDialog(QDialog):
         self._video_must_be_removed_state = True
         self._message_video_path = None
         self._message_video_loaded_state = False
-        self._ui.message_video.setText('Video file is not attached')
+        self._ui.message_video_label.setText('Video file is not attached')
 
     def get_message_image_path(self) -> Optional[str]:
         return self._message_image_path
@@ -186,7 +186,7 @@ class MessageEditorDialog(QDialog):
     def get_message_video_path(self) -> Optional[str]:
         return self._message_video_path
 
-    def get_message_video_loaded_state(self) -> Optional[bool]:
+    def get_message_video_loaded_state(self) -> bool:
         return self._message_video_loaded_state
 
     def get_video_must_be_removed_state(self) -> bool:

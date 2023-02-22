@@ -3,13 +3,13 @@ from typing import Optional
 
 def get_binary_data_from_file(path_to_file: str) -> Optional[bytes]:
     """
-    Конвертация файла по path в байты.
+    Чтение содержимого файла в байт режиме.
 
     Args:
         path_to_file: путь к файлу.
 
     Returns:
-        изображения в байтах.
+        содержимое файла в байтах.
     """
     assert isinstance(path_to_file, str)
     image_data = None
