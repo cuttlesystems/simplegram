@@ -21,7 +21,6 @@ class ColorScheme:
 class ToolStackWidget(QWidget):
     _BORDER_RADIUS_BACKGROUND = 12
 
-    #toDo: убрать bool
     add_message_signal = Signal()
     add_variant_signal = Signal()
     delete_message_signal = Signal()
@@ -49,18 +48,8 @@ class ToolStackWidget(QWidget):
         self._ui.mark_start_message_button.clicked.connect(self._on_mark_as_start)
         self._ui.mark_error_message_button.clicked.connect(self._on_mark_as_error)
         self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
+        self._ui.generate_logs_button.clicked.connect(self._on_read_bot_logs)
 
-        #self._ui.action_manual_save_button.triggered.connect(self._on_apply_button)
-        #self._ui.action_read_logs_button.triggered.connect(self._on_read_bot_logs)
-
-        # toDo: посмотреть почему он выеживался на _tr()
-        #self._add_message_action: QAction = QtGui.QAction(
-        #    self._ui.add_message_button.icon(), 'Add new message', self)
-        #self._ui.add_variant_button.insertAction(0, self._add_message_action)
-        #self._add_message_action.triggered.connect(lambda:
-        #                                           QtWidgets.QMessageBox.warning(self, "Gugabuga", "tatatatata"))
-        #self._add_message_action.triggered.connect(self._on_add_new_message)
-        #self._ui.add_variant_button.clicked.connect()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         # toDo: If this will be used in the future, then put the colors in the parameters
@@ -73,6 +62,10 @@ class ToolStackWidget(QWidget):
             self._BORDER_RADIUS_BACKGROUND,
             self._BORDER_RADIUS_BACKGROUND)
         paint_engine.end()
+
+    def init_switch_toggle(self, state: bool):
+        assert isinstance(state, bool)
+        self._ui.switch_bot.setChecked(state)
 
     def _switch_toggle(self, state: int):
         assert isinstance(state, int)
@@ -92,6 +85,10 @@ class ToolStackWidget(QWidget):
     def set_mark_start_enabled(self, enabled: bool) -> None:
         assert isinstance(enabled, bool)
         self._ui.mark_start_message_button.setEnabled(enabled)
+
+    def set_generate_bot_enabled(self, enabled: bool) -> None:
+        assert isinstance(enabled, bool)
+        self._ui.generate_bot_button.setEnabled(enabled)
 
     def set_mark_error_enabled(self, enabled: bool) -> None:
         assert isinstance(enabled, bool)

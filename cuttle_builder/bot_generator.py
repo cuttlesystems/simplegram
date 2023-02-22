@@ -10,6 +10,7 @@ from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonT
 from cuttle_builder.builder.additional.db_bot_data_preprocessor.db_bot_data_preprocessor import DbBotDataPreprocessor
 from cuttle_builder.builder.additional.helpers.find_functions import find_previous_messages, find_previous_variants, \
     find_variants_of_message
+from cuttle_builder.builder.additional.helpers.tab_from_new_line import tab_from_new_line
 from cuttle_builder.builder.additional.helpers.user_message_validator import UserMessageValidator
 from cuttle_builder.create_dir_if_doesnt_exist import create_dir_if_it_doesnt_exist
 from cuttle_builder.exceptions.bot_gen_exceptions import NoOneMessageException, TokenException, NoStartMessageException
@@ -59,11 +60,11 @@ class BotGenerator:
         self._commands: List[BotCommand] = preprocessor.commands
         self._start_message_id = preprocessor.bot.start_message_id
         self._states: List[int] = []
-        self._file_manager = APIFileCreator(preprocessor.bot_directory)
+        self._file_manager = APIFileCreator(str(preprocessor.bot_directory))
         self._token = preprocessor.bot.bot_token
         self._bot_directory = preprocessor.bot_directory
         self._logs_file_path = self._get_bot_logs_file_path(preprocessor.bot, preprocessor.bot_directory)
-        self._media_directory = os.path.join(preprocessor.bot_directory, 'media')
+        self._media_directory = str(Path(preprocessor.bot_directory) / 'media')
         self._user_message_validator = UserMessageValidator(preprocessor.messages)
 
         self._error_message_id = preprocessor.bot.error_message_id
@@ -111,17 +112,24 @@ class BotGenerator:
                 next_message_handler_name = self._get_handler_name_for_message(next_message.id)
                 additional_functions_under_answer += self._tab_from_new_line(f'from .get_{next_message.id} import handler_message_{next_message_handler_name}\n')
                 additional_functions_under_answer += f'await handler_message_{next_message_handler_name}(message, state)'
-
         # создать файл с изображением в директории бота и вернуть адрес
         if message.photo is not None:
-            image = self.create_image_file_in_bot_directory(
+            image = self.create_file_in_bot_directory(
                 full_path_to_source_file=message.photo,
                 path_to_bot_media_dir=self._media_directory,
-                filename='message' + str(message.id),
-                file_format=message.photo_file_format
+                filename=f'message{message.id}'
             )
         else:
             image = None
+
+        if message.video is not None:
+            video = self.create_file_in_bot_directory(
+                full_path_to_source_file=message.video,
+                path_to_bot_media_dir=self._media_directory,
+                filename=f'message{message.id}'
+            )
+        else:
+            video = None
 
         if message.id == self._start_message_id:
             # Создание клавиатуры для сообщения.
@@ -138,6 +146,7 @@ class BotGenerator:
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
                 image_answer=image,
+                video_answer=video,
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_start_handler,
@@ -162,6 +171,7 @@ class BotGenerator:
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
                 image_answer=image,
+                video_answer=video,
                 kb=keyboard_name,
                 handler_type=ButtonTypesEnum.REPLY,
                 extended_imports=imports_for_handler,
@@ -189,6 +199,7 @@ class BotGenerator:
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
                 image_answer=image,
+                video_answer=video,
                 kb=keyboard_name,
                 handler_type=current_message_of_variant.keyboard_type,
                 extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
@@ -222,6 +233,7 @@ class BotGenerator:
                     state_to_set_name=self._get_handler_name_for_message(message.id),
                     text_of_answer=text,
                     image_answer=image,
+                    video_answer=video,
                     kb=keyboard_name,
                     handler_type=ButtonTypesEnum.REPLY,
                     extended_imports=imports_for_handler if imports_generation_counter == 0 else '',
@@ -235,10 +247,12 @@ class BotGenerator:
 
     def create_image_file_in_bot_directory(self, full_path_to_source_file: str, path_to_bot_media_dir: str,
                                            filename: str, file_format: str) -> str:
+        # todo 01.03.23 удалить метод, когда уберем photo file_format
         assert isinstance(full_path_to_source_file, str)
         assert isinstance(path_to_bot_media_dir, str)
         assert isinstance(filename, str)
         assert isinstance(file_format, str)
+
         Path(path_to_bot_media_dir).mkdir(exist_ok=True)
         full_path_to_file_in_bot_dir = path_to_bot_media_dir + os.path.sep + filename + '.' + file_format
         try:
@@ -247,6 +261,24 @@ class BotGenerator:
             result = full_path_to_file_in_bot_dir
         except FileNotFoundError as error:
             print(f'----------->>>Logging error: {error}')
+            result = None
+        return result
+
+    def create_file_in_bot_directory(self, full_path_to_source_file: str, path_to_bot_media_dir: str,
+                                           filename: str) -> str:
+        # можно вызывать только этот метод для создания файлов, видео и фото
+        assert isinstance(full_path_to_source_file, str)
+        assert isinstance(path_to_bot_media_dir, str)
+        assert isinstance(filename, str)
+        file_format = self._file_manager.get_file_format(full_path_to_source_file)
+        Path(path_to_bot_media_dir).mkdir(exist_ok=True)
+        full_path_to_file_in_bot_dir = str(Path(path_to_bot_media_dir) / f'{filename}{file_format}')
+        try:
+            shutil.copyfile(full_path_to_source_file, full_path_to_file_in_bot_dir)
+            assert os.path.exists(full_path_to_file_in_bot_dir)
+            result = full_path_to_file_in_bot_dir
+        except FileNotFoundError as error:
+            print(f'----------->>>Copy bot image error: {error}')
             result = None
         return result
 
@@ -375,7 +407,7 @@ class BotGenerator:
 
     def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
                               state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
-                              kb: str, handler_type: ButtonTypesEnum, extended_imports: str,
+                              video_answer: Optional[str], kb: str, handler_type: ButtonTypesEnum, extended_imports: str,
                               additional_functions_from_top_of_answer: str, additional_functions_under_answer: str) -> str:
         """Подготовка данных и выбор генерируемого хэндлера в зависимости от типа клавиатуры
 
@@ -386,9 +418,12 @@ class BotGenerator:
             state_to_set_name (str): id of current state
             text_of_answer (str): text of answer
             image_answer (Optional[str]): path to image file in bot directory
+            video_answer (Optional[str]): path to video file in bot directory
             kb (str): keyboard of answer
             handler_type (ButtonTypesEnum): type of handler (inline or reply)
             extended_imports: __
+            additional_functions_from_top_of_answer (str): functions over the answer message
+            additional_functions_under_answer (str): functions under the answer message
 
         Returns:
             str: generated code for handler with state and handled text
@@ -406,12 +441,13 @@ class BotGenerator:
 
         if handler_type == ButtonTypesEnum.REPLY:
             message_handler = create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
-                                                           state_to_set_name, text_of_answer, image_answer, kb,
-                                                           additional_functions_from_top_of_answer,
+                                                           state_to_set_name, text_of_answer, image_answer,
+                                                           video_answer, kb, additional_functions_from_top_of_answer,
                                                            additional_functions_under_answer)
         elif handler_type == ButtonTypesEnum.INLINE:
             message_handler = create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
-                                                            state_to_set_name, text_of_answer, image_answer, kb,
+                                                            state_to_set_name, text_of_answer, image_answer,
+                                                            video_answer, kb,
                                                             additional_functions_from_top_of_answer,
                                                             additional_functions_under_answer)
         return message_handler
@@ -430,7 +466,7 @@ class BotGenerator:
         assert isinstance(imports_file_name, str)
         imports = str(
             CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'imports' / f'{imports_file_name}.txt')
-        extended_imports = self._file_manager.read_file(imports)
+        extended_imports = self._file_manager.read_text_file_content(imports)
         return extended_imports
 
     def _get_keyboard_name_for_message(self, message_id: int) -> Optional[str]:
@@ -470,12 +506,4 @@ class BotGenerator:
         return prepared_handler_inits
 
     def _tab_from_new_line(self, code: str) -> str:
-        """
-        Prepare generate code: replace next string to new line and add tabulation
-        Args:
-            code (str): code, that will writen in file
-        Returns:
-            prepared string, that move next string to new line and add tabulation
-        """
-        assert isinstance(code, str)
-        return f'{code}\n\t'
+        return tab_from_new_line(code)

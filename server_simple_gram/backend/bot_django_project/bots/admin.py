@@ -8,7 +8,7 @@ admin.site.index_title = 'Bot constructor'
 
 
 class BotAdmin(admin.ModelAdmin):
-    list_display = ['id', 'must_be_started', 'name', 'owner', 'start_message']
+    list_display = ['id', 'must_be_started', 'must_be_generated', 'name', 'owner', 'start_message']
     list_filter = ('owner',)
 
 
