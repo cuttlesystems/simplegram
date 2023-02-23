@@ -271,7 +271,7 @@ class BotEditorForm(QMainWindow):
         selected_messages_number = len(selected_messages)
         if selected_messages_number == 1:
             selected_message = selected_messages[0]
-            self._bot_api.set_bot_start_message(self._bot, selected_message)
+            self._bot_api.set_bot_start_message(self._bot, selected_message.id)
 
             updated_bot_info = self._bot_api.get_bot_by_id(self._bot.id)
             self._bot_scene.set_bot_scene(updated_bot_info)
@@ -294,7 +294,7 @@ class BotEditorForm(QMainWindow):
         selected_messages_number = len(selected_messages)
         if selected_messages_number == 1:
             selected_message = selected_messages[0]
-            self._bot_api.set_bot_error_message(self._bot, selected_message)
+            self._bot_api.set_bot_error_message(self._bot, selected_message.id)
 
             updated_bot_info = self._bot_api.get_bot_by_id(self._bot.id)
             self._bot_scene.set_bot_scene(updated_bot_info)

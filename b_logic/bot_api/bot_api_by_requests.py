@@ -240,21 +240,13 @@ class BotApiByRequests(IBotApi):
             # raise BotApiException(self._tr('Settings bot start message error: {0}').format(
             #     response.text))
 
-    def set_bot_error_message(self, bot: BotDescription, error_message: BotMessage) -> None:
-        """
-        Установить ошибочное сообщение для бота.
-
-        Args:
-            bot: объект бота
-            error_message: объект сообщения, которое будет установлено в
-            качестве ошибочного
-        """
+    def set_bot_error_message(self, bot: BotDescription, error_message_id: Optional[int]) -> None:
         assert isinstance(bot, BotDescription)
-        assert isinstance(error_message, BotMessage)
+        assert isinstance(error_message_id, Optional[int])
         response = requests.patch(
             url=self._suite_url + f'api/bots/{bot.id}/',
             json={
-                'error_message': error_message.id
+                'error_message': error_message_id
             },
             headers=self._get_headers()
         )
