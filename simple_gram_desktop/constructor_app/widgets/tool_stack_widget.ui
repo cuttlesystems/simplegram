@@ -211,6 +211,43 @@ background:rgba(70, 170, 255, 140);
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="unmark_start_message_button">
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton{
+border:none;
+background:transparent;
+border-radius:10px;
+}
+
+QPushButton::hover{
+background:rgb(70, 170, 255);
+}
+
+QPushButton::pressed{
+background:rgba(70, 170, 255, 140);
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset theme="process-stop"/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>34</width>
+       <height>34</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="mark_error_message_button">
      <property name="minimumSize">
       <size>
