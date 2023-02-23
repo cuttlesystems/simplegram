@@ -280,8 +280,10 @@ def write_backend_server_credentials() -> None:
         'username': backend_server_credentials.username,
         'password': backend_server_credentials.password
     }
-    if not Path(get_backend_server_credentials_json_file_path().parent).exists():
-        get_backend_server_credentials_json_file_path().parent.mkdir(exist_ok=True, parents=True)
+    # 'credentials_for_deploy' folder
+    credentials_for_deploy_dir_path = get_backend_server_credentials_json_file_path().parent
+    if not Path(credentials_for_deploy_dir_path).exists():
+        credentials_for_deploy_dir_path.mkdir(exist_ok=True, parents=True)
     with open(get_backend_server_credentials_json_file_path(), 'wt', encoding='utf-8') as conffile:
         json.dump(params, conffile)
     print(
@@ -417,8 +419,10 @@ def docker_create_image_locally():
     create_image_output_log_path = (
         get_project_root_dir().parent / 'deploy_logs' / 'docker_create_image_locally_output.log'
     )
-    if not Path(create_image_output_log_path.parent).exists():
-        create_image_output_log_path.parent.mkdir(exist_ok=True, parents=True)
+    # 'deploy_logs' folder
+    deploy_logs_dir_path = create_image_output_log_path.parent
+    if not Path(deploy_logs_dir_path).exists():
+        deploy_logs_dir_path.mkdir(exist_ok=True, parents=True)
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'\nLocal docker image creation process started (based on \'docker-compose.yml\' file)'
@@ -460,7 +464,7 @@ def docker_create_image_locally():
         f'\nDocker image for \'web\' service container was created locally and ready to be pushed '
         f'into private docker registry '
         f'\nLog file of image creation process - \'docker_create_image_locally_output.log\' - '
-        f'created in directory:\n{create_image_output_log_path.parent}'
+        f'created in directory:\n{deploy_logs_dir_path}'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
 
@@ -549,8 +553,10 @@ def docker_push_tagged_local_image_to_registry(docker_image_tag_to_push: Path) -
     push_image_output_log_path = (
         get_project_root_dir().parent / 'deploy_logs' / 'docker_push_tagged_local_image_to_registry_output.log'
     )
-    if not Path(push_image_output_log_path.parent).exists():
-        push_image_output_log_path.parent.mkdir(exist_ok=True, parents=True)
+    # 'deploy_logs' folder
+    deploy_logs_dir_path = push_image_output_log_path.parent
+    if not Path(deploy_logs_dir_path).exists():
+        deploy_logs_dir_path.mkdir(exist_ok=True, parents=True)
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'\nPushing of tagged local docker image - \'ramasuchka.kz:4443/infra-web:latest\' - started'
@@ -1237,8 +1243,10 @@ def docker_pull_according_to_registry_tagged_image_to_remote(
         get_project_root_dir().parent / 'deploy_logs' / 'docker_pull_image_to_remote.log'
     )
     # os.chdir(get_infra_directory_path_local())
-    if not Path(pull_image_output_log_path.parent).exists():
-        pull_image_output_log_path.parent.mkdir(exist_ok=True, parents=True)
+    # 'deploy_logs' folder
+    deploy_logs_dir_path = pull_image_output_log_path.parent
+    if not Path(deploy_logs_dir_path).exists():
+        deploy_logs_dir_path.mkdir(exist_ok=True, parents=True)
     with open(pull_image_output_log_path, 'wt', encoding='utf-8') as pull_image_output:
         ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
             cmd
