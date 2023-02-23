@@ -27,6 +27,8 @@
         <file>widgets/times_icon/open_bot_in_editor.png</file>
         <file>widgets/times_icon/clear.png</file>
         <file>widgets/times_icon/open_file.png</file>
+        <file>widgets/times_icon/stop_bot_gray.png</file>
+
         <file>widgets/times_icon/add_variant.png</file>
         <file>widgets/times_icon/add_message.png</file>
         <file>widgets/times_icon/delete_message.png</file>
