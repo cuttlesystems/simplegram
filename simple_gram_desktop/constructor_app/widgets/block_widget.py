@@ -10,6 +10,8 @@ class BlockWidget(QWidget):
         super().__init__(parent)
         self._ui = Ui_BlockWidget()
         self._ui.setupUi(self)
+        self.setMouseTracking(True)
 
     def _tr(self, text: str) -> str:
         return tran('BlockWidget.manual', text)
+

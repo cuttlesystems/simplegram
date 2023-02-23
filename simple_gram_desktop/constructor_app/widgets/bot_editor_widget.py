@@ -330,6 +330,8 @@ class BotEditorWidget(QWidget):
             self.update_state_bot.emit()
         except Exception as e:
             self._process_exception(e)
+            QMessageBox(self, 'Error', str(e))
+            self._tool_stack_widget.init_switch_toggle(False)
             print(traceback.format_exc())
 
     def _on_stop_bot_action(self):
@@ -345,6 +347,7 @@ class BotEditorWidget(QWidget):
             self.update_state_bot.emit()
         except Exception as e:
             self._process_exception(e)
+            QMessageBox(self, 'Error', str(e))
             print(traceback.format_exc())
 
     def _on_delete_message_action(self):

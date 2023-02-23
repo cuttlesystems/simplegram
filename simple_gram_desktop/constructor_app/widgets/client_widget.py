@@ -9,12 +9,10 @@ from b_logic.bot_api.i_bot_api import BotApiException, IBotApi
 from common.localisation import tran
 from constructor_app.utils.get_image_from_bytes import get_pixmap_image_from_bytes
 from constructor_app.widgets.selected_project_widget import DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH
-from constructor_app.widgets.tool_stack_widget import ToolStackWidget
 
 from constructor_app.widgets.ui_client_widget import Ui_ClientWidget
 from constructor_app.widgets.bot_extended import BotExtended
 from network.bot_api_by_request_extended import BotApiMessageException
-from constructor_app.widgets.selected_project_widget import SelectedProjectWidget
 from constructor_app.widgets.bot_editor_widget import BotEditorWidget
 from constructor_app.widgets.settings_widget import SettingsWidget
 
@@ -128,11 +126,9 @@ class ClientWidget(QMainWindow):
         self._ui.centrall_pannel_widget.setCurrentIndex(self._SELECTED_BOT_INDEX_PAGE)
         bot_extended: BotExtended = self._ui.bot_list.get_current_bot()
         assert bot_extended is not None
-        bot = bot_extended.bot_description
-        bot_state = bot_extended.bot_state
+        bot = bot_extended
 
-        # toDo: Refactoring set_bot(botExtended)
-        self._ui.bot_show_page.set_bot(bot, bot_state)
+        self._ui.bot_show_page.set_bot(bot)
         self._ui.tool_stack.hide()
         # toDo: Postpone init qss in new method autoInitializeStyleSheet
         self._init_stylesheet_stackedwidget(0)
