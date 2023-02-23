@@ -5,7 +5,14 @@ from datetime import datetime
 from pytz import timezone
 import requests
 
-from git_utils.genererate_git_info_file import get_project_root_dir
+
+def mini_app_dir() -> Path:
+    """
+    Возвращает полный путь до корневой директории проекта.
+
+    Returns: Полный путь до корневой директории проекта.
+    """
+    return Path(__file__).resolve().parent
 
 
 def get_commit_info_from_github_api() -> dict:
@@ -58,4 +65,4 @@ def create_json_file_with_commit_data(directory: Path, commit_data: dict) -> Non
 
 if __name__ == '__main__':
     commit_data_dict = get_commit_info_from_github_api()
-    create_json_file_with_commit_data(directory=get_project_root_dir(), commit_data=commit_data_dict)
+    create_json_file_with_commit_data(directory=mini_app_dir(), commit_data=commit_data_dict)
