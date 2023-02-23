@@ -22,6 +22,7 @@ from deploy_server_utils import get_backend_server_credentials, gen_ssh_key_pair
 # from deploy_server_utils import add_pub_key_to_remote_server
 from deploy_server_utils import docreg_login_remotely
 from scripts.get_commit_info_from_github_api import get_commit_info_from_github_api, create_json_file_with_commit_data
+from scripts.git_utils.genererate_git_info_file import create_file_with_info_about_last_commit
 
 
 def check_git_python_is_installed() -> bool:
@@ -212,12 +213,16 @@ if __name__ == '__main__':
         print(f'Current active branch is: {repo.active_branch}')
 
         origin.pull()
+        # repo.remotes.origin.pull(repo.active_branch)
+        # repo.git.pull('origin', repo.active_branch)
+
         print(f'\nGit pull from \'{origin}/{branch}\' completed\n')
-    # exit(0)
+
     # get commit info from git
     # get_commit_info_from_github_api(token_with_bearer)
-    create_json_file_with_commit_data(commit_data=get_commit_info_from_github_api(token_with_bearer))
-
+    # create_json_file_with_commit_data(commit_data=get_commit_info_from_github_api(token_with_bearer))
+    create_file_with_info_about_last_commit()
+    # exit(0)
     # credentials to establish SSH connection with remote server where the application backend is deployed
     backend_server_credentials = get_backend_server_credentials()
 
@@ -275,7 +280,7 @@ if __name__ == '__main__':
     # create docker image locally through 'subprocess.run( )' to push it into private docker registry later
     #  sudo docker-compose build --no-cache web
     # docker_create_image_locally()
-
+    # exit(0)
     # tag local 'infra-web' docker image as 'ramasuchka.kz:4443/infra-web:latest' through 'subprocess.run( )'
     #  to push it into private docker registry
     #  sudo docker tag infra-web ramasuchka.kz:4443/infra-web:latest

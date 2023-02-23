@@ -68,6 +68,26 @@ def get_script_dir_path() -> Path:
     return script_dir_path
 
 
+def get_project_root_dir() -> Path:
+    """
+    define function to get 'tg_bot_constructor' project directory path
+    :return:
+
+    """
+    project_root_dir = get_script_dir_path().parent.parent.parent.parent / 'deploy_folder' / 'tg_bot_constructor'
+    return project_root_dir
+
+
+def get_commit_info_file_path() -> Path:
+    """
+
+    :return:
+
+    """
+    commit_info_file_path = get_project_root_dir() / 'mini_app' / 'current_commit_info.json'
+    return commit_info_file_path
+
+
 def get_infra_directory_path_local() -> Path:
     """
     define function to determine 'infra' script file path:
@@ -76,9 +96,11 @@ def get_infra_directory_path_local() -> Path:
         script file path '../tg_bot_constructor/deploy/deploy_server/infra'
 
     """
-    infra_directory_path_local = get_script_dir_path().parent / 'infra'
+    # infra_directory_path_local = get_script_dir_path().parent / 'infra'
+    # infra_directory_path_local = get_project_root_dir() / 'infra'
+    infra_directory_path_local = get_project_root_dir() / 'deploy' / 'deploy_server' / 'infra'
     # print(f'\nPath(__file__): {Path(__file__)}')
-    # print(f'\nscript_dir_path: {script_dir_path}')
+    print(f'\ninfra_directory_path_local: {infra_directory_path_local}')
     return infra_directory_path_local
 
 
@@ -91,7 +113,9 @@ def get_docker_registry_credentials_json_file_path() -> Path:
     # путь для проверки существования файла 'backendservercredentials.json'
     #  (с данными для установления соединения по SSH с удалённым сервером)
     #  в директории "..\deploy\deploy_server\scripts"
-    docker_registry_credentials_json_file_path = get_script_dir_path() / docker_registry_credentials_json_file_name
+    docker_registry_credentials_json_file_path = (
+        get_script_dir_path().parent / 'credentials_for_deploy' / docker_registry_credentials_json_file_name
+    )
 
     # print(f'\n\'backendservercredentials.json\' file search path: {search_dir_path}')
     # # print(f'Current file name: {search_dir_path.name}')
@@ -125,6 +149,8 @@ def write_dockerregistrycredentials() -> None:
         'username': docker_registry_credentials.username,
         'password': docker_registry_credentials.password
     }
+    if not Path(get_docker_registry_credentials_json_file_path().parent).exists():
+        get_docker_registry_credentials_json_file_path().parent.mkdir(exist_ok=True, parents=True)
     with open(get_docker_registry_credentials_json_file_path(), 'wt', encoding='utf-8') as conffile:
         json.dump(params, conffile)
     # print(
@@ -213,7 +239,9 @@ def get_backend_server_credentials_json_file_path() -> Path:
     # путь для проверки существования файла 'backendservercredentials.json'
     #  (с данными для установления соединения по SSH с удалённым сервером)
     #  в директории "..\deploy\deploy_server\scripts"
-    backend_server_credentials_json_file_path = get_script_dir_path() / backend_server_credentials_json_file_name
+    backend_server_credentials_json_file_path = (
+        get_script_dir_path().parent / 'credentials_for_deploy' / backend_server_credentials_json_file_name
+    )
 
     # print(f'\n\'backendservercredentials.json\' file search path: {search_dir_path}')
     # # print(f'Current file name: {search_dir_path.name}')
@@ -252,6 +280,8 @@ def write_backend_server_credentials() -> None:
         'username': backend_server_credentials.username,
         'password': backend_server_credentials.password
     }
+    if not Path(get_backend_server_credentials_json_file_path().parent).exists():
+        get_backend_server_credentials_json_file_path().parent.mkdir(exist_ok=True, parents=True)
     with open(get_backend_server_credentials_json_file_path(), 'wt', encoding='utf-8') as conffile:
         json.dump(params, conffile)
     print(
@@ -384,13 +414,18 @@ def docker_create_image_locally():
     docker_compose_yml_file_directory_path_local = get_infra_directory_path_local()
     print(f'\n\'docker-compose.yml\' file local directory: {docker_compose_yml_file_directory_path_local}')
     os.chdir(docker_compose_yml_file_directory_path_local)
+    create_image_output_log_path = (
+        get_project_root_dir().parent / 'deploy_logs' / 'docker_create_image_locally_output.log'
+    )
+    if not Path(create_image_output_log_path.parent).exists():
+        create_image_output_log_path.parent.mkdir(exist_ok=True, parents=True)
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'\nLocal docker image creation process started (based on \'docker-compose.yml\' file)'
         f'\nWait for a while and... be patient, please:)'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
-    with open('docker_create_image_locally_output.log', 'wt', encoding='utf-8') as create_image_output:
+    with open(create_image_output_log_path, 'wt', encoding='utf-8') as create_image_output:
         result = subprocess.run(
             [
                 'docker-compose',
@@ -420,12 +455,12 @@ def docker_create_image_locally():
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'result.stdout: {result}'
-        f'result.stdout.text: {stdout_text}'
-        f'result.stderr.text: {stderr_text}'
+        f'\nresult.stdout.text: {stdout_text}'
+        f'\nresult.stderr.text: {stderr_text}'
         f'\nDocker image for \'web\' service container was created locally and ready to be pushed '
         f'into private docker registry '
         f'\nLog file of image creation process - \'docker_create_image_locally_output.log\' - '
-        f'created in directory:\n{docker_compose_yml_file_directory_path_local}'
+        f'created in directory:\n{create_image_output_log_path.parent}'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
 
@@ -511,13 +546,18 @@ def docker_push_tagged_local_image_to_registry(docker_image_tag_to_push: Path) -
     """
     # docker_image_tag_to_push = docker_tag_local_image_to_push()
     # os.chdir(docker_compose_yml_file_directory_path_local)
+    push_image_output_log_path = (
+        get_project_root_dir().parent / 'deploy_logs' / 'docker_push_tagged_local_image_to_registry_output.log'
+    )
+    if not Path(push_image_output_log_path.parent).exists():
+        push_image_output_log_path.parent.mkdir(exist_ok=True, parents=True)
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
         f'\nPushing of tagged local docker image - \'ramasuchka.kz:4443/infra-web:latest\' - started'
         f'\nWait for a while and... be patient, please:)'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
-    with open('docker_push_tagged_local_image_to_registry_output.log', 'wt', encoding='utf-8') as push_image_output:
+    with open(push_image_output_log_path, 'wt', encoding='utf-8') as push_image_output:
         result = subprocess.run(
             [
                 'docker',
@@ -1193,8 +1233,13 @@ def docker_pull_according_to_registry_tagged_image_to_remote(
     cmd = pull_command
     # command = """sh -c f'{pull_command}' """
     # command = "sh -c f'{pull_command}'"
-    os.chdir(get_infra_directory_path_local())
-    with open('docker_pull_image_to_remote.log', 'wt', encoding='utf-8') as pull_image_output:
+    pull_image_output_log_path = (
+        get_project_root_dir().parent / 'deploy_logs' / 'docker_pull_image_to_remote.log'
+    )
+    # os.chdir(get_infra_directory_path_local())
+    if not Path(pull_image_output_log_path.parent).exists():
+        pull_image_output_log_path.parent.mkdir(exist_ok=True, parents=True)
+    with open(pull_image_output_log_path, 'wt', encoding='utf-8') as pull_image_output:
         ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
             cmd
         )
@@ -1233,9 +1278,7 @@ def docker_pull_according_to_registry_tagged_image_to_remote(
         f'from the private docker registry'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
-
-
-    with open('docker_pull_image_to_remote.log', 'rt', encoding='utf-8') as pull_image_output:
+    with open(pull_image_output_log_path, 'rt', encoding='utf-8') as pull_image_output:
         # ssh_stdin, ssh_stdout, ssh_stderr = rsa_key_based_connect(backend_server_credentials).exec_command(
         #     f'docker pull "{docker_image_tag_to_pull}"'
         # )
@@ -1309,7 +1352,7 @@ def docker_compose_recreate_web_container(backend_server_credentials: BackendSer
     stderr_text = ssh_stderr.read().decode('utf-8')
     print(
         f'\n--------------------------------------------------------------------------------------------------------\n'
-        f'stdout of \'infra-web\' container recreation:\n{stdout_text}'
+        # f'stdout of \'infra-web\' container recreation:\n{stdout_text}'
         f'stderr of \'infra-web\' container recreation:\n{stderr_text}'
         f'\n--------------------------------------------------------------------------------------------------------\n'
     )
