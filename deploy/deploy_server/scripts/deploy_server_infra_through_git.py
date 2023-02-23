@@ -21,6 +21,8 @@ from deploy_server_utils import move_rsa_pub_key_to_remote
 from deploy_server_utils import get_backend_server_credentials, gen_ssh_key_pair
 # from deploy_server_utils import add_pub_key_to_remote_server
 from deploy_server_utils import docreg_login_remotely
+from scripts.get_commit_info_from_github_api import get_commit_info_from_github_api, create_json_file_with_commit_data
+from scripts.git_utils.genererate_git_info_file import create_file_with_info_about_last_commit
 
 
 def check_git_python_is_installed() -> bool:
@@ -96,7 +98,7 @@ if __name__ == '__main__':
 
     # todo: убрать закоментированный код
     # from subprocess import Popen, PIPE
-    result = subprocess.run(['pip', 'list'], text=True, stdout=subprocess.PIPE)
+    result = subprocess.Popen(['pip', 'list'], text=True, stdout=subprocess.PIPE)
     # result = subprocess.Popen(['pip', 'list'], stdout=subprocess.PIPE)
     # result.stdout
     # result.stderr
@@ -118,7 +120,9 @@ if __name__ == '__main__':
         '\n    branch: ', branch,
         '\n    commit: ', commit
     )
-    project_dir = Path('.') / repo
+    print(f'get_script_dir_path: {get_script_dir_path()}')
+    project_dir = get_script_dir_path().parent.parent.parent.parent / 'deploy_folder' / repo
+    print(f'project_dir: {project_dir}')
 
     import git
     from git import Repo
@@ -127,6 +131,9 @@ if __name__ == '__main__':
     # define parameters for a request to GitHub
     # Personal Access Token (PAT) for authorization in GitHub repo
     token = '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'
+    # 'token_with_bearer' используем для переадчи в функцию получения информации о коммите
+    token_with_bearer = 'Bearer ' + f'{token}'
+    print(f'\ntoken_with_bearer: {token_with_bearer}')
     # organization in GitHub the repository belongs to
     owner = 'cuttlesystems'
     # repo = 'tg_bot_constructor'
@@ -163,6 +170,8 @@ if __name__ == '__main__':
 
         try:
             active_branch = repo.active_branch
+            # print(f'\nActive branch: {active_branch}')
+            # print(f'User branch input: {branch}')
         except TypeError:
             # branch is in detached state
             active_branch = None
@@ -204,8 +213,16 @@ if __name__ == '__main__':
         print(f'Current active branch is: {repo.active_branch}')
 
         origin.pull()
+        # repo.remotes.origin.pull(repo.active_branch)
+        # repo.git.pull('origin', repo.active_branch)
+
         print(f'\nGit pull from \'{origin}/{branch}\' completed\n')
 
+    # get commit info from git
+    # get_commit_info_from_github_api(token_with_bearer)
+    # create_json_file_with_commit_data(commit_data=get_commit_info_from_github_api(token_with_bearer))
+    create_file_with_info_about_last_commit()
+    # exit(0)
     # credentials to establish SSH connection with remote server where the application backend is deployed
     backend_server_credentials = get_backend_server_credentials()
 
@@ -263,7 +280,7 @@ if __name__ == '__main__':
     # create docker image locally through 'subprocess.run( )' to push it into private docker registry later
     #  sudo docker-compose build --no-cache web
     # docker_create_image_locally()
-
+    # exit(0)
     # tag local 'infra-web' docker image as 'ramasuchka.kz:4443/infra-web:latest' through 'subprocess.run( )'
     #  to push it into private docker registry
     #  sudo docker tag infra-web ramasuchka.kz:4443/infra-web:latest
