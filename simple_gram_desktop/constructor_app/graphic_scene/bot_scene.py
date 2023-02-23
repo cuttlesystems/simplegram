@@ -60,7 +60,7 @@ class BotScene(QGraphicsScene):
 
         self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
-        #self._add_item_block()
+        self._add_item_block()
 
     def _add_item_block(self):
         item_block = BlockWidget()

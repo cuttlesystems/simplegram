@@ -170,14 +170,14 @@ class BlockGraphicsItem(QGraphicsItem):
         for variant_index in range(len(self._variants) + 1):
             rect = rect.united(self._variant_rect(variant_index))
 
-        x = rect.x() - 2*self._SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE
-        y = rect.y() + self._START_MESSAGE_TITLE_HEIGHT + self._MESSAGE_HEIGHT - self._SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE
+        x = rect.x() - 2 * self._SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE
+        y = rect.y() + self._START_MESSAGE_TITLE_HEIGHT + self._MESSAGE_HEIGHT - \
+            self._SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE
 
-        width = rect.width() + self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE + 3*self._NODE_WIDTH
+        width = rect.width() + self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE + 3 * self._NODE_WIDTH
         height = rect.height() - self._BOUNDING_RECT_SPARE_PAINTING_DISTANCE + self._START_MESSAGE_TITLE_HEIGHT - \
-                 self._MESSAGE_HEIGHT - 4*self._SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE
+                 self._MESSAGE_HEIGHT - 4 * self._SUMMARY_VARIANTS_RECT_SPARE_PAINTING_DISTANCE
         return QRectF(x, y, width, height)
-
 
     def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value: typing.Any) -> typing.Any:
         """

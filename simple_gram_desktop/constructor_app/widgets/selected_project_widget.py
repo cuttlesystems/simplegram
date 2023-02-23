@@ -1,6 +1,6 @@
 import os, traceback
 
-from PySide6 import QtCore
+import PySide6
 from typing import Optional
 
 from PySide6.QtGui import QPixmap, QDesktopServices
@@ -47,19 +47,13 @@ class SelectedProjectWidget(QWidget):
         self._bot_api: Optional[IBotApi] = None
         self._bot: Optional[BotDescription] = None
         self._bot_scene: Optional[BotScene] = None
-        self._ui.link_bot_header.setOpenExternalLinks(True)
-        self.installEventFilter(self)
-        self.setMouseTracking(True)
-        self._ui.link_bot_label.installEventFilter(self)
-        self._ui.link_bot_label.setMouseTracking(True)
-
-    def eventFilter(self, obj: QObject, event: QtCore.QEvent) -> bool:
-        if obj == self._ui.link_bot_label:
-            if event.type() == QtCore.QEvent.Type.MouseButtonPress:
-                open_link = QDesktopServices()
-                link = self._bot.bot_link
-                open_link.openUrl(QUrl(link))
-        return False
+        self._ui.link_bot_label.setOpenExternalLinks(True)
+        #self._ui.link_bot_label.setTextInteractionFlags(PySide6.QtCore.Qt.TextSelectableByMouse)
+        #self._ui.link_bot_label.
+        #self.installEventFilter(self)
+        #self.setMouseTracking(True)
+        #self._ui.link_bot_label.installEventFilter(self)
+        #self._ui.link_bot_label.setMouseTracking(True)
 
     def _init_StyleSheet(self):
         # toDO: перенести все qssы в отдельный файлпроекта или для каждого окна сделать свой первострочный
@@ -99,10 +93,10 @@ class SelectedProjectWidget(QWidget):
 
         self._ui.switch_activated_bot.blockSignals(True)
         try:
-            self.activated_bot_signal.emit()
-        finally:
             self._ui.switch_activated_bot.setChecked(bot_enabled_state)
+        finally:
             self._ui.switch_activated_bot.blockSignals(False)
+        self.activated_bot_signal.emit()
 
     def _init_state_bot(self):
         if self._ui.switch_activated_bot.isChecked():
@@ -129,18 +123,22 @@ class SelectedProjectWidget(QWidget):
             else:
                 self._ui.icon_bot_button.setIcon(QPixmap(DEFAULT_BOT_AVATAR_ICON_RESOURCE_PATH))
 
-            self._ui.switch_activated_bot.setChecked(bot.bot_state)
+            self._ui.switch_activated_bot.blockSignals(True)
+            try:
+                self._ui.switch_activated_bot.setChecked(bot.bot_state)
+            finally:
+                self._ui.switch_activated_bot.blockSignals(False)
+
             self._init_state_bot()
 
-            #toDo: будет None приходить с backend
             self._ui.name_bot_edit.setText(self._bot.bot_name)
             self._ui.description_bot_edit.setText(self._bot.bot_description)
-            if self._bot.bot_link != 'Bot token is not specified.':
+            if self._bot.bot_link is not None:
                 font = self._ui.link_bot_label.font()
                 font.setUnderline(True)
                 self._ui.link_bot_label.setFont(font)
                 self._ui.link_bot_label.setDisabled(False)
-                self._ui.link_bot_label.setText(self._bot.bot_link)
+                self._ui.link_bot_label.setText(str('''<a href='{link}'>{link}</a>''').format(link=self._bot.bot_link))
             else:
                 font = self._ui.link_bot_label.font()
                 font.setUnderline(False)
