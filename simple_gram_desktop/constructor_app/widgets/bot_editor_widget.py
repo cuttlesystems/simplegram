@@ -443,12 +443,11 @@ class BotEditorWidget(QWidget):
         self.__set_start_message_none()
 
     def __set_start_message_none(self):
-        # print('=============>>>>>lol')
         self._bot_api.set_bot_start_message(self._bot, None)
         updated_bot_info = self._bot_api.get_bot_by_id(self._bot.id)
         self._bot_scene.set_bot_scene(updated_bot_info)
         self._bot = updated_bot_info
-        self._upload_bot_scene()
+        self._load_bot_scene()
 
     def _on_add_new_message_action(self, triggered: bool) -> None:
         self.__add_new_message()
