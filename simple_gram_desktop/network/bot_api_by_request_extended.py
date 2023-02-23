@@ -9,7 +9,8 @@ from b_logic.bot_api.i_bot_api import SignUpException, UserAuthenticationExcepti
     LinkingVariantWithNextMessageException, DeletingVariantException, GettingBotCommandsException, \
     CreatingCommandException, BotGenerationException, BotStartupException, BotStopException, \
     GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException, DeletingVideoException
-from b_logic.data_objects import BotDescription, BotMessage, ButtonTypesEnum, BotVariant, BotCommand, BotLogs
+from b_logic.data_objects import (BotDescription, BotMessage, ButtonTypesEnum,
+                                  BotVariant, BotCommand, BotLogs, StartStopBotState)
 from common.localisation import tran
 # from network.bot_api_by_requests import BotApiByRequests
 
