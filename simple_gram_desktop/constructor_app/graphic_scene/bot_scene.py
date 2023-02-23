@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
 from b_logic.data_objects import BotMessage, BotVariant, BotDescription
 from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from constructor_app.graphic_scene.colors.scene_color_scheme import SceneColorScheme
-
+from constructor_app.widgets.block_widget import BlockWidget
 
 class BotScene(QGraphicsScene):
     """
@@ -60,14 +60,11 @@ class BotScene(QGraphicsScene):
 
         self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
-
-        self._add_item_block()
+        #self._add_item_block()
 
     def _add_item_block(self):
         item_block = BlockWidget()
         self.addWidget(item_block)
-
-
 
     def get_bot_scene(self) -> BotDescription:
         return self._bot

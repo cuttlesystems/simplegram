@@ -1,4 +1,4 @@
-import typing
+import typing, traceback
 from enum import Enum
 from dataclasses import dataclass
 from typing import List, Optional
@@ -191,7 +191,7 @@ class AddNewProjectWidget(QWidget):
         used_names = [bot.bot_name for bot in self.__get_all_bots()]
         return gen_next_name(base_name, used_names)
 
-    def _add_new_bot(self, traceback=None):
+    def _add_new_bot(self):
         try:
             name_bot = self._ui.name_bot_edit.text()
             if name_bot != '':
