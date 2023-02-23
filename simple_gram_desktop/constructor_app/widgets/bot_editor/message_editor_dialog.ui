@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>730</width>
-    <height>550</height>
+    <height>573</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,7 +75,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="message_image">
+        <widget class="QLabel" name="message_image_label">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -119,6 +119,40 @@
       </spacer>
      </item>
      <item>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QPushButton" name="load_video_button">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Load video</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="remove_video_button">
+         <property name="text">
+          <string>Remove video</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="message_video_label">
+         <property name="text">
+          <string>Video file is not attached</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
         <widget class="QPushButton" name="load_image_button">
@@ -142,6 +176,19 @@
           <string>Remove image</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </item>
