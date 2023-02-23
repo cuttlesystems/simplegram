@@ -1,15 +1,15 @@
 from typing import Optional
 
 
-def get_binary_data_from_image_file(path_to_file: str) -> Optional[bytes]:
+def get_binary_data_from_file(path_to_file: str) -> Optional[bytes]:
     """
-    Конвертация файла по path в байт-код.
+    Чтение содержимого файла в байт режиме.
 
     Args:
         path_to_file: путь к файлу.
 
     Returns:
-        байт-код изображения.
+        содержимое файла в байтах.
     """
     assert isinstance(path_to_file, str)
     image_data = None

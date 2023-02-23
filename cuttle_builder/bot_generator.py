@@ -245,27 +245,8 @@ class BotGenerator:
                 keyboard_generation_counter += 1
                 imports_generation_counter += 1
 
-    def create_image_file_in_bot_directory(self, full_path_to_source_file: str, path_to_bot_media_dir: str,
-                                           filename: str, file_format: str) -> str:
-        # todo 01.03.23 удалить метод, когда уберем photo file_format
-        assert isinstance(full_path_to_source_file, str)
-        assert isinstance(path_to_bot_media_dir, str)
-        assert isinstance(filename, str)
-        assert isinstance(file_format, str)
-
-        Path(path_to_bot_media_dir).mkdir(exist_ok=True)
-        full_path_to_file_in_bot_dir = Path(path_to_bot_media_dir) / f'{filename}.{file_format}'
-        try:
-            shutil.copyfile(full_path_to_source_file, full_path_to_file_in_bot_dir)
-            assert os.path.exists(full_path_to_file_in_bot_dir)
-            result = full_path_to_file_in_bot_dir
-        except FileNotFoundError as error:
-            print(f'----------->>>Logging error: {error}')
-            result = None
-        return result
-
     def create_file_in_bot_directory(self, full_path_to_source_file: str, path_to_bot_media_dir: str,
-                                           filename: str) -> str:
+                                     filename: str) -> str:
         # можно вызывать только этот метод для создания файлов, видео и фото
         assert isinstance(full_path_to_source_file, str)
         assert isinstance(path_to_bot_media_dir, str)

@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-import typing
+import typing, traceback
 
 from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Signal, QPointF
@@ -356,6 +356,7 @@ class BotEditorForm(QMainWindow):
             exception_mes = str(exception)
             print(exception_mes)
             QMessageBox.warning(self, 'Error', exception_mes)
+            print(traceback.format_exc())
         else:
             raise
 

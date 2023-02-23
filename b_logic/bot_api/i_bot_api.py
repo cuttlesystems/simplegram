@@ -79,6 +79,10 @@ class DeletingImageException(BotApiRequestsException):
     pass
 
 
+class DeletingVideoException(BotApiRequestsException):
+    pass
+
+
 class DeletingMessageException(BotApiRequestsException):
     pass
 
@@ -338,6 +342,16 @@ class IBotApi(ABC):
 
         Args:
             message: сообщение, у которого необходимо удалить изображение
+        """
+        pass
+
+    @abstractmethod
+    def remove_message_video(self, message: BotMessage) -> None:
+        """
+        Удаление видео файла у сообщения.
+
+        Args:
+            message: сообщение, у которого необходимо удалить видео
         """
         pass
 

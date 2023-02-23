@@ -1,4 +1,5 @@
 import os.path
+from enum import Enum
 from typing import Optional
 
 from PySide6 import QtWidgets, QtGui, QtCore
@@ -6,9 +7,9 @@ from PySide6.QtCore import QSize
 from PySide6.QtWidgets import QDialog, QFileDialog
 
 from b_logic.bot_api.i_bot_api import IBotApi
-from b_logic.data_objects import BotMessage, ButtonTypesEnum, MessageTypeEnum, BotDescription
+from b_logic.data_objects import BotMessage, ButtonTypesEnum, MessageTypeEnum, BotDescription, MediaFileStateEnum
 from constructor_app.widgets.bot_editor.ui_message_editor_dialog import Ui_MessageEditorDialog
-from b_logic.utils.image_to_bytes import get_binary_data_from_image_file
+from b_logic.utils.image_to_bytes import get_binary_data_from_file
 
 
 class MessageEditorDialog(QDialog):
@@ -17,6 +18,7 @@ class MessageEditorDialog(QDialog):
     _IMAGE_NOT_FOUND_WINDOW_HEIGHT = 130
     _IMAGE_NOT_FOUND_WINDOW_WIDTH = 130
     _IMAGE_ALLOWED_FORMATS = '(*.png *.bmp *.jpg *.gif *.ico *.jpeg *.svg *.tif *.webp *.xpm)'
+    _VIDEO_ALLOWED_FORMATS = '(*.mp4 *.mov *.wmv *.avi *.webm *.mkv)'
 
     def __init__(self, bot_api: IBotApi, bot: BotDescription, parent: Optional[QtWidgets.QWidget] = None):
         assert isinstance(bot_api, IBotApi)
@@ -33,10 +35,14 @@ class MessageEditorDialog(QDialog):
         self._ui.load_image_button.clicked.connect(self._on_load_image)
         self._ui.remove_image_button.clicked.connect(self._on_remove_image)
 
-        self._message_image_path: Optional[str] = None
-        self._message_image_filename: Optional[str] = None
+        self._ui.load_video_button.clicked.connect(self._on_load_video)
+        self._ui.remove_video_button.clicked.connect(self._on_remove_video)
 
-        self._image_must_be_removed_state: bool = False
+        self._message_image_path: Optional[str] = None
+        self._message_image_state: MediaFileStateEnum = MediaFileStateEnum.NO_ACTION
+
+        self._message_video_path: Optional[str] = None
+        self._message_video_state: MediaFileStateEnum = MediaFileStateEnum.NO_ACTION
 
     def set_message(self, message: BotMessage) -> None:
         assert isinstance(message, BotMessage)
@@ -47,9 +53,11 @@ class MessageEditorDialog(QDialog):
         self._ui.radio_inline.setChecked(message.keyboard_type == ButtonTypesEnum.INLINE)
 
         # отображаем изображение для сообщения
-        self._ui.message_image.clear()
+        self._ui.message_image_label.clear()
         if message.photo:
             self._show_image(self._bot_api.get_image_data_by_url(message.photo))
+        if message.video:
+            self._ui.message_video_label.setText('Video file is attached')
 
         # задаем тип сообщения
         self._ui.message_variants_radio.setChecked(message.message_type == MessageTypeEnum.VARIANTS)
@@ -97,15 +105,15 @@ class MessageEditorDialog(QDialog):
             image = QtGui.QImage()
             image.loadFromData(image_data)
             image_size = self._calculate_optimal_image_size(image.width(), image.height())
-            self._ui.message_image.setFixedWidth(image_size.width())
-            self._ui.message_image.setFixedHeight(image_size.height())
-            self._ui.message_image.setPixmap(QtGui.QPixmap(image))
+            self._ui.message_image_label.setFixedWidth(image_size.width())
+            self._ui.message_image_label.setFixedHeight(image_size.height())
+            self._ui.message_image_label.setPixmap(QtGui.QPixmap(image))
         else:
-            self._ui.message_image.setFixedSize(
+            self._ui.message_image_label.setFixedSize(
                 self._IMAGE_NOT_FOUND_WINDOW_WIDTH, self._IMAGE_NOT_FOUND_WINDOW_HEIGHT)
-            self._ui.message_image.setStyleSheet("border: 1px solid #cecdd1;")
-            self._ui.message_image.setText('Error!\nImage not found')
-            self._ui.message_image.setAlignment(QtCore.Qt.AlignCenter)
+            self._ui.message_image_label.setStyleSheet("border: 1px solid #cecdd1;")
+            self._ui.message_image_label.setText('Error!\nImage not found')
+            self._ui.message_image_label.setAlignment(QtCore.Qt.AlignCenter)
 
     def _calculate_optimal_image_size(self, width: int, height: int) -> QSize:
         assert isinstance(height, int)
@@ -131,23 +139,44 @@ class MessageEditorDialog(QDialog):
         print(file_info)
         if len(file_info[0]) > 0:
             full_path_to_file: str = file_info[0]
-            image_data = get_binary_data_from_image_file(full_path_to_file)
+            image_data = get_binary_data_from_file(full_path_to_file)
             self._show_image(image_data)
-            self._image_must_be_removed_state = False
             self._message_image_path = full_path_to_file
-            self._message_image_filename = os.path.basename(full_path_to_file)
+            self._message_image_state = MediaFileStateEnum.LOADED
+
+    def _on_load_video(self, checked: bool) -> None:
+        file_info = QFileDialog.getOpenFileName(
+            parent=self,
+            caption='Open file',
+            dir='',
+            filter=f'Videos {self._VIDEO_ALLOWED_FORMATS};;All files (*.*)'
+        )
+        print(file_info)
+        if len(file_info[0]) > 0:
+            full_path_to_file: str = file_info[0]
+            self._video_must_be_removed_state = False
+            self._message_video_path = full_path_to_file
+            self._message_video_state = MediaFileStateEnum.LOADED
+            self._ui.message_video_label.setText('Video file is attached')
 
     def _on_remove_image(self, checked: bool) -> None:
-        self._ui.message_image.clear()
-        self._image_must_be_removed_state = True
+        self._ui.message_image_label.clear()
         self._message_image_path = None
-        self._message_image_filename = None
+        self._message_image_state = MediaFileStateEnum.DELETED
+
+    def _on_remove_video(self, checked: bool) -> None:
+        self._message_video_path = None
+        self._message_video_state = MediaFileStateEnum.DELETED
+        self._ui.message_video_label.setText('Video file is not attached')
 
     def get_message_image_path(self) -> Optional[str]:
         return self._message_image_path
 
-    def get_message_image_filename(self) -> Optional[str]:
-        return self._message_image_filename
+    def get_message_image_state(self) -> MediaFileStateEnum:
+        return self._message_image_state
 
-    def get_image_must_be_removed_state(self) -> bool:
-        return self._image_must_be_removed_state
+    def get_message_video_path(self) -> Optional[str]:
+        return self._message_video_path
+
+    def get_message_video_state(self) -> MediaFileStateEnum:
+        return self._message_video_state

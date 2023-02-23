@@ -1,4 +1,4 @@
-import typing
+import typing, traceback
 from enum import Enum
 from dataclasses import dataclass
 from typing import List, Optional
@@ -21,6 +21,7 @@ class StatedStylesheetEnum(Enum):
     MISS = 2
     FOCUS = 3
     NORMAL = 4
+
 
 @dataclass(slots=True, frozen=True)
 class BlockColorScheme:
@@ -205,8 +206,10 @@ class AddNewProjectWidget(QWidget):
             else:
                 # toDO: Перенести на кастомное диалоговое окно
                 QMessageBox.warning(self, 'Error', self._tr('Bot name cannot be empty'))
+                print(traceback.format_exc())
         except BotApiMessageException as error:
             QMessageBox.warning(self, self._tr('Error'), self._tr('Bot creation error: {0}').format(error))
+            print(traceback.format_exc())
 
     def _tr(self, text: str) -> str:
         return tran('AddNewProjectWidget.manual', text)

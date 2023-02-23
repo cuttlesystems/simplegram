@@ -14,9 +14,6 @@ from constructor_app.widgets.ui_tool_stack_widget import Ui_ToolStackWidget
 class ColorScheme:
     # цвет фона сообщения
     background_color = 0x292a2f
-    #button_color_hover = QColor(70, 170, 255)
-    #button_color_pressed = QColor(70, 170, 255, 100)
-
 
 class ToolStackWidget(QWidget):
     _BORDER_RADIUS_BACKGROUND = 12
@@ -49,7 +46,6 @@ class ToolStackWidget(QWidget):
         self._ui.mark_error_message_button.clicked.connect(self._on_mark_as_error)
         self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
         self._ui.generate_logs_button.clicked.connect(self._on_read_bot_logs)
-
 
     def paintEvent(self, event: QPaintEvent) -> None:
         # toDo: If this will be used in the future, then put the colors in the parameters
@@ -127,10 +123,8 @@ class ToolStackWidget(QWidget):
         self.read_bot_logs_signal.emit()
 
     def _init_stylesheet(self, night: bool) -> None:
-        # toDO: поменять даркмод режим на изменение qssа и все qss вынести в отдельный файлпроекта или
-        #  для каждого окна сделать свой первострочный инициализатор qss
-        if night:
-            self.setPalette(QBrush(QColor(27, 27, 27, 155)), QPalette.window())
+        pass
 
     def _tr(self, text: str) -> str:
         return tran('AddNewProjectWidget.manual', text)
+
