@@ -7,7 +7,7 @@ from PySide6.QtGui import QPainter, QBrush, QColor, QAction
 from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, StartStopBotState
 from common.localisation import tran
 from common.model_property import ModelProperty
 from constructor_app.widgets.tool_stack_widget import ToolStackWidget
@@ -322,12 +322,11 @@ class BotEditorWidget(QWidget):
         self.__start_bot()
 
     def __start_bot(self):
-        try:
-            self._bot_api.start_bot(self._bot)
-            self.update_state_bot.emit()
-        except Exception as e:
-            self._process_exception(e)
-            print(traceback.format_exc())
+        start_bot_state: StartStopBotState = self._bot_api.start_bot(self._bot)
+        self.update_state_bot.emit()
+        if not start_bot_state.IS_STARTED:
+            self._process_error(start_bot_state.API_RESPONSE)
+        self._tool_stack_widget.init_switch_toggle(start_bot_state.IS_STARTED)
 
     def _on_stop_bot_action(self):
         self._tool_stack_widget.init_switch_toggle(False)
@@ -461,6 +460,9 @@ class BotEditorWidget(QWidget):
             QMessageBox.warning(self, 'Error', exception_mes)
         else:
             raise
+
+    def _process_error(self, error: str):
+        QMessageBox.warning(self, 'Error', error)
 
     def _save_changes(self):
         # освежим объект бота с сервера

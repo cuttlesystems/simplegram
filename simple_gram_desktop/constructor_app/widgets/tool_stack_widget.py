@@ -65,8 +65,8 @@ class ToolStackWidget(QWidget):
 
     def init_switch_toggle(self, state: bool):
         assert isinstance(state, bool)
+        self._ui.switch_bot.blockSignals(True)
         try:
-            self._ui.switch_bot.blockSignals(True)
             self._ui.switch_bot.setChecked(state)
         finally:
             self._ui.switch_bot.blockSignals(False)

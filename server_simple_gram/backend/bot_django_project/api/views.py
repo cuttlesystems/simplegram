@@ -270,6 +270,7 @@ class BotViewSet(viewsets.ModelViewSet):
             set_bot_must_be_generated_value(bot_django, False)
             logger_django.info_logging(f'Bot_{bot_id} was generated.')
         except BotGeneratorException as exception:
+            # set_bot_must_be_generated_value(bot_django, True)
             raise ErrorsFromBotGenerator(detail=exception)
 
         return Response({"generate_status": f"Бот № {bot_id} - успешно сгенерирован"},
