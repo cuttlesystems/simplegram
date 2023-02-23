@@ -555,11 +555,13 @@ margin-bottom: 10px;
 }</string>
        </property>
        <property name="text">
-        <string>© TOO CuttleSystems
- https://cuttlesystems.com</string>
+        <string>© TOO CuttleSystems&lt;br&gt;&lt;a href=&quot;https://cuttlesystems.com&quot;&gt;https://cuttlesystems.com&lt;/a&gt;</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+       <property name="openExternalLinks">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
