@@ -22,6 +22,7 @@ class StatedStylesheetEnum(Enum):
     FOCUS = 3
     NORMAL = 4
 
+
 @dataclass(slots=True, frozen=True)
 class BlockColorScheme:
     color_group_hover = "rgb(255,255,255)"
@@ -201,7 +202,6 @@ class AddNewProjectWidget(QWidget):
                 )
                 # toDO: Перенести на кастомное диалоговое окно
                 QMessageBox.information(self, 'created', 'created')
-                print(traceback.format_exc())
                 self.new_bot_added.emit()
             else:
                 # toDO: Перенести на кастомное диалоговое окно

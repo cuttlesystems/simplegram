@@ -9,18 +9,18 @@ Labels qss
 
 
 class ColorPalette(str, Enum):
-    red = '#FF5F8F'
-    blue = '#4DAAFF'
+    RED = '#FF5F8F'
+    BLUE = '#4DAAFF'
 
 
 @dataclass(slots=True, frozen=True)
 class LabelColorScheme:
-    disabled = "QLabel{" \
+    DISABLED = "QLabel{" \
                "border-radius:8px; border:none; " \
                "color:white;" \
-               "background-color:"+ColorPalette.red+";}"
+               "background-color:"+ColorPalette.RED+";}"
 
-    enabled = "QLabel{" \
+    ENABLED = "QLabel{" \
               "border-radius:8px; border:none; " \
               "color:white;" \
-              "background-color:"+ColorPalette.blue+";}"
+              "background-color:"+ColorPalette.BLUE+";}"

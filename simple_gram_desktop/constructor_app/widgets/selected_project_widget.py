@@ -78,7 +78,7 @@ class SelectedProjectWidget(QWidget):
             try:
                 self._bot_api.start_bot(self._bot)
                 self._ui.marker_state_bot.setStyleSheet(
-                    LabelColorScheme.enabled)
+                    LabelColorScheme.ENABLED)
                 self._ui.marker_state_bot.setText(self._tr("Bot is enabled"))
                 bot_enabled_state = True
             except BotApiMessageException as error:
@@ -87,7 +87,7 @@ class SelectedProjectWidget(QWidget):
                 bot_enabled_state = False
         else:
             self._ui.marker_state_bot.setStyleSheet(
-                LabelColorScheme.disabled)
+                LabelColorScheme.DISABLED)
             self._ui.marker_state_bot.setText(self._tr("Bot is disabled"))
             try:
                 self._bot_api.stop_bot(self._bot)
@@ -99,19 +99,19 @@ class SelectedProjectWidget(QWidget):
 
         self._ui.switch_activated_bot.blockSignals(True)
         try:
-            self._ui.switch_activated_bot.setChecked(bot_enabled_state)
             self.activated_bot_signal.emit()
         finally:
+            self._ui.switch_activated_bot.setChecked(bot_enabled_state)
             self._ui.switch_activated_bot.blockSignals(False)
 
     def _init_state_bot(self):
         if self._ui.switch_activated_bot.isChecked():
             self._ui.marker_state_bot.setStyleSheet(
-                LabelColorScheme.enabled)
+                LabelColorScheme.ENABLED)
             self._ui.marker_state_bot.setText(self._tr("Bot is enabled"))
         else:
             self._ui.marker_state_bot.setStyleSheet(
-                LabelColorScheme.disabled)
+                LabelColorScheme.DISABLED)
             self._ui.marker_state_bot.setText(self._tr("Bot is disabled"))
 
     def set_bot(self, bot: BotExtended) -> None:
@@ -132,6 +132,7 @@ class SelectedProjectWidget(QWidget):
             self._ui.switch_activated_bot.setChecked(bot.bot_state)
             self._init_state_bot()
 
+            #toDo: будет None приходить с backend
             self._ui.name_bot_edit.setText(self._bot.bot_name)
             self._ui.description_bot_edit.setText(self._bot.bot_description)
             if self._bot.bot_link != 'Bot token is not specified.':

@@ -61,6 +61,14 @@ class BotScene(QGraphicsScene):
         self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
 
+        self._add_item_block()
+
+    def _add_item_block(self):
+        item_block = BlockWidget()
+        self.addWidget(item_block)
+
+
+
     def get_bot_scene(self) -> BotDescription:
         return self._bot
 
@@ -200,6 +208,9 @@ class BotScene(QGraphicsScene):
             z_selected += 1.0
 
         self.selection_changed.emit()
+
+    def _add_communication_line(self):
+        pass
 
     def _on_item_changed(self, region: typing.List[QRectF]):
         assert all(isinstance(r, QRectF) for r in region)
