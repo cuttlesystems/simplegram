@@ -15,7 +15,7 @@ from b_logic.bot_api.i_bot_api import IBotApi, SignUpException, CreatingBotExcep
     CreatingCommandException, BotGenerationException, BotStopException, BotStartupException, \
     GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException, LogoutException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
-    MessageTypeEnum
+    MessageTypeEnum, StartStopBotState
 from b_logic.utils.image_to_bytes import get_binary_data_from_image_file
 
 
@@ -554,14 +554,26 @@ class BotApiByRequests(IBotApi):
             # raise BotApiException(
             #     self._tr('Bot generation error: {0}').format(response.text))
 
-    def start_bot(self, bot: BotDescription) -> None:
+    def start_bot(self, bot: BotDescription) -> StartStopBotState:
         assert isinstance(bot, BotDescription)
         response = requests.post(
             url=self._suite_url + f'api/bots/{bot.id}/start/',
             headers=self._get_headers()
         )
-        if response.status_code != requests.status_codes.codes.ok:
-            raise BotStartupException(response)
+        if response.status_code == requests.status_codes.codes.ok:
+            bot_started_state = StartStopBotState(
+                IS_STARTED=True,
+                API_RESPONSE=response.text
+            )
+        else:
+            print(f'CHANGE TO LOGGING. {response.text}')
+            bot_started_state = StartStopBotState(
+                IS_STARTED=False,
+                API_RESPONSE=response.text
+            )
+        return bot_started_state
+        # if response.status_code != requests.status_codes.codes.ok:
+        #     raise BotStartupException(response)
             # raise BotApiException(
             #     self._tr('Bot startup error: {0}').format(response.text))
 

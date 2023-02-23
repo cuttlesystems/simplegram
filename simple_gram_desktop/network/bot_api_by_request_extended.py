@@ -9,7 +9,7 @@ from b_logic.bot_api.i_bot_api import SignUpException, UserAuthenticationExcepti
     LinkingVariantWithNextMessageException, DeletingVariantException, GettingBotCommandsException, \
     CreatingCommandException, BotGenerationException, BotStartupException, BotStopException, \
     GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException
-from b_logic.data_objects import BotDescription, BotMessage, ButtonTypesEnum, BotVariant, BotCommand, BotLogs
+from b_logic.data_objects import BotDescription, BotMessage, ButtonTypesEnum, BotVariant, BotCommand, BotLogs, StartStopBotState
 from common.localisation import tran
 # from network.bot_api_by_requests import BotApiByRequests
 
@@ -174,12 +174,11 @@ class BotApiByRequestsProxy(BotApiByRequests):
             raise BotApiMessageException(
                 self._tr('Bot generation error: {0}').format(e.response.text))
 
-    def start_bot(self, bot: BotDescription) -> None:
-        try:
-            super().start_bot(bot)
-        except BotStartupException as e:
-            raise BotApiMessageException(
-                self._tr('Bot startup error: {0}').format(e.response.text))
+    def start_bot(self, bot: BotDescription) -> StartStopBotState:
+        bot_started_state = super().start_bot(bot)
+        if not bot_started_state.IS_STARTED:
+            bot_started_state.API_RESPONSE = self._tr('Bot startup error: {0}').format(bot_started_state.API_RESPONSE)
+        return bot_started_state
 
     def stop_bot(self, bot: BotDescription) -> None:
         try:

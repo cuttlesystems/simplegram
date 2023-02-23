@@ -21,6 +21,12 @@ class MessageTypeEnum(Enum):
 
 
 @dataclass(slots=True)
+class StartStopBotState:
+    IS_STARTED: bool
+    API_RESPONSE: str
+
+
+@dataclass(slots=True)
 class BotDescription:
     id: Optional[int] = None
     bot_name: str = 'Undefined bot name'
