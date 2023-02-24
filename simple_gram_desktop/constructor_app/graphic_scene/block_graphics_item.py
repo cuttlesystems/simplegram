@@ -432,7 +432,7 @@ class BlockGraphicsItem(QGraphicsItem):
         self._setup_text_color(painter)
         painter.drawText(self._message_text_rect(), cut_string(self._message.text, self._MAX_MESSAGE_CHARS))
 
-        painter.drawEllipse(self._node_message_rect())
+        #painter.drawEllipse(self._node_message_rect())
 
         if self._is_start_message:
             painter.drawText(self._start_message_title_block_rect(), 'Start message')
@@ -450,7 +450,7 @@ class BlockGraphicsItem(QGraphicsItem):
 
         painter.drawRect(self._variant_rect(index))
         if not is_illusory_variant:
-            painter.drawEllipse(self._node_variant_rect(index))
+            #painter.drawEllipse(self._node_variant_rect(index))
             painter.setPen(QColor(self._color_scheme.text_color))
             painter.drawText(self._variant_text_rect(index), cut_string(variant.text, self._MAX_VARIANT_CHARS))
         else:
