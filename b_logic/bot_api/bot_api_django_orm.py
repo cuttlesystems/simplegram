@@ -59,11 +59,11 @@ class BotApiByDjangoORM(IBotApi):
         raise NotImplementedError('Метод не определен!')
 
     def set_bot_start_message(self, bot: BotDescription,
-                              start_message: BotMessage) -> None:
+                              start_message_id: Optional[int]) -> None:
         raise NotImplementedError('Метод не определен!')
 
     def set_bot_error_message(self, bot: BotDescription,
-                              error_message: BotMessage) -> None:
+                              error_message_id: Optional[int]) -> None:
         raise NotImplementedError('Метод не определен!')
 
     def get_messages(self, bot: BotDescription) -> List[BotMessage]:

@@ -28,6 +28,8 @@ class ToolStackWidget(QWidget):
     mark_as_error_signal = Signal()
     delete_variant_signal = Signal()
     read_bot_logs_signal = Signal()
+    unmark_as_start_signal = Signal()
+    unmark_as_error_signal = Signal()
 
     def __init__(self, parent: typing.Optional[QWidget] = None):
         # toDO: Добавить функцию инициализации QSS
@@ -46,6 +48,8 @@ class ToolStackWidget(QWidget):
         self._ui.mark_error_message_button.clicked.connect(self._on_mark_as_error)
         self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
         self._ui.generate_logs_button.clicked.connect(self._on_read_bot_logs)
+        self._ui.unmark_start_message_button.clicked.connect(self._on_unmark_as_start)
+        self._ui.unmark_error_message_button.clicked.connect(self._on_unmark_as_error)
 
     def paintEvent(self, event: QPaintEvent) -> None:
         # toDo: If this will be used in the future, then put the colors in the parameters
@@ -121,6 +125,12 @@ class ToolStackWidget(QWidget):
 
     def _on_read_bot_logs(self, _toggled: bool) -> None:
         self.read_bot_logs_signal.emit()
+
+    def _on_unmark_as_start(self, _toggled: bool) -> None:
+        self.unmark_as_start_signal.emit()
+
+    def _on_unmark_as_error(self, _toggled: bool) -> None:
+        self.unmark_as_error_signal.emit()
 
     def _init_stylesheet(self, night: bool) -> None:
         pass

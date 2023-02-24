@@ -67,15 +67,15 @@ class BotApiByRequestsProxy(BotApiByRequests):
         except DeletingBotException as e:
             raise BotApiMessageException(self._tr('Deleting bot error: {0}').format(e.response.text))
 
-    def set_bot_start_message(self, bot: BotDescription, start_message: BotMessage) -> None:
+    def set_bot_start_message(self, bot: BotDescription, start_message_id: Optional[int]) -> None:
         try:
-            super().set_bot_start_message(bot, start_message)
+            super().set_bot_start_message(bot, start_message_id)
         except SettingBotStartMessageException as e:
             raise BotApiMessageException(self._tr('Setting bot start message error: {0}').format(e.response.text))
 
-    def set_bot_error_message(self, bot: BotDescription, error_message: BotMessage) -> None:
+    def set_bot_error_message(self, bot: BotDescription, error_message_id: Optional[int]) -> None:
         try:
-            super().set_bot_error_message(bot, error_message)
+            super().set_bot_error_message(bot, error_message_id)
         except SettingBotErrorMessageException as e:
             raise BotApiMessageException(self._tr('Setting bot error message error: {0}').format(
                 e.response.text))
