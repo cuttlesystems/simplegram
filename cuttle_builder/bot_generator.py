@@ -78,6 +78,7 @@ class BotGenerator:
         self._create_app_file()
         self._create_on_startup_commands_file()
         self._create_log_dir_if_it_doesnt_exist()
+        self._create_utils_file()
         for message in self._messages:
             self.create_file_handlers(message)
         self._create_init_handler_files()
@@ -135,10 +136,13 @@ class BotGenerator:
             # Создание клавиатуры для сообщения.
             keyboard_name = self.create_keyboard(message.id, keyboard_type)
             keyboard_generation_counter += 1
-
+            additional_functions_from_top_of_answer += self._tab_from_new_line('save_id_and_username('
+                                                                               'message.from_user.id, '
+                                                                               'message.from_user.name)')
             # Создание стартовых хэндлеров.
             imports_for_start_handler = imports_for_handler + '\n' + 'from aiogram.dispatcher.filters import ' \
-                                                                     'Command'
+                                                                     'Command\n' \
+                                                                     'from utils.save_id_and_username import save_id_and_username'
             start_handler_code = self._create_state_handler(
                 command='start',
                 prev_state='*',
@@ -380,6 +384,12 @@ class BotGenerator:
         """
         commands_code = generate_commands_code(self._commands)
         self._file_manager.create_commands_file(commands_code)
+
+    def _create_utils_file(self) -> None:
+        utils_method = str(
+            CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'save_id_and_username.txt')
+        code = self._file_manager.read_text_file_content(utils_method)
+        self._file_manager.create_utils_file(code)
 
     def _create_state(self) -> str:
         """generate code of state class

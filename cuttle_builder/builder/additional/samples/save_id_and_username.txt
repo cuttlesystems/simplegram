@@ -1,0 +1,4 @@
+async def save_id_and_username(id, username):
+    user_id = message.from_user.id # TODO Сохранение в JSON файл в директории бота
+    username = user.username# TODO Сохранение в JSON файл в директории бота
+    return user_id, username
