@@ -225,20 +225,13 @@ class BotApiByRequests(IBotApi):
             raise DeletingBotException(response)
             # raise BotApiException(self._tr('Deleting bot error: {0}'))
 
-    def set_bot_start_message(self, bot: BotDescription, start_message: BotMessage) -> None:
-        """
-        Установить сообщение с которого начнется работа с ботом
-        Args:
-            bot: объект бота
-            start_message: объект сообщения, которое будет установлено в качестве стартового
-        в качестве стартового
-        """
+    def set_bot_start_message(self, bot: BotDescription, start_message_id: Optional[int]) -> None:
         assert isinstance(bot, BotDescription)
-        assert isinstance(start_message, BotMessage)
+        assert isinstance(start_message_id, Optional[int])
         response = requests.patch(
             url=self._suite_url + f'api/bots/{bot.id}/',
             json={
-                'start_message': start_message.id
+                'start_message': start_message_id
             },
             headers=self._get_headers()
         )
@@ -247,21 +240,13 @@ class BotApiByRequests(IBotApi):
             # raise BotApiException(self._tr('Settings bot start message error: {0}').format(
             #     response.text))
 
-    def set_bot_error_message(self, bot: BotDescription, error_message: BotMessage) -> None:
-        """
-        Установить ошибочное сообщение для бота.
-
-        Args:
-            bot: объект бота
-            error_message: объект сообщения, которое будет установлено в
-            качестве ошибочного
-        """
+    def set_bot_error_message(self, bot: BotDescription, error_message_id: Optional[int]) -> None:
         assert isinstance(bot, BotDescription)
-        assert isinstance(error_message, BotMessage)
+        assert isinstance(error_message_id, Optional[int])
         response = requests.patch(
             url=self._suite_url + f'api/bots/{bot.id}/',
             json={
-                'error_message': error_message.id
+                'error_message': error_message_id
             },
             headers=self._get_headers()
         )

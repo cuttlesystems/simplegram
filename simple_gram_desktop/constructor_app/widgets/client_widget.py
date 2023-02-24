@@ -85,6 +85,8 @@ class ClientWidget(QMainWindow):
         self._ui.tool_stack.stop_bot_signal.connect(self._bot_editor.on_stop_bot)
         self._ui.tool_stack.read_bot_logs_signal.connect(self._bot_editor.on_read_bot_logs)
         self._ui.tool_stack.delete_message_signal.connect(self._bot_editor.on_delete_message)
+        self._ui.tool_stack.unmark_as_start_signal.connect(self._bot_editor.on_unmark_start_button)
+        self._ui.tool_stack.unmark_as_error_signal.connect(self._bot_editor.on_unmark_error_button)
 
     def _start_login_users(self) -> None:
         # выстравляю страницу инициализации

@@ -248,25 +248,25 @@ class IBotApi(ABC):
 
     @abstractmethod
     def set_bot_start_message(self, bot: BotDescription,
-                              start_message: BotMessage) -> None:
+                              start_message_id: Optional[int]) -> None:
         """
-        Установить сообщение с которого начнется работа с ботом
+        Установить сообщение, с которого начнется работа с ботом.
         Args:
             bot: объект бота
-            start_message: объект сообщения, которое будет установлено в
-            качестве стартового
+            start_message_id: id сообщения, которое будет установлено в
+            качестве стартового или None
         """
         pass
 
     @abstractmethod
     def set_bot_error_message(self, bot: BotDescription,
-                              error_message: BotMessage) -> None:
+                              error_message_id: Optional[int]) -> None:
         """
         Установить ошибочное сообщение для бота.
 
         Args:
             bot: объект бота
-            error_message: объект сообщения, которое будет установлено в
+            error_message_id: id сообщения, которое будет установлено в
             качестве ошибочного
         """
         pass
