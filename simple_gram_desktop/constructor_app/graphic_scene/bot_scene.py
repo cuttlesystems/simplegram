@@ -3,7 +3,7 @@ import typing
 from PySide6 import QtCore
 from PySide6.QtCore import QRectF, Signal
 from PySide6.QtGui import QBrush, QColor, QPen
-from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem
+from PySide6.QtWidgets import QGraphicsScene, QGraphicsItem, QGraphicsProxyWidget, QGraphicsRectItem
 
 from b_logic.data_objects import BotMessage, BotVariant, BotDescription
 from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
@@ -60,11 +60,17 @@ class BotScene(QGraphicsScene):
 
         self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
-        self._add_item_block()
 
     def _add_item_block(self):
         item_block = BlockWidget()
-        self.addWidget(item_block)
+
+        proxyControl: QGraphicsRectItem = self.addRect(0, 0, item_block.width(), item_block.height(),
+                                                       QPen(QColor(255, 255, 255, 0)), QBrush(QColor(255, 255, 255, 0)))
+        proxyControl.setFlag(QGraphicsItem.ItemIsMovable, True)
+        proxyControl.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        proxyControl.setFlag(QGraphicsItem.ItemSendsScenePositionChanges, True)
+        proxy: QGraphicsProxyWidget = self.addWidget(item_block)
+        proxy.setParentItem(proxyControl)
 
     def get_bot_scene(self) -> BotDescription:
         return self._bot
