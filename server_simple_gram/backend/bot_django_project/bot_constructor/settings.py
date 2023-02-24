@@ -1,6 +1,9 @@
 from pathlib import Path
 import os
 import sys
+from pathlib import Path
+import os
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -8,8 +11,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # разрешаем импорты также с корня приложения
 sys.path.append(str(BASE_DIR.parent.parent))
 
-SECRET_KEY = 'django-insecure-l^#t200))@a#@3^g7vhy4zk(0)pfg-xfecdr+$@41hw*id)(m6'
-# SECRET_KEY = os.getenv('SECRET_KEY')
+# SECRET_KEY = 'django-insecure-l^#t200))@a#@3^g7vhy4zk(0)pfg-xfecdr+$@41hw*id)(m6'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
