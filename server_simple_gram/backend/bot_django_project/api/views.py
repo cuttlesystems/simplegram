@@ -159,9 +159,12 @@ class BotViewSet(viewsets.ModelViewSet):
             notification_sender_to_manager.set_process_manager(bot_process_manager)
             result = JsonResponse(
                 {
-                    'result': 'Start bot ok',
-                    'bot_id': bot_id,
-                    'process_id': process_id
+                    'is_started': True,
+                    'result': {
+                        'message': 'Start bot ok',
+                        'bot_id': bot_id,
+                        'process_id': process_id
+                    },
                 },
                 status=requests.codes.ok
             )
@@ -175,6 +178,7 @@ class BotViewSet(viewsets.ModelViewSet):
         else:
             result = JsonResponse(
                 {
+                    'is_started': False,
                     'result': 'Bot start error'
                 },
                 status=requests.codes.method_not_allowed
@@ -210,8 +214,11 @@ class BotViewSet(viewsets.ModelViewSet):
                 bot_processes_manager.remove(bot_id_int)
                 result = JsonResponse(
                     {
-                        'result': 'There are errors when bot is running, next time fix error before start',
-                        'bot_id': bot_id_int
+                        'is_started': False,
+                        'result': {
+                            'message': 'There are errors when bot is running, next time fix error before start',
+                            'bot_id': bot_id_int
+                        }
                     },
                     status=requests.codes.conflict
                 )
@@ -219,25 +226,34 @@ class BotViewSet(viewsets.ModelViewSet):
                 bot_processes_manager.remove(bot_id_int)
                 result = JsonResponse(
                     {
-                        'result': 'Bot stopped is ok',
-                        'bot_id': bot_id_int,
-                        'process_id': bot_process.bot_runner.process_id
+                        'is_started': False,
+                        'result': {
+                            'message': 'Bot stopped is ok',
+                            'bot_id': bot_id_int,
+                            'process_id': bot_process.bot_runner.process_id
+                        }
                     },
                     status=requests.codes.ok
                 )
             else:
                 result = JsonResponse(
                     {
-                        'result': 'Bot stop error',
-                        'bot_id': bot_id_int,
+                        'is_started': False,
+                        'result': {
+                            'message': 'Bot stop error',
+                            'bot_id': bot_id_int
+                        }
                     },
                     status=requests.codes.internal_server_error
                 )
         else:
             result = JsonResponse(
                 {
-                    'result': 'Bot stopped is ok',
-                    'bot_id': bot_id_int,
+                    'is_started': False,
+                    'result': {
+                        'message': 'Bot stopped is ok',
+                        'bot_id': bot_id_int
+                    }
                 },
                 status=requests.codes.ok
             )

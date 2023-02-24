@@ -551,12 +551,12 @@ class BotApiByRequests(IBotApi):
             headers=self._get_headers()
         )
         if response.status_code == requests.status_codes.codes.ok:
+            response_dict: dict = json.loads(response.text)
             bot_started_state = StartStopBotState(
-                IS_STARTED=True,
-                API_RESPONSE=response.text
+                IS_STARTED=response_dict['is_started'],
+                API_RESPONSE=response_dict['result']
             )
         else:
-            print(f'CHANGE TO LOGGING. {response.text}')
             bot_started_state = StartStopBotState(
                 IS_STARTED=False,
                 API_RESPONSE=response.text
@@ -569,9 +569,10 @@ class BotApiByRequests(IBotApi):
             url=self._suite_url + f'api/bots/{bot.id}/stop/',
             headers=self._get_headers()
         )
+        response_dict: dict = json.loads(response.text)
         bot_started_state = StartStopBotState(
-            IS_STARTED=False,
-            API_RESPONSE=response.text
+            IS_STARTED=response_dict['is_started'],
+            API_RESPONSE=response_dict['result']
         )
         return bot_started_state
 
