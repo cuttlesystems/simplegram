@@ -187,12 +187,9 @@ class BotApiByRequestsProxy(BotApiByRequests):
             bot_started_state.API_RESPONSE = self._tr('Bot startup error: {0}').format(bot_started_state.API_RESPONSE)
         return bot_started_state
 
-    def stop_bot(self, bot: BotDescription) -> None:
-        try:
-            super().stop_bot(bot)
-        except BotStopException as e:
-            raise BotApiMessageException(
-                self._tr('Bot stop error: {0}').format(e.response.text))
+    def stop_bot(self, bot: BotDescription) -> StartStopBotState:
+        bot_started_state = super().stop_bot(bot)
+        return bot_started_state
 
     def get_running_bots_info(self) -> List[int]:
         try:

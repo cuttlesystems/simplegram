@@ -81,8 +81,7 @@ class ClientWidget(QMainWindow):
         self._ui.tool_stack.mark_as_error_signal.connect(self._bot_editor.on_mark_error_button)
         self._ui.tool_stack.add_message_signal.connect(self._bot_editor.on_add_new_message)
         self._ui.tool_stack.generate_bot_signal.connect(self._bot_editor.on_generate_bot)
-        self._ui.tool_stack.start_bot_signal.connect(self._bot_editor.on_start_bot)
-        self._ui.tool_stack.stop_bot_signal.connect(self._bot_editor.on_stop_bot)
+        self._ui.tool_stack.start_stop_bot_signal.connect(self._bot_editor.on_bot_state_changed)
         self._ui.tool_stack.read_bot_logs_signal.connect(self._bot_editor.on_read_bot_logs)
         self._ui.tool_stack.delete_message_signal.connect(self._bot_editor.on_delete_message)
         self._ui.tool_stack.unmark_as_start_signal.connect(self._bot_editor.on_unmark_start_button)
@@ -165,7 +164,7 @@ class ClientWidget(QMainWindow):
             bot_id = bot_extended.bot_description.id
             bot = self._bot_api.get_bot_by_id(bot_id)
 
-            self._ui.tool_stack.init_switch_toggle(bot_extended.bot_state)
+            self._ui.tool_stack.set_switch_toggle(bot_extended.bot_state)
             self._bot_editor.update_state_bot.connect(self.__load_bots_list)
             self._bot_editor.set_bot(bot)
             print('Open bot with Name: "{name}" and Id:"{id}"'.format(name=str(bot.bot_name), id=str(bot.id)))

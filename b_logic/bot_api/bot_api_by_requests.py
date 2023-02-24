@@ -562,22 +562,18 @@ class BotApiByRequests(IBotApi):
                 API_RESPONSE=response.text
             )
         return bot_started_state
-        # if response.status_code != requests.status_codes.codes.ok:
-        #     raise BotStartupException(response)
-            # raise BotApiException(
-            #     self._tr('Bot startup error: {0}').format(response.text))
 
-    def stop_bot(self, bot: BotDescription) -> None:
+    def stop_bot(self, bot: BotDescription) -> StartStopBotState:
         assert isinstance(bot, BotDescription)
         response = requests.post(
             url=self._suite_url + f'api/bots/{bot.id}/stop/',
             headers=self._get_headers()
         )
-        if response.status_code != requests.status_codes.codes.ok:
-            print(response)
-            raise BotStopException(response)
-            #raise BotApiException(
-            #     self._tr('Bot stop error: {0}').format(response.text))
+        bot_started_state = StartStopBotState(
+            IS_STARTED=False,
+            API_RESPONSE=response.text
+        )
+        return bot_started_state
 
     def get_running_bots_info(self) -> List[int]:
         response = requests.get(

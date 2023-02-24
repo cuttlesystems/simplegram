@@ -470,7 +470,7 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def stop_bot(self, bot: BotDescription) -> None:
+    def stop_bot(self, bot: BotDescription) -> StartStopBotState:
         """
         Остановка запущенного бота.
 
