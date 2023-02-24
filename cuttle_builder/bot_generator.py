@@ -142,6 +142,7 @@ class BotGenerator:
             start_handler_code = self._create_state_handler(
                 command='start',
                 prev_state='*',
+                send_by_user_id=None,
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
@@ -167,6 +168,7 @@ class BotGenerator:
             error_handler_code = self._create_state_handler(
                 command='',
                 prev_state='*',
+                send_by_user_id=None,
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
@@ -195,6 +197,7 @@ class BotGenerator:
             handler_code = self._create_state_handler(
                 command='',
                 prev_state=self._get_handler_name_for_message(prev_variant.current_message_id),
+                send_by_user_id=None,
                 text_to_handle=prev_variant.text,
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
@@ -229,6 +232,7 @@ class BotGenerator:
                 handler_code = self._create_state_handler(
                     command='',
                     prev_state=self._get_handler_name_for_message(previous_message.id),
+                    send_by_user_id=None,
                     text_to_handle=None,
                     state_to_set_name=self._get_handler_name_for_message(message.id),
                     text_of_answer=text,
@@ -386,7 +390,7 @@ class BotGenerator:
         extended_imports = self._get_imports_sample('state_import')
         return create_state(extended_imports, self._states)
 
-    def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
+    def _create_state_handler(self, command: str, prev_state: Optional[str], send_by_user_id: Optional[int], text_to_handle: Optional[str],
                               state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
                               video_answer: Optional[str], kb: str, handler_type: ButtonTypesEnum, extended_imports: str,
                               additional_functions_from_top_of_answer: str, additional_functions_under_answer: str) -> str:
@@ -421,12 +425,14 @@ class BotGenerator:
         full_command = f'Command(\'{command}\')' if command != '' else command
 
         if handler_type == ButtonTypesEnum.REPLY:
-            message_handler = create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
+            message_handler = create_state_message_handler(extended_imports, full_command, prev_state,
+                                                           send_by_user_id, text_to_handle,
                                                            state_to_set_name, text_of_answer, image_answer,
                                                            video_answer, kb, additional_functions_from_top_of_answer,
                                                            additional_functions_under_answer)
         elif handler_type == ButtonTypesEnum.INLINE:
-            message_handler = create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
+            message_handler = create_state_callback_handler(extended_imports, full_command, prev_state,
+                                                            send_by_user_id, text_to_handle,
                                                             state_to_set_name, text_of_answer, image_answer,
                                                             video_answer, kb,
                                                             additional_functions_from_top_of_answer,
