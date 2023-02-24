@@ -136,9 +136,9 @@ class BotGenerator:
             # Создание клавиатуры для сообщения.
             keyboard_name = self.create_keyboard(message.id, keyboard_type)
             keyboard_generation_counter += 1
-            additional_functions_from_top_of_answer += self._tab_from_new_line('save_id_and_username('
+            additional_functions_from_top_of_answer += self._tab_from_new_line('await save_id_and_username('
                                                                                'message.from_user.id, '
-                                                                               'message.from_user.name)')
+                                                                               'message.from_user.username)')
             # Создание стартовых хэндлеров.
             imports_for_start_handler = imports_for_handler + '\n' + 'from aiogram.dispatcher.filters import ' \
                                                                      'Command\n' \
