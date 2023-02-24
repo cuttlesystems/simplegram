@@ -45,6 +45,7 @@ class PostgresEnvVariables:
     DB_PORT: str
     DOMAIN_HOST: str
     HOST_PROTOCOL: str
+    SECRET_KEY: str
     # 'DB_ENGINE=django.db.backends.postgresql
     # DB_NAME=bot_constructor
     # POSTGRES_USER=postgres
@@ -52,7 +53,8 @@ class PostgresEnvVariables:
     # DB_HOST=172.21.0.1
     # DB_PORT=5432
     # DOMAIN_HOST=ramasuchka.kz
-    # HOST_PROTOCOL=https'
+    # HOST_PROTOCOL=https
+    # SECRET_KEY='
 
 
 def get_script_dir_path() -> Path:
@@ -857,6 +859,9 @@ def write_postgres_env_variables_json() -> None:
         ),
         HOST_PROTOCOL=input(
             'Enter \'HOST_PROTOCOL\' value (push \'Enter\' for default - \"https\"): '
+        ),
+        SECRET_KEY=input(
+            'Enter \'SECRET_KEY\' value (has no default value, should be entered!): '
         )
     )
     if postgres_env_variables.DB_ENGINE == '':
@@ -875,6 +880,14 @@ def write_postgres_env_variables_json() -> None:
         postgres_env_variables.DOMAIN_HOST = 'ramasuchka.kz'
     if postgres_env_variables.HOST_PROTOCOL == '':
         postgres_env_variables.HOST_PROTOCOL = 'https'
+    if postgres_env_variables.SECRET_KEY == '':
+        print(
+            f'Значение аргумента \'SECRET_KEY\' не было задано - '
+            f'функционирование базы данных в данном случае невозможно'
+            f'Скрипт остановлен'
+            f'Для осуществления разворота выполните перезапуск скрипта'
+        )
+        exit(0)
     assert isinstance(postgres_env_variables, PostgresEnvVariables)
     params = {
         'DB_ENGINE': postgres_env_variables.DB_ENGINE,
@@ -884,7 +897,8 @@ def write_postgres_env_variables_json() -> None:
         'DB_HOST': postgres_env_variables.DB_HOST,
         'DB_PORT': postgres_env_variables.DB_PORT,
         'DOMAIN_HOST': postgres_env_variables.DOMAIN_HOST,
-        'HOST_PROTOCOL': postgres_env_variables.HOST_PROTOCOL
+        'HOST_PROTOCOL': postgres_env_variables.HOST_PROTOCOL,
+        'SECRET_KEY': postgres_env_variables.SECRET_KEY
     }
     with open(f'{get_postgres_env_file_path()}_json', 'wt', encoding='utf-8') as envfile:
         json.dump(params, envfile)
@@ -917,6 +931,7 @@ def convert_postgres_env_variables_json_to_text() -> None:
         envfile.writelines(f'DB_PORT={postgres_env_variables.DB_PORT}\n')
         envfile.writelines(f'DOMAIN_HOST={postgres_env_variables.DOMAIN_HOST}\n')
         envfile.writelines(f'HOST_PROTOCOL={postgres_env_variables.HOST_PROTOCOL}')
+        envfile.writelines(f'SECRET_KEY={postgres_env_variables.SECRET_KEY}')
     print(
         f'\n---------------------------------------------------------\n'
         f'postgres environment variables were written into file'
@@ -930,6 +945,7 @@ def convert_postgres_env_variables_json_to_text() -> None:
         f'DB_PORT={postgres_env_variables.DB_PORT}\n'
         f'DOMAIN_HOST={postgres_env_variables.DOMAIN_HOST}\n'
         f'HOST_PROTOCOL={postgres_env_variables.HOST_PROTOCOL}\n'
+        f'SECRET_KEY={postgres_env_variables.SECRET_KEY}\n'
         f'\n---------------------------------------------------------\n'
     )
 
@@ -955,7 +971,8 @@ def read_postgres_env_variables_json() -> PostgresEnvVariables:
         DB_HOST=postgres_env_variables['DB_HOST'],
         DB_PORT=postgres_env_variables['DB_PORT'],
         DOMAIN_HOST=postgres_env_variables['DOMAIN_HOST'],
-        HOST_PROTOCOL=postgres_env_variables['HOST_PROTOCOL']
+        HOST_PROTOCOL=postgres_env_variables['HOST_PROTOCOL'],
+        SECRET_KEY=postgres_env_variables['SECRET_KEY']
     )
 
     return postgres_env_variables
@@ -1000,6 +1017,7 @@ def get_postgres_env_variables() -> PostgresEnvVariables:
         print(f'DB_PORT: {postgres_env_variables.DB_PORT}')
         print(f'DOMAIN_HOST: {postgres_env_variables.DOMAIN_HOST}')
         print(f'HOST_PROTOCOL: {postgres_env_variables.HOST_PROTOCOL}')
+        print(f'SECRET_KEY: {postgres_env_variables.SECRET_KEY}')
     return postgres_env_variables
 
 
