@@ -22,8 +22,7 @@ class ToolStackWidget(QWidget):
     add_variant_signal = Signal()
     delete_message_signal = Signal()
     generate_bot_signal = Signal()
-    start_bot_signal = Signal()
-    stop_bot_signal = Signal()
+    start_stop_bot_signal = Signal()
     mark_as_start_signal = Signal()
     mark_as_error_signal = Signal()
     delete_variant_signal = Signal()
@@ -43,7 +42,7 @@ class ToolStackWidget(QWidget):
         self._ui.add_variant_button.clicked.connect(self._on_action_add_variant)
         self._ui.delete_message_button.clicked.connect(self._on_delete_message)
         self._ui.generate_bot_button.clicked.connect(self._on_generate_bot)
-        self._ui.switch_bot.stateChanged.connect(self._switch_toggle)
+        self._ui.switch_bot.toggled.connect(self._switch_toggle)
         self._ui.mark_start_message_button.clicked.connect(self._on_mark_as_start)
         self._ui.mark_error_message_button.clicked.connect(self._on_mark_as_error)
         self._ui.delete_variant_button.clicked.connect(self._on_delete_variant)
@@ -63,20 +62,19 @@ class ToolStackWidget(QWidget):
             self._BORDER_RADIUS_BACKGROUND)
         paint_engine.end()
 
-    def init_switch_toggle(self, state: bool):
+    def _switch_toggle(self):
+        self.start_stop_bot_signal.emit()
+
+    def get_state_toggle(self) -> bool:
+        return self._ui.switch_bot.isChecked()
+
+    def set_switch_toggle(self, state: bool):
         assert isinstance(state, bool)
+        self._ui.switch_bot.blockSignals(True)
         try:
-            self._ui.switch_bot.blockSignals(True)
             self._ui.switch_bot.setChecked(state)
         finally:
             self._ui.switch_bot.blockSignals(False)
-
-    def _switch_toggle(self, state: int):
-        assert isinstance(state, int)
-        if state == 0:
-            self.stop_bot_signal.emit()
-        else:
-            self.start_bot_signal.emit()
 
     def set_delete_variant_enabled(self, enabled: bool):
         assert isinstance(enabled, bool)

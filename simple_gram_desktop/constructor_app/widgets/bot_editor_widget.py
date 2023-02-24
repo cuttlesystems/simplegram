@@ -7,7 +7,7 @@ from PySide6.QtGui import QPainter, QBrush, QColor, QAction
 from PySide6.QtWidgets import QWidget, QDialog, QMessageBox, QMainWindow, QMenu
 
 from b_logic.bot_api.i_bot_api import IBotApi, BotApiException
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, StartStopBotState
 from common.localisation import tran
 from common.model_property import ModelProperty
 from constructor_app.widgets.tool_stack_widget import ToolStackWidget
@@ -318,37 +318,31 @@ class BotEditorWidget(QWidget):
                 print(traceback.format_exc())
 
     def _on_start_bot_action(self):
-        self._tool_stack_widget.init_switch_toggle(True)
-        self.__start_bot()
-
-    def on_start_bot(self):
-        self.__start_bot()
-
-    def __start_bot(self):
-        try:
-            self._bot_api.start_bot(self._bot)
-            self.update_state_bot.emit()
-        except Exception as e:
-            self._process_exception(e)
-            QMessageBox(self, 'Error', str(e))
-            self._tool_stack_widget.init_switch_toggle(False)
-            print(traceback.format_exc())
+        self._tool_stack_widget.set_switch_toggle(True)
+        self.__bot_state_changed()
 
     def _on_stop_bot_action(self):
-        self._tool_stack_widget.init_switch_toggle(False)
-        self.__stop_bot()
+        self._tool_stack_widget.set_switch_toggle(False)
+        self.__bot_state_changed()
 
-    def on_stop_bot(self):
-        self.__stop_bot()
+    def on_bot_state_changed(self):
+        self.__bot_state_changed()
 
-    def __stop_bot(self):
-        try:
-            self._bot_api.stop_bot(self._bot)
-            self.update_state_bot.emit()
-        except Exception as e:
-            self._process_exception(e)
-            QMessageBox(self, 'Error', str(e))
-            print(traceback.format_exc())
+    def __bot_state_changed(self):
+        is_bot_must_be_started = self._tool_stack_widget.get_state_toggle()
+        if is_bot_must_be_started:
+            start_bot_state: StartStopBotState = self._bot_api.start_bot(self._bot)
+            is_error = not start_bot_state.IS_STARTED
+        else:
+            start_bot_state = self._bot_api.stop_bot(self._bot)
+            is_error = start_bot_state.IS_STARTED
+
+        self._tool_stack_widget.set_switch_toggle(start_bot_state.IS_STARTED)
+
+        if is_error:
+            self._process_error(start_bot_state.API_RESPONSE)
+
+        self.update_state_bot.emit()
 
     def _on_delete_message_action(self):
         self.__delete_message()
@@ -487,6 +481,9 @@ class BotEditorWidget(QWidget):
             QMessageBox.warning(self, 'Error', exception_mes)
         else:
             raise
+
+    def _process_error(self, error: str):
+        QMessageBox.warning(self, 'Error', error)
 
     def _save_changes(self):
         # освежим объект бота с сервера

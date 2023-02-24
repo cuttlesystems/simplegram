@@ -3,7 +3,7 @@ from abc import abstractmethod, ABC
 
 import requests
 
-from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotCommand, BotLogs
+from b_logic.data_objects import BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotCommand, BotLogs, StartStopBotState
 
 
 class BotApiException(Exception):
@@ -460,7 +460,7 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def start_bot(self, bot: BotDescription) -> None:
+    def start_bot(self, bot: BotDescription) -> StartStopBotState:
         """
         Запуск сгенерированного бота.
 
@@ -470,7 +470,7 @@ class IBotApi(ABC):
         pass
 
     @abstractmethod
-    def stop_bot(self, bot: BotDescription) -> None:
+    def stop_bot(self, bot: BotDescription) -> StartStopBotState:
         """
         Остановка запущенного бота.
 

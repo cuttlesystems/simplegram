@@ -16,7 +16,7 @@ from b_logic.bot_api.i_bot_api import IBotApi, SignUpException, CreatingBotExcep
     CreatingCommandException, BotGenerationException, BotStopException, BotStartupException, \
     GettingRunningBotsInfoException, ReceivingBotLogsException, ConnectionException, LogoutException, DeletingVideoException
 from b_logic.data_objects import BotCommand, BotDescription, BotMessage, BotVariant, ButtonTypesEnum, BotLogs, \
-    MessageTypeEnum, MediaFileStateEnum
+    MessageTypeEnum, MediaFileStateEnum, StartStopBotState
 from b_logic.utils.image_to_bytes import get_binary_data_from_file
 
 
@@ -544,28 +544,37 @@ class BotApiByRequests(IBotApi):
             # raise BotApiException(
             #     self._tr('Bot generation error: {0}').format(response.text))
 
-    def start_bot(self, bot: BotDescription) -> None:
+    def start_bot(self, bot: BotDescription) -> StartStopBotState:
         assert isinstance(bot, BotDescription)
         response = requests.post(
             url=self._suite_url + f'api/bots/{bot.id}/start/',
             headers=self._get_headers()
         )
-        if response.status_code != requests.status_codes.codes.ok:
-            raise BotStartupException(response)
-            # raise BotApiException(
-            #     self._tr('Bot startup error: {0}').format(response.text))
+        if response.status_code == requests.status_codes.codes.ok:
+            response_dict: dict = json.loads(response.text)
+            bot_started_state = StartStopBotState(
+                IS_STARTED=response_dict['is_started'],
+                API_RESPONSE=response_dict['result']
+            )
+        else:
+            bot_started_state = StartStopBotState(
+                IS_STARTED=False,
+                API_RESPONSE=response.text
+            )
+        return bot_started_state
 
-    def stop_bot(self, bot: BotDescription) -> None:
+    def stop_bot(self, bot: BotDescription) -> StartStopBotState:
         assert isinstance(bot, BotDescription)
         response = requests.post(
             url=self._suite_url + f'api/bots/{bot.id}/stop/',
             headers=self._get_headers()
         )
-        if response.status_code != requests.status_codes.codes.ok:
-            print(response)
-            raise BotStopException(response)
-            #raise BotApiException(
-            #     self._tr('Bot stop error: {0}').format(response.text))
+        response_dict: dict = json.loads(response.text)
+        bot_started_state = StartStopBotState(
+            IS_STARTED=response_dict['is_started'],
+            API_RESPONSE=response_dict['result']
+        )
+        return bot_started_state
 
     def get_running_bots_info(self) -> List[int]:
         response = requests.get(
