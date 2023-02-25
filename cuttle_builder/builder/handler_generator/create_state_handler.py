@@ -66,7 +66,7 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
     # Сохраняем send_by_user_id если != None
     chat_id = send_by_user_id if send_by_user_id else 'message.from_user.id'
     # Сохраняем клавиатуру, если она есть, и в chat_id находится from_user.id, иначе передаем пустую строку
-    keyboard_if_exists = f', reply_markup={kb}' if kb and chat_id is 'message.from_user.id' else ""
+    keyboard_if_exists = f', reply_markup={kb}' if kb and chat_id == 'message.from_user.id' else ""
     answer_content = tab_from_new_line(f'await dp.bot.send_message(chat_id={chat_id},'
                                        f' text=f{repr(text_of_answer)}{keyboard_if_exists})')
     if image_answer:
