@@ -5,6 +5,11 @@ from typing import Optional
 
 
 def prev_state_code_line(prev_state: Optional[str]) -> str:
+    """
+    Возвращает предыдущий state
+    Args:
+        prev_state (Optional[str]): 
+    """
     assert isinstance(prev_state, Optional[str])
     result = ''
     if prev_state == '*':
@@ -14,7 +19,8 @@ def prev_state_code_line(prev_state: Optional[str]) -> str:
     return result
 
 
-def create_state_message_handler(imports: str, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
+def create_state_message_handler(imports: str, command: str, prev_state: Optional[str],
+                                 send_by_user_id: Optional[int], text_to_handle: Optional[str],
                                  state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
                                  video_answer: Optional[str], kb: Optional[str],
                                  additional_functions_from_top_of_answer: str,
@@ -25,6 +31,7 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
         imports (str): Импорты
         command (str): Команда перехватываемая хэндлером типа /start
         prev_state (Optional[str]): Предыдущее состояние
+        send_by_user_id (Optional[int]): Chat id
         text_to_handle (Optional[str]): Текст перехватываемый хэндлером
         state_to_set_name (Optional[str]): Состояние к установке
         text_of_answer (str): Текст ответа
@@ -54,20 +61,23 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
         prev_state_code_line(prev_state)
     ]
     handler_params = ', '.join(element for element in list_of_handler_params if element)
-    state_to_set_content = 'await States.{state_name}.set()'.format(state_name=state_to_set_name) if state_to_set_name else ''
-    keyboard_if_exists = f', reply_markup={kb}' if kb else ""
-    answer_content = f'await message.answer(text=f{repr(text_of_answer)}{keyboard_if_exists})'
+    state_to_set_content = 'await States.{state_name}.set()'.format(state_name=state_to_set_name) \
+        if state_to_set_name else ''
+    # Сохраняем send_by_user_id если != None
+    chat_id = send_by_user_id if send_by_user_id else 'message.from_user.id'
+    # Сохраняем клавиатуру, если она есть, и в chat_id находится from_user.id, иначе передаем пустую строку
+    keyboard_if_exists = f', reply_markup={kb}' if kb and chat_id is 'message.from_user.id' else ""
+    answer_content = tab_from_new_line(f'await dp.bot.send_message(chat_id={chat_id},'
+                                       f' text=f{repr(text_of_answer)}{keyboard_if_exists})')
     if image_answer:
-        image_answer = repr(image_answer)
-        image_content = tab_from_new_line(f'await message.answer_photo(photo=types.InputFile({image_answer}),  '
-
+        image_content = tab_from_new_line(f'await message.answer_photo(photo=types.InputFile({repr(image_answer)}),  '
                                           f'caption=f{repr(text_of_answer)}{keyboard_if_exists})')
-        answer_content = image_content
+        answer_content += image_content
 
     if video_answer:
-        video_content = tab_from_new_line(f'await message.answer_video(video=types.InputFile(\'{video_answer}\'), '
+        video_content = tab_from_new_line(f'await message.answer_video(video=types.InputFile({repr(video_answer)}), '
                                          f'caption=f{repr(text_of_answer)}{keyboard_if_exists})')
-        answer_content = video_content
+        answer_content += video_content
     if image_answer and video_answer:
         media_answer = ['await types.ChatActions.upload_video()',
                         'media = types.MediaGroup()',
@@ -88,7 +98,7 @@ def create_state_message_handler(imports: str, command: str, prev_state: Optiona
                           additional_functions_under_answer)
 
 
-def create_state_callback_handler(imports: str, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
+def create_state_callback_handler(imports: str, command: str, prev_state: Optional[str], send_by_user_id: Optional[int], text_to_handle: Optional[str],
                                   state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
                                   video_answer: Optional[str], kb: Optional[str],
                                   additional_functions_from_top_of_answer: str,

@@ -55,8 +55,8 @@ class BotGeneratorMiniApp(BotGeneratorDb):
             with open(file_path, 'wb') as message_file:
                 message_file.write(photo_bytes)
             message.photo = file_path
-            message.photo_filename = Path(file_path).name
-            message.photo_file_format = file_format
+            # message.photo_filename = Path(file_path).name
+            # message.photo_file_format = file_format
 
     def _after_finished(self):
         """

@@ -36,6 +36,19 @@ class APIFileCreator(FileManager):
             Path(self._bot_directory) / 'on_startup_commands.py')
         self._write_file_insert(path_to_file, code)
 
+    def create_utils_file(self, code: str) -> None:
+        """
+        Создает файл с кодом функции для сохранения username и user id
+
+        Args:
+            code (str): Подготовленный код(содержимое файла)
+        """
+        assert isinstance(code, str)
+
+        path_to_file = str(
+            Path(self._bot_directory) / 'utils' / 'save_id_and_username.py')
+        self._write_file_insert(path_to_file, code)
+
     def create_config_file(self, code) -> None:
         assert isinstance(code, str)
 

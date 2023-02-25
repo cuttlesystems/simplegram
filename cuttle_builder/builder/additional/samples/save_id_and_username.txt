@@ -1,0 +1,17 @@
+import json
+import uuid
+from pathlib import Path
+
+
+async def save_id_and_username(id: int, username: str):
+    # Generate a unique filename with the .json extension
+    filename = f"{str(uuid.uuid4())}.json"
+    # Get the path to the current directory and append the filename
+    file_path = Path.cwd() / filename
+    
+    # Create a dictionary for the data
+    data = {"id": id, "username": username}
+    
+    # Open the file in write mode and save the data in JSON format
+    with open(file_path, "w") as f:
+        json.dump(data, f)

@@ -78,6 +78,7 @@ class BotGenerator:
         self._create_app_file()
         self._create_on_startup_commands_file()
         self._create_log_dir_if_it_doesnt_exist()
+        self._create_utils_file()
         for message in self._messages:
             self.create_file_handlers(message)
         self._create_init_handler_files()
@@ -135,13 +136,17 @@ class BotGenerator:
             # Создание клавиатуры для сообщения.
             keyboard_name = self.create_keyboard(message.id, keyboard_type)
             keyboard_generation_counter += 1
-
+            additional_functions_from_top_of_answer += self._tab_from_new_line('await save_id_and_username('
+                                                                               'message.from_user.id, '
+                                                                               'message.from_user.username)')
             # Создание стартовых хэндлеров.
             imports_for_start_handler = imports_for_handler + '\n' + 'from aiogram.dispatcher.filters import ' \
-                                                                     'Command'
+                                                                     'Command\n' \
+                                                                     'from utils.save_id_and_username import save_id_and_username'
             start_handler_code = self._create_state_handler(
                 command='start',
                 prev_state='*',
+                send_by_user_id=None,
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
@@ -167,6 +172,7 @@ class BotGenerator:
             error_handler_code = self._create_state_handler(
                 command='',
                 prev_state='*',
+                send_by_user_id=None,
                 text_to_handle='',
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
@@ -195,6 +201,7 @@ class BotGenerator:
             handler_code = self._create_state_handler(
                 command='',
                 prev_state=self._get_handler_name_for_message(prev_variant.current_message_id),
+                send_by_user_id=None,
                 text_to_handle=prev_variant.text,
                 state_to_set_name=self._get_handler_name_for_message(message.id),
                 text_of_answer=text,
@@ -229,6 +236,7 @@ class BotGenerator:
                 handler_code = self._create_state_handler(
                     command='',
                     prev_state=self._get_handler_name_for_message(previous_message.id),
+                    send_by_user_id=None,
                     text_to_handle=None,
                     state_to_set_name=self._get_handler_name_for_message(message.id),
                     text_of_answer=text,
@@ -377,6 +385,12 @@ class BotGenerator:
         commands_code = generate_commands_code(self._commands)
         self._file_manager.create_commands_file(commands_code)
 
+    def _create_utils_file(self) -> None:
+        utils_method = str(
+            CUTTLE_BUILDER_PATH / 'builder' / 'additional' / 'samples' / 'save_id_and_username.txt')
+        code = self._file_manager.read_text_file_content(utils_method)
+        self._file_manager.create_utils_file(code)
+
     def _create_state(self) -> str:
         """generate code of state class
 
@@ -386,7 +400,7 @@ class BotGenerator:
         extended_imports = self._get_imports_sample('state_import')
         return create_state(extended_imports, self._states)
 
-    def _create_state_handler(self, command: str, prev_state: Optional[str], text_to_handle: Optional[str],
+    def _create_state_handler(self, command: str, prev_state: Optional[str], send_by_user_id: Optional[int], text_to_handle: Optional[str],
                               state_to_set_name: Optional[str], text_of_answer: str, image_answer: Optional[str],
                               video_answer: Optional[str], kb: str, handler_type: ButtonTypesEnum, extended_imports: str,
                               additional_functions_from_top_of_answer: str, additional_functions_under_answer: str) -> str:
@@ -421,12 +435,14 @@ class BotGenerator:
         full_command = f'Command(\'{command}\')' if command != '' else command
 
         if handler_type == ButtonTypesEnum.REPLY:
-            message_handler = create_state_message_handler(extended_imports, full_command, prev_state, text_to_handle,
+            message_handler = create_state_message_handler(extended_imports, full_command, prev_state,
+                                                           send_by_user_id, text_to_handle,
                                                            state_to_set_name, text_of_answer, image_answer,
                                                            video_answer, kb, additional_functions_from_top_of_answer,
                                                            additional_functions_under_answer)
         elif handler_type == ButtonTypesEnum.INLINE:
-            message_handler = create_state_callback_handler(extended_imports, full_command, prev_state, text_to_handle,
+            message_handler = create_state_callback_handler(extended_imports, full_command, prev_state,
+                                                            send_by_user_id, text_to_handle,
                                                             state_to_set_name, text_of_answer, image_answer,
                                                             video_answer, kb,
                                                             additional_functions_from_top_of_answer,
