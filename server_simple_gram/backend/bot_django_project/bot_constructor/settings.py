@@ -15,7 +15,7 @@ sys.path.append(str(BASE_DIR.parent.parent))
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 DOMAIN_HOST = os.getenv('DOMAIN_HOST', '127.0.0.1:8000')
 HOST_PROTOCOL = os.getenv('HOST_PROTOCOL', 'http')
