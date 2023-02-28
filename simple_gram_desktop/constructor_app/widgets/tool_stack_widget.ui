@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
+    <width>518</width>
     <height>58</height>
    </rect>
   </property>
@@ -237,7 +237,8 @@ background:rgba(70, 170, 255, 140);
       <string/>
      </property>
      <property name="icon">
-      <iconset theme="process-stop"/>
+      <iconset resource="../bot_icons.qrc">
+       <normaloff>:/icons/widgets/times_icon/dismark_start_message.png</normaloff>:/icons/widgets/times_icon/dismark_start_message.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -312,7 +313,8 @@ background:rgba(70, 170, 255, 140);
       <string/>
      </property>
      <property name="icon">
-      <iconset theme="dialog-error"/>
+      <iconset resource="../bot_icons.qrc">
+       <normaloff>:/icons/widgets/times_icon/dismark_error_message.png</normaloff>:/icons/widgets/times_icon/dismark_error_message.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -350,7 +352,7 @@ background:rgba(70, 170, 255, 140);
      </property>
      <property name="icon">
       <iconset resource="../bot_icons.qrc">
-       <normaloff>:/icons/images/generate.svg</normaloff>:/icons/images/generate.svg</iconset>
+       <normaloff>:/icons/widgets/times_icon/generate_bot.png</normaloff>:/icons/widgets/times_icon/generate_bot.png</iconset>
      </property>
      <property name="iconSize">
       <size>
