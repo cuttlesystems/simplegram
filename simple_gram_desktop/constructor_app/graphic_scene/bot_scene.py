@@ -10,6 +10,7 @@ from constructor_app.graphic_scene.block_graphics_item import BlockGraphicsItem
 from constructor_app.graphic_scene.colors.scene_color_scheme import SceneColorScheme
 from constructor_app.widgets.block_widget import BlockWidget
 
+
 class BotScene(QGraphicsScene):
     """
     Сцена для отображения редактора бота
@@ -61,16 +62,16 @@ class BotScene(QGraphicsScene):
         self._message_graphics_list: typing.List[BlockGraphicsItem] = []
         self._connect_signals()
 
-    def _add_item_block(self):
-        item_block = BlockWidget()
+    def _add_item_block(self, item_block: BlockWidget):
 
-        proxyControl: QGraphicsRectItem = self.addRect(0, 0, item_block.width(), item_block.height(),
-                                                       QPen(QColor(255, 255, 255, 0)), QBrush(QColor(255, 255, 255, 0)))
-        proxyControl.setFlag(QGraphicsItem.ItemIsMovable, True)
-        proxyControl.setFlag(QGraphicsItem.ItemIsSelectable, True)
-        proxyControl.setFlag(QGraphicsItem.ItemSendsScenePositionChanges, True)
+        proxy_control: QGraphicsRectItem = self.addRect(0, 0, item_block.width(),
+                                                        item_block.height(), QPen(QColor(255, 255, 255, 0)),
+                                                        QBrush(QColor(255, 255, 255, 0)))
+        proxy_control.setFlag(QGraphicsItem.ItemIsMovable, True)
+        proxy_control.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        proxy_control.setFlag(QGraphicsItem.ItemSendsScenePositionChanges, True)
         proxy: QGraphicsProxyWidget = self.addWidget(item_block)
-        proxy.setParentItem(proxyControl)
+        proxy.setParentItem(proxy_control)
 
     def get_bot_scene(self) -> BotDescription:
         return self._bot
@@ -112,6 +113,25 @@ class BotScene(QGraphicsScene):
         message_graphics.signal_sender.selected_item_changed.connect(self._on_selection_changed)
 
         return message_graphics
+
+    def add_message_widget(self, message: BotMessage, variants: typing.List[BotVariant]) -> None:
+        """
+        Добавить сообщение на сцену
+        Args:
+            message: сообщение
+            variants: варианты, относящиеся к сообщению
+        """
+        # проверяем, что id бота уникальный, не совпадает с другими id
+        exists_bots_ids: typing.Set[int] = {message.id for message in self.get_all_messages()}
+        assert message.id not in exists_bots_ids
+
+        message_block = BlockWidget()
+        message_block.init_message(message)
+
+        for variant in variants:
+            message_block.add_variant(variant)
+
+        self._add_item_block(message_block)
 
     def get_selected_messages(self) -> typing.List[BotMessage]:
         """

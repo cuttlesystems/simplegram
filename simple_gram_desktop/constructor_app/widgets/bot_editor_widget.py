@@ -92,6 +92,9 @@ class BotEditorWidget(QWidget):
         self._show_logs_action = \
             QAction(QtGui.QIcon(':icons/widgets/times_icon/logs.png'), self._tr('Show log'), self)
         self._show_logs_action.triggered.connect(self._on_read_bot_logs_action)
+        self._add_new_message_widget = \
+            QAction(QtGui.QIcon('widgets/times_icon/user_icon.png'), self._tr('Add message widget'), self)
+        self._add_new_message_widget.triggered.connect(self._on_add_new_message_widget)
 
         self._menu_block.addActions([self._add_message_action, self._delete_message_action])
         self._menu_block.addSeparator()
@@ -106,6 +109,8 @@ class BotEditorWidget(QWidget):
         self._menu_scheme.addActions([self._start_bot_action, self._stop_bot_action, self._generate_bot_action])
         self._menu_scheme.addSeparator()
         self._menu_scheme.addAction(self._show_logs_action)
+        self._menu_scheme.addSeparator()
+        self._menu_scheme.addAction(self._add_new_message_widget)
 
         self._prepare_and_setup_context_menu()
 
@@ -218,6 +223,29 @@ class BotEditorWidget(QWidget):
         message = self._bot_api.create_message(
             self._bot, message_name, ButtonTypesEnum.REPLY, x=position.x(), y=position.y())
         self._bot_scene.add_message(message, [])
+        self._actual_actions_state()
+
+    def __add_new_message_widget(self) -> None:
+        position = self._ui.graphics_view.get_context_menu_position()
+        # действие вызвано не через контекстное меню
+        if position is None:
+            # координаты нового сообщения: по центру видимой области редактора
+            actual_position = self._ui.graphics_view.mapToScene(self._ui.graphics_view.get_central_point())
+        else:
+            # координаты нового сообщения: где было показано контекстное меню
+            actual_position = self._ui.graphics_view.mapToScene(position)
+        self._add_message_widget(actual_position)
+
+    def _on_add_new_message_widget(self) -> None:
+        self.__add_new_message_widget()
+
+    def _add_message_widget(self, position: QPointF) -> None:
+        assert isinstance(position, QPointF)
+        messages = self._bot_api.get_messages(self._bot)
+        message_name = self._generate_unique_message_name(self._tr('New bot message'), messages)
+        message = self._bot_api.create_message(
+            self._bot, message_name, ButtonTypesEnum.REPLY, x=position.x(), y=position.y())
+        self._bot_scene.add_message_widget(message, [])
         self._actual_actions_state()
 
     def _generate_unique_variant_name(self, variant_name: str, variants: typing.List[BotVariant]) -> str:
