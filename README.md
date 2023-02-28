@@ -6,21 +6,11 @@
 
 [Правила работы с *git*](./docs/git_description.md)
 
-[Данные для тестирования телеграмм бота](./docs/telegabot_info.md)
-
-[Настройки офисной сети](./docs/net_settings.md)
-
 [Инструкция по осуществлению *deploy'я* обновлённого *docker*-контейнера](./docs/deploy_from_ubuntu.md)
 
 [Инструкция по созданию исполняемого файла (*Win, Linux*) с помощью утилиты *PyInstaller*](./docs/create_executable_file.md)
 
 [Структура репозитория](./docs/repo_struct.md)
-
-### Организация разработки
-
-[Проведение собеседования](./docs/interview.md)
-
-[Дисциплина труда](./docs/working_time.md)
 
 ## Как запустить проект локально(dev-режим):
 
