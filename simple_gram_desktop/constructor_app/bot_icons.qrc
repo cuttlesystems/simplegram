@@ -38,5 +38,7 @@
         <file>widgets/times_icon/error_message.png</file>
         <file>widgets/times_icon/start_bot.png</file>
         <file>widgets/times_icon/stop_bot.png</file>
+        <file>widgets/times_icon/dismark_start_message.png</file>
+        <file>widgets/times_icon/dismark_error_message.png</file>
     </qresource>
 </RCC>
